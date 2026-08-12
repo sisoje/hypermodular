@@ -42,7 +42,8 @@ view is always derivable and never maintained.
    first — that diff is the design review.
 3. **Evidence, not effects.** A node's behavior is declared as data:
    these values in, this evidence out — the ordered log of its I/O
-   with payloads: every source-of-truth write and every action call.
+   with payloads: every source-of-truth write and every boundary call,
+   sync or `async throws` alike.
    Declare the evidence before
    implementing; implementation means making the declaration hold. Never
    observe effects behind a boundary, never simulate behavior (no
@@ -281,13 +282,21 @@ A node's declared behavior is one value: the evidence log — the ordered
   binding write, an external-storage write, the node's own state write.
   Evidence is wider than the map contract — own state never appears on
   a map, but its writes are I/O, and I/O logs.
-- **An action call logs** under the closure's name, with its payload.
-  An action is a capability in Wlaschin's sense: the call is the event;
-  whatever comes back is supplied data, not evidence.
+- **A boundary call logs** under the closure's name, with its
+  arguments — whatever the closure's shape: a fire-and-forget command,
+  an `async throws` fetch, a returning query to the world. Impurity is
+  visible in the signature (Wlaschin): `async` and `throws` mark the
+  world-crossing that makes a closure a boundary rather than a pure
+  helper. The call is the event; what comes back — a value or a thrown
+  error — is supplied data, not evidence.
 
 **Reads never log.** A query's answer is data handed in, and getters
 fire on the render scheduler's timing, not the node's — one
-nondeterministic line poisons an exact-sequence assertion.
+nondeterministic line poisons an exact-sequence assertion. The test is
+**who fired it**: the node's own decisions log; whatever the scheduler
+pulls doesn't — binding getters, view-builder closures, any helper
+evaluated during rendering, and writes the system (not the node)
+performs through a binding.
 
 A declaration is an acceptance criterion transcribed into the log's
 vocabulary: *given* names constructor arguments, *when* names an

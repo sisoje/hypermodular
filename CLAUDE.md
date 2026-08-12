@@ -22,8 +22,9 @@ deliverable is the doctrine.
    on the map? Stop, propose a map change, get the diff agreed — the map
    diff IS the design review.
 3. **Evidence, not effects.** Declare a node's behavior as data (values
-   in → ordered evidence log out; every source-of-truth write and action
-   call logs, reads never do) before implementing. Never mock, never
+   in → ordered evidence log out; every source-of-truth write and every
+   boundary call — sync or `async throws` — logs, reads never do)
+   before implementing. Never mock, never
    observe effects behind a boundary. A boundary in a spec is a logger;
    checking a node is comparing two values.
 
