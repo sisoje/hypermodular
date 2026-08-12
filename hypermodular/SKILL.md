@@ -49,7 +49,7 @@ view is always derivable and never maintained.
    mocks): a boundary in a spec is a logger, and checking a node is
    comparing two values.
 
-## One law: depth 1
+## One law: depth 1 — the cure for death by a thousand mocks
 
 Every artifact describes exactly one boundary — its own. A logged
 boundary never simulates deeper than one step. Injection enters only at
@@ -66,18 +66,21 @@ A `flowchart TD`, one level deep.
   data and capabilities (navigation goes through `navService`; which
   node answers a route is composed up the tree).
 - **Mermaid id = node name, always.** Write
-  `BookShelf["BookShelf<br/>@Query"]`, never a short alias id.
+  `BookShelf["BookShelf<br/>· @Query"]`, never a short alias id.
   The name is the join key that merges maps back into one tree; ids
   that differ from names break the merge silently. Redundant to type,
   free for an AI.
 - **Node label = name on the first line, then one contract line per
-  line**, using `<br/>`. Two kinds of line, distinguishable at a
-  glance and by parser: lines starting with `@` **materialize** — 
+  line**, using `<br/>`. **Every contract line starts with `· `**
+  (middle dot, space): the name is the text before the first `·`, so
+  the merge key stays unambiguous even where `<br/>` doesn't render.
+  Two kinds of contract line, distinguishable at a glance and by
+  parser: `· @Wrapper` lines **materialize** — 
   sources of truth held as property wrappers, wrapper name only
   (`@Query`, `@AppStorage` — what the node derives from them, like an
   isLoggedIn computed off a token, is code's business, not the map's);
-  lines with a dot **call** — `<dep>.<func>`
-  (`dbService.updateBook`). Calls produce
+  `· <dep>.<func>` lines **call**
+  (`· dbService.updateBook`). Calls produce
   evidence; materialized *reads* don't — though a write to materialized
   storage is I/O and logs like any write (see Declaring evidence). The
   lines under the name are the node's entire relationship with the
@@ -113,7 +116,7 @@ so an extracted mermaid still knows where it belongs. The root map:
 ```mermaid
 %% Root: App
 flowchart TD
-    App --> Landing["Landing<br/>loginState.isLoggedIn"]
+    App --> Landing["Landing<br/>· loginState.isLoggedIn"]
 ```
 
 Landing's map (the login gate — a decision node):
@@ -121,7 +124,7 @@ Landing's map (the login gate — a decision node):
 ```mermaid
 %% Root: Landing · Parent: App (../APP-MAP.md)
 flowchart TD
-    Landing["Landing<br/>loginState.isLoggedIn"] -->|!isLoggedIn| LoginScreen
+    Landing["Landing<br/>· loginState.isLoggedIn"] -->|!isLoggedIn| LoginScreen
     Landing -->|isLoggedIn| Tabs
 ```
 
@@ -130,8 +133,8 @@ Tabs' map (unlabeled arrows — plain composition):
 ```mermaid
 %% Root: Tabs · Parent: Landing (../MAP.md)
 flowchart TD
-    Tabs --> BookShelf["BookShelf<br/>@Query"]
-    Tabs --> Search["Search<br/>searchAPI.search<br/>navService.showDetail"]
+    Tabs --> BookShelf["BookShelf<br/>· @Query"]
+    Tabs --> Search["Search<br/>· searchAPI.search<br/>· navService.showDetail"]
 ```
 
 BookShelf's map, beside its code:
@@ -139,7 +142,7 @@ BookShelf's map, beside its code:
 ```mermaid
 %% Root: BookShelf · Parent: Tabs (../MAP.md)
 flowchart TD
-    BookShelf["BookShelf<br/>@Query"] --> BookDetail["BookDetail<br/>imageLoader.loadImage"]
+    BookShelf["BookShelf<br/>· @Query"] --> BookDetail["BookDetail<br/>· imageLoader.loadImage"]
 ```
 
 Leaves get no map of their own — we are modeling data flow, and a map
@@ -212,7 +215,7 @@ No usage lines — usage is written on the nodes themselves (Diagram 1).
   may read services already in the environment and combine them into a
   new one. A **derived service** uses the node-label grammar: name on
   the first line, then one line per ingredient it reads —
-  `syncService[("syncService<br/>dbService<br/>searchAPI")]`. Its
+  `syncService[("syncService<br/>· dbService<br/>· searchAPI")]`. Its
   ingredients must appear **above it** in the column; an ingredient
   below is an order violation you can see. The injector modifiers
   themselves are implementation detail and never drawn.
@@ -228,7 +231,7 @@ flowchart LR
         dbService[(dbService)]
         navService[(navService)]
         loginState[(loginState)]
-        syncService[("syncService<br/>dbService<br/>searchAPI")]
+        syncService[("syncService<br/>· dbService<br/>· searchAPI")]
         imageLoader ~~~ searchAPI ~~~ dbService ~~~ navService ~~~ loginState ~~~ syncService
     end
 

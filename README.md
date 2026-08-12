@@ -25,7 +25,7 @@ delivers that with two declarations instead of rituals:
   No mocks, ever: a boundary in a spec is just a logger, and checking a
   node is comparing two values.
 
-## One law: depth 1
+## One law: depth 1 — the cure for death by a thousand mocks
 
 Every artifact describes exactly one boundary — its own.
 
@@ -43,13 +43,15 @@ diagram in a `MAP.md` beside its code (`APP-MAP.md` at the repo root).
 
 **1. Structure tree** — what is it made of? Solid arrows are data flow:
 parent hands the child facts, bindings, and callbacks. A node's label
-carries its whole contract — `@` lines materialize (native sources of
-truth like `@Query`), dotted lines call (`dbService.updateBook`).
+carries its whole contract, one `·`-bulleted line per capability —
+`· @Query` materializes (a native source of truth),
+`· dbService.updateBook` calls. The name stays the unambiguous first
+line, whatever the renderer does.
 
 ```mermaid
 %% Root: Landing · Parent: App (../APP-MAP.md)
 flowchart TD
-    Landing["Landing<br/>loginState.isLoggedIn"] -->|!isLoggedIn| LoginScreen
+    Landing["Landing<br/>· loginState.isLoggedIn"] -->|!isLoggedIn| LoginScreen
     Landing -->|isLoggedIn| Tabs
 ```
 

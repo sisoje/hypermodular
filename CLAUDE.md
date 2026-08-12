@@ -27,7 +27,7 @@ deliverable is the doctrine.
    observe effects behind a boundary. A boundary in a spec is a logger;
    checking a node is comparing two values.
 
-## One law: depth 1
+## One law: depth 1 — the cure for death by a thousand mocks
 
 Boundaries log one step deep. Injection enters only at the root. Maps
 draw only one level. Every artifact describes exactly one boundary — its
@@ -39,7 +39,7 @@ own.
 |------|---------|
 | `A --> B` | Data flow: parent hands facts/bindings/callbacks down. Also root → Dependencies box (injection is normal data flow). |
 | `A -->\|cond\| B` | Decision alternative, labeled with the selecting value. Unlabeled arrows = composition (children coexist). |
-| `Node["Name<br/>@Query<br/>dep.func"]` | Label = name, then one contract line per line. `@` lines materialize (native SOT; reads log nothing, writes log like any write). `dep.func` lines call (produce evidence). Name-only label = receives everything, calls nothing. |
+| `Node["Name<br/>· @Query<br/>· dep.func"]` | Label = name, then one contract line per line, each starting `· ` (name = text before the first `·`). `· @Wrapper` lines materialize (native SOT; reads log nothing, writes log like any write). `· dep.func` lines call (produce evidence). Name-only label = receives everything, calls nothing. |
 | `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, never `swiftData`). |
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top-to-bottom = injection order. Derived services list their ingredients, which must sit above them. |
 | `A ~~~ B` | Invisible link — orders the dependency column. |
