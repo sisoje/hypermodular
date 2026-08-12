@@ -22,7 +22,8 @@ deliverable is the doctrine.
    on the map? Stop, propose a map change, get the diff agreed — the map
    diff IS the design review.
 3. **Evidence, not effects.** Declare a node's behavior as data (values
-   in → ordered evidence log out) before implementing. Never mock, never
+   in → ordered evidence log out; every source-of-truth write and action
+   call logs, reads never do) before implementing. Never mock, never
    observe effects behind a boundary. A boundary in a spec is a logger;
    checking a node is comparing two values.
 
@@ -38,7 +39,7 @@ own.
 |------|---------|
 | `A --> B` | Data flow: parent hands facts/bindings/callbacks down. Also root → Dependencies box (injection is normal data flow). |
 | `A -->\|cond\| B` | Decision alternative, labeled with the selecting value. Unlabeled arrows = composition (children coexist). |
-| `Node["Name<br/>@Query<br/>dep.func"]` | Label = name, then one contract line per line. `@` lines materialize (native SOT, no evidence). `dep.func` lines call (produce evidence). Name-only label = receives everything, calls nothing. |
+| `Node["Name<br/>@Query<br/>dep.func"]` | Label = name, then one contract line per line. `@` lines materialize (native SOT; reads log nothing, writes log like any write). `dep.func` lines call (produce evidence). Name-only label = receives everything, calls nothing. |
 | `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, never `swiftData`). |
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top-to-bottom = injection order. Derived services list their ingredients, which must sit above them. |
 | `A ~~~ B` | Invisible link — orders the dependency column. |

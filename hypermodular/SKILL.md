@@ -7,7 +7,8 @@ description: >
   Use this skill whenever the user asks to map, diagram, or visualize an app's
   architecture or behavior; to reverse-engineer the structure of an existing codebase;
   to plan a new app or feature top-down before coding; to create or update an
-  APP-MAP.md / MAP.md / behavioral map; or mentions "hypermodular", "top-down
+  APP-MAP.md / MAP.md / behavioral map; to declare or review a node's evidence
+  (execution-log) spec; or mentions "hypermodular", "top-down
   development", "behavioral map", "app tree", or wants Mermaid diagrams of components,
   screens, modules, or dependencies. Also use it when starting significant work in a
   repo that already contains an APP-MAP.md — read the map first and keep it updated.
@@ -40,8 +41,9 @@ view is always derivable and never maintained.
    that isn't on the map means stopping and proposing a map change
    first — that diff is the design review.
 3. **Evidence, not effects.** A node's behavior is declared as data:
-   these values in, this evidence out — the ordered log of the node's
-   boundary calls with payloads. Declare the evidence before
+   these values in, this evidence out — the ordered log of its I/O
+   with payloads: every source-of-truth write and every action call.
+   Declare the evidence before
    implementing; implementation means making the declaration hold. Never
    observe effects behind a boundary, never simulate behavior (no
    mocks): a boundary in a spec is a logger, and checking a node is
@@ -76,9 +78,10 @@ A `flowchart TD`, one level deep.
   isLoggedIn computed off a token, is code's business, not the map's);
   lines with a dot **call** — `<dep>.<func>`
   (`dbService.updateBook`). Calls produce
-  evidence; materialization doesn't. The lines under the name are the
-  node's entire relationship with the world and the exact vocabulary
-  allowed in its evidence. A name-only label receives everything and
+  evidence; materialized *reads* don't — though a write to materialized
+  storage is I/O and logs like any write (see Declaring evidence). The
+  lines under the name are the node's entire relationship with the
+  world beyond its parent. A name-only label receives everything and
   calls nothing. Nothing else ever goes in a label.
 - **A node is a collapsed subtree.** The screen plus all its view
   furniture (rows, buttons, design-system pieces) is one node; internal
@@ -187,6 +190,9 @@ No usage lines — usage is written on the nodes themselves (Diagram 1).
   `searchAPI`), capabilities (`navService` — closures over root-owned
   navigation state). Native materialization (`@Query`, `@AppStorage`)
   is not a dependency: it's facts arriving, tagged in the node label.
+  How a capability's closure is assembled behind its cylinder —
+  root-owned state, a derived service, listeners registered up the
+  tree — is implementation detail and never drawn.
 - **A dependency is an environment value: a plain struct composed of
   closures, lets, or bindings.** Pure value, no protocols, no classes,
   no reference-type service objects — capabilities as closures, facts
@@ -263,6 +269,58 @@ alone:
   orphans, and every leaf that has its own MAP.md is reachable. When
   maintaining maps, verify this before committing.
 
+## Declaring evidence
+
+A node's declared behavior is one value: the evidence log — the ordered
+`(name, payload)` record of its I/O. Two kinds of entry, nothing else:
+
+- **A source-of-truth mutation logs** under the property's name: a
+  binding write, an external-storage write, the node's own state write.
+  Evidence is wider than the map contract — own state never appears on
+  a map, but its writes are I/O, and I/O logs.
+- **An action call logs** under the closure's name, with its payload.
+  An action is a capability in Wlaschin's sense: the call is the event;
+  whatever comes back is supplied data, not evidence.
+
+**Reads never log.** A query's answer is data handed in, and getters
+fire on the render scheduler's timing, not the node's — one
+nondeterministic line poisons an exact-sequence assertion.
+
+A declaration is an acceptance criterion transcribed into the log's
+vocabulary: *given* names constructor arguments, *when* names an
+interaction, *then* names the log. "Given no connection, when the shelf
+loads, then it reports offline and writes no books" is a construction,
+a call, and one equality check:
+
+```
+["isLoading true", "load", "isLoading false", "error offline"]
+```
+
+Discipline that keeps the log honest:
+
+- Assert order only when the requirement names an order; interchangeable
+  events are a set; if only the final decision matters, assert the
+  decision.
+- Silence is evidence — no `books` entry means the failure wrote
+  nothing.
+- Payloads are deterministic: when a value's description isn't
+  snapshot-stable, declare a symbolic payload for it.
+- Pin the material as-is: a text field that writes its binding twice
+  per keystroke logs twice per keystroke. Evidence records what
+  happens, not an idealization.
+- A workflow is a rule: when a later step consumes an earlier step's
+  result, or a failure needs compensation, model that protocol as its
+  own node — a flat happy-path log is not it.
+
+The log is complete by construction: a node's write is the last thing
+it ever does — it dies in the wave it triggers, and the result arrives
+as its successor's creation inputs. The network is reactive so the
+nodes don't have to be.
+
+One integration test per cylinder, at the shell, written once, owns
+each boundary's real implementation. A node's evidence proves only the
+decision to cross the boundary — never what lies behind it.
+
 ## Workflows
 
 **Reverse-engineering an existing project.** Walk the instantiation
@@ -293,3 +351,16 @@ say so and fix one of them — never silently work around.
 Short ids, real names in labels. No colors, no emoji, no fills, no
 status markers — whether a node's declared evidence holds is the only
 "done" that exists, and it lives in the repo, not the map.
+
+## References
+
+- [SwiftUI Data Flow Masterclass](https://medium.com/@redhotbits/swiftui-data-flow-masterclass-099f0768f776)
+  — the data-flow model this method rests on: nodes, waves, boundary
+  events, execution-log testing.
+- [TDD Is Dead. Long Live TDD.](https://medium.com/@redhotbits/tdd-is-dead-long-live-tdd-f85b4b9eacbd)
+  — the method: lift state and services, lock the core with evidence,
+  delegate the detail.
+- [swift-core-flow](https://github.com/sisoje/swift-core-flow) — the
+  mechanics: macros for the shell/core split and evidence logging.
+- [swiftui-mv-architecture](https://github.com/redhotbits/swiftui-mv-architecture)
+  — the style: what a node's implementation looks like.
