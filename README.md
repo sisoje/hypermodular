@@ -46,7 +46,7 @@ diagram in a `MAP.md` beside its code (`APP-MAP.md` at the repo root).
 parent hands the child facts, bindings, and callbacks. A node's label
 carries its whole contract, one `·`-bulleted line per capability —
 `· @Query` materializes (a native source of truth),
-`· dbService.updateBook` calls. The name stays the unambiguous first
+`· dbService.updateBook()` calls. The name stays the unambiguous first
 line, whatever the renderer does.
 
 ```mermaid

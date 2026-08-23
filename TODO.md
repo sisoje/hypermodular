@@ -41,7 +41,10 @@
   that code. **First prospective finding, F15**, within a minute of
   starting: the skill's Diagram 2 example had no identity header while
   the doctrine says every block declares its place — fixed with
-  `%% Root: App · Coupling`. Findings from here on go in this item.
+  `%% Root: App · Coupling`. **F16**, minutes later: a dot meant call,
+  but `· loginState.isLoggedIn` is a read — ruled: parens mark a call
+  (`· dbService.updateBook()`), a bare dot reads and owes no evidence.
+  Findings from here on go in this item.
 
 - **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,
   the eight pinned logs, what the evidence chapter borrows from verified

@@ -30,6 +30,6 @@ flowchart LR
 ```mermaid
 %% Root: App · Unmounted
 flowchart TD
-    SaveButton["SaveButton<br/>· onSave<br/>· getUserName<br/>· analytics.track"]
+    SaveButton["SaveButton<br/>· onSave<br/>· getUserName<br/>· analytics.track()"]
     FocusField["FocusField<br/>· @AppStorage<br/>· @FocusState"]
 ```

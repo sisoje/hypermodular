@@ -43,8 +43,8 @@ closures" the skill demands. Validation pass, no friction.
 ```mermaid
 %% Root: ReadingListScreen · Parent: App (../APP-MAP.md)
 flowchart TD
-    ReadingListScreen --> AddBookField["AddBookField<br/>· bookStore.insert"]
-    ReadingListScreen --> BookList["BookList<br/>· @Query<br/>· @AppStorage<br/>· bookStore.delete"]
+    ReadingListScreen --> AddBookField["AddBookField<br/>· bookStore.insert()"]
+    ReadingListScreen --> BookList["BookList<br/>· @Query<br/>· @AppStorage<br/>· bookStore.delete()"]
 ```
 
 Leaves — no maps of their own. `ReadingListScreen` is a name-only label:
@@ -53,6 +53,7 @@ pure composition, receives everything, calls nothing. Correct and legible.
 ### Data coupling layer
 
 ```mermaid
+%% Root: App · Coupling
 classDiagram
     class Book {
         title
@@ -581,6 +582,18 @@ the proposal above:
   already exists and never invents criteria; new work draws evidence
   where it crosses the edge; maintenance lists "changes what a node
   does at its edge" as a trigger.
+- **F15 (forward test, `example/`)** — the Diagram 2 example had no
+  identity header; every app-level block now has one (`· Coupling`,
+  `· Dependencies`, `· Unmounted`). This file's coupling block fixed too.
+- **F16 (forward test, `example/`)** — a dot meant *call*, but
+  `· loginState.isLoggedIn` is a *read* of a let off an injected
+  struct, and reads never log; the checker demanded evidence from a
+  node that logs nothing. Ruled: parens mark a call
+  (`· dbService.updateBook()`), a bare dot reads. Every call line in
+  the corpus gained its parens in one commit; evidence targets keep
+  naming the closure without them. Could not have been found
+  retrospectively — CoreFlowExample has no dependency that is read
+  rather than called.
 - **`Parent->>Node`** as a third stimulus source — open. CoreFlowExample
   has no parent handing down a new value mid-scenario; validating it
   against the skill's own `Landing` example would be a consistency

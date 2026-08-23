@@ -76,8 +76,9 @@ A `flowchart TD`, one level deep.
   line**, using `<br/>`. **Every contract line starts with `· `**
   (middle dot, space): the name is the text before the first `·`, so
   the merge key stays unambiguous even where `<br/>` doesn't render.
-  Three kinds of contract line, distinguishable at a glance and by
-  parser — `@` materializes, a dot calls, a bare name calls back:
+  Four kinds of contract line, distinguishable at a glance and by
+  parser — `@` materializes, parens call, a bare dot reads, a bare name
+  calls back:
   - `· @Source` lines **materialize**. The `@` is the materialize
     marker; the word is the source's own name — a property wrapper
     (`· @Query`, `· @AppStorage`, `· @FocusState`), or `· @ProcessInfo`
@@ -89,16 +90,21 @@ A `flowchart TD`, one level deep.
     system state such as focus. Machinery whose whole lifetime is the
     node's — own state, gesture transients, task handles — gets no
     line, whatever its spelling.
-  - `· <dep>.<func>` lines **call** a capability from the dependency
-    box (`· dbService.updateBook`).
+  - `· <dep>.<func>()` lines **call** a capability from the dependency
+    box (`· dbService.updateBook()`). The parens are the mark: a call is
+    an event, and it logs.
+  - `· <dep>.<value>` lines **read** a let or binding off a dependency
+    (`· loginState.isLoggedIn`). Coupling without evidence: reads never
+    log, and a node whose dotted lines are all reads owes no evidence
+    block. A decision node is usually this.
   - `· name` lines (no `@`, no dot) **call back**: a closure the parent
     handed down as data (`· onSave`). It appears in the parent's map,
     where it is handed down, and in the node's own — like any contract
     line.
 
-  Calls and callbacks produce evidence; materialized *reads* don't —
-  though a write to materialized storage is I/O and logs like any
-  write (see Declaring evidence). The lines under the name are the
+  Calls and callbacks produce evidence; reads — materialized or off a
+  dependency — don't, though a write to materialized storage is I/O and
+  logs like any write (see Declaring evidence). The lines under the name are the
   node's entire outbound relationship with the world: everything it
   materializes, calls, or calls back. A name-only label receives
   everything and calls nothing. Nothing else ever goes in a label.
@@ -152,7 +158,7 @@ Tabs' map (unlabeled arrows — plain composition):
 %% Root: Tabs · Parent: Landing (../MAP.md)
 flowchart TD
     Tabs --> BookShelf["BookShelf<br/>· @Query"]
-    Tabs --> Search["Search<br/>· searchAPI.search<br/>· navService.showDetail"]
+    Tabs --> Search["Search<br/>· searchAPI.search()<br/>· navService.showDetail()"]
 ```
 
 BookShelf's map, beside its code:
@@ -160,7 +166,7 @@ BookShelf's map, beside its code:
 ```mermaid
 %% Root: BookShelf · Parent: Tabs (../MAP.md)
 flowchart TD
-    BookShelf["BookShelf<br/>· @Query"] --> BookDetail["BookDetail<br/>· imageLoader.loadImage"]
+    BookShelf["BookShelf<br/>· @Query"] --> BookDetail["BookDetail<br/>· imageLoader.loadImage()"]
 ```
 
 Leaves get no structure map of their own — we are modeling data flow,
@@ -423,7 +429,8 @@ sequenceDiagram
   `throws` — drawn only when it explains a later entry. Never an entry.
   The call is the event; what comes back is data.
 - **Targets are the node's edge and nothing else**: a contract line
-  (a capability call, a callback) or a stored property of the node —
+  (a capability call, named without its parens, or a callback) or a
+  stored property of the node —
   own state, or a materialized source being written. Any other target
   is a finding — a grandchild on a lifeline is depth 2, visible.
 - **`loop` when the requirement names no count**, exactly as order is

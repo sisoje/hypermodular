@@ -10,8 +10,9 @@ verified from the maps alone:
   id=name       a labeled node's mermaid id equals its name
   grammar       every contract line starts with '· '
   double-entry  a node's label as a child equals its label as a root
-  cylinders     every '· dep.func' line names a cylinder in the box;
-                a derived cylinder's ingredients sit above it
+  cylinders     every '· dep.func()' call and '· dep.value' read names
+                a cylinder in the box; a derived cylinder's ingredients
+                sit above it
   evidence      dotted targets are label call lines; bare targets are
                 label callbacks or (unverifiable here) stored
                 properties; reserved names are quoted; a node with
@@ -54,7 +55,8 @@ def split_label(raw):
 def kind(line):
     body = line[2:].strip() if line.startswith("· ") else line
     if body.startswith("@"): return "materialize", body
-    if "." in body: return "call", body
+    if body.endswith("()"): return "call", body
+    if "." in body: return "read", body
     return "callback", body
 
 class Node:
@@ -176,8 +178,9 @@ def main(root):
         calls, callbacks = set(), set()
         for c in contract:
             k, body = kind(c)
-            if k == "call":
-                dep = body.split(".")[0]; calls.add(body)
+            if k in ("call", "read"):
+                dep = body.split(".")[0]
+                if k == "call": calls.add(body[:-2])   # evidence targets name the closure, no parens
                 if dep not in cyls: err("cylinders", f"{n.name}: '· {body}' names no cylinder '{dep}' in the Dependencies box")
             elif k == "callback": callbacks.add(body)
         for rel, outs in n.evidence:

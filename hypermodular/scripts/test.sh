@@ -12,9 +12,9 @@ ReadingListScreen/MAP.md: arrow from 'AddBookField' in a block rooted at 'Readin
 ReadingListScreen/AddBookField/MAP.md: AddBookField: target 'title' is a mermaid reserved word — quote it
 Orphan/MAP.md: Orphan: block has no Parent link
 Orphan/MAP.md: orphan: no block in this file links to a parent
-double-entry: ReadingListScreen: label differs between copies — (name only) @ child-of-App; · navService.showDetail @ root
-cylinders: ReadingListScreen: '· navService.showDetail' names no cylinder 'navService' in the Dependencies box
-cylinders: SaveButton: '· analytics.track' names no cylinder 'analytics' in the Dependencies box
+double-entry: ReadingListScreen: label differs between copies — (name only) @ child-of-App; · navService.showDetail() @ root
+cylinders: ReadingListScreen: '· navService.showDetail()' names no cylinder 'navService' in the Dependencies box
+cylinders: SaveButton: '· analytics.track()' names no cylinder 'analytics' in the Dependencies box
 ReadingListScreen/AddBookField/MAP.md: AddBookField: evidence target 'bookStore.upsert' is not a call line on the label
 APP-MAP.md: Dependencies ~~~ chain disagrees with cylinder listing order
 APP-MAP.md: syncService: ingredient 'searchAPI' sits below it (injection order)
