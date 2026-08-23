@@ -59,6 +59,11 @@
   an acceptance criterion named it: the contract-line criterion
   (below) just happened in practice, before it was adopted. Step 2 done;
   step 3 decided as macro-free compiling code (see `example/README.md`).
+  **F18**, at step 2: the same physical event appears in a parent's and
+  a child's evidence at different edges (Library's storage write and
+  BookShelf's binding write are one toggle). Correct under
+  whose-source-of-truth, not double-counting — and stated nowhere until
+  now. Ruled in `evidence.md`, "One event, two edges".
   Findings from here on go in this item.
 
 - **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,

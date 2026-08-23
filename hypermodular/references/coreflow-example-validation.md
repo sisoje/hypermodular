@@ -594,6 +594,13 @@ the proposal above:
   naming the closure without them. Could not have been found
   retrospectively — CoreFlowExample has no dependency that is read
   rather than called.
+- **F17 (forward test, `example/`)** — declaring Library's evidence
+  asked who owns `sortByAuthor`; Library materializes it, so its label
+  gained `· @AppStorage` in all four copies. A contract line born from
+  a criterion.
+- **F18 (forward test, `example/`)** — one event, two edges: a parent's
+  and a child's evidence both carry the same toggle, as a storage write
+  and as a binding write. Ruled in `evidence.md`.
 - **`Parent->>Node`** as a third stimulus source — open. CoreFlowExample
   has no parent handing down a new value mid-scenario; validating it
   against the skill's own `Landing` example would be a consistency

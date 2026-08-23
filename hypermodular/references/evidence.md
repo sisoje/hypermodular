@@ -88,6 +88,22 @@ declaration. The block is the source and the test is written from it.
   the log and fails the equality. It poisons the snapshot instead of
   vanishing into an inert stub.
 
+## One event, two edges
+
+A parent and its child each declare evidence, and the same physical
+event appears in both — at different edges. The user flips the shelf's
+sort toggle: in BookShelf's block that is `BookShelf->>sortByAuthor`,
+a write into a binding it was handed; in Library's block it is
+`Library->>sortByAuthor`, a write into the storage it materializes. The
+swipe is `BookShelf->>onDelete` one level down and
+`Library->>dbService.deleteBook` at the parent's edge. Both blocks are
+correct under whose-source-of-truth — the child owns the binding it
+was handed, the parent owns the storage — and they are separate tests
+of separate nodes, not double-counting. A parent's evidence names what
+crosses *its* edge; the child is furniture from there, however many
+lines the child's own block has. Nothing in one block references the
+other, and depth stays one in each.
+
 ## What an evidence log is not
 
 A mockist interaction test and an evidence log have the same shape:
