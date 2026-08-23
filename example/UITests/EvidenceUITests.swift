@@ -73,6 +73,21 @@ final class EvidenceUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["statusLabel"].label, "offline")
     }
 
+    // %% Evidence: Library · the deleteBook call at the parent's edge —
+    // the same swipe that is "onDelete Dune" one level down (one event,
+    // two edges). Its @AppStorage write is own storage: F20, asserted
+    // nowhere here.
+    func testLibraryDelegatesTheDeleteToTheDbService() {
+        let app = launch("Library")
+        let row = app.cells.containing(.staticText, identifier: "Dune").firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        row.swipeLeft()
+        let delete = app.buttons["Delete"]
+        XCTAssertTrue(delete.waitForExistence(timeout: 5))
+        delete.tap()
+        waitForLog(app, toEqual: ["deleteBook Dune"])
+    }
+
     // Landing reads loginState and calls nothing: its log stays empty.
     // A read never logs — that is the whole point of the bare-dot line.
     func testLandingLogsNothingAndShowsTheGate() {

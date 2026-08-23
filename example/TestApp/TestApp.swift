@@ -19,6 +19,7 @@ struct BookAppTestHost: App {
                 case "BookDetail":        BookDetailScenario(log: append)
                 case "BookDetailFailing": BookDetailFailingScenario(log: append)
                 case "Search":            SearchScenario(log: append)
+                case "Library":           LibraryScenario(log: append)
                 case "Landing":           LandingScenario(log: append)
                 default:                  Text("unknown scenario \(scenario)")
                 }

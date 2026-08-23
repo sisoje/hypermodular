@@ -61,6 +61,23 @@ struct SearchScenario: View {
     }
 }
 
+struct LibraryScenario: View {
+    let log: (String) -> Void
+    @State private var container: ModelContainer = {
+        let container = try! ModelContainer(
+            for: Book.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        container.mainContext.insert(Book(title: "Dune", author: "Herbert"))
+        return container
+    }()
+
+    var body: some View {
+        NavigationStack { Library() }
+            .modelContainer(container)
+            .environment(\.dbService, DbService(deleteBook: { log("deleteBook \($0.title)") }))
+    }
+}
+
 struct LandingScenario: View {
     let log: (String) -> Void
 
