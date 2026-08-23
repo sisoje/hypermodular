@@ -52,8 +52,20 @@ Order of work:
 2. evidence — one block per criterion that crosses an edge, before any
    Swift — **done** (BookShelf, Library, BookDetail, Search)
 3. code — one node at a time, parent first, each node's evidence holding
-   before the next is started
+   before the next is started — **done**, `sh test.sh` builds and runs
+   five evidence tests on a simulator, all green
 4. the code-side checker, run against what step 3 produced
+
+## Running it
+
+`sh test.sh` — xcodegen generates `BookApp.xcodeproj`, xcodebuild runs
+`UITests/EvidenceUITests.swift` against the test host. Each test launches
+one scenario, drives it for real, and asserts the log that was written in
+that node's `MAP.md` before any of this code existed.
+
+Two app targets over one source set, as the maps say: `BookApp` is the
+shipped app and the only place injection happens; `BookAppTestHost` hosts
+one scenario per launch and surfaces the log on an accessibility element.
 
 ## What "code" means here — decided
 

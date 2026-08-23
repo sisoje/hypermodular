@@ -70,6 +70,17 @@
   inside its own tree. Ruled: `Child->>Parent: callback payload`,
   checkable against the child's label. The `Parent->>Node` *value*
   question stays open and separate.
+  **Step 3 done — the method closed the loop.** `example/` now builds and
+  `sh example/test.sh` runs five evidence tests, all green: BookShelf's
+  `["sortByAuthor true", "onDelete Dune"]`, BookDetail's cover and its
+  silent failure, Search's `["search dune"]`, and Landing logging nothing
+  because a read never logs. Every one of those arrays was written in a
+  `MAP.md` before the Swift existed. Macro-free throughout, as decided.
+  **F20**: own-`@State` writes are not loggable without tooling — Search's
+  `isLoading`/`error` are asserted through the UI, not the log, and
+  Library's `@AppStorage` write is why the shelf's binding is the
+  assertable seam. That is the honest boundary of the method unaided, and
+  the argument for macros where you want the rest.
   Findings from here on go in this item.
 
 - **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,
