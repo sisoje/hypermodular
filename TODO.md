@@ -80,7 +80,13 @@
   `isLoading`/`error` are asserted through the UI, not the log, and
   Library's `@AppStorage` write is why the shelf's binding is the
   assertable seam. That is the honest boundary of the method unaided, and
-  the argument for macros where you want the rest.
+  the argument for macros where you want the rest. **Reviewed and
+  reconciled** (`4abd070`): Library now has a scenario and a green test
+  (`["deleteBook Dune"]` — one event two edges with the shelf's
+  `onDelete`), RealApp wires the live `dbService` to SwiftData (delete
+  was a silent no-op through the @Entry default), and Search's MAP notes
+  its macro-free test form so block and test no longer silently
+  disagree. Six tests, all green.
   Findings from here on go in this item.
 
 - **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,
