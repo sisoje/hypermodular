@@ -23,7 +23,9 @@ deliverable is the doctrine.
    diff IS the design review.
 3. **Evidence, not effects.** Declare a node's behavior as data (values
    in → ordered evidence log out; every source-of-truth write and every
-   boundary call — sync or `async throws` — logs, reads never do)
+   boundary call — sync or `async throws` — logs, reads never do; a
+   write logs iff it lands in a source of truth the node owns or was
+   handed, whoever holds the pen)
    before implementing. Never mock, never
    observe effects behind a boundary. A boundary in a spec is a logger;
    checking a node is comparing two values.
@@ -40,7 +42,7 @@ own.
 |------|---------|
 | `A --> B` | Data flow: parent hands facts/bindings/callbacks down. Also root → Dependencies box (injection is normal data flow). |
 | `A -->\|cond\| B` | Decision alternative, labeled with the selecting value. Unlabeled arrows = composition (children coexist). |
-| `Node["Name<br/>· @Query<br/>· dep.func"]` | Label = name, then one contract line per line, each starting `· ` (name = text before the first `·`). `· @Wrapper` lines materialize (native SOT; reads log nothing, writes log like any write). `· dep.func` lines call (produce evidence). Name-only label = receives everything, calls nothing. |
+| `Node["Name<br/>· @Query<br/>· dep.func<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (name = text before the first `·`). `· @Source` materializes (`@` = the marker; a source of truth that outlives the node — store, defaults, focus; reads log nothing, writes log like any write). `· dep.func` calls a capability. Bare `· name` calls back a parent-supplied closure. Name-only label = receives everything, calls nothing. |
 | `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, never `swiftData`). |
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top-to-bottom = injection order. Derived services list their ingredients, which must sit above them. |
 | `A ~~~ B` | Invisible link — orders the dependency column. |
@@ -51,6 +53,8 @@ colors, no fills (`fill:none` on every box), no emoji, no status marks.
 
 ## Hard rules
 
+- **One tree per `@main`** in `APP-MAP.md`; names unique across the
+  repo. Built-but-unmounted components go under `## Unmounted`.
 - **No cross-feature arrows.** Navigation is a call to `navService` with
   a route + data; the caller never knows which node answers.
 - **Dependencies are environment values**: plain structs composed of

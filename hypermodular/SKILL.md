@@ -75,24 +75,40 @@ A `flowchart TD`, one level deep.
   line**, using `<br/>`. **Every contract line starts with `· `**
   (middle dot, space): the name is the text before the first `·`, so
   the merge key stays unambiguous even where `<br/>` doesn't render.
-  Two kinds of contract line, distinguishable at a glance and by
-  parser: `· @Wrapper` lines **materialize** — 
-  sources of truth held as property wrappers, wrapper name only
-  (`@Query`, `@AppStorage` — what the node derives from them, like an
-  isLoggedIn computed off a token, is code's business, not the map's);
-  `· <dep>.<func>` lines **call**
-  (`· dbService.updateBook`). Calls produce
-  evidence; materialized *reads* don't — though a write to materialized
-  storage is I/O and logs like any write (see Declaring evidence). The
-  lines under the name are the node's entire relationship with the
-  world beyond its parent. A name-only label receives everything and
-  calls nothing. Nothing else ever goes in a label.
+  Three kinds of contract line, distinguishable at a glance and by
+  parser — `@` materializes, a dot calls, a bare name calls back:
+  - `· @Source` lines **materialize**. The `@` is the materialize
+    marker; the word is the source's own name — a property wrapper
+    (`· @Query`, `· @AppStorage`, `· @FocusState`), or `· @ProcessInfo`
+    for ambient launch input. Source name only, written once however
+    many keys the node holds; what the node derives from it (an
+    isLoggedIn computed off a token) is code's business, not the
+    map's. A wrapper earns a line only when it binds the node to a
+    source of truth that **outlives the node** — a store, defaults,
+    system state such as focus. Machinery whose whole lifetime is the
+    node's — own state, gesture transients, task handles — gets no
+    line, whatever its spelling.
+  - `· <dep>.<func>` lines **call** a capability from the dependency
+    box (`· dbService.updateBook`).
+  - `· name` lines (no `@`, no dot) **call back**: a closure the parent
+    handed down as data (`· onSave`). It appears in the parent's map,
+    where it is handed down, and in the node's own — like any contract
+    line.
+
+  Calls and callbacks produce evidence; materialized *reads* don't —
+  though a write to materialized storage is I/O and logs like any
+  write (see Declaring evidence). The lines under the name are the
+  node's entire outbound relationship with the world: everything it
+  materializes, calls, or calls back. A name-only label receives
+  everything and calls nothing. Nothing else ever goes in a label.
 - **A node is a collapsed subtree.** The screen plus all its view
   furniture (rows, buttons, design-system pieces) is one node; internal
   attribution is meaningless — the node's contract is what crosses its
   edge. A subtree becomes its own node only when it joins the app
   lifecycle independently: own outliving state, appearance work,
-  navigation destination, or its own boundary call.
+  navigation destination, or its own boundary call. View modifiers
+  follow the same rule: a modifier is a node only if it carries
+  contract lines; one with own state alone is furniture.
 - **A decision marks its alternative arrows with the deciding value.**
   No diamonds — deciding is what nodes do — but alternatives are
   structural: an agent must know whether children coexist or exclude
@@ -253,6 +269,12 @@ alone:
 - **One name, one node.** Node display names are globally unique across
   the whole app and identical everywhere the node appears: as a leaf in
   its parent's map and as the root of its own. The name is the join key.
+- **One tree per entry point.** A repo with several `@main` targets
+  holds one tree per target in `APP-MAP.md`, each with its own
+  `%% Root:` block; names are unique across the repo, not the tree. A
+  component that is built but mounted by no root is listed under a
+  `## Unmounted` heading — name and full label, no arrows — so its
+  contract has a copy to compare against the day it mounts.
 - **Same contract everywhere — deliberately duplicated.** A node's full
   label (name + contract lines) is identical as a child in its parent's
   map and as the root of its own. This is double-entry bookkeeping: the
@@ -292,11 +314,20 @@ A node's declared behavior is one value: the evidence log — the ordered
 
 **Reads never log.** A query's answer is data handed in, and getters
 fire on the render scheduler's timing, not the node's — one
-nondeterministic line poisons an exact-sequence assertion. The test is
-**who fired it**: the node's own decisions log; whatever the scheduler
-pulls doesn't — binding getters, view-builder closures, any helper
-evaluated during rendering, and writes the system (not the node)
-performs through a binding.
+nondeterministic line poisons an exact-sequence assertion. Binding
+getters, view-builder closures, any helper evaluated during rendering:
+none of it is evidence.
+
+The test for a write is **whose source of truth it lands in**, never
+who holds the pen. A write into state the node owns or was handed — own
+state, a binding, external storage — is the node's I/O and logs, even
+when the system performs it on the user's behalf: a text field writing
+`title` through its binding logs every keystroke; a toggle writing
+`sortDescending` into storage logs. State the system owns and the node
+merely views — focus — is not the node's source of truth: the system
+moving focus is data arriving, no entry; the node setting `isFocused`
+is asking the system for something, a boundary call wearing a
+property's name, and it logs as one.
 
 A declaration is an acceptance criterion transcribed into the log's
 vocabulary: *given* names constructor arguments, *when* names an
@@ -360,9 +391,10 @@ say so and fix one of them — never silently work around.
 
 ## Style
 
-Short ids, real names in labels. No colors, no emoji, no fills, no
-status markers — whether a node's declared evidence holds is the only
-"done" that exists, and it lives in the repo, not the map.
+Ids are names — the merge key — and labels carry the contract. No
+colors, no emoji, no fills, no status markers — whether a node's
+declared evidence holds is the only "done" that exists, and it lives in
+the repo, not the map.
 
 ## References
 
