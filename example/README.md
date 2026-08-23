@@ -1,10 +1,44 @@
 # example — the forward test
 
-Everything in this repo so far was validated *backwards*, against an app
-that already existed. This directory is the other direction: the book app
-that `hypermodular/SKILL.md` uses for its examples, drawn here first and
-built here afterwards, root-down, evidence before code — rule 1 and rule 3
-applied to the method itself.
+## What this is for
+
+One question the rest of the repo cannot answer: **does a map plus
+evidence actually specify a node?**
+
+Everything else here was validated backwards — maps drawn over an app
+that already existed and already passed its tests. That proves the
+notation can *describe*. It cannot prove the notation can *dictate*,
+because no code was ever written from a map. This directory is the
+only place the arrow points the right way: map first, evidence second,
+code third, and the code is judged by whether the evidence declared
+before it holds.
+
+Three things follow, in order of importance:
+
+1. **Prospective findings.** Retrospective validation only finds holes
+   the example app happens to exercise — CoreFlowExample has no
+   dependency that is read rather than called, so two rounds could not
+   see F16. Drawing something new found three holes before a line of
+   Swift (F15, F16, F17). Every finding here is one the skill could not
+   have found by rereading itself.
+2. **The article's claim, tested.** *TDD: Death by a Thousand Mocks*
+   says a feature can be built on literals and loggers and be complete
+   before storage, fetch, or service exist. This directory builds the
+   article's own BookShelf that way, macro-free, and runs its log
+   assertion for real.
+3. **The code-side checker's test bed.** The other half of F11 — every
+   call in a node's Swift appears on its label — needs Swift written
+   *from* a map, not Swift written to satisfy the check.
+
+It is not a showcase, not a template, and not a second CoreFlowExample.
+It is a test of the doctrine, and it is allowed to fail: a failure here
+is the most valuable output this repository can produce.
+
+## What it is
+
+The book app that `hypermodular/SKILL.md` uses for its examples, drawn
+here first and built here afterwards, root-down, evidence before code —
+rule 1 and rule 3 applied to the method itself.
 
 It is a directory in this repo on purpose. Code that the doctrine needs
 for its own verification — the code-side half of the registry check, the
