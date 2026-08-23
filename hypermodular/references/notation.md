@@ -177,12 +177,19 @@ finding, like a label mismatch.
   carries, so an evidence-only `MAP.md` is never an orphan (an unmounted
   node's parent is `Unmounted (../APP-MAP.md)`). `%% Given:
   <construction>` states the given: constructor arguments and stubs.
-- **Arrows into the node are the *when***: `User->>Node: interaction`
-  for input, `System->>Node: event` for lifecycle, scene phase, deep
-  links. Never a log entry. A parent handing down a new value is a new
-  *given*, not a stimulus — start a second block. (The alternative
-  reading, that an `.onChange(of:)` reaction makes it a genuine *when*,
-  is open; `Parent->>Node` warns rather than errors until it is ruled.)
+- **Arrows into the node are the *when***, and there are three kinds:
+  `User->>Node: interaction` for input; `System->>Node: event` for
+  lifecycle, scene phase, deep links; and `Child->>Node: callback
+  payload` for a child firing a callback the node handed it
+  (`AddItem->>ShoppingList: onAdd eggs`). None is ever a log entry. The
+  third is the only way an event reaches a parent from inside its own
+  tree, and it is checkable: the named callback must be a `· name` line
+  on that child's label — the same event appears as an out-arrow in the
+  child's own block (see `evidence.md`, one event two edges).
+  A parent handing down a new *value* is not a stimulus: it is a new
+  *given*, so start a second block. (The alternative reading, that an
+  `.onChange(of:)` reaction makes it a genuine *when*, is open;
+  `Parent->>Node` warns rather than errors until it is ruled.)
 - **Arrows out of the node are the *then***: `Node->>target: payload`
   is one entry, `(target, payload)`, in order. The array the test
   asserts is exactly the ordered list of out-arrows, nothing else.

@@ -64,6 +64,12 @@
   BookShelf's binding write are one toggle). Correct under
   whose-source-of-truth, not double-counting — and stated nowhere until
   now. Ruled in `evidence.md`, "One event, two edges".
+  **F19**, found by demonstrating the method on a fresh app: a child
+  firing a callback is a stimulus, and the doctrine had only ruled
+  `User` and `System` — so a parent's evidence had no legal trigger from
+  inside its own tree. Ruled: `Child->>Parent: callback payload`,
+  checkable against the child's label. The `Parent->>Node` *value*
+  question stays open and separate.
   Findings from here on go in this item.
 
 - **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,

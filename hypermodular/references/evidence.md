@@ -104,6 +104,13 @@ crosses *its* edge; the child is furniture from there, however many
 lines the child's own block has. Nothing in one block references the
 other, and depth stays one in each.
 
+The callback is the hinge. In the child's block it is an out-arrow —
+`AddItem->>onAdd: eggs`, the child's own I/O. In the parent's block the
+same call is the *stimulus* — `AddItem->>ShoppingList: onAdd eggs` —
+and what the parent does about it is that block's evidence. One event,
+two edges again, and the direction flips because the callback is the
+one sanctioned upward path in the tree.
+
 ## What an evidence log is not
 
 A mockist interaction test and an evidence log have the same shape:

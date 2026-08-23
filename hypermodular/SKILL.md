@@ -284,7 +284,10 @@ decision to cross it. The rest: `references/evidence.md`.
 One `sequenceDiagram` per acceptance criterion whose log crosses the
 node's edge. Arrows into the node are the *when*; arrows out are the
 *then* — one log entry each, in order, so the test's array is exactly
-the out-arrows; dashed arrows back are supplied data, never entries.
+the out-arrows; dashed arrows back are supplied data, never entries. A
+stimulus is `User`, `System`, or a child firing a callback the parent
+handed it (`AddItem->>ShoppingList: onAdd eggs`) — the only way an
+event reaches a parent from inside its own tree.
 Own-state-only criteria stay arrays in the test: the map shows edges.
 
 ```mermaid

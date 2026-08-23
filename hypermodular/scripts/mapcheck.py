@@ -17,8 +17,8 @@ verified from the maps alone:
                 label callbacks or (unverifiable here) stored
                 properties; reserved names are quoted; a node with
                 calls on its label and no evidence block is reported;
-                an in-arrow from anything but User/System is a warning
-                (whether a parent-value change is a stimulus is unruled)
+                an in-arrow is User, System, or a child firing a
+                callback its own label carries
   order         the Dependencies column is the injection order (~~~)
 
 Not checked — needs the code: that every call in a node's Swift
@@ -58,6 +58,8 @@ def kind(line):
     if body.endswith("()"): return "call", body
     if "." in body: return "read", body
     return "callback", body
+
+child_stimuli = []
 
 class Node:
     def __init__(self, name): self.name = name; self.labels = {}; self.evidence = []
@@ -133,7 +135,7 @@ def parse_evidence(b):
         if arrow == "->>":
             if src.strip('"') == n: outs.append(dst.strip('"'))
             elif src in STIMULI: ins.append(src)
-            elif dst.strip('"') == n: warn(rel, f"{n}: in-arrow from '{src}' — only User and System are ruled stimuli; a parent-value change as a stimulus is an open question (TODO)")
+            elif dst.strip('"') == n: child_stimuli.append((rel, n, src.strip('"'), msg))
             else: err(rel, f"{n}: arrow '{src}->>{dst}' neither from the node nor a stimulus (depth > 1?)")
         else:
             if dst.strip('"') != n: err(rel, f"{n}: dashed arrow must return to the node, got '{dst}'")
@@ -183,6 +185,16 @@ def main(root):
                 if k == "call": calls.add(body[:-2])   # evidence targets name the closure, no parens
                 if dep not in cyls: err("cylinders", f"{n.name}: '· {body}' names no cylinder '{dep}' in the Dependencies box")
             elif k == "callback": callbacks.add(body)
+        for rel, src, msg in [(r, s, m2) for r, node, s, m2 in child_stimuli if node == n.name]:
+            child = nodes.get(src)
+            cb = msg.split()[0] if msg.split() else ""
+            if src == "Parent":
+                warn(rel, f"{n.name}: in-arrow from 'Parent' — a parent-value change as a stimulus is an open question (TODO); a new value is a new given")
+            elif child is None:
+                err(rel, f"{n.name}: in-arrow from '{src}' — not a node; stimuli are User, System, or a child firing a callback")
+            elif not any(kind(c)[0] == "callback" and kind(c)[1] == cb
+                         for c in max(child.labels, key=len, default=())):
+                warn(rel, f"{n.name}: in-arrow '{src}->>{n.name}: {msg}' — '{cb}' is not a callback line on {src}'s label")
         for rel, outs in n.evidence:
             for t in outs:
                 if "." in t:

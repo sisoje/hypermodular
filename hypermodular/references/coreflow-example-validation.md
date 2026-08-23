@@ -601,6 +601,9 @@ the proposal above:
 - **F18 (forward test, `example/`)** — one event, two edges: a parent's
   and a child's evidence both carry the same toggle, as a storage write
   and as a binding write. Ruled in `evidence.md`.
+- **F19 (forward test, a fresh app)** — a child firing a callback is a
+  third stimulus kind; without it a parent's evidence cannot be
+  triggered by its own child at all. Ruled and checked.
 - **`Parent->>Node`** as a third stimulus source — open. CoreFlowExample
   has no parent handing down a new value mid-scenario; validating it
   against the skill's own `Landing` example would be a consistency
