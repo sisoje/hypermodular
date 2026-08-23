@@ -276,8 +276,9 @@ alone:
   holds one tree per target in `APP-MAP.md`, each with its own
   `%% Root:` block; names are unique across the repo, not the tree. A
   component that is built but mounted by no root is listed under a
-  `## Unmounted` heading — name and full label, no arrows — so its
-  contract has a copy to compare against the day it mounts.
+  `## Unmounted` heading in a block headed `%% Root: App · Unmounted` —
+  name and full label, no arrows — so its contract has a copy to
+  compare against the day it mounts.
 - **Same contract everywhere — deliberately duplicated.** A node's full
   label (name + contract lines) is identical as a child in its parent's
   map and as the root of its own. This is double-entry bookkeeping: the
@@ -299,7 +300,13 @@ alone:
   reaches `APP-MAP.md`, following names downward reaches any node.
 - **Reconstruction check**: parent links form a single tree with no
   orphans, and every `MAP.md` — structure or evidence-only — is
-  reachable. When maintaining maps, verify this before committing.
+  reachable. When maintaining maps, verify this before committing:
+  `scripts/mapcheck.py <repo>` runs it, with id = name, the `·`
+  grammar, label double-entry, every call line naming a cylinder,
+  injection order, evidence targets against labels, and reserved-word
+  quoting. What it cannot see is code — whether every call in a node's
+  Swift is on its label, and whether a bare evidence target is a real
+  stored property — and it says so.
 
 ## Declaring evidence
 

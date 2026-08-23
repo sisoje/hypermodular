@@ -21,10 +21,11 @@
   (`title`!) must be quoted. **Ruled and folded into SKILL.md as
   Diagram 4** — optional iff own state only, `Evidence:` as the header
   word. Still open from it:
-  - **F11, the registry check, as a script.** Three set comparisons per
-    node (evidence targets ⊆ label lines ∪ stored properties; call
-    lines name a cylinder or a handed-down closure; code calls appear
-    as label lines). Not in SKILL.md until it runs.
+  - **F11, code-side half.** `scripts/mapcheck.py` covers everything
+    the maps alone can verify. Still missing: every call in a node's
+    Swift appears on its label; bare evidence targets are real stored
+    properties. Needs a mapped repo with code — the first forward use
+    of the method supplies it.
   - **`Parent->>Node` stimulus** — needs real material (a parent handing
     down a new value mid-scenario) before it is a rule.
   - **Flowchart reserved words** — `end` etc. as node ids, untested.

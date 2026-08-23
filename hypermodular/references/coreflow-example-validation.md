@@ -560,8 +560,14 @@ the proposal above:
 - **`loop` vs symbolic payload** — separated: `loop` says the count is
   unnamed, a symbolic payload says the value is. The DragCard block uses
   both; read it as two choices, not one.
-- **F11** — stays here until a script runs it. The doctrine promises
-  only what the list can deliver.
+- **F11** — the map-side half is `scripts/mapcheck.py`, tested on the
+  maps above (`scripts/fixtures/clean`, zero errors) and on a copy with
+  seven planted violations (`scripts/fixtures/broken`, all seven
+  caught, nothing extra — `scripts/test.sh`). The code-side half —
+  every call in a node's Swift on its label; bare evidence targets
+  being real stored properties — waits for a mapped repo with code in
+  it. CoreFlowExample's Swift is generated and not on disk, and no
+  such repo exists yet.
 - **F12** — scoped to sequence diagrams, where it was tested. Flowchart
   ids colliding with flowchart keywords is untested and unruled.
 - **F13 (from review)** — evidence-only `MAP.md` files were orphans:

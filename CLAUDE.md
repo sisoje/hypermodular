@@ -10,8 +10,9 @@ disagreement.
 A method + agent skill for modeling apps as depth-1 Mermaid maps
 (`APP-MAP.md` at a repo root, `MAP.md` beside each mapped subtree). The
 maps are the architecture doc, the agent work fence, and the review
-surface, all at once. There is no build step and no code here — the
-deliverable is the doctrine.
+surface, all at once. There is no build step; the deliverable is the
+doctrine. The one piece of code is `hypermodular/scripts/mapcheck.py`,
+the map-side registry check (`scripts/test.sh` runs its fixtures).
 
 ## The three rules (follow them in any mapped repo)
 
@@ -89,7 +90,7 @@ colors, no fills (`fill:none` on every box), no emoji, no status marks.
 - **New feature in a mapped repo**: add nodes/arrows to the map first,
   agree the diff, then build root-down, evidence declared before code.
 - **Maintenance**: map is code — update affected maps (structure or
-  evidence) in the same commit as the change. Reverse-engineering never
+  evidence) in the same commit as the change, and run `mapcheck.py`. Reverse-engineering never
   invents evidence: draw a block only where a pinned log already exists. Read `APP-MAP.md` before reading code. If map and code
   disagree, say so; never silently work around.
 
