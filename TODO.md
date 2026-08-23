@@ -30,6 +30,16 @@
     down a new value mid-scenario) before it is a rule.
   - **Flowchart reserved words** — `end` etc. as node ids, untested.
 
+- **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,
+  the eight pinned logs, what the evidence chapter borrows from verified
+  practice, and where the two documents use "dependency" differently
+  (F5). Two things it surfaces for later: the unpublished doctrine in
+  CoreFlow's chronicle ("material, not reactivity, bounds the method";
+  "Ian Cooper inherited, not refuted") fits a why-this-works reference
+  file; and the regeneration loop there is the proof mechanism for
+  "maps replace the behavioral half of a spec" — recorded, not run, and
+  not this repo's to run.
+
 - **Hyperlambda notes** live at `HYPERLAMBDA.md` (repo root, not in the
   skill). The only doctrine it argues for is already in the item above:
   the map as a verified slot registry, and an execution half to the
