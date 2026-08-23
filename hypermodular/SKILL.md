@@ -36,7 +36,14 @@ view is always derivable and never maintained.
 ## The three rules
 
 1. **Build top-down.** Implement a node only after its parent exists.
-   New features are drawn on the map before any code is written.
+   New features are drawn on the map before any code is written. The
+   vertical axis is **authority, not existence**: the parent dictates
+   the child's signature and the child satisfies it; a service's
+   signature is dictated by its callers, never by its implementation.
+   A change of mind at the top has one place to land, and everything
+   below that no longer fits stops compiling instead of drifting. A
+   feature has an address — it is a node, and the map is where to
+   find it.
 2. **Respect the map.** When working on a node, touch only that node's
    own code and the capabilities named in its own label. Needing one
    that isn't on the map means stopping and proposing a map change
@@ -45,18 +52,27 @@ view is always derivable and never maintained.
    these values in, this evidence out — the ordered log of its I/O
    with payloads: every source-of-truth write and every boundary call,
    sync or `async throws` alike.
-   Declare the evidence before
-   implementing; implementation means making the declaration hold. Never
-   observe effects behind a boundary, never simulate behavior (no
-   mocks): a boundary in a spec is a logger, and checking a node is
-   comparing two values.
+   A node's inputs are values, bindings, and closures — nothing else —
+   so it is constructible from literals, and anything constructible
+   from literals is testable by construction. Declare the evidence
+   before implementing; implementation means making the declaration
+   hold. Never observe effects behind a boundary, never simulate
+   behavior (no mocks): a boundary in a spec is a logger, and checking
+   a node is comparing two values. Refactor the node and the log cannot
+   change; only a changed requirement can — which is why the log, not
+   the structure, is the contract.
 
 ## One law: depth 1 — the cure for death by a thousand mocks
 
-Every artifact describes exactly one boundary — its own. A logged
-boundary never simulates deeper than one step. Injection enters only at
-the root. And a map draws only one level: a node and its immediate
-children. This is what keeps all three honest.
+Mock depth is the number of layers of internal behavior a test double
+must simulate before the unit under test can even be constructed. In an
+object graph it is unbounded — lift one card and you hold the tower —
+and that is what test-driven development died of. Here it is one,
+permanently: every artifact describes exactly one boundary — its own. A
+logged boundary never simulates deeper than one step, because a
+closure's signature is the whole contract and nothing is behind it.
+Injection enters only at the root. And a map draws only one level: a
+node and its immediate children. This is what keeps all three honest.
 
 ## Diagram 1: the structure tree
 
@@ -91,7 +107,7 @@ A `flowchart TD`, one level deep.
     node's — own state, gesture transients, task handles — gets no
     line, whatever its spelling.
   - `· <dep>.<func>()` lines **call** a capability from the dependency
-    box (`· dbService.updateBook()`). The parens are the mark: a call is
+    box (`· dbService.deleteBook()`). The parens are the mark: a call is
     an event, and it logs.
   - `· <dep>.<value>` lines **read** a let or binding off a dependency
     (`· loginState.isLoggedIn`). Coupling without evidence: reads never
@@ -157,16 +173,28 @@ Tabs' map (unlabeled arrows — plain composition):
 ```mermaid
 %% Root: Tabs · Parent: Landing (../MAP.md)
 flowchart TD
-    Tabs --> BookShelf["BookShelf<br/>· @Query"]
+    Tabs --> Library["Library<br/>· @Query<br/>· dbService.deleteBook()"]
     Tabs --> Search["Search<br/>· searchAPI.search()<br/>· navService.showDetail()"]
 ```
 
-BookShelf's map, beside its code:
+Library's map — the fetch and the store live here, lifted out of the
+shelf that shows them:
 
 ```mermaid
-%% Root: BookShelf · Parent: Tabs (../MAP.md)
+%% Root: Library · Parent: Tabs (../MAP.md)
 flowchart TD
-    BookShelf["BookShelf<br/>· @Query"] --> BookDetail["BookDetail<br/>· imageLoader.loadImage()"]
+    Library["Library<br/>· @Query<br/>· dbService.deleteBook()"] --> BookShelf["BookShelf<br/>· onDelete"]
+```
+
+BookShelf's map, beside its code. It takes `books` as a value (a sorted
+fetch, eventually), `sortByAuthor` as a binding (storage, eventually),
+and `onDelete` as a closure (a service, eventually) — constructible from
+literals, complete before any of the three exists:
+
+```mermaid
+%% Root: BookShelf · Parent: Library (../MAP.md)
+flowchart TD
+    BookShelf["BookShelf<br/>· onDelete"] --> BookDetail["BookDetail<br/>· imageLoader.loadImage()"]
 ```
 
 Leaves get no structure map of their own — we are modeling data flow,
@@ -186,7 +214,8 @@ A `classDiagram` of the shared vocabulary: models and service
 signatures. Field names without elaboration; services as bare closure
 signatures; `..>` records consumption. Coupling is consumption, not
 visibility — everything is visible to everyone, and only use creates a
-line.
+line. A signature here is dictated by the nodes that consume it, never
+by the implementation that will eventually satisfy it.
 
 ```mermaid
 %% Root: App · Coupling
@@ -196,14 +225,14 @@ classDiagram
         author
     }
     class DbService {
-        updateBook(Book)
+        deleteBook(Book)
     }
     class NavService {
         showDetail(bookId)
     }
 
     BookShelf ..> Book
-    NotesEditor ..> DbService
+    Library ..> DbService
     Search ..> NavService
 ```
 
@@ -268,7 +297,11 @@ flowchart LR
     class Dependencies deps
 ```
 
-The box's size is a health metric on its own.
+The box's size is a health metric on its own. A cylinder on the map is
+a signature, not an implementation: fetch, storage, service — all
+*eventually*. A node is done when its evidence holds against loggers;
+the live closure behind each cylinder arrives later and is tested once,
+for real.
 
 ## Combining maps (identity rules)
 
@@ -359,6 +392,10 @@ construction, a stimulus, and one equality check:
 ```
 ["isLoading true", "search dune", "isLoading false", "error offline"]
 ```
+
+The simplest case is the shelf: given one book, when the user flips the
+sort and swipes delete, then `["sortByAuthor true", "delete Dune"]` —
+a binding write and a callback, nothing behind either.
 
 When the log crosses the node's edge, the declaration is drawn
 (Diagram 4) and the array is its test form; when it touches own state
@@ -500,6 +537,9 @@ the repo, not the map.
 - [SwiftUI Data Flow Masterclass](https://medium.com/@redhotbits/swiftui-data-flow-masterclass-099f0768f776)
   — the data-flow model this method rests on: nodes, waves, boundary
   events, execution-log testing.
+- [TDD: Death by a Thousand Mocks](https://medium.com/@redhotbits/tdd-death-by-a-thousand-mocks-26adb60cbe43)
+  — the argument: the layer diagram is a construction schedule; flip
+  the axis to authority; mock depth is what TDD died of.
 - [TDD Is Dead. Long Live TDD.](https://medium.com/@redhotbits/tdd-is-dead-long-live-tdd-f85b4b9eacbd)
   — the method: lift state and services, lock the core with evidence,
   delegate the detail.

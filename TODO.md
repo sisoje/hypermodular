@@ -34,6 +34,15 @@
     *when*. `mapcheck.py` warns on it, never errors, until ruled.
   - **Flowchart reserved words** — `end` etc. as node ids, untested.
 
+- **Aligned with the published manifesto** (*TDD: Death by a Thousand
+  Mocks*, 2026-08): authority axis in rule 1, mock depth defined, a
+  cylinder is a signature ("eventually"), refactor-stability as why the
+  log is the contract, "constructible from literals", and the example
+  tree reshaped to the article's lifted BookShelf (Library holds the
+  fetch and the store; the shelf takes a value, a binding, a callback).
+  The article's example is the better one — the earlier in-view sort was
+  a hidden computation the evidence would have had to describe.
+
 - **`example/` — the forward test, started.** The skill's own book app,
   drawn in this repo before it is built (see `example/README.md`). Maps
   pass `mapcheck.py`; evidence blocks for Landing and BookDetail are the

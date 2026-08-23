@@ -46,7 +46,7 @@ diagram in a `MAP.md` beside its code (`APP-MAP.md` at the repo root).
 parent hands the child facts, bindings, and callbacks. A node's label
 carries its whole contract, one `·`-bulleted line per capability —
 `· @Query` materializes (a native source of truth),
-`· dbService.updateBook()` calls. The name stays the unambiguous first
+`· dbService.deleteBook()` calls. The name stays the unambiguous first
 line, whatever the renderer does.
 
 ```mermaid
@@ -136,6 +136,8 @@ change.
 
 ## The shelf
 
+- **[TDD: Death by a Thousand Mocks](https://medium.com/@redhotbits/tdd-death-by-a-thousand-mocks-26adb60cbe43)** —
+  the argument: flip the axis to authority; mock depth is what TDD died of.
 - **[swift-core-flow](https://github.com/sisoje/swift-core-flow)** — the
   mechanics: macros for the functional-core / imperative-shell split,
   evidence logging, testing SwiftUI views as pure cores.

@@ -34,7 +34,7 @@ classDiagram
         author
     }
     class DbService {
-        updateBook(Book)
+        deleteBook(Book)
     }
     class NavService {
         showDetail(bookId)
@@ -43,6 +43,7 @@ classDiagram
         search(query)
     }
 
+    Library ..> DbService
     BookShelf ..> Book
     BookDetail ..> Book
     Search ..> SearchAPI
