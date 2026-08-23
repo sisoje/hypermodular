@@ -1,4 +1,7 @@
-# CoreFlowExample
+# Fixture: clean — CoreFlowExample's validated maps
+
+Regression input for `scripts/mapcheck.py`; must pass with zero errors.
+These maps are correct by the doctrine and may be read as examples.
 
 ```mermaid
 %% Root: App

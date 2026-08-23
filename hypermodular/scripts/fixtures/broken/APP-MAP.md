@@ -1,4 +1,8 @@
-# CoreFlowExample
+# Fixture: broken — DELIBERATELY WRONG, not an example
+
+The clean fixture with twelve errors and one warning planted in it for
+`scripts/test.sh`. Every block here violates the doctrine somewhere.
+Never model a map on this directory.
 
 ```mermaid
 %% Root: App

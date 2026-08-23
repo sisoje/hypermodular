@@ -1,7 +1,8 @@
 #!/bin/sh
 # Regression test for mapcheck.py: the clean fixture (CoreFlowExample's
 # validated maps) must pass with zero errors; the broken fixture must
-# report exactly the thirteen violations planted in it.
+# report exactly the twelve errors planted in it, plus the one planted
+# warning (a Parent in-arrow — unruled, so never an error).
 set -e
 cd "$(dirname "$0")"
 echo "clean:"  && python3 mapcheck.py fixtures/clean | tail -1 | grep -q " 0 errors" || { echo "FAIL: clean fixture has errors"; exit 1; }
@@ -19,7 +20,7 @@ APP-MAP.md: Dependencies ~~~ chain disagrees with cylinder listing order
 APP-MAP.md: syncService: ingredient 'searchAPI' sits below it (injection order)
 FocusField/MAP.md: FocusField: evidence block lacks '%% Given:' second line
 ReadingListScreen/BookList/MAP.md: BookList: arrow 'Nobody->>somewhere' neither from the node nor a stimulus (depth > 1?)
-ReadingListScreen/BookList/MAP.md: BookList: in-arrow from 'Parent' — stimuli are User or System
 SaveButton/MAP.md: SaveButton: dashed arrow must return to the node, got 'onSave'
 WANT
 diff /tmp/mapcheck-want.txt /tmp/mapcheck-got.txt && echo "all planted violations caught, nothing extra" || { echo "FAIL: violations differ"; exit 1; }
+python3 mapcheck.py fixtures/broken | grep -q "^WARNING .*in-arrow from .Parent." && echo "parent in-arrow warns, as intended" || { echo "FAIL: Parent in-arrow should warn"; exit 1; }

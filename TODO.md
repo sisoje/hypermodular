@@ -27,7 +27,11 @@
     properties. Needs a mapped repo with code — the first forward use
     of the method supplies it.
   - **`Parent->>Node` stimulus** — needs real material (a parent handing
-    down a new value mid-scenario) before it is a rule.
+    down a new value mid-scenario) before it is a rule. Two readings: a
+    new parent value is a new *given* (the node dies in the wave and is
+    re-created — "the network is reactive so the nodes don't have to
+    be"), or an `.onChange(of: input)` reaction makes it a genuine
+    *when*. `mapcheck.py` warns on it, never errors, until ruled.
   - **Flowchart reserved words** — `end` etc. as node ids, untested.
 
 - **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,
@@ -57,9 +61,10 @@
   *evidence log* (skill) vs *execution log* (published article); everything
   else aligns. Promote the table into SKILL.md once that name is picked.
 
-- **Split into SKILL.md + references/ when the content exists** (the
-  mv-architecture pattern). Not before: at 17KB the skill is all
-  load-bearing doctrine. The trigger is reference-grade content —
-  the CoreFlowExample mapping walkthrough, an evidence cookbook, an
-  exhaustive notation reference. First reference file = the validation
-  exercise's output.
+- **Split SKILL.md — the trigger is now met.** Written when the skill was
+  17KB: "split when reference-grade content exists." It is 25KB, up 44%
+  in a day, with a 587-line `references/` file and a `scripts/` dir
+  beside it. Candidates to move out: the full Diagram 4 bullet list
+  (keep the example and the two-sentence rule), the reserved-word list,
+  the Combining-maps identity rules. Decide what stays load-bearing
+  before it grows again; not urgent, but due.

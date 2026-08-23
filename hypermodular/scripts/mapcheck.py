@@ -15,7 +15,9 @@ verified from the maps alone:
   evidence      dotted targets are label call lines; bare targets are
                 label callbacks or (unverifiable here) stored
                 properties; reserved names are quoted; a node with
-                calls on its label and no evidence block is reported
+                calls on its label and no evidence block is reported;
+                an in-arrow from anything but User/System is a warning
+                (whether a parent-value change is a stimulus is unruled)
   order         the Dependencies column is the injection order (~~~)
 
 Not checked — needs the code: that every call in a node's Swift
@@ -129,7 +131,7 @@ def parse_evidence(b):
         if arrow == "->>":
             if src.strip('"') == n: outs.append(dst.strip('"'))
             elif src in STIMULI: ins.append(src)
-            elif dst.strip('"') == n: err(rel, f"{n}: in-arrow from '{src}' — stimuli are User or System")
+            elif dst.strip('"') == n: warn(rel, f"{n}: in-arrow from '{src}' — only User and System are ruled stimuli; a parent-value change as a stimulus is an open question (TODO)")
             else: err(rel, f"{n}: arrow '{src}->>{dst}' neither from the node nor a stimulus (depth > 1?)")
         else:
             if dst.strip('"') != n: err(rel, f"{n}: dashed arrow must return to the node, got '{dst}'")
