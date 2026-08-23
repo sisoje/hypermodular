@@ -202,3 +202,326 @@ The one real decision: **evidence log vs. execution log**. Everything else
 aligns. The article is published under "execution log"; the skill's
 frontmatter already says "evidence (execution-log) spec" — the alignment
 costs one rename in the skill or one alias in the table.
+
+---
+
+# Part 2: evidence as sequence diagrams
+
+The map has three structure diagrams and no behavior diagram — evidence
+is prose plus an array literal. The candidate fourth diagram is a mermaid
+`sequenceDiagram` per acceptance criterion. Before it becomes doctrine,
+the same test as Part 1: transcribe CoreFlowExample's eight pinned
+UI-test logs (ground truth: `SPEC.md`, section UITests) and record where
+the notation creaks.
+
+## The grammar as tested
+
+- One block per acceptance criterion. First line is the identity comment:
+  `%% Evidence: <Node> · Given: <construction>`.
+- **Arrows into the node are the *when*.** `User->>Node: interaction`
+  for user input; `System->>Node: event` for lifecycle, scene phase,
+  deep links. Never a log entry.
+- **Arrows out of the node are the *then*.** `Node->>target: payload`
+  is one log entry — `(target, payload)` — in order. The array the test
+  asserts is exactly the ordered list of out-arrows, nothing else.
+- **Dashed arrows back are supplied data.** `target-->>Node: value` or
+  `throws` — the *given* for whatever follows, drawn only when it
+  explains a later entry. Never a log entry. Solid vs dashed is already
+  the doctrine's call-is-the-event / return-is-data distinction.
+- **Targets are the node's edge and nothing else:** a contract line
+  (a cylinder call, a parent-supplied callback) or one of the node's own
+  stored properties (a source-of-truth write). A target that is neither
+  is a finding.
+- **`loop` only when the requirement names no count**, the same way
+  order is asserted only when the requirement names an order. A block
+  containing a loop is a shape, not a pin; its test asserts the decision
+  the requirement names.
+- **Silence is drawn.** A stimulus with no out-arrow is the assertion
+  that nothing logged; a `Note over Node` says so in words.
+
+Rendering checked with mermaid 11.16.0 (`@mermaid-js/mermaid-cli`), all
+eight blocks: dotted participant names (`bookStore.delete`), hyphens in
+messages, `""` payloads, `loop`, `Note over`, and dashed returns all
+parse and draw. One thing did not — see F12.
+
+## The eight logs, transcribed
+
+### AddBookField
+
+```mermaid
+%% Evidence: AddBookField · Given: title ""
+sequenceDiagram
+    User->>AddBookField: tap titleField
+    AddBookField->>"title": ""
+    AddBookField->>"title": ""
+    User->>AddBookField: type "Dune"
+    AddBookField->>"title": D
+    AddBookField->>"title": D
+    AddBookField->>"title": Du
+    AddBookField->>"title": Du
+    AddBookField->>"title": Dun
+    AddBookField->>"title": Dun
+    AddBookField->>"title": Dune
+    AddBookField->>"title": Dune
+    User->>AddBookField: tap addButton
+    AddBookField->>bookStore.insert: Dune
+    AddBookField->>"title": ""
+```
+
+Twelve out-arrows; read top to bottom they are the pinned array
+`["", "", "D", "D", "Du", "Du", "Dun", "Dun", "Dune", "Dune", "Dune", ""]`
+under names `title×10, insert, title`. No `loop` — the requirement pins
+the count (twice per keystroke, as-is), so the block pins it too. Long,
+and honestly so: fifteen lines for the most verbose log in the example.
+`title` is quoted because mermaid reserves the word (F12); the name is
+the text inside the quotes.
+
+### BookList
+
+```mermaid
+%% Evidence: BookList · Given: @Query [Dune, Anathem] · sortDescending false
+sequenceDiagram
+    User->>BookList: tap sortToggle
+    BookList->>sortDescending: true
+    User->>BookList: tap delete-Anathem
+    BookList->>bookStore.delete: Anathem
+```
+
+Array: names `["sortDescending", "delete"]`, values `["true", "Anathem"]`.
+The `@Query` fact sits in the *given* header — it is supplied data, never
+an arrow.
+
+### Dimmer
+
+```mermaid
+%% Evidence: Dimmer · Given: isDimmed false
+sequenceDiagram
+    User->>Dimmer: tap toggleDimButton
+    Dimmer->>isDimmed: true
+    User->>Dimmer: tap toggleDimButton
+    Dimmer->>isDimmed: false
+```
+
+### SaveButton
+
+```mermaid
+%% Evidence: SaveButton · Given: getUserName throws
+sequenceDiagram
+    User->>SaveButton: tap saveDraftButton
+    SaveButton->>onSave: draft
+    SaveButton->>getUserName: 42
+    getUserName-->>SaveButton: throws
+    SaveButton->>userName: Error fetching user
+```
+
+Array: names `["onSave", "getUserName", "userName"]`, values `["draft",
+"42", "Error fetching user"]`. The dashed `throws` is not in the array —
+it is the scenario's stub, drawn because it explains the last entry.
+This is the block that shows why solid/dashed was worth having.
+
+### DragCard
+
+```mermaid
+%% Evidence: DragCard · Given: maxDistance 0 · unpinned, values are timing-dependent
+sequenceDiagram
+    User->>DragCard: drag dragBox by (120, 80)
+    loop per gesture sample
+        DragCard->>maxDistance: max so far
+    end
+    Note over DragCard: release resets dragOffset to zero — nothing logged
+```
+
+No array. `SPEC.md` pins no log here ("values are timing-dependent —
+behavior asserts only"); the test asserts `current 0` and `max ≠ 0` after
+release. The `loop` is the notation for exactly that: the requirement
+names no count, so the block is a shape and the test asserts the
+decision. `dragOffset` itself is `@GestureState`, copied verbatim and
+never logged — it gets no lifeline.
+
+### TrickyDragCard
+
+```mermaid
+%% Evidence: TrickyDragCard · Given: resetsSeen 0
+sequenceDiagram
+    User->>TrickyDragCard: drag trickyDragBox by (80, -40), release
+    TrickyDragCard->>resetsSeen: 1
+```
+
+### DownloadButton
+
+```mermaid
+%% Evidence: DownloadButton · Given: download nil · cancelsSeen 0
+sequenceDiagram
+    User->>DownloadButton: tap startDownloadButton
+    DownloadButton->>download: task
+    User->>DownloadButton: tap cancelDownloadButton
+    DownloadButton->>download: nil
+    DownloadButton->>cancelsSeen: 1
+```
+
+Array: names `["download", "download", "cancelsSeen"]`, values `["task",
+"nil", "1"]`. The causal story (the `nil` write cancels the live task,
+whose resumption writes `cancelsSeen` strictly later) is code's business;
+the diagram carries only the order, which is what the requirement names.
+
+### FocusField
+
+```mermaid
+%% Evidence: FocusField · Given: toggleCount 0 · unfocused
+sequenceDiagram
+    User->>FocusField: tap focusTextField
+    Note over FocusField: focus moved by the system — nothing logged
+    User->>FocusField: tap toggleFocusButton
+    FocusField->>isFocused: false
+    FocusField->>toggleCount: 1
+```
+
+Array: names `["isFocused", "toggleCount"]`, values `["false", "1"]` —
+and, before the second tap, the names are still `[]`. The first stimulus
+has no out-arrow. Silence drawn.
+
+## Where it held (passes)
+
+1. **All eight transcribe.** Nothing in the ground truth lacked a form:
+   exact pins, an unpinned shape, a silence, a thrown return.
+2. **Solid/dashed is the doctrine's own distinction**, free. "The call is
+   the event; what comes back is supplied data" was a sentence; in
+   SaveButton it is two arrow styles.
+3. **`loop` extends "assert order only when the requirement names it"
+   to counts** without a new rule — DragCard loops, AddBookField does
+   not, and the reason is the same sentence.
+4. **Depth 1 is visible.** Every lifeline is the node's own edge. A
+   grandchild on a lifeline would be a violation you can see, like an
+   ingredient below its deriver in the dependency column.
+5. **Given/when/then have places.** Header, in-arrows, out-arrows. The
+   prose transcription rule in *Declaring evidence* becomes a layout.
+6. **It is lossless.** The array is the ordered out-arrows, mechanically.
+   Diagram and test are double-entry, like label and label.
+
+## Findings
+
+### F7 — "Who fired it" mispredicts; "whose source of truth" predicts
+
+The doctrine's read/write criterion says writes "the system (not the
+node) performs through a binding" don't log. Drawing the stimuli exposed
+that this sentence gets AddBookField wrong: TextField's keystroke writes
+through `$title` *are* system-performed writes through a binding, and
+they log — ten of them, pinned. FocusField's system focus move through
+`$isFocused` is the same kind of event and does not log. "Who fired it"
+cannot tell them apart; both were fired by the system on the user's
+behalf.
+
+What does tell them apart: **whose source of truth the write lands in.**
+`title` is the node's own state — a write into it is the node's I/O
+whoever holds the pen. Focus is the *system's* state; the node's
+`@FocusState` is a view onto it. The system moving focus is data
+arriving (a read, no entry). The node toggling `isFocused`
+programmatically is the node asking the system for something — a
+boundary call wearing a property's name, and it logs as one.
+
+**Proposed ruling.** Replace the "who fired it" paragraph: *a write logs
+iff it lands in a source of truth the node owns or was handed — own
+state, a binding, external storage. A write to state the system owns
+(focus) logs only when the node performs it, because that is a call,
+not a write.* Reads stay unlogged for the reason already given. The
+diagram surfaced this because an in-arrow with no out-arrow demands an
+answer; prose never asked.
+
+### F8 — Leaves now have a reason for a file
+
+Part 1 left leaves without a map ("a map earns its existence by having
+arrows"). Every one of the eight nodes above is a leaf, and every one
+now has arrows — sequence arrows. Evidence has to live somewhere beside
+the code it constrains, and a parent's `MAP.md` holding eight children's
+criteria is the wrong place.
+
+**Proposed ruling.** Evidence blocks live in the node's own `MAP.md`,
+beside its code, under an `## Evidence` heading after the structure
+block (if any). A leaf with declared evidence therefore *does* get a
+`MAP.md`, holding evidence only — the arrows rule still holds, read
+literally. The parent's map stays structure-only; contract duplication
+applies to labels, not to evidence, which appears exactly once.
+
+### F9 — Evidence targets need the F3 ruling to be checkable
+
+SaveButton's out-arrows go to `onSave` and `getUserName` — parent-supplied
+closures, which Part 1 (F3) found have no label form. Without F3, the
+"targets are the node's edge" check has nothing to match them against
+and SaveButton's label stays name-only while its evidence logs two
+calls. F3's proposed bare `· name` line is now load-bearing twice:
+SaveButton's label becomes `SaveButton<br/>· onSave<br/>· getUserName`,
+and the diagram's lifelines match the label line for line.
+
+### F10 — Materialized writes log under a name the label doesn't carry
+
+BookList's out-arrow targets `sortDescending`; its label line says
+`· @AppStorage`. The target is the property, the label is the wrapper,
+and the registry check cannot bridge them without reading code. This is
+F6 again, with teeth: wrapper-name-only labels were a style choice when
+labels were the only artifact; with evidence naming properties, the
+check either reads code for the node's stored properties (acceptable —
+own state is code's business anyway) or the label carries the property
+name for materialized lines (`· @AppStorage sortDescending`). Decide
+with F6.
+
+### F11 — The registry check, as it can actually be written
+
+Part 2 was partly about making rule 2 mechanical. With the diagram in
+place, the check is three set comparisons per node, none needing a
+judgement call:
+
+1. every `Node->>target` in an evidence block has `target` ∈ label
+   contract lines ∪ the node's stored properties (from code, per F10);
+2. every label contract line that *calls* (`· dep.func`, bare `· name`)
+   names a cylinder in the dependency box or a closure the parent
+   hands down;
+3. every cylinder or callback invoked in the node's code appears as a
+   label contract line.
+
+A target failing (1) is a design change nobody reviewed or a typo; a
+line failing (2) is an unmounted capability; a call failing (3) is
+rule 2 broken. All three are greps over artifacts the method already
+writes. Not implemented here; recorded so the doctrine can promise only
+what this list can deliver.
+
+### F12 — Property names can collide with mermaid's own vocabulary
+
+The first render of AddBookField failed: `AddBookField->>title: ""` is a
+parse error, because `title` is a sequence-diagram keyword. The lexer
+reserves `accDescr accTitle activate actor alt and as autonumber box
+break create critical deactivate destroy details else end left link
+links loop note off opt option over par participant properties rect
+right title`; tested as a bare target, `title`, `loop`, `end`, `note`,
+`over`, `and`, `off`, `option` break, while `left`, `right`, `as`
+happen to pass — context-dependent, so treat the whole list as
+reserved. `title` is a common SwiftUI property name; this will bite
+regularly.
+
+Three escapes parse: `"title"` (renders with the quotes showing),
+`$title`, and `AddBookField.title`. `$title` is wrong — in SwiftUI it
+means the projected binding, and not every own-state write goes through
+it. Qualifying every own property as `Node.property` is uniform with
+`dep.func` (every target becomes `owner.member`) but costs the prefix on
+every line and the log name is `title`, not `AddBookField.title`.
+
+**Proposed ruling.** Quote a target only when its name is on the
+reserved list: `"title"`. The name is the text inside the quotes —
+the same move as "the name is the text before the first `·`" on
+labels. The visible quotes are the price of not renaming a property
+to suit a renderer.
+
+## Cost, stated plainly
+
+A node with N acceptance criteria gets N blocks of four to fifteen
+lines, against N array literals of one line each. The array stays — it
+is the test. What the blocks buy is that behavior renders in the PR
+next to structure, carries its own given and when, and is the thing an
+agent generates the test *from* rather than a thing it transcribes
+prose into. Whether that is worth N×10 lines per node is the decision;
+this exercise only shows the grammar holds.
+
+## Open: the name
+
+Part 1's appendix left *evidence log* vs *execution log* undecided. The
+identity comment above says `Evidence:`; if the published name wins it
+becomes `Execution:` in nine places. Decide before this enters SKILL.md.
