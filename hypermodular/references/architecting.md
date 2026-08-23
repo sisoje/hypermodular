@@ -18,6 +18,14 @@ Draw *with* the user. Iterating on a diagram is cheap — that is the
 point — so offer alternatives, label the decisions, and get the tree
 agreed before anything is built.
 
+The alternative is the one everybody knows: build from the bottom, and
+you never know when a layer is finished. Nothing above it exists yet to
+ask it for anything, so its shape is a guess, and the guess is checked
+only when the screen finally runs. Top-down inverts that: each
+implementation arrives to find its consumer — and its consumer's
+evidence — already written, so it is finished the moment that evidence
+holds.
+
 ## The order of work
 
 1. **Draw the structure.** `APP-MAP.md` with the root tree, the

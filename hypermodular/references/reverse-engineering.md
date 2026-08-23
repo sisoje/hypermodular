@@ -4,6 +4,19 @@ The legacy job: code exists, no map does. The first map of a codebase is
 a free architecture review — present it as one. `notation.md` has the
 grammar; `coreflow-example-validation.md` is a complete worked run.
 
+## The map cuts across the layers
+
+A layered codebase — UI, ViewModel, service, repository, networking —
+has a vertical axis, and it means existence: what had to be built before
+what. The map's vertical means authority: who decides, and what they
+ask of the world. The two will not line up, and the map must not be
+bent to mirror the layers that happen to be staring at you. A feature
+that is smeared across five layers — present everywhere, constructible
+nowhere — becomes one node with an address, its contract lines naming
+the I/O it decides, and the layers it was smeared across become, at
+most, cylinders in the dependency box. Draw the decisions, not the
+directories.
+
 ## The walk
 
 Walk the instantiation graph from the entry point downward — every
@@ -62,8 +75,14 @@ Each of these was met mapping CoreFlowExample and is ruled in
 
 ## What to present
 
-The maps, plus the two or three most interesting things they reveal.
-Typical candidates: a dependency box far larger than the feature count
+First, the answer to the question the map exists to ask: **where is the
+feature?** In a layered codebase the honest answer is that it had no
+address until now, and the first map is the artifact that gives every
+feature one. Say which nodes the user's features turned out to be, and
+which of them had been spread across layers with nothing to construct.
+
+Then the maps, plus the two or three most interesting things they
+reveal. Typical candidates: a dependency box far larger than the feature count
 suggests; modules that share so many types they are secretly one;
 injection leaking into the tree; a decision that lives in a
 surprising node; components nobody mounts. Say what each would take to

@@ -88,6 +88,19 @@ declaration. The block is the source and the test is written from it.
   the log and fails the equality. It poisons the snapshot instead of
   vanishing into an inert stub.
 
+## What an evidence log is not
+
+A mockist interaction test and an evidence log have the same shape:
+both are ordered sequences of calls. What separates them is depth, not
+form. An evidence log names only what crosses the node's own edge — its
+contract lines and its own stored properties — and nothing that happens
+behind them. The moment a log names how two things *inside* the
+boundary talk to each other, it has stopped describing what the node
+does and started describing how its objects talk to one another, and a
+harmless refactor will turn it red. That is the failure the targets
+rule exists to prevent: a grandchild on a lifeline is depth 2, and depth
+2 is where the thousand mocks begin.
+
 ## Why the log is complete, and why it is the contract
 
 The log is complete by construction: a node's write is the last thing

@@ -26,7 +26,8 @@ visible, always diffable.
 
 The map is behavioral, not an inventory: it shows where decisions live
 and what they ask of the world, nothing else. Renaming a button never
-touches it; moving a decision always does.
+touches it; moving a decision always does. **Structure lives where
+authority lives** — the map is that structure, written down.
 
 The architecture this produces is **hypermodular**: one mermaid is one
 module is one boundary. No map knows more than one level, and the whole
