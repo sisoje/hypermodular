@@ -5,8 +5,9 @@
   holds the maps (ready to drop into that repo), three doctrine passes, and
   six findings (F1 two-roots/unmounted components, F2 decision values with
   no contract line, F3 parent-supplied callbacks, F4 modifier hosts, F5
-  @AppStorage naming tension, F6 wrapper-name collisions). Next: rule on
-  F1–F3 and fold the rulings into SKILL.md.
+  @AppStorage naming tension, F6 wrapper-name collisions). **Ruled and
+  folded into SKILL.md** — see "Rulings applied" at the end of the
+  reference. F5 remains for the vocabulary table.
 
 - **DONE — Diagram 4 validated, findings recorded.** Evidence as a
   `sequenceDiagram` per acceptance criterion (in-arrows = when,
@@ -17,10 +18,16 @@
   leaves with evidence get a MAP.md; F9 F3's bare `· name` is now
   load-bearing; F10 property target vs wrapper label (F6 with teeth); F11
   the registry check as three set comparisons; F12 mermaid reserved words
-  (`title`!) must be quoted. Next: decide the cost question (N blocks per
-  node), pick evidence/execution as the identity word, then write
-  Diagram 4 + the registry check into SKILL.md with F7's ruling replacing
-  the "who fired it" paragraph.
+  (`title`!) must be quoted. **Ruled and folded into SKILL.md as
+  Diagram 4** — optional iff own state only, `Evidence:` as the header
+  word. Still open from it:
+  - **F11, the registry check, as a script.** Three set comparisons per
+    node (evidence targets ⊆ label lines ∪ stored properties; call
+    lines name a cylinder or a handed-down closure; code calls appear
+    as label lines). Not in SKILL.md until it runs.
+  - **`Parent->>Node` stimulus** — needs real material (a parent handing
+    down a new value mid-scenario) before it is a rule.
+  - **Flowchart reserved words** — `end` etc. as node ids, untested.
 
 - **Hyperlambda notes** live at `HYPERLAMBDA.md` (repo root, not in the
   skill). The only doctrine it argues for is already in the item above:

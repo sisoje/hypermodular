@@ -2,8 +2,9 @@
 name: hypermodular
 description: >
   Hypermodular architecture mapping (Top-Down Development): model an app's behavioral
-  structure as three Mermaid diagrams (a structure tree, a data coupling diagram, and
-  a dependencies diagram) that live in the repo and guide both humans and AI agents.
+  structure as Mermaid diagrams (a structure tree, a data coupling diagram, a
+  dependencies diagram, and per-node evidence sequences) that live in the repo and
+  guide both humans and AI agents.
   Use this skill whenever the user asks to map, diagram, or visualize an app's
   architecture or behavior; to reverse-engineer the structure of an existing codebase;
   to plan a new app or feature top-down before coding; to create or update an
@@ -162,11 +163,13 @@ flowchart TD
     BookShelf["BookShelf<br/>· @Query"] --> BookDetail["BookDetail<br/>· imageLoader.loadImage"]
 ```
 
-Leaves get no map of their own — we are modeling data flow, and a map
-earns its existence by having arrows: flow to show. A leaf has no
-internal flow; its contract lives in its parent's map (its only
-appearance), and the day a leaf grows children, its map is born
-together with them.
+Leaves get no structure map of their own — we are modeling data flow,
+and a map earns its existence by having arrows: flow to show. A leaf
+has no internal flow; its contract lives in its parent's map (its only
+structural appearance), and the day a leaf grows children, its
+structure map is born together with them. A leaf whose evidence crosses
+its edge does get a `MAP.md` — holding evidence blocks only (Diagram 4);
+those are arrows too.
 
 Merging these on their shared node names reconstructs the whole tree —
 the hypermodular property, demonstrated.
@@ -283,9 +286,11 @@ alone:
   nothing to compare. Changing a contract therefore touches parent map
   and child map in the same commit, which is exactly the design review.
 - **A map exists only where there are arrows.** Nodes with children get
-  their own map; leaves don't — a leaf's contract lives in its parent's
-  map, its only appearance. (Duplication applies only to nodes that
-  appear twice; a leaf has one entry, so nothing to cross-check.)
+  a structure map; leaves don't — a leaf's contract lives in its
+  parent's map, its only structural appearance. (Label duplication
+  applies only to nodes that appear twice; a leaf has one entry, so
+  nothing to cross-check.) Evidence blocks are arrows as well: any node
+  with a required evidence block has a `MAP.md`, structure or not.
 - **Every mermaid block declares its place** as its first line, inside
   the block: `%% Root: BookDetail · Parent: BookShelf (../MAP.md)`. The
   root map's comment is `%% Root: App`. The block stays self-contained
@@ -331,13 +336,17 @@ property's name, and it logs as one.
 
 A declaration is an acceptance criterion transcribed into the log's
 vocabulary: *given* names constructor arguments, *when* names an
-interaction, *then* names the log. "Given no connection, when the shelf
-loads, then it reports offline and writes no books" is a construction,
-a call, and one equality check:
+interaction, *then* names the log. "Given no connection, when the user
+searches, then it reports offline and writes no books" is a
+construction, a stimulus, and one equality check:
 
 ```
-["isLoading true", "load", "isLoading false", "error offline"]
+["isLoading true", "search dune", "isLoading false", "error offline"]
 ```
+
+When the log crosses the node's edge, the declaration is drawn
+(Diagram 4) and the array is its test form; when it touches own state
+only, the array in the test is the whole declaration.
 
 Discipline that keeps the log honest:
 
@@ -363,6 +372,66 @@ nodes don't have to be.
 One integration test per cylinder, at the shell, written once, owns
 each boundary's real implementation. A node's evidence proves only the
 decision to cross the boundary — never what lies behind it.
+
+## Diagram 4: evidence
+
+One `sequenceDiagram` per acceptance criterion whose log crosses the
+node's edge — at least one entry targets a contract line. A criterion
+whose log is own state only stays an array in the test and is not
+drawn: the map shows edges, and behavior that cannot break a contract
+has nothing to show on it. "Optional" means *own state only*, never
+"skipped" — a node with a call on its label and no evidence block is a
+finding, like a label mismatch.
+
+```mermaid
+%% Evidence: Search · Given: searchAPI offline
+sequenceDiagram
+    User->>Search: submit "dune"
+    Search->>isLoading: true
+    Search->>searchAPI.search: dune
+    searchAPI.search-->>Search: throws offline
+    Search->>isLoading: false
+    Search->>error: offline
+```
+
+- **First line is the identity comment**: `%% Evidence: <Node> · Given:
+  <construction>` — the given, as constructor arguments and stubs.
+- **Arrows into the node are the *when***: `User->>Node: interaction`
+  for input, `System->>Node: event` for lifecycle, scene phase, deep
+  links. Never a log entry.
+- **Arrows out of the node are the *then***: `Node->>target: payload`
+  is one entry, `(target, payload)`, in order. The array the test
+  asserts is exactly the ordered list of out-arrows, nothing else.
+- **Dashed arrows back are supplied data**: `target-->>Node: value` or
+  `throws` — drawn only when it explains a later entry. Never an entry.
+  The call is the event; what comes back is data.
+- **Targets are the node's edge and nothing else**: a contract line
+  (a capability call, a callback, a materialized source being written)
+  or one of the node's own stored properties. Any other target is a
+  finding — a grandchild on a lifeline is depth 2, visible.
+- **`loop` when the requirement names no count**, exactly as order is
+  asserted only when the requirement names an order; the test then
+  asserts the decision. A value the requirement doesn't pin is a
+  **symbolic payload** (`max so far`) — a separate choice; a loop can
+  carry pinned payloads, and a single arrow can carry a symbolic one.
+- **Silence is drawn**: a stimulus with no out-arrow asserts that
+  nothing logged; `Note over Node: …` says why.
+- **Quote a target whose name mermaid reserves** — `title`, `loop`,
+  `end`, `note`, `over`, `and`, `off`, `option`, and the rest of the
+  sequence-diagram vocabulary (`alt`, `opt`, `par`, `rect`, `box`,
+  `break`, `critical`, `participant`, `actor`, `activate`,
+  `deactivate`, `create`, `destroy`, `link`, `links`, `properties`,
+  `details`, `autonumber`, `else`): `Node->>"title": Dune`. The name is
+  the text inside the quotes, the same way it is the text before the
+  first `·` on a label.
+
+Blocks live in the node's own `MAP.md`, under `## Evidence`, after the
+structure block if there is one. Evidence appears once — the parent's
+map stays structure-only. The block is the source and the test is
+written from it; the two are double-entry like a label and its copy:
+contracts are duplicated on purpose, and single-sourcing would have
+nothing to compare. A diagram and a test array that disagree are an
+unreviewed behavior change.
 
 ## Workflows
 

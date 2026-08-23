@@ -525,3 +525,38 @@ this exercise only shows the grammar holds.
 Part 1's appendix left *evidence log* vs *execution log* undecided. The
 identity comment above says `Evidence:`; if the published name wins it
 becomes `Execution:` in nine places. Decide before this enters SKILL.md.
+
+---
+
+# Rulings applied
+
+Findings F1–F12 were ruled on and folded into `SKILL.md` in two commits
+(corrections first, Diagram 4 second). Where the ruling differs from
+the proposal above:
+
+- **F2** — `· @ProcessInfo`, not `· ProcessInfo`: with F3's bare form
+  meaning callback, the `@` is needed for the parser. The `@` is the
+  materialize marker, not a claim that it is a property wrapper.
+- **F6 / F10** — wrapper-only labels stay; the source is written once
+  however many keys the node holds. The registry check reads the node's
+  stored properties from code for the property-to-wrapper bridge.
+- **Wrapper rule (new, from review)** — a wrapper earns a line only
+  when its source of truth outlives the node. Settles DownloadButton
+  and DragCard on ownership rather than origin: task handles and
+  gesture transients are own machinery, `@FocusState` is a line.
+- **Optional rule (new, from review)** — a criterion is drawn iff its
+  log crosses the node's edge. Of the eight, AddBookField, BookList,
+  SaveButton and FocusField are required; Dimmer, DragCard,
+  TrickyDragCard and DownloadButton stay arrays in the test. F8's scope
+  shrinks accordingly.
+- **`loop` vs symbolic payload** — separated: `loop` says the count is
+  unnamed, a symbolic payload says the value is. The DragCard block uses
+  both; read it as two choices, not one.
+- **F11** — stays here until a script runs it. The doctrine promises
+  only what the list can deliver.
+- **F12** — scoped to sequence diagrams, where it was tested. Flowchart
+  ids colliding with flowchart keywords is untested and unruled.
+- **`Parent->>Node`** as a third stimulus source — open. CoreFlowExample
+  has no parent handing down a new value mid-scenario; validating it
+  against the skill's own `Landing` example would be a consistency
+  check, not a validation.

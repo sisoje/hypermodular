@@ -47,6 +47,7 @@ own.
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top-to-bottom = injection order. Derived services list their ingredients, which must sit above them. |
 | `A ~~~ B` | Invisible link — orders the dependency column. |
 | `%% Root: X · Parent: Y (../MAP.md)` | First line of every mermaid block. Self-describing placement. |
+| `%% Evidence: X · Given: …` + `sequenceDiagram` | Diagram 4, one per acceptance criterion whose log crosses the node's edge. In-arrows = when (`User`/`System`), out-arrows = the log in order, dashed = supplied data, `loop` = count unnamed, `Note` = silence. Targets = contract lines or own properties; quote mermaid-reserved names (`"title"`). Lives in the node's own `MAP.md` under `## Evidence`; own-state-only criteria stay arrays in the test. |
 
 Style: mermaid id = node name, always (the name is the merge key). No
 colors, no fills (`fill:none` on every box), no emoji, no status marks.
@@ -71,8 +72,9 @@ colors, no fills (`fill:none` on every box), no emoji, no status marks.
   navigation destination, own boundary call).
 - **Shell/core split is implementation detail** (CoreFlow's job) and is
   never drawn.
-- **Leaves get no map** — a map earns its existence by having arrows
-  (flow to show). A leaf's contract lives in its parent's map.
+- **Leaves get no structure map** — a map earns its existence by having
+  arrows (flow to show). A leaf's contract lives in its parent's map; a
+  leaf whose evidence crosses its edge gets a `MAP.md` of evidence only.
 - **Contracts are duplicated on purpose** (parent's map + own map,
   identical). Mismatch between copies = unreviewed design change; a
   contract change must touch both maps in the same commit.

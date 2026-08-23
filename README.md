@@ -21,7 +21,8 @@ delivers that with two declarations instead of rituals:
   node is a bare leaf on the map — mapped, reachable, empty. That's
   finished design, not missing work.
 - **Evidence, not effects.** A node's behavior is declared as data: these
-  values in, this evidence out — the ordered log of its boundary calls.
+  values in, this evidence out — the ordered log of its writes and
+  boundary calls.
   No mocks, ever: a boundary in a spec is just a logger, and checking a
   node is comparing two values.
 
@@ -36,9 +37,9 @@ Every artifact describes exactly one boundary — its own.
 Same law, three shadows. It's what keeps mocks, dependencies, and
 documentation honest simultaneously.
 
-## The three diagrams
+## The four diagrams
 
-Every mapped node answers three questions, each with one small Mermaid
+Every mapped node answers four questions, each with one small Mermaid
 diagram in a `MAP.md` beside its code (`APP-MAP.md` at the repo root).
 
 **1. Structure tree** — what is it made of? Solid arrows are data flow:
@@ -88,6 +89,23 @@ flowchart LR
 Even navigation is just a dependency: `navService.showDetail(id)` — the
 caller never knows which node answers, and cross-feature arrows are
 forbidden. The navigation state lives at the root; callers get closures.
+
+**4. Evidence** — what does it do at its edge? One sequence diagram per
+acceptance criterion that crosses a boundary: arrows into the node are
+the *when*, arrows out are the log — one entry each, in order — and the
+test's array is exactly those arrows. Behavior renders in the PR next to
+structure; a diagram and a test that disagree are an unreviewed change.
+
+```mermaid
+%% Evidence: Search · Given: searchAPI offline
+sequenceDiagram
+    User->>Search: submit "dune"
+    Search->>isLoading: true
+    Search->>searchAPI.search: dune
+    searchAPI.search-->>Search: throws offline
+    Search->>isLoading: false
+    Search->>error: offline
+```
 
 ## Hypermodular
 
