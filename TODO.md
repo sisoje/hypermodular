@@ -34,6 +34,15 @@
     *when*. `mapcheck.py` warns on it, never errors, until ruled.
   - **Flowchart reserved words** — `end` etc. as node ids, untested.
 
+- **`example/` — the forward test, started.** The skill's own book app,
+  drawn in this repo before it is built (see `example/README.md`). Maps
+  pass `mapcheck.py`; evidence blocks for Landing and BookDetail are the
+  next step, then code, node by node, then the code-side checker against
+  that code. **First prospective finding, F15**, within a minute of
+  starting: the skill's Diagram 2 example had no identity header while
+  the doctrine says every block declares its place — fixed with
+  `%% Root: App · Coupling`. Findings from here on go in this item.
+
 - **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,
   the eight pinned logs, what the evidence chapter borrows from verified
   practice, and where the two documents use "dependency" differently

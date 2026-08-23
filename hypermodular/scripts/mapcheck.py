@@ -41,7 +41,7 @@ def warn(f, m): warnings.append(f"{f}: {m}")
 
 # ---------------------------------------------------------------- parsing
 BLOCK = re.compile(r"```mermaid\n(.*?)```", re.S)
-HEAD = re.compile(r"^%% (Root|Evidence): (\w+)(?: · (?:Parent: (\w+) \(([^)]+)\)|(Dependencies|Unmounted)))?\s*$")
+HEAD = re.compile(r"^%% (Root|Evidence): (\w+)(?: · (?:Parent: (\w+) \(([^)]+)\)|(Dependencies|Unmounted|Coupling)))?\s*$")
 LABELED = re.compile(r'(\w+)\["([^"]*)"\]')
 CYL = re.compile(r'(\w+)\[\("?([^")\]]*)"?\)\]')
 ARROW = re.compile(r'^\s*(\w+)(?:\["[^"]*"\])?\s*-->(?:\|[^|]*\|)?\s*(\w+)')

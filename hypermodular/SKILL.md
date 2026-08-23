@@ -183,6 +183,7 @@ visibility — everything is visible to everyone, and only use creates a
 line.
 
 ```mermaid
+%% Root: App · Coupling
 classDiagram
     class Book {
         title
@@ -295,8 +296,9 @@ alone:
 - **Every mermaid block declares its place** as its first line, inside
   the block: `%% Root: BookDetail · Parent: BookShelf (../MAP.md)` for
   structure, `%% Evidence: BookDetail · Parent: BookShelf (../MAP.md)`
-  for evidence. The root map's comment is `%% Root: App`. The block
-  stays self-contained when extracted; following parent links upward
+  for evidence, `%% Root: App · Dependencies`, `· Coupling`, and
+  `· Unmounted` for the three app-level blocks. The root map's comment is
+  `%% Root: App`. The block stays self-contained when extracted; following parent links upward
   reaches `APP-MAP.md`, following names downward reaches any node.
 - **Reconstruction check**: parent links form a single tree with no
   orphans, and every `MAP.md` — structure or evidence-only — is
@@ -410,9 +412,10 @@ sequenceDiagram
   <construction>` states the given: constructor arguments and stubs.
 - **Arrows into the node are the *when***: `User->>Node: interaction`
   for input, `System->>Node: event` for lifecycle, scene phase, deep
-  links. Never a log entry. Whether a parent handing down a new value
-  mid-scenario is a third stimulus or simply a new *given* is not yet
-  ruled; until it is, `Parent->>Node` is a warning, not an error.
+  links. Never a log entry. A parent handing down a new value is a new
+  *given*, not a stimulus — start a second block. (The alternative
+  reading, that an `.onChange(of:)` reaction makes it a genuine *when*,
+  is open; `Parent->>Node` warns rather than errors until it is ruled.)
 - **Arrows out of the node are the *then***: `Node->>target: payload`
   is one entry, `(target, payload)`, in order. The array the test
   asserts is exactly the ordered list of out-arrows, nothing else.
