@@ -86,3 +86,12 @@ struct LandingScenario: View {
             .environment(\.loginState, LoginState(isLoggedIn: false))
     }
 }
+
+struct LoginScreenScenario: View {
+    let log: (String) -> Void
+
+    var body: some View {
+        LoginScreen()
+            .environment(\.authService, AuthService(logIn: { log("logIn") }))
+    }
+}

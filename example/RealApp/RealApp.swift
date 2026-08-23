@@ -1,16 +1,21 @@
 import SwiftUI
 import SwiftData
 
-// The root, and the only place injection happens — one arrow into the
-// Dependencies box. Every live closure is assembled here.
+// The root: the ONE owner of app-level state, and the only place injection
+// happens. loginState flows down as a fact; authService is a closure over
+// that same root-owned state — how it is assembled is implementation
+// detail and never drawn (the derived cylinder just lists its ingredient).
 @main
 struct BookApp: App {
+    @State private var login = LoginState(isLoggedIn: false)
+
     var body: some Scene {
         WindowGroup {
             Landing()
                 .modifier(LiveDb())
                 .modelContainer(for: Book.self)
-                .environment(\.loginState, LoginState(isLoggedIn: true))
+                .environment(\.loginState, login)
+                .environment(\.authService, AuthService(logIn: { login.isLoggedIn = true }))
                 .environment(\.imageLoader, ImageLoader(loadImage: { name in name }))
                 .environment(\.searchAPI, SearchAPI(search: { _ in [] }))
                 .environment(\.navService, NavService(showDetail: { _ in }))

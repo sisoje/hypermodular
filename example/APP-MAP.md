@@ -16,8 +16,9 @@ flowchart LR
         dbService[(dbService)]
         navService[(navService)]
         loginState[(loginState)]
+        authService[("authService<br/>· loginState")]
         syncService[("syncService<br/>· dbService<br/>· searchAPI")]
-        imageLoader ~~~ searchAPI ~~~ dbService ~~~ navService ~~~ loginState ~~~ syncService
+        imageLoader ~~~ searchAPI ~~~ dbService ~~~ navService ~~~ loginState ~~~ authService ~~~ syncService
     end
 
     App --> Dependencies
@@ -39,11 +40,15 @@ classDiagram
     class NavService {
         showDetail(bookId)
     }
+    class AuthService {
+        logIn()
+    }
     class SearchAPI {
         search(query)
     }
 
     Library ..> DbService
+    LoginScreen ..> AuthService
     BookShelf ..> Book
     BookDetail ..> Book
     Search ..> SearchAPI

@@ -88,6 +88,15 @@ final class EvidenceUITests: XCTestCase {
         waitForLog(app, toEqual: ["deleteBook Dune"])
     }
 
+    // %% Evidence: LoginScreen — the call is the whole evidence; a
+    // zero-argument command, and what it does is the root's wiring.
+    func testLoginScreenLogsTheLogInCall() {
+        let app = launch("LoginScreen")
+        XCTAssertTrue(app.buttons["loginButton"].waitForExistence(timeout: 5))
+        app.buttons["loginButton"].tap()
+        waitForLog(app, toEqual: ["logIn"])
+    }
+
     // Landing reads loginState and calls nothing: its log stays empty.
     // A read never logs — that is the whole point of the bare-dot line.
     func testLandingLogsNothingAndShowsTheGate() {

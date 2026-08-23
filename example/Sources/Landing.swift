@@ -14,9 +14,18 @@ struct Landing: View {
     }
 }
 
-// A bare leaf on the map: mapped, reachable, empty. Finished design.
+// %% Root: LoginScreen · Parent: Landing
+// Label: · authService.logIn()
+// It calls; it never learns whether that worked. The root owns the login
+// state, so the gate flipping is the root's wiring, not this node's.
 struct LoginScreen: View {
+    @Environment(\.authService) private var authService
+
     var body: some View {
-        Text("Sign in").accessibilityIdentifier("loginScreen")
+        VStack(spacing: 16) {
+            Text("Sign in").accessibilityIdentifier("loginScreen")
+            Button("Log in") { authService.logIn() }
+                .accessibilityIdentifier("loginButton")
+        }
     }
 }

@@ -24,10 +24,15 @@ struct NavService {
     var showDetail: (String) -> Void
 }
 
+struct AuthService {
+    var logIn: () -> Void
+}
+
 extension EnvironmentValues {
     @Entry var loginState = LoginState(isLoggedIn: true)
     @Entry var dbService = DbService(deleteBook: { _ in })
     @Entry var imageLoader = ImageLoader(loadImage: { _ in "" })
     @Entry var searchAPI = SearchAPI(search: { _ in [] })
     @Entry var navService = NavService(showDetail: { _ in })
+    @Entry var authService = AuthService(logIn: { })
 }
