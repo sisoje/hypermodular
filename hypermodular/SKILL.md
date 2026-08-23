@@ -410,7 +410,9 @@ sequenceDiagram
   <construction>` states the given: constructor arguments and stubs.
 - **Arrows into the node are the *when***: `User->>Node: interaction`
   for input, `System->>Node: event` for lifecycle, scene phase, deep
-  links. Never a log entry.
+  links. Never a log entry. Whether a parent handing down a new value
+  mid-scenario is a third stimulus or simply a new *given* is not yet
+  ruled; until it is, `Parent->>Node` is a warning, not an error.
 - **Arrows out of the node are the *then***: `Node->>target: payload`
   is one entry, `(target, payload)`, in order. The array the test
   asserts is exactly the ordered list of out-arrows, nothing else.

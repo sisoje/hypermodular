@@ -55,6 +55,12 @@
   acceptance criterion names it — anything a given/when/then touches enters
   the contract; purely presentational state stays off the map. If adopted, it
   gives the cut rules a mechanical test for what earns a line on a label.
+  **Collides with Diagram 4's optional rule** ("a criterion is drawn iff it
+  targets a contract line") — each defined by the other. Resolution if
+  adopted: criteria come first and *define* the contract lines; whether a
+  criterion is drawn is then derived (it targets a line iff it names one
+  that crosses the edge). Write that order into both rules in the same
+  commit, or adopt neither.
 
 - **Consider a vocabulary table.** A draft alignment table now sits in the
   validation reference's appendix — the one real decision it surfaces is
@@ -64,7 +70,18 @@
 - **Split SKILL.md — the trigger is now met.** Written when the skill was
   17KB: "split when reference-grade content exists." It is 25KB, up 44%
   in a day, with a 587-line `references/` file and a `scripts/` dir
-  beside it. Candidates to move out: the full Diagram 4 bullet list
-  (keep the example and the two-sentence rule), the reserved-word list,
-  the Combining-maps identity rules. Decide what stays load-bearing
-  before it grows again; not urgent, but due.
+  beside it. **Proposed division, awaiting approval:**
+  - stays in SKILL.md — the three rules, depth 1, the four diagrams each
+    with one example and its rules in short form, Declaring evidence,
+    Workflows, Style;
+  - moves to `references/notation.md` — the full label grammar with all
+    three line kinds spelled out, the Combining-maps identity rules and
+    the `Unmounted` form, the Diagram 4 bullet list, the mermaid
+    reserved-word list, `mapcheck.py` usage;
+  - moves to `references/evidence.md` — the discipline bullets, the
+    whose-source-of-truth paragraph with both counter-examples, the
+    `loop`/symbolic-payload distinction, the one-integration-test-per-
+    cylinder rule;
+  - already there — `coreflow-example-validation.md`.
+  Target: SKILL.md back near 15KB, nothing lost, every moved passage
+  linked from where it left.
