@@ -1,7 +1,7 @@
 #!/bin/sh
 # Regression test for mapcheck.py: the clean fixture (CoreFlowExample's
 # validated maps) must pass with zero errors; the broken fixture must
-# report exactly the seven violations planted in it.
+# report exactly the thirteen violations planted in it.
 set -e
 cd "$(dirname "$0")"
 echo "clean:"  && python3 mapcheck.py fixtures/clean | tail -1 | grep -q " 0 errors" || { echo "FAIL: clean fixture has errors"; exit 1; }
@@ -15,5 +15,11 @@ double-entry: ReadingListScreen: label differs between copies — (name only) @ 
 cylinders: ReadingListScreen: '· navService.showDetail' names no cylinder 'navService' in the Dependencies box
 cylinders: SaveButton: '· analytics.track' names no cylinder 'analytics' in the Dependencies box
 ReadingListScreen/AddBookField/MAP.md: AddBookField: evidence target 'bookStore.upsert' is not a call line on the label
+APP-MAP.md: Dependencies ~~~ chain disagrees with cylinder listing order
+APP-MAP.md: syncService: ingredient 'searchAPI' sits below it (injection order)
+FocusField/MAP.md: FocusField: evidence block lacks '%% Given:' second line
+ReadingListScreen/BookList/MAP.md: BookList: arrow 'Nobody->>somewhere' neither from the node nor a stimulus (depth > 1?)
+ReadingListScreen/BookList/MAP.md: BookList: in-arrow from 'Parent' — stimuli are User or System
+SaveButton/MAP.md: SaveButton: dashed arrow must return to the node, got 'onSave'
 WANT
 diff /tmp/mapcheck-want.txt /tmp/mapcheck-got.txt && echo "all planted violations caught, nothing extra" || { echo "FAIL: violations differ"; exit 1; }

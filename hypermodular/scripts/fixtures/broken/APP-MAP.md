@@ -11,7 +11,10 @@ flowchart TD
 flowchart LR
     subgraph Dependencies
         direction TB
+        syncService[("syncService<br/>· bookStore<br/>· searchAPI")]
         bookStore[(bookStore)]
+        searchAPI[(searchAPI)]
+        bookStore ~~~ syncService ~~~ searchAPI
     end
     App --> Dependencies
     classDef deps fill:none

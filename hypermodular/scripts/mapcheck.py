@@ -108,10 +108,12 @@ def parse_dependencies(b):
         if "~~~" in ln: chain = [t.strip() for t in ln.split("~~~")]
     if chain and chain != [c for c in order if c in chain]:
         err(rel, "Dependencies ~~~ chain disagrees with cylinder listing order")
+    # the chain is the semantic order; the listing merely should agree
+    column = [c for c in chain if c in cyls] + [c for c in order if c not in chain] if chain else order
     for name, ings in cyls.items():
         for ing in ings:
             if ing not in cyls: err(rel, f"{name}: ingredient '{ing}' is not a cylinder")
-            elif order.index(ing) > order.index(name): err(rel, f"{name}: ingredient '{ing}' sits below it (injection order)")
+            elif column.index(ing) > column.index(name): err(rel, f"{name}: ingredient '{ing}' sits below it (injection order)")
     return cyls
 
 def parse_evidence(b):
