@@ -3,7 +3,11 @@
 This repo defines the **hypermodular** method (Top-Down Development).
 `hypermodular/SKILL.md` is the single source of truth; this file is your
 working summary. When the two disagree, `SKILL.md` wins — flag the
-disagreement.
+disagreement. The skill's `references/` hold the detail: `architecting.md`
+(new app or feature), `reverse-engineering.md` (legacy codebase),
+`notation.md` (the complete grammar and the checker), `evidence.md`
+(declaring behavior as a log), `coreflow-example-validation.md` (a
+worked run with every finding).
 
 ## What this repo is
 

@@ -88,21 +88,9 @@
   *evidence log* (skill) vs *execution log* (published article); everything
   else aligns. Promote the table into SKILL.md once that name is picked.
 
-- **Split SKILL.md — the trigger is now met.** Written when the skill was
-  17KB: "split when reference-grade content exists." It is 25KB, up 44%
-  in a day, with a 587-line `references/` file and a `scripts/` dir
-  beside it. **Proposed division, awaiting approval:**
-  - stays in SKILL.md — the three rules, depth 1, the four diagrams each
-    with one example and its rules in short form, Declaring evidence,
-    Workflows, Style;
-  - moves to `references/notation.md` — the full label grammar with all
-    three line kinds spelled out, the Combining-maps identity rules and
-    the `Unmounted` form, the Diagram 4 bullet list, the mermaid
-    reserved-word list, `mapcheck.py` usage;
-  - moves to `references/evidence.md` — the discipline bullets, the
-    whose-source-of-truth paragraph with both counter-examples, the
-    `loop`/symbolic-payload distinction, the one-integration-test-per-
-    cylinder rule;
-  - already there — `coreflow-example-validation.md`.
-  Target: SKILL.md back near 15KB, nothing lost, every moved passage
-  linked from where it left.
+- **DONE — split.** `SKILL.md` is 16KB of doctrine (rules, depth 1, the
+  four diagrams with their examples, evidence essentials, workflows in
+  short form). `references/` is organized by the two jobs plus the two
+  bodies of detail: `architecting.md`, `reverse-engineering.md`,
+  `notation.md`, `evidence.md`, and the existing validation run. Nothing
+  deleted; every moved passage is pointed at from where it left.
