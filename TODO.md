@@ -53,6 +53,12 @@
   `%% Root: App · Coupling`. **F16**, minutes later: a dot meant call,
   but `· loginState.isLoggedIn` is a read — ruled: parens mark a call
   (`· dbService.updateBook()`), a bare dot reads and owes no evidence.
+  **F17**, at step 2: declaring Library's evidence asked who owns
+  `sortByAuthor` — Library materializes it, so its label gained
+  `· @AppStorage` in all four copies. A contract line appeared because
+  an acceptance criterion named it: the contract-line criterion
+  (below) just happened in practice, before it was adopted. Step 2 done;
+  step 3 decided as macro-free compiling code (see `example/README.md`).
   Findings from here on go in this item.
 
 - **CoreFlow notes** live at `COREFLOW.md` (repo root): the mechanics,
