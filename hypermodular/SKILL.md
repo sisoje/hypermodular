@@ -292,13 +292,14 @@ alone:
   nothing to cross-check.) Evidence blocks are arrows as well: any node
   with a required evidence block has a `MAP.md`, structure or not.
 - **Every mermaid block declares its place** as its first line, inside
-  the block: `%% Root: BookDetail · Parent: BookShelf (../MAP.md)`. The
-  root map's comment is `%% Root: App`. The block stays self-contained
-  when extracted; following parent links upward reaches `APP-MAP.md`,
-  following names downward reaches any node.
+  the block: `%% Root: BookDetail · Parent: BookShelf (../MAP.md)` for
+  structure, `%% Evidence: BookDetail · Parent: BookShelf (../MAP.md)`
+  for evidence. The root map's comment is `%% Root: App`. The block
+  stays self-contained when extracted; following parent links upward
+  reaches `APP-MAP.md`, following names downward reaches any node.
 - **Reconstruction check**: parent links form a single tree with no
-  orphans, and every leaf that has its own MAP.md is reachable. When
-  maintaining maps, verify this before committing.
+  orphans, and every `MAP.md` — structure or evidence-only — is
+  reachable. When maintaining maps, verify this before committing.
 
 ## Declaring evidence
 
@@ -384,7 +385,8 @@ has nothing to show on it. "Optional" means *own state only*, never
 finding, like a label mismatch.
 
 ```mermaid
-%% Evidence: Search · Given: searchAPI offline
+%% Evidence: Search · Parent: Tabs (../MAP.md)
+%% Given: searchAPI offline
 sequenceDiagram
     User->>Search: submit "dune"
     Search->>isLoading: true
@@ -394,8 +396,11 @@ sequenceDiagram
     Search->>error: offline
 ```
 
-- **First line is the identity comment**: `%% Evidence: <Node> · Given:
-  <construction>` — the given, as constructor arguments and stubs.
+- **Two comment lines open the block.** `%% Evidence: <Node> · Parent:
+  <Parent> (../MAP.md)` places it — the same parent link every block
+  carries, so an evidence-only `MAP.md` is never an orphan (an unmounted
+  node's parent is `Unmounted (../APP-MAP.md)`). `%% Given:
+  <construction>` states the given: constructor arguments and stubs.
 - **Arrows into the node are the *when***: `User->>Node: interaction`
   for input, `System->>Node: event` for lifecycle, scene phase, deep
   links. Never a log entry.
@@ -406,9 +411,9 @@ sequenceDiagram
   `throws` — drawn only when it explains a later entry. Never an entry.
   The call is the event; what comes back is data.
 - **Targets are the node's edge and nothing else**: a contract line
-  (a capability call, a callback, a materialized source being written)
-  or one of the node's own stored properties. Any other target is a
-  finding — a grandchild on a lifeline is depth 2, visible.
+  (a capability call, a callback) or a stored property of the node —
+  own state, or a materialized source being written. Any other target
+  is a finding — a grandchild on a lifeline is depth 2, visible.
 - **`loop` when the requirement names no count**, exactly as order is
   asserted only when the requirement names an order; the test then
   asserts the decision. A value the requirement doesn't pin is a
@@ -443,18 +448,24 @@ lines); each service becomes a cylinder. Apply the cuts while
 walking; don't inventory first. Collect shared models and service
 signatures into the coupling diagram. Verify injection happens only at
 the root; flag violations as findings. Write the maps depth-1 with
-identity headers, then present the two or three most interesting things
-they reveal — the first map of a codebase is a free architecture review.
+identity headers. Evidence is not reverse-engineered: draw a block only
+where the code already carries a pinned log (an existing test) — never
+invent criteria from code; a node with calls on its label and no block
+is a finding to report, not to fill. Then present the two or three most
+interesting things the maps reveal — the first map of a codebase is a
+free architecture review.
 
 **Starting a new app or feature.** Draw before building; iterate on the
 diagram with the user — it's cheap, that's the point. Unbuilt leaves are
 finished design. Once agreed, build root-down, each node's evidence
-declared before its code. New features enter the map first, and the map
+declared before its code — drawn (Diagram 4) where it crosses the edge,
+an array in the test where it is own state only. New features enter the map first, and the map
 diff is the design review.
 
 **Maintaining.** The map is code: any change that moves a decision,
-changes a contract, or adds a capability updates the affected maps in
-the same commit. In a mapped repo, read `APP-MAP.md` before reading
+changes a contract, adds a capability, or changes what a node does at
+its edge updates the affected maps — structure or evidence — in the
+same commit. In a mapped repo, read `APP-MAP.md` before reading
 code, and treat rule 2 as the work fence. If map and reality disagree,
 say so and fix one of them — never silently work around.
 

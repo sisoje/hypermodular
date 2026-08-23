@@ -47,7 +47,7 @@ own.
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top-to-bottom = injection order. Derived services list their ingredients, which must sit above them. |
 | `A ~~~ B` | Invisible link — orders the dependency column. |
 | `%% Root: X · Parent: Y (../MAP.md)` | First line of every mermaid block. Self-describing placement. |
-| `%% Evidence: X · Given: …` + `sequenceDiagram` | Diagram 4, one per acceptance criterion whose log crosses the node's edge. In-arrows = when (`User`/`System`), out-arrows = the log in order, dashed = supplied data, `loop` = count unnamed, `Note` = silence. Targets = contract lines or own properties; quote mermaid-reserved names (`"title"`). Lives in the node's own `MAP.md` under `## Evidence`; own-state-only criteria stay arrays in the test. |
+| `%% Evidence: X · Parent: Y (../MAP.md)` + `%% Given: …` + `sequenceDiagram` | Diagram 4, one per acceptance criterion whose log crosses the node's edge. In-arrows = when (`User`/`System`), out-arrows = the log in order, dashed = supplied data, `loop` = count unnamed, `Note` = silence. Targets = contract lines or stored properties (own state, materialized sources); quote mermaid-reserved names (`"title"`). Lives in the node's own `MAP.md` under `## Evidence`; own-state-only criteria stay arrays in the test. |
 
 Style: mermaid id = node name, always (the name is the merge key). No
 colors, no fills (`fill:none` on every box), no emoji, no status marks.
@@ -88,8 +88,9 @@ colors, no fills (`fill:none` on every box), no emoji, no status marks.
   plus the 2–3 most interesting findings.
 - **New feature in a mapped repo**: add nodes/arrows to the map first,
   agree the diff, then build root-down, evidence declared before code.
-- **Maintenance**: map is code — update affected maps in the same commit
-  as the change. Read `APP-MAP.md` before reading code. If map and code
+- **Maintenance**: map is code — update affected maps (structure or
+  evidence) in the same commit as the change. Reverse-engineering never
+  invents evidence: draw a block only where a pinned log already exists. Read `APP-MAP.md` before reading code. If map and code
   disagree, say so; never silently work around.
 
 ## Related repos

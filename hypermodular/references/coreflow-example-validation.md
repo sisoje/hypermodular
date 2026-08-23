@@ -249,7 +249,8 @@ parse and draw. One thing did not — see F12.
 ### AddBookField
 
 ```mermaid
-%% Evidence: AddBookField · Given: title ""
+%% Evidence: AddBookField · Parent: ReadingListScreen (../MAP.md)
+%% Given: title ""
 sequenceDiagram
     User->>AddBookField: tap titleField
     AddBookField->>"title": ""
@@ -279,7 +280,8 @@ the text inside the quotes.
 ### BookList
 
 ```mermaid
-%% Evidence: BookList · Given: @Query [Dune, Anathem] · sortDescending false
+%% Evidence: BookList · Parent: ReadingListScreen (../MAP.md)
+%% Given: @Query [Dune, Anathem] · sortDescending false
 sequenceDiagram
     User->>BookList: tap sortToggle
     BookList->>sortDescending: true
@@ -294,7 +296,8 @@ an arrow.
 ### Dimmer
 
 ```mermaid
-%% Evidence: Dimmer · Given: isDimmed false
+%% Evidence: Dimmer · Parent: Unmounted (../APP-MAP.md)
+%% Given: isDimmed false
 sequenceDiagram
     User->>Dimmer: tap toggleDimButton
     Dimmer->>isDimmed: true
@@ -305,7 +308,8 @@ sequenceDiagram
 ### SaveButton
 
 ```mermaid
-%% Evidence: SaveButton · Given: getUserName throws
+%% Evidence: SaveButton · Parent: Unmounted (../APP-MAP.md)
+%% Given: getUserName throws
 sequenceDiagram
     User->>SaveButton: tap saveDraftButton
     SaveButton->>onSave: draft
@@ -322,7 +326,8 @@ This is the block that shows why solid/dashed was worth having.
 ### DragCard
 
 ```mermaid
-%% Evidence: DragCard · Given: maxDistance 0 · unpinned, values are timing-dependent
+%% Evidence: DragCard · Parent: Unmounted (../APP-MAP.md)
+%% Given: maxDistance 0 · unpinned, values are timing-dependent
 sequenceDiagram
     User->>DragCard: drag dragBox by (120, 80)
     loop per gesture sample
@@ -341,7 +346,8 @@ never logged — it gets no lifeline.
 ### TrickyDragCard
 
 ```mermaid
-%% Evidence: TrickyDragCard · Given: resetsSeen 0
+%% Evidence: TrickyDragCard · Parent: Unmounted (../APP-MAP.md)
+%% Given: resetsSeen 0
 sequenceDiagram
     User->>TrickyDragCard: drag trickyDragBox by (80, -40), release
     TrickyDragCard->>resetsSeen: 1
@@ -350,7 +356,8 @@ sequenceDiagram
 ### DownloadButton
 
 ```mermaid
-%% Evidence: DownloadButton · Given: download nil · cancelsSeen 0
+%% Evidence: DownloadButton · Parent: Unmounted (../APP-MAP.md)
+%% Given: download nil · cancelsSeen 0
 sequenceDiagram
     User->>DownloadButton: tap startDownloadButton
     DownloadButton->>download: task
@@ -367,7 +374,8 @@ the diagram carries only the order, which is what the requirement names.
 ### FocusField
 
 ```mermaid
-%% Evidence: FocusField · Given: toggleCount 0 · unfocused
+%% Evidence: FocusField · Parent: Unmounted (../APP-MAP.md)
+%% Given: toggleCount 0 · unfocused
 sequenceDiagram
     User->>FocusField: tap focusTextField
     Note over FocusField: focus moved by the system — nothing logged
@@ -556,6 +564,17 @@ the proposal above:
   only what the list can deliver.
 - **F12** — scoped to sequence diagrams, where it was tested. Flowchart
   ids colliding with flowchart keywords is untested and unruled.
+- **F13 (from review)** — evidence-only `MAP.md` files were orphans:
+  the `%% Evidence:` header carried no parent link, so the
+  reconstruction check could not place them. Fixed: every evidence
+  block opens with `%% Evidence: <Node> · Parent: <Parent> (../MAP.md)`
+  and `%% Given: …` on the second line; the eight blocks above are
+  updated. An unmounted node's parent is `Unmounted (../APP-MAP.md)`.
+- **F14 (from review)** — the Workflows never mentioned evidence.
+  Fixed: reverse-engineering draws a block only where a pinned log
+  already exists and never invents criteria; new work draws evidence
+  where it crosses the edge; maintenance lists "changes what a node
+  does at its edge" as a trigger.
 - **`Parent->>Node`** as a third stimulus source — open. CoreFlowExample
   has no parent handing down a new value mid-scenario; validating it
   against the skill's own `Landing` example would be a consistency

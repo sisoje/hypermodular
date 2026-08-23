@@ -97,7 +97,8 @@ test's array is exactly those arrows. Behavior renders in the PR next to
 structure; a diagram and a test that disagree are an unreviewed change.
 
 ```mermaid
-%% Evidence: Search · Given: searchAPI offline
+%% Evidence: Search · Parent: Tabs (../MAP.md)
+%% Given: searchAPI offline
 sequenceDiagram
     User->>Search: submit "dune"
     Search->>isLoading: true
