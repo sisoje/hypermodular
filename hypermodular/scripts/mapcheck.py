@@ -19,7 +19,7 @@ verified from the maps alone:
                 calls on its label and no evidence block is reported;
                 an in-arrow is User, System, or a child firing a
                 callback its own label carries
-  order         the Dependencies column is the injection order (~~~)
+  order         the Dependencies column is the order the root sets values (~~~)
 
 Not checked — needs the code: that every call in a node's Swift
 appears as a label line, and that bare evidence targets are real
@@ -119,7 +119,7 @@ def parse_dependencies(b):
     for name, ings in cyls.items():
         for ing in ings:
             if ing not in cyls: err(rel, f"{name}: ingredient '{ing}' is not a cylinder")
-            elif column.index(ing) > column.index(name): err(rel, f"{name}: ingredient '{ing}' sits below it (injection order)")
+            elif column.index(ing) > column.index(name): err(rel, f"{name}: ingredient '{ing}' sits below it (set order)")
     return cyls
 
 def parse_evidence(b):

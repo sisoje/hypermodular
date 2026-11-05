@@ -17,7 +17,7 @@ cylinders: ReadingListScreen: '· navService.showDetail()' names no cylinder 'na
 cylinders: SaveButton: '· analytics.track()' names no cylinder 'analytics' in the Dependencies box
 ReadingListScreen/AddBookField/MAP.md: AddBookField: evidence target 'bookStore.upsert' is not a call line on the label
 APP-MAP.md: Dependencies ~~~ chain disagrees with cylinder listing order
-APP-MAP.md: syncService: ingredient 'searchAPI' sits below it (injection order)
+APP-MAP.md: syncService: ingredient 'searchAPI' sits below it (set order)
 FocusField/MAP.md: FocusField: evidence block lacks '%% Given:' second line
 ReadingListScreen/BookList/MAP.md: BookList: arrow 'Nobody->>somewhere' neither from the node nor a stimulus (depth > 1?)
 SaveButton/MAP.md: SaveButton: dashed arrow must return to the node, got 'onSave'
