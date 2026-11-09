@@ -452,6 +452,15 @@
     computed re-exports and output bindings take their own names; the
     isolation setting is never on the UI-test bundle, the unit bundle
     is fine; `@TestLog` also serves a logger that must read a given.
+    Opus high, same prompt: two `@Binding`s, `draft` and `errors`, key
+    paths per field, rules static on the transformer, `@Capability`,
+    the node reading `.capability` itself, six tests, all four blocks
+    matched in its throwaway bundle. It misread "drops" as dropping the
+    text only and still ran the rule, so a focus write of "" judged an
+    untouched field "Required" live; the sentence now says dropped
+    whole, before the rule runs. Two more clauses: a callback alone
+    makes a node, and a returning closure writes its result after the
+    parens in the coupling diagram.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

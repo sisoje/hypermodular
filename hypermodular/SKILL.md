@@ -134,7 +134,7 @@ lifted only when another node must drive it.
 - **A node is a collapsed subtree.** Rows, buttons, and design-system
   pieces are furniture. A subtree is a node only when it joins the app
   lifecycle on its own: own outliving state, appearance work, a
-  navigation destination, its own boundary call. The map draws
+  navigation destination, its own boundary call or callback. The map draws
   persisted nodes, the ones the runtime keeps a slot for. A
   transformer, pure flow through a struct of bindings with no slot, is
   never drawn; it lives inside the node whose state it reads.
@@ -218,7 +218,8 @@ identity rules, and the multi-root and `Unmounted` forms are in
 
 A `classDiagram` of the shared vocabulary: models and service
 signatures. Field names without elaboration. Services as bare closure
-signatures. `..>` records consumption. Coupling is consumption, not
+signatures, a result after the parens, `save(Address) path`. `..>`
+records consumption. Coupling is consumption, not
 visibility. Everything is visible to everyone, and only use creates a
 line. A signature here is dictated by the nodes that consume it, never
 by the implementation that will eventually satisfy it. This layer is
