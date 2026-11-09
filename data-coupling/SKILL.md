@@ -358,7 +358,8 @@ either way.
   `@Environment` resolves only inside a render pipeline, and proves
   almost nothing. It is not the method's test. That is about a core. A
   pure calculation, a balance or a split, is data in and data out and
-  gets a plain test with literals. A sort or a filter the store can
+  gets a plain test with literals; so does a transformer of bindings,
+  driven by bindings over local variables. A sort or a filter the store can
   perform is the query's job, in the shell's `QueryView`, proven at the
   shell with a seeded in-memory container, the one integration test per
   cylinder; the hosted scenario still proves the core reacts to the sort
@@ -380,7 +381,11 @@ either way.
   each field's binding to store the text and write that field's error,
   stored and not derived so that the judgment is an event in the log,
   and the fields view is bindings and labels with nothing decided in
-  it.
+  it. The interception is one value, a transformer: a struct that
+  takes the node's raw bindings, the draft and the errors, and hands
+  back the intercepted field bindings and the labels. It holds no
+  state, so a plain test drives it with bindings over local variables
+  and reads the errors back, no view runtime.
 - **Test the action, not the aftermath.** The test proves an action
   executed with the right input, the closure called with the expected
   model or the binding written, plus the state the event leaves behind,
