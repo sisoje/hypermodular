@@ -31,16 +31,17 @@ function of its inputs, and the handed-in closure does the write.
 Only data that can be set from above can be lifted out of a view.
 Property wrappers divide in three, and the division is the cut line.
 
-Sources of truth are `@State`, `@AppStorage`, `@SceneStorage`, and
-`@Query`. What they hold is a plain value, and the node owns it or
-materializes it. Data can move. It can be handed in, captured,
-asserted on.
+Sources of truth are `@State`, `@AppStorage`, and `@SceneStorage`. What
+they hold is a plain value, and the node owns it. Data can move. It
+can be handed in, captured, asserted on.
 
-References are `@Binding` and `@Environment`. Neither holds state of
-its own. Each points at a value an ancestor owns. A binding arrives at
-the initializer; an environment value is set above with
-`.environment(...)` and read without a constructor argument. Same kind,
-different spelling. Both are data in, and both belong in the core.
+References are `@Binding`, `@Environment`, and `@Query`. None holds
+state of its own. A binding is a `get`/`set` pair an ancestor built and
+arrives at the initializer; an environment value is set above with
+`.environment(...)` and read without a constructor argument; a query is
+a filtered read of the store the root opened. Same kind, different
+spelling. All are data in, and all belong in the core, the query as
+the array it delivers.
 
 UI-runtime machinery is `@GestureState`, `@FocusState`, `@Namespace`,
 and `@ScaledMetric`. None hold data a caller could supply. There is no
@@ -70,8 +71,8 @@ So the rule for a core and the environment:
 | plain `let` and `var` fields, closures | data | already in the core | copied verbatim |
 | `@Binding` | reference | already in the core; passes straight through | copied verbatim; the caller supplies the binding |
 | `@State` | data, owned | stays in the core if only the core needs it; `@Binding` if a criterion names it | `@TestState`: stays private, keeps its default, logs every write |
-| `@AppStorage`, `@SceneStorage` | data, external storage | shell keeps it; core takes `@Binding` | `@Binding`. The key disappears, because a twin does not persist |
-| `@Query` | data, fetched | shell keeps it; core takes a plain `let` array | `@QueryResult`. The memberwise init takes the bare array |
+| `@SceneStorage` (`@AppStorage` is the root's and never in a feature) | data, external storage | shell keeps it; core takes `@Binding` | `@Binding`. The key disappears, because a twin does not persist |
+| `@Query` | reference, a filtered read | shell keeps it; core takes a plain `let` array | `@QueryResult`. The memberwise init takes the bare array |
 | `@FocusState` | machinery | shell | `@TestFocusState`: a real `FocusState` underneath, programmatic writes log |
 | `@Environment` value, your own `@Entry` | reference | in the core; the scenario sets it with `.environment(...)` | copied verbatim; the scenario sets it with `.environment(...)` |
 | `@Environment(\.dismiss)`, `(\.openURL)` | reference, sealed action | shell reads it and hands the core a closure, because nothing can build one from above | `@TestEnvironment`: the real action runs, every call logs |
@@ -85,9 +86,9 @@ Extracting the core is a mechanical split into two views.
 
 1. **Plain fields go to the core.** They are already data.
 2. **Data-holding wrappers become boundaries.**
-   - `@AppStorage` and `@SceneStorage` become `@Binding`. External
-     storage is a dependency, and whoever constructs the core supplies
-     it.
+   - `@SceneStorage` becomes `@Binding`. External storage is a
+     dependency, and whoever constructs the core supplies it.
+     `@AppStorage` is the root's and never in a feature.
    - `@Query` becomes a plain `let` array. The fetched result is handed
      in as a value.
    - `@State` that only the core itself needs may stay in the core.
@@ -109,7 +110,7 @@ core.
 ```swift
 struct BookList: View {                    // shell: owns the I/O
     @Query private var books: [Book]                               // rule 2: fetch
-    @AppStorage("sortByAuthor") private var sortByAuthor = false   // rule 2: external storage
+    @Binding var sortByAuthor: Bool                                // rule 1: the root's storage, a binding
     let onDelete: (Book) -> Void                                   // rule 1: already data
 
     var body: some View {
@@ -119,7 +120,7 @@ struct BookList: View {                    // shell: owns the I/O
 
 struct BookListCore: View {                // core: data at the boundary
     let books: [Book]                      // fetched array, as a value
-    @Binding var sortByAuthor: Bool        // external storage, mockable
+    @Binding var sortByAuthor: Bool        // passes straight through
     let onDelete: (Book) -> Void           // unchanged: a plain field all along
 
     var body: some View { ... }            // the one real body
@@ -158,7 +159,6 @@ needs must sit in the type body. `@Shell` requires Swift 6.4 (Xcode
 struct Card: View {
     @Query private var items: [Item]
     @State private var isExpanded = false
-    @AppStorage("isFavorite") private var isFavorite = false
     let title: String
     let action: (Item) -> Void
 
@@ -168,7 +168,6 @@ struct Card: View {
     // struct Core: View {
     //     @QueryResult var items: [Item]
     //     @TestState private var isExpanded = false
-    //     @Binding var isFavorite: Bool
     //     let title: String
     //     let action: (Item) -> Void
     //     var body: some View { ... }   // the same text, copied
@@ -178,11 +177,10 @@ struct Card: View {
 // #Preview cannot name macro-generated code, hence the wrapper.
 // Its construction is also a unit test's entire setup.
 struct CardScenario: View {
-    @TestState private var isFavorite = false                     // every write logs its value
     @TestAction private var action: (Item) -> Void = { _ in }    // every call logs its payload
 
     var body: some View {
-        Card.Core(items: [], isFavorite: $isFavorite, title: "t", action: action)
+        Card.Core(items: [], title: "t", action: action)
     }
 }
 
@@ -226,7 +224,7 @@ screen. Its entire relationship to the outside world is a handful of
 these, all visible in its property list. No hidden service locator, no
 ambient singleton, nothing a comment has to remind you to register. A
 contract's no-op default is all three shapes stubbed, and a test
-overrides only the closure it spies on.
+overrides every closure the node's label names.
 
 `async` is the I/O marker for what the core awaits. A black hole is
 synchronous because the core does not await it; the root's closure may
@@ -252,14 +250,14 @@ those), and hands content the result as plain data:
 
 ```swift
 struct BookList: View {
-    @AppStorage("sortDescending") private var sortDescending = false
+    @Binding var sortDescending: Bool
 
     var body: some View {
         QueryView(
             query: Query(sort: \Book.title, order: sortDescending ? .reverse : .forward),
             dependencies: [sortDescending]
         ) { $books in
-            List(books) { Text($0.title) }
+            List(books, id: \.id) { Text($0.title) }
         }
     }
 }
@@ -286,7 +284,7 @@ struct LoadingShelf: View {
     let load: () async throws -> [Book]
 
     var body: some View {
-        List(books) { Text($0.title) }
+        List(books, id: \.id) { Text($0.title) }
             .task { await reload() }
     }
 
@@ -307,7 +305,7 @@ and persists the delete as a source-of-truth write:
 ```swift
 struct BookShelfShell: View {
     @Environment(\.library) private var library
-    @AppStorage("sortByAuthor") private var sortByAuthor = false
+    @Binding var sortByAuthor: Bool
     @State private var books: [Book]?
     @State private var pendingSave: [Book]?
 
@@ -347,10 +345,10 @@ storage alive and defeats the teardown cancel.
 - **Split when** the view owns a live wrapper and a preview or a test
   needs a state the wrapper cannot easily produce, or a boundary event
   you want to assert.
-- **Cut by hand** when the view's state can be lifted. Anything a
-  criterion names should be lifted anyway. Cut with `@Shell` when
-  the view owns state that must stay private and still log, or when a
-  `@Query`, focus, or sealed environment action is in the way.
+- **Cut with `@Shell` wherever the library is present.** It is the
+  shorter code, and own state stays where it is used and still logs.
+  Cut by hand only without the library; then state a test must reach
+  moves up to the shell and enters the core as `@Binding`.
 
 ## Naming and layout
 
@@ -382,8 +380,8 @@ logged as `(name, value)`.
 
 ## Checklist
 
-- [ ] Every data-holding wrapper crossed the boundary. `@AppStorage` and
-      `@SceneStorage` became `@Binding`; `@Query` became a plain array
+- [ ] Every data-holding wrapper crossed the boundary. `@SceneStorage`
+      became `@Binding`; no `@AppStorage` below the root; `@Query` became a plain array
       or `@QueryResult`; criterion-named `@State` became `@Binding` or
       `@TestState`.
 - [ ] Machinery stayed in the shell or is copied verbatim on the twin.

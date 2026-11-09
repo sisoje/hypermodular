@@ -7,5 +7,5 @@ sequenceDiagram
     Note over FocusField: focus moved by the system — nothing logged
     User->>FocusField: tap toggleFocusButton
     FocusField->>isFocused: false
-    FocusField->>toggleCount: 1
+    FocusField->>settings.toggleCount: 1
 ```

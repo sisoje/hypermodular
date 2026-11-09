@@ -54,7 +54,7 @@ By the shape of the boundary (`shell-core.md`):
 | async effect that can fail | a stub per edge case (a value, an error, a delay), one test each |
 
 A contract's no-op default already stubs all three shapes. A test
-overrides only the closure it spies on. The test wants the evidence,
+overrides every closure the node's label names. The test wants the evidence,
 not the effect.
 
 ## Direct construction, and why it is not the test
@@ -237,7 +237,8 @@ later appears on screen. That is a different view tree, and the
 assertion would be testing SwiftUI itself.
 
 **Assert the order the criterion names.** Where two writes are
-interchangeable the log is a set, not a sequence. Over-specify and the
+interchangeable the test sorts them into one fixed order before
+comparing, duplicates kept, and the block shows that order. Over-specify and the
 test breaks on refactors again, at depth one.
 
 **Silence is evidence.** No `books` entry means the failure wrote
@@ -339,11 +340,11 @@ a view-layer observer replaying history.
 - The behavior under test is a pure derivation: a computed property, a
   formatter, a calculator. Assert the value directly. Pure logic is
   synchronous and non-throwing and needs no host.
-- The requirement names no order, or only a decision. Then the log is
-  compared as a set, or the test asserts the decision and skips the
-  log. It is never a subsequence. The whole log is compared with one
-  equality, so a call the criterion did not name fails the test, which
-  is the point.
+- The requirement names no order. Then the test sorts the
+  interchangeable entries into one fixed order before comparing,
+  duplicates kept. It is never a subsequence. The whole log is compared with one equality, so
+  a call the criterion did not name fails the test, which is the
+  point.
 
 ## Pitfalls
 

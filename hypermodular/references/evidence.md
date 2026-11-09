@@ -13,7 +13,8 @@ and every call with its payload. Two kinds of entry, nothing else.
 - **A source-of-truth mutation logs** under the property's name: a
   binding write, an external-storage write, the node's own state write.
   Evidence is wider than the map contract. Own state never appears on
-  a map, but its writes are I/O, and I/O logs.
+  a structure map, but its writes are I/O, and I/O logs, so it appears
+  as a target in evidence.
 - **A boundary call logs** under the closure's name, with its
   arguments, whatever the closure's shape: a fire-and-forget command,
   an `async throws` fetch, a returning query to the world. Impurity is
@@ -68,9 +69,9 @@ The block is the source and the test is written from it.
 
 ## Discipline that keeps the log honest
 
-- Assert order only when the requirement names an order. Interchangeable
-  events are a set. If only the final decision matters, assert the
-  decision.
+- Assert order only when the requirement names an order. For
+  interchangeable events the test sorts them into one fixed order
+  before comparing, duplicates kept, and the block shows that order.
 - `loop` in a block when the requirement names no count. The test then
   asserts the decision. A value the requirement does not pin is a
   symbolic payload, a separate choice from the count.
@@ -81,26 +82,29 @@ The block is the source and the test is written from it.
 - Record the behavior as-is. A text field that writes its binding twice
   per keystroke logs twice per keystroke. Evidence records what
   happens, not an idealization.
-- A workflow is a rule. When a later step consumes an earlier step's
-  result, or a failure needs compensation, model that protocol explicitly and test its decisions the same way. A
-  flat happy-path log is not it.
-- Unexpected calls need no rule. The whole dependency struct is loggers
-  in a spec, so a call the declaration did not name appears in the log and fails
-  the equality. The whole log is compared; never a subsequence. It poisons the snapshot instead of vanishing
-  into an inert stub.
+- A workflow is a rule. When a later call consumes an earlier call's
+  result, or a failure triggers a compensating call, the node that
+  decides the later call declares both in one block: the result is a
+  dashed arrow back, the compensation the next out-arrow. A flat
+  happy-path block is not it. A multi-step protocol is a node of its
+  own exactly when the node rule makes it one.
+- Unexpected calls are caught twice. A logged boundary called when the
+  block did not say so, or twice, appears in the log and fails the
+  equality; the whole log is compared, never a subsequence. A boundary
+  the label does not name has no logger in the scenario, so that call
+  is the checker's finding, `mapcheck.py --sources`, a call in the
+  Swift with no line on the label.
 
 ## One event, two edges
 
 A parent and its child each declare evidence, and the same physical
-event appears in both, at different edges. The user flips the shelf's
-sort toggle. In BookShelf's block that is `BookShelf->>sortByAuthor`, a
-write into a binding it was handed. In Library's block it is
-`Library->>sortByAuthor`, a write into the storage it materializes. The
-swipe is `BookShelf->>onDelete` one level down and
-`Library->>dbService.deleteBook` at the parent's edge. Both blocks are
-correct under whose-source-of-truth. The child owns the binding it was
-handed, the parent owns the storage, and they are separate tests of
-separate nodes, not double-counting. A parent's evidence names what
+event appears in both, at different edges. The user swipes a book away.
+In BookShelf's block that is `BookShelf->>onDelete`, a callback it was
+handed. In Library's block it is `Library->>dbService.deleteBook`, a
+call at the parent's edge. Both blocks are correct under
+whose-source-of-truth. The child owns its callback, the parent owns the
+call, and they are separate tests of separate nodes, not
+double-counting. A parent's evidence names what
 crosses its edge. The child is furniture from there, however many lines
 the child's own block has. Nothing in one block references the other,
 and depth stays one in each.
@@ -135,13 +139,16 @@ through its internals.
 
 The log is exhaustive by construction. A core captures nothing it was
 not handed, so its parameters are its only channel outward. Instrument
-them all and no effect escapes unlogged. And a write's consequence
-never comes back to the node that made it. The result arrives as a
-successor's creation inputs, because the network is reactive so the
-nodes do not have to be.
+them all and no effect escapes unlogged. A write re-creates the node.
+The value that wrote dies in the wave it triggers, while an action it
+started runs on, and the writes after its awaits land in the successor's
+storage. So a write's consequence never comes back to the value that
+made it. The result arrives as a successor's creation inputs, because
+the network is reactive so the nodes do not have to be.
 
 Refactor the node and the log cannot change. Only a changed requirement
-can. That is why the log, not the structure, is the contract. It is the
+can. Moving state across the core's edge, into or out of furniture, is
+not a refactor; it changes what the node declares. That is why the log, not the structure, is the contract. It is the
 one artifact coupled to requirements rather than to how the code is
 arranged, so a harmless refactor can never turn it red.
 

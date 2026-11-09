@@ -15,6 +15,8 @@ flowchart LR
     subgraph Dependencies
         direction TB
         bookStore[(bookStore)]
+        settings[(settings)]
+        bookStore ~~~ settings
     end
     App --> Dependencies
     classDef deps fill:none
@@ -27,5 +29,5 @@ flowchart LR
 %% Root: App · Unmounted
 flowchart TD
     SaveButton["SaveButton<br/>· onSave<br/>· getUserName"]
-    FocusField["FocusField<br/>· @AppStorage<br/>· @FocusState"]
+    FocusField["FocusField<br/>· $settings.toggleCount<br/>· @FocusState"]
 ```

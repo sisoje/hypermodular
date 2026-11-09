@@ -24,7 +24,7 @@ nowhere but in that layer's types. For the shelf that is `Book`,
 `LibraryService`, and the `@Entry`.
 
 ```swift
-struct Book: Identifiable, Equatable {
+struct Book {
     let id: String
     let title: String
     let author: String
@@ -40,9 +40,18 @@ extension EnvironmentValues {
 }
 ```
 
-`id` is an initializer argument, never generated inside the model. Two
-literals with the same id are equal, so a fixture is a literal and
-needs no `static let` to hold identity across waves.
+`id` is an initializer argument, never generated inside the model and
+never minted inside a node; a new id comes from the store or from a
+contract closure a scenario can fix, so payloads stay deterministic.
+The model conforms to nothing. A `@Model` class carries what SwiftData
+gives it, `PersistentModel` included, and nothing added. Identity is
+the consumer's to name, at
+the call site with `ForEach(books, id: \.id)`, or in the consumer's own
+module with `extension Book: @retroactive Identifiable {}` where an API
+such as `.sheet(item:)` demands the protocol. The mark is the truth:
+the layer never conforms, so no later conformance can collide. Two
+literals with the same `id` are one row to that `ForEach`, so a fixture
+is a literal and needs no `static let` to hold identity across waves.
 
 The method article writes the same contract with `let` members marked
 `@Sendable` and the default spelled out in the `@Entry`. That form is
@@ -125,10 +134,10 @@ public data struct in the layer needs a `public init`. `@Flowable`
 writes it at the type's access level, defaults carried through, closure
 fields `@escaping`.
 
-A contract's members are closures, lets, or bindings. A struct of
-`@Binding`s is a contract too, such as a settings value the root builds
-over its own `@AppStorage` properties, so features read one value from
-the environment instead of each materializing the key.
+A contract's members are closures, lets, or bindings. The root's
+`@AppStorage` keys reach features this way, as a `settings` struct of
+bindings built over the root's own properties, so a feature reads or
+writes one value from the environment and never names a key.
 
 The consumer dictates the signature, never the implementation that will
 satisfy it. The core constructs the model and hands it over (`try await
@@ -138,7 +147,7 @@ effects in its type, and pure logic has none.
 
 The default is the minimal no-op. An environment value's default is
 `.init()` with do-nothing closures, never a `static let live`. The default is what previews and tests get. It already stubs every shape
-of I/O, and a test overrides only the closure it spies on. A closure that
+of I/O, and a scenario overrides every closure the node's label names. A closure that
 must return returns nothing: an empty collection, or `nil` through an
 optional result, which is the honest shape for a fetch that may find
 nothing. Never a blank value that looks real, and never a trap.
@@ -311,7 +320,10 @@ Visibility was never the coupling. Apple exposes everything to every
 feature through the environment. Seeing a capability couples nothing.
 Consuming it does. Hiding dependencies mattered in OO because a
 dependency was a stateful reference, and seeing one meant being able to
-corrupt it. A closure can only be called.
+corrupt it. A closure can only be called. A contract is not split for
+size. A struct of three hundred closures holds no state and no
+invariant, and a node that calls one is coupled to one signature. A
+smaller record sliced off for a feature is taste, not rescue.
 
 ## Do not
 

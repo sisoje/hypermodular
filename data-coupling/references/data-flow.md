@@ -94,7 +94,7 @@ this with a custom key.
 Positional means literal. Hand-write three rows and swap the first two,
 and each keeps the `@State` of its position, not of its book.
 `.id(book.id)` re-keys to the book instead, so `@State` travels with it.
-That is what `ForEach` over `Identifiable` does for you.
+That is what `ForEach(books, id: \.id)` does for you.
 
 ```swift
 // wrong: index as identity. Inserting at the front re-keys every row below it.
@@ -109,7 +109,7 @@ ForEach(books, id: \.title) { book in
 }
 
 // right: stable, unique among siblings, independent of position and of anything editable.
-ForEach(books) { book in            // Book: Identifiable
+ForEach(books, id: \.id) { book in // the key named at the call site
     BookRow(book: book)
 }
 ```
@@ -151,8 +151,9 @@ struct BookRow: View {
 
 **In, from the caller, at creation.** Plain values. A `Binding` is data
 too, a struct wrapping `get: () -> Value` and `set: (Value) -> Void`
-that points at another node's storage. It is still a value handed
-downward. The backward part was baked into the closures before this
+that an ancestor built. The setter usually ends in that ancestor's
+storage; whatever else it does is the ancestor's decision. It is still
+a value handed downward. The backward part was baked into the closures before this
 node saw them. A `@ViewBuilder` subtree is a value. Closures are
 values. `onSubmit` is data until called.
 
@@ -179,7 +180,7 @@ view `init` may only plumb data.
 In, self-loop, out. That is the whole of flow. The rest happens at a
 node's edges.
 
-A binding write mutates the storage it points at. An action call
+A binding write runs the setter an ancestor built. An action call
 carries a plain payload out of the node. Neither is data flow.
 Parameters move on every call, and movement is not the criterion.
 
@@ -237,10 +238,10 @@ func bookRow(_ book: (title: String, author: String)) -> some View { ... }
 // a Book, a search result, a decoded JSON row: any caller with that shape fits
 ```
 
-The trade is that tuples cannot conform to protocols. No
-`Identifiable`, no custom `Equatable`, no `Codable`. Reach for a struct
-the moment a slice needs any of those, which includes anything going
-into a `ForEach`.
+The trade is that tuples cannot conform to protocols. No `Hashable`,
+no custom `Equatable`, no `Codable`. Reach for a struct the moment a
+slice needs any of those. A `ForEach` is not that moment; `id:` keys a
+tuple as well as a struct.
 
 Behavior bundles the same way (Wlaschin's capability-based design).
 Hand a consumer the functions it may call, as values, not the whole
@@ -274,19 +275,20 @@ Tuples and capability records cover what a caller hands in explicitly.
 The rest reaches a node through property wrappers, which divide in
 three.
 
-Sources of truth are `@State`, `@AppStorage`, `@SceneStorage`, and
-`@Query`. What they hold is a plain value, a `Bool`, a `String`, a
-`[Book]`, and the node owns it or materializes it. Data can move. It
-can be handed in, captured, asserted on.
+Sources of truth are `@State`, `@AppStorage`, and `@SceneStorage`. What
+they hold is a plain value, a `Bool`, a `String`, and the node owns it.
+Data can move. It can be handed in, captured, asserted on.
 
-References are `@Binding` and `@Environment`. Neither holds state of
-its own. A binding points at a value an ancestor owns and arrives at
-the initializer. An environment value points at a value an ancestor
+References are `@Binding`, `@Environment`, and `@Query`. None holds
+state of its own. A query is a filtered read of the store the root
+opened, and arrives as the array it delivers. A binding is a `get`/`set` pair an ancestor built and arrives at
+the initializer. An environment value is a value an ancestor
 set with `.environment(...)` and arrives without a constructor
 argument. That is the only difference between them, and it is a
-difference of spelling, not of kind. Both are data in. A scenario
-replaces the one with a literal binding and the other with
-`.environment(...)`.
+difference of spelling, not of kind. All are data in. A scenario
+replaces the binding with a literal binding, the environment value
+with `.environment(...)`, and the query with a canned array or a
+seeded container.
 
 UI-runtime machinery is `@GestureState` (a live gesture's lifecycle),
 `@FocusState` (the focus system), `@Namespace` (view identity), and
@@ -344,9 +346,16 @@ The fixes, in order of preference:
    private var results: [Result] { search(query) }
    private var isEmpty: Bool { results.isEmpty }
    ```
+   Which screen shows is a derivation too. `if token == nil { Login() }`
+   is a projection of the token, not a route to keep in sync. The nil
+   write is the logout.
 2. **Do the whole transition in one boundary event.** If the work is
    async, one `.task(id: query)` writes every affected piece of state
-   once. Not a chain of handlers each writing one field.
+   once. Not a chain of handlers each writing one field. When the write
+   arrives through a binding the owner hands down, the owner's setter is
+   that event. Build the `Binding` by hand and let the effect ride the
+   write. `.onChange` on state the node owns is one render late and
+   cannot tell what changed or why.
 3. **Only then `.onChange`**, for a single, terminal reaction to a value
    you do not own: scroll-to, haptic, analytics, dismissing a sheet. One
    hop, and no second `.onChange` listening to what the first wrote.

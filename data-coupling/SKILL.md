@@ -21,14 +21,17 @@ description: >
 
 A SwiftUI `View` is not a view. It is a node in a network, a plain
 value carrying everything its subtree will show and do. Data enters a
-node at one moment, its creation. Everything else it does, a write or a
-call, is a boundary event. That is the whole model, and everything in
+node at one moment, its creation, through the initializer or the
+environment. Everything else it does, a write or a call, is a boundary
+event. That is the whole model, and everything in
 this skill is that model applied: to where state lives, to what a
 service is, to how a view is cut and tested, and to how the modules of
 an app meet.
 
 Three sources, in order of authority. When this file and a source
-disagree, the source wins. Flag the disagreement.
+disagree, flag it. Where the owner has since ruled against a source,
+the environment read being the case (F23 in the repo's `TODO.md`), the
+ruling wins and this file carries it.
 
 - [SwiftUI Data Flow Masterclass](https://medium.com/@redhotbits/swiftui-data-flow-masterclass-099f0768f776),
   the model: nodes, identity, waves, boundary events, the shell/core
@@ -63,9 +66,10 @@ the how gives a boundary. Hiding the state gives an object that must be
 driven into every condition instead of constructed in one. So:
 
 - **State is open.** Every value a node renders enters it as a `let`, a
-  `@Binding`, an environment value, or its own `@State`. Nothing sits behind a private setter,
-  an accessor that decides what you may read, or a factory that decides
-  what you may build.
+  `@Binding`, an environment value, or its own `@State`. Nothing, in a
+  view or in a model, sits behind a private setter, an accessor that
+  decides what you may read, or a factory that decides what you may
+  build.
 - **Every state is valid by definition.** A view is a function of its
   state. Whatever it is handed, it shows. There is no invariant to guard
   and no validation before construction. A state the view cannot show is
@@ -87,8 +91,8 @@ driven into every condition instead of constructed in one. So:
   logging binding is the entire mock, and it is written before the real
   service is.
 
-Three sentences follow, one per source. Every rule below is one of them
-applied.
+Three sentences follow, distilled from the sources above. Every rule
+below is one of them applied.
 
 1. **Data in at creation, boundary events out, nothing else.** A node's
    whole observable behavior is the children it creates and its boundary
@@ -96,9 +100,22 @@ applied.
    Nothing else about a node is observable, which is what makes it
    testable.
 2. **Lift the state, lift the services, and what is left is the feature,
-   pure.** A fact becomes a `let`, mutable state a `@Binding`, a service
-   a closure. Anything an acceptance criterion names enters the feature
-   that way. Purely presentational state stays local. When unsure, lift.
+   pure.** Four keys decide a design. Construction decides where a
+   source of truth lives. Whatever the root can name, it builds, and
+   hands down as a projection. A static key names `@AppStorage`, so the
+   root owns the app's finite set of keys and no feature names one. The
+   container is opened at the root. A scene names `@SceneStorage`, so
+   the scene's root. A node's own `@State` the root could only invent,
+   so it stays where it is used, and the cut tests it there. A `@Query`
+   is a read, like a binding or an environment value, a filtered
+   projection of the store the root opened; it lives where it is read,
+   at the common ancestor when several features read it. Usage decides what a feature
+   receives. It receives what it uses, a fact as a `let`, a setting as
+   a `@Binding`, a service as a closure, and it makes its queries over
+   the models it sees. Actions are behavior. They are closures the root
+   sets, and a write or a call is the event. Mockability is the test.
+   Every boundary is a value a scenario stands in for, so the test is
+   the log. State is not centralized on principle.
 3. **Anything constructible from literals is testable by construction.**
    If a core cannot be constructed from inline literals, a boundary is
    missing, and the call site shows it before any test runs.
@@ -123,21 +140,34 @@ source of most broken SwiftUI mental models.
   registers its storage against that slot. A write to registered
   storage invalidates the slots that depend on it, and the runtime
   re-runs those transformations and no others.
-- **A boundary event is one that changes a source of truth**, storage
-  some node reads. A binding write whose setter chain ends in storage
-  changes one, and the next wave follows. A fire-and-forget request
+- **A boundary event re-enters the flow only if it changes a source of
+  truth**, storage some node reads. A binding write whose setter chain
+  ends in storage changes one, and the next wave follows. A
+  fire-and-forget request is a boundary event too, and it logs, but it
   changes none. The loop closes through storage and re-creation, never
-  through a backward edge.
+  through a backward edge. Which screen shows is a projection of that
+  storage, `if token == nil { Login() }`, never a route pushed from the
+  place the token was cleared.
 - **Wrappers divide in three.** Sources of truth (`@State`,
-  `@AppStorage`, `@SceneStorage`, `@Query`) hold a plain value the node
-  owns or materializes. References (`@Binding`, `@Environment`) hold
-  nothing. Each points at a value an ancestor owns, one handed in at
-  the initializer, the other set above with `.environment(...)`. Both
-  are data in. UI-runtime machinery (`@GestureState`, `@FocusState`,
+  `@AppStorage`, `@SceneStorage`) hold a plain value the node owns.
+  References (`@Binding`, `@Environment`, `@Query`) hold nothing. A
+  binding is a `get`/`set` pair an ancestor built and handed in at the
+  initializer. An environment value is one an ancestor set above with
+  `.environment(...)`. A query is a filtered read of the store the root
+  opened. All three are data in. UI-runtime machinery (`@GestureState`, `@FocusState`,
   `@Namespace`, `@ScaledMetric`) holds nothing a caller could supply.
-  All three resolve only inside a `View`, `App`, `Scene`,
+  All three groups resolve only inside a `View`, `App`, `Scene`,
   `ViewModifier`, or another `DynamicProperty`. Inside a class they do
   nothing.
+- **A binding is an interception point.** `$state` is the simplest
+  binding, a setter that only stores. Any other setter is the
+  ancestor's decision about what the write means, and an effect rides
+  it: `set: { token = $0; if $0 == nil { keychain.clear(); refresh?.cancel() } }`,
+  where `keychain` is a contract the root read and `refresh` a task the
+  root owns. The logging binding in a test is the same pair with a
+  different `set`. A binding is not a handle on a stored value. It is
+  the one place a write can be intercepted, and it need not end in
+  storage at all.
 - **Classes sit outside the graph.** Put a screen's state in an
   `@Observable` or `ObservableObject` and the runtime no longer owns it.
   The object can be aliased, can outlive the node, and any holder can
@@ -168,7 +198,7 @@ struct BookShelf: View {
     var body: some View {
         List {
             Toggle("Sort by author", isOn: $sortByAuthor)
-            ForEach(books) { book in
+            ForEach(books, id: \.id) { book in
                 Text(book.title)
                     .swipeActions {
                         Button("Delete") { onDelete(book) }
@@ -196,19 +226,22 @@ cannot be used.
   parent decides is an initializer argument: `onDelete`. A capability
   the app provides whoever the parent is a contract, set at the root
   and read from the environment: the store, the network, navigation. If
-  every parent would hand the same closure, it is a contract. A
-  write to state an ancestor holds in memory is a binding write. A
-  write that leaves the tree is a closure call.
+  every parent would hand the same closure, it is a contract. A service
+  is one even when a single feature calls it. Sharing is not the test;
+  who provides it is. A write to state an ancestor owns is a binding
+  write, whatever its setter does with it. A write that leaves the tree is a closure call.
 - **An edge case is a constructor argument**, or a driven sequence of
   them. The empty shelf is `books: []`. The error is a value handed in.
-  The slow network has no duration, because the core is handed the
-  result. Those are the previews, too.
+  The slow network has no duration when the core is handed the result.
+  A core that awaits the load stubs the delay. Those are the previews,
+  too.
 - **Slices want structural types.** A node is coupled to whatever type
   its parameters name, so pass the fields a view reads, not the whole
   model. When a slice must travel as one value, a labelled tuple is its
   fields with no name to mint. Reach for a struct the moment the slice
-  needs a protocol, such as `Identifiable` for `ForEach`. Behavior
-  bundles the same way. `(save: (Book) -> Void, delete: (Book) -> Void)`
+  needs a protocol, `Hashable` for a navigation value, say. A `ForEach`
+  is not that moment; `id: \.id` names the key at the call site.
+  Behavior bundles the same way. `(save: (Book) -> Void, delete: (Book) -> Void)`
   grants two verbs, and the consumer has nothing else to couple to.
 - **The price is plumbing you can see**, parameters threading through
   views that never read them, instead of coupling you cannot see. Over a
@@ -225,12 +258,16 @@ runs only inside a live render pipeline. The core is the same `body`
 against data at the boundary. Three rules cut it:
 
 1. **Plain fields go to the core.** They are already data.
-2. **Data-holding wrappers become boundaries.** `@AppStorage` and
-   `@SceneStorage` become `@Binding`. `@Query` becomes a plain `let`
-   array. `@State` that only the core needs may stay. State a test must
-   reach moves up and enters as `@Binding`.
-3. **Machinery stays in the shell.** The shell owns the gestures, the
-   focus, and the namespaces, and hands the core plain values. The
+2. **Data-holding wrappers become boundaries.** `@SceneStorage` becomes
+   `@Binding`; `@AppStorage` is the root's and never in a feature, so
+   the cut never meets it. `@Query` becomes a plain `let` array. `@State` stays. By hand, state a test must reach moves up and
+   enters as `@Binding`; under `@Shell` it stays private and logs.
+3. **Machinery stays in the shell, in the by-hand cut.** The shell owns
+   the gestures, the focus, and the namespaces, and hands the core plain
+   values. `@Shell` copies it into the generated core as a test wrapper
+   instead, live when hosted, defaulted otherwise. A system UI that runs
+   out of process, the photo picker, the share sheet, is machinery too.
+   The shell owns it and hands the core its result as a value. The
    environment is not machinery. A core reads it as it reads a binding.
    Apple's sealed actions are the by-hand exception in the table below.
 
@@ -241,16 +278,23 @@ Two ways to make the cut, one contract:
 | The core | a second view, `BookListCore`, constructed by the shell's one-line `body` | a nested `Core` twin the macro generates. Same `body` text, copied by the compiler, so it cannot drift |
 | Own `@State` | stays if only the core needs it; lifted to `@Binding` if a criterion names it | stays private as `@TestState` and logs every write. The write site emits the evidence |
 | External storage, fetched data | `@Binding`, `let` | `@Binding`, `@QueryResult` (tests pass the bare array) |
-| Machinery | shell | copied verbatim: live when hosted, defaulted otherwise. `@FocusState` becomes `@TestFocusState` and logs |
-| Environment values, your own `@Entry` | the core reads them. The scenario sets them with `.environment(...)` | copied verbatim. The scenario sets them with `.environment(...)` |
+| Machinery | shell. When the core must write focus, the shell hands it a binding built over its `@FocusState` | copied verbatim: live when hosted, defaulted otherwise. `@FocusState` becomes `@TestFocusState` and logs |
+| Environment values, your own `@Entry` and Apple's plain ones, `\.locale`, `\.colorScheme` | the core reads them. The scenario sets them with `.environment(...)` | copied verbatim. The scenario sets them with `.environment(...)` |
 | Apple's sealed actions, `\.dismiss`, `\.openURL` | the shell reads them and hands the core a closure, because nothing can build one from above | `@TestEnvironment`: the real action runs, every call logs |
+
+By hand, the shell and the core are two types in two files. A screen
+is named `…Screen`, a reusable view by its role, `Row`, `Sheet`,
+`Style`.
 
 Either way, what reaches a core is a value. A model context, a
 session, a socket, a token refresher: a service that holds state is
 wrapped in closures at the root before it is set, and the core reads
 the closures. And there is one shell wherever the I/O is, not one per
 view. A view made only of `let`s, bindings, environment reads, and
-closures is already a core.
+closures is already a core, and gets no shell. The composition root is
+never cut either. It owns the app's state, hands it down as bindings,
+sets the live values, and has no scenario; its one child is the first
+core.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a
@@ -283,39 +327,61 @@ that logs, tap it for real, check the log: `["action"]`. Every core has
 assert the execution log, the ordered `(name, value)` record of its
 boundary events, every write and every call with its payload. An entry
 is the boundary's own name, never the contract's, a space, then the
-arguments in order: `isLoading true`, `onDelete Dune`, `setStarred Dune
-true` and never `favorites.setStarred`, `load`.
+arguments in order, each written as the criterion names it:
+`isLoading true`, `onDelete Dune` (a `Book`, by its title), `token nil`,
+`load`, `dismiss`, `setStarred Dune true`. The name is `setStarred`, never
+`favorites.setStarred`. That is the hand-written logger's spelling.
+Under swift-core-flow the log is two arrays, names and values. The
+names are the contract, asserted whole and in order. A value is
+asserted as the test's author sees fit, an optional unwrapped, a model
+by its title, a class by one field. The evidence block is the same
+either way.
 
 - **Mocking is construction.** A boundary is a value, so the mock is a
   value, one wrapper deep. A logging binding records the name and the
   new value before storing. A logging closure records its payload and
   forwards nowhere. A contract's no-op default already stubs all three
-  shapes, and a test overrides only the closure it spies on.
+  shapes, and a scenario overrides every closure the node's label names. A scenario
+  sets loggers for the node's own label lines and drives the node, no
+  deeper; a child calling a logged contract would land in the same log.
+  A child with a live wrapper is handed its runtime, `.modelContainer`
+  or `.mockQuery`.
 - **The test is the hosted scenario.** A scenario is a view that owns
   real `@State`, hands the core logged bindings and closures, sets its
   contracts with `.environment(...)`, and is driven with real input in
-  a UI test. The real runtime runs: identity, environment, `@State`,
+  a UI test. A `System` stimulus is the scenario's to produce, a
+  control that feeds the stream or flips the value the system would. The real runtime runs: identity, environment, `@State`,
   `.task`. Whether an action is a method or an inline call does not
   matter; the input fires it. Constructing a core in a unit bundle and
   calling a method sees only the `@Entry` defaults, because
   `@Environment` resolves only inside a render pipeline, and proves
-  almost nothing. It is not the method's test.
-- **A UI test here is a unit test, and the host is designed once.** A
-  second, test-only `@main` over the feature code renders one scenario
-  named in the launch environment and nothing else. Nothing else of the
-  app exists in the process. One scenario per core, in its own file,
-  and the same scenario is the preview and the launch target of the UI
-  test. A new unit is one enum case,
-  one scenario, one test. The host never learns the app's structure.
+  almost nothing. It is not the method's test. That is about a core. A
+  pure calculation, a balance or a split, is data in and data out and
+  gets a plain test with literals. A sort or a filter the store can
+  perform is the query's job, in the shell's `QueryView`, proven at the
+  shell with a seeded in-memory container, the one integration test per
+  cylinder; the hosted scenario still proves the core reacts to the sort
+  state.
+- **A UI test here is a unit test, the unit being one core.** A second,
+  test-only `@main` renders one scenario named at launch and nothing
+  else of the app. One scenario per core, its givens as parameters, and
+  the same scenario is the preview and the launch target. The host is
+  the swift-core-flow skill's.
 - **Effects log, getters don't.** Writes and calls fire once per event.
   Reads fire on the render scheduler's timing. Never log from a `get`.
-- **Test the action, not the aftermath.** A core test proves an action
+  Under `@Shell` every private `@State` of the core logs, so a draft no
+  criterion names lives in a furniture view below the core; the
+  placement declares that keystrokes are not the node's evidence, and
+  what the core owns is what its blocks declare.
+- **Test the action, not the aftermath.** The test proves an action
   executed with the right input, the closure called with the expected
-  model or the binding written, plus the immediate state. It never
-  asserts that the result later appears on screen. That is a different
+  model or the binding written, plus the state the event leaves behind,
+  through every await the node itself performs. It never asserts that
+  the result later appears on screen. That is a different
   view tree, and the assertion would be testing SwiftUI.
-- **Assert the order the criterion names.** Where two writes are
-  interchangeable the log is a set, not a sequence. Silence is evidence
+- **Assert the order the criterion names.** Where two entries are
+  interchangeable the test sorts them into one fixed order before
+  comparing, duplicates kept, and the block shows that order. Silence is evidence
   too. No `books` entry means the failure wrote nothing.
 - **Mock depth is one, permanently.** What the real `fetch` does with a
   304 is a separate question with a separate test, one per boundary, at
@@ -340,21 +406,44 @@ nowhere but in that layer's types.
   defaults. An environment value is data flow: set at the root,
   replaced by a scenario, read by a core. The nodes that consume it dictate its signature, never the
   implementation that will satisfy it. No protocols, no classes, no
-  reference-type service objects.
+  reference-type service objects. A protocol wins only for Objective-C
+  interop, a plugin API external callers must implement, or a
+  ten-method API with shared default behavior.
+- **Networking is not a concept of the app.** The backend enters as a
+  struct of async closures, one per operation, and the signature is the
+  whole contract. Above the root nothing names a session, a request, a
+  status code, a header, or a decoder. Transport, decoding, retries,
+  caching, and auth are closures composed at the root around one seam,
+  never a subsystem a node can see. What answers the closures is the
+  root's decision, a server, a folder of fixtures, a recording. A root
+  that sets fixtures is a complete app with no server, and no screen
+  can tell. The contract exists before anything implements it, so a
+  feature is built and tested against the struct before a server
+  answers. `grep URLSession` finds one file.
 - **Data carries no behavior.** Models are stored properties and
-  initializers. Computed members live as pure extensions in the feature
-  layer. A class as data only when it earns it, for a lifecycle a struct
+  initializers, and conform to nothing. `Identifiable` is a consumer's
+  need, named at the call site with `id: \.id` or declared in the
+  consumer's own module. Computed members live as pure extensions in
+  the feature layer. A class as data only when it earns it, for a lifecycle a struct
   cannot own, for `@Bindable` decomposition, or for per-element
-  observation, and even then it stays pure data. `deinit` is the one
+  observation, and even then it stays pure data. A delegate a framework
+  requires is a class too, private to the root modifier that owns it. `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription. A type earns its place
   in the layer only by crossing a module boundary.
 - **The root sets live values inline, where it sets them.** One
-  modifier per system framework, each framework imported in one file,
-  the chain applied inline at `@main` and read top to bottom. No
-  `.live`, `.preview`, or `.unimplemented` statics and no `+Live` files.
-  The default serves previews and tests, and a scenario builds the
-  logger.
+  modifier per I/O framework the root wires, each imported in one file,
+  the chain applied inline at `@main`. A modifier that reads a value
+  another sets is written first, inside it, so the code reads the
+  dependency column bottom-up. SwiftData's `@Model` and `@Query` are
+  materialization and import it where they stand. No `.live`,
+  `.preview`, or `.unimplemented` statics and no `+Live` files; they
+  attach an implementation to the contract type and move the wiring
+  away from the modifier that sets it. The default serves previews and
+  tests, and a scenario builds the logger. A live closure that writes the root's own state closes over
+  its binding, `$habits`, never over `self`. A live value over the model
+  context comes from a modifier that reads `\.modelContext` inside the
+  `.modelContainer(...)` scope and sets the contract there.
 - **Every dependency points at data.** Features and I/O modules both
   depend on the layer and never on each other. The app depends on all of
   them. A stateless module is algorithms and cores, importable anywhere.
@@ -362,34 +451,28 @@ nowhere but in that layer's types.
 - **Seeing a capability couples nothing; consuming it does.** Apple
   exposes everything to every feature through the environment. The
   core's consumption is named at an initializer or at an `@Environment`
-  read. A closure can only be called.
+  read. A closure can only be called. A contract is not split for size.
+  A struct of three hundred closures holds no state and no invariant,
+  and a node that calls one is coupled to one signature. A smaller
+  record sliced off for a feature is taste, not rescue.
 
 The graph, the composition root, flow versus injection, the capability
 shapes, and when a protocol wins are in `references/modules.md`.
 
-## swift-core-flow, by the rule it mechanizes
+## swift-core-flow
 
-One dependency, independent macros. Adopt one view at a time, with
-nothing rewritten. Each row is a rule above and its mechanized form.
-
-| Rule | Macro or view |
-|---|---|
-| the cut, with own state logging at the write site | `@Shell` generates `Core`; `@TestState`, `@TestAction`, `@TestFocusState`, `@TestEnvironment` |
-| the scenario as a hosted UI test | `HostApp<Scenario>`, `uiTestLog()`, `CoreFlowUITesting` |
-| `@Query` as input: one shell owns the live query, content reads plain data | `QueryView` with `dependencies:`, `@QueryResult`, `.mockQuery` |
-| a value derived from inputs, kept across renders, never `@State(wrappedValue:)` in an `init` | `MemoView` |
-| a view-owned task that cancels on replacement and on teardown | `@UnstructuredTask` |
-| capabilities: hand a consumer only the operations it needs, as a tuple | `@Capability` over a type or an extension |
-| slices: a tuple of the fields a node reads, from one or more sources | `#pick(from:)` |
-| the memberwise `init` a data package needs public, and construction inputs as a tuple | `@Flowable` generates `init`, `InFlow`, `makeFlow(_:)` |
-| events up the tree and one closure back down the environment, for deeplinks and scoped notifications | `@FlowUp` with `.collectFlow` and `.onFlow` |
+The cut and the log as macros, one dependency, adopted one view at a
+time with nothing rewritten. `@Shell` generates the core, `@TestState`
+and `@TestAction` log at the write site, `QueryView` and `@QueryResult`
+make `@Query` an input, `MemoView` keeps a value derived from inputs
+across renders, never `@State(wrappedValue:)` in an `init`, and
+`HostApp` with `CoreFlowUITesting` hosts and asserts the scenario. The
+rule-to-macro table, the install, and the order of work are the
+library's own skill, `skill/SKILL.md` in
+[sisoje/swift-core-flow](https://github.com/sisoje/swift-core-flow).
 
 ## Do not
 
-- **Hide state behind an object.** Private setters, invariant guards,
-  validating factories, a model that fuses its fields with the methods
-  that change them. In every one of these, state must be driven into a
-  condition instead of constructed in one. Open state is the point.
 - **A ViewModel, or any `@Observable` or `ObservableObject` owning a
   screen's state and actions.** A node is already pure logic. Pulling
   logic out of it separates logic from logic and adds an object.
@@ -397,38 +480,44 @@ nothing rewritten. Each row is a rule above and its mechanized form.
   substitute, which is why swift-core-flow leaves them unmapped.
   Renaming it a store, client, or manager and handing it in as a
   dependency changes nothing. A dependency with methods is still an
-  object. Erase it into closures: networking as an async function, a
-  validator as a plain closure or a value computed from the state.
-- **A service locator, singleton, DI container, or protocol per
-  dependency with a mock class behind it.** Nothing has a constructor
-  waiting to be filled. A value the root sets into the environment is replaced in a preview
-  or a scenario by setting it again there, and a struct of closures gives the same
-  substitutability as a protocol with a third of the code. A protocol
-  wins only for Objective-C interop, for a plugin API external callers
-  must implement, or for a ten-method API with shared default behavior.
-- **`.live`, `.preview`, or `.unimplemented` statics and `+Live` files.**
-  They attach an implementation to a contract type, scatter the type
-  across packages, and move the wiring one file away from the root
-  modifier that sets the value.
-- **A dependency whose live value can be made with no inputs.** It is
-  a constant.
-  Use it directly.
+  object. An `@Observable` class holding only stored properties is
+  data, set and read like any value; the methods make it the object.
+  Erase the object into closures: networking as an async function, a
+  validator as a value computed from the state, or as a plain closure
+  when the app supplies the rule.
+- **A dependency whose live value can be made with no inputs**, a
+  formatter, a calendar, a pure calculation. It is a constant. Use it
+  directly, never through the environment. The clock is not one. The
+  current date is a fact an ancestor owns and hands down, a `let` or an
+  environment value, never a closure the node calls, so a scenario can
+  fix it. A delay the node awaits is an async effect, a closure the
+  scenario stubs to return at once or never.
 - **A chain of `.onChange` modifiers** where the second observes what
   the first wrote. One keystroke, three waves, and the transition lives
   in no node. Derive instead of store. Do the whole transition in one
   boundary event. Use `.onChange` only for a single terminal reaction to
-  a value the node does not own.
+  a value the node does not own, a scroll, a haptic, dismissing a
+  sheet. An effect on a write to state the node owns rides the setter
+  of the binding it hands down.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
 - **Grouping for grouping's sake.** A `ViewState` umbrella, a data
   struct wrapped around a single view's properties, a helper that wraps
   a single-use sequence. Each is a jump the reader must make. Bundle by
   operation, not by screen. A `View` is already a struct.
+- **Data-driving statically known content.** Three onboarding pages are
+  three views, or an enum with an exhaustive `switch`, never a `[Page]`
+  replayed through `ForEach` with `lastPage = 2`. What is fixed at
+  compile time is written out.
+- **A struct that only switches over an enum.** Any value can conform
+  to `View`. An enum that renders itself conforms directly.
+- **Generic implementations.** Most problems are static. Model each as
+  the one case it is.
+- **Trivial comments.** A comment says what the code cannot, the why,
+  or it is not there.
 - **Designing for the what-if.** "What if someone forgets to set the
-  entry?" Then the no-op default runs and the preview shows it. No
-  guard, no runtime assertion that a value was set, no fallback path
-  for a misuse. The architecture does not protect itself from its
-  authors.
+  entry?" Then the no-op default runs and the preview shows it. The
+  architecture does not protect itself from its authors.
 
 ## Vocabulary
 
@@ -442,11 +531,11 @@ The articles' terms. Use them. They make discussion precise in a way
 | flow | data moving during a wave, down into inits or up through preference accumulation; every flow terminates in node creation or a source of truth |
 | transformation | `body`, input data in, child nodes created |
 | wave | one pass of re-creation; the runtime re-runs the transformations whose inputs changed, and no others |
-| source of truth | storage some node reads (`@State`, `@AppStorage`, `@SceneStorage`, `@Query`); changing one triggers the next wave |
+| source of truth | storage some node owns (`@State`, `@AppStorage`, `@SceneStorage`); changing one triggers the next wave |
 | self-loop | `@State`, an edge to the node's own next creation, not to another node |
 | boundary event | a binding write or action call; re-enters the flow only if it changes a source of truth |
 | reshaping | a wave that changes structure, not only values; the rare case |
-| reference | `@Binding` or `@Environment`: holds no state, points at a value an ancestor owns, set at the initializer or above with `.environment(...)` |
+| reference | `@Binding`, `@Environment`, or `@Query`: holds no state. A binding is a `get`/`set` pair an ancestor built and handed in at the initializer; an environment value is one an ancestor set above with `.environment(...)`; a query is a filtered read of the store the root opened |
 | machinery | Apple's UI-runtime wrappers that hold no suppliable data (gestures, focus, namespaces, metrics) |
 | shell / core | the view owning the live property wrappers and services, one wherever the I/O is / the feature as pure transformation, values and closures in, children and boundary events out |
 | scenario | a test-host view owning real `@State`, handing down only logged boundaries |
@@ -466,6 +555,10 @@ The articles' terms. Use them. They make discussion precise in a way
   why the axis is authority, and why mock depth is what TDD died of
 - Lazar Otasevic, [swift-core-flow](https://github.com/sisoje/swift-core-flow),
   `@Shell`, `@TestState`, `@TestAction`, `QueryView`, `HostApp`
+- Lazar Otasevic, *Don't Separate Networking From Your UI, Eliminate It
+  From the App*, and [swift-declarative-openapi](https://github.com/sisoje/swift-declarative-openapi),
+  the backend as a struct of async closures derived from the spec the
+  server publishes
 - Edward Yourdon & Larry Constantine, *Structured Design* (1979), where
   the coupling taxonomy and the term "data coupling" come from
 - Scott Wlaschin, [Six approaches to dependency injection](https://fsharpforfunandprofit.com/posts/dependencies/)

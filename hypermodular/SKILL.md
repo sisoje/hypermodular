@@ -22,7 +22,9 @@ behavior before it is built. Development flows from the root toward the
 leaves. Each node's evidence is declared before its code. The map is
 Mermaid in markdown (`APP-MAP.md` at the repo root, `MAP.md` beside each
 mapped subtree), so it renders in every GitHub or GitLab PR, always
-visible and always diffable.
+visible and always diffable. The map tree may stand apart from the
+source tree. A `MAP.md` inside a Swift package's `Sources/` is listed
+in the target's `exclude`.
 
 The map is behavioral, not an inventory. It shows where decisions live
 and what they ask of the world, nothing else. A node's whole observable
@@ -108,30 +110,48 @@ any node built from objects, however reactive the pipeline around them.
 A `flowchart TD`, one level deep. Solid arrows are data flow. The
 parent hands the child its data, bindings, and callbacks. The child
 never reaches up or sideways, and cross-feature arrows are forbidden.
+Navigation across features is a call to `navService` with a route and
+data; the state it writes lives at the root, and the caller never knows
+which node answers. A node's own sheet or stack is its own state,
+lifted only when another node must drive it.
 
 - **Mermaid id = node name, always.** The name is the join key that
   merges maps back into one tree.
-- **Label = name, then one `· ` contract line per line.** Four kinds,
-  distinguishable by parser. `· @Source` materializes a source of truth
-  that outlives the node (`· @Query`, `· @AppStorage`). `· dep.func()`
+- **Label = name, then one `· ` contract line per line.** Five kinds,
+  distinguishable by parser. `· @Source` materializes a value from a
+  source that outlives the node (`· @Query`, `· @SceneStorage`). `· dep.func()`
   calls a capability and logs. `· dep.value` reads one and never logs.
-  A bare `· name` is a callback the parent handed down. The lines are
-  the node's entire outbound relationship with the world. A name-only
-  label receives everything and calls nothing.
+  `· $path` writes a binding the node was handed, from its parent
+  (`· $sortByAuthor`) or inside a dependency (`· $settings.city`); the
+  write logs, the checker requires a block that writes it, and the
+  line is what makes a `let` turning into a writable binding a map
+  diff. A bare `· name` is a callback the parent handed down. Every
+  `dep` named on a label is a cylinder in Diagram 3. Apple's sealed
+  actions are calls with no dependency, `· dismiss()`, `· openURL()`:
+  Apple sets them, so no cylinder, and they log under their own name.
+  The lines are the node's entire outbound relationship with the world.
+  A name-only label receives everything and calls nothing.
 - **A node is a collapsed subtree.** Rows, buttons, and design-system
   pieces are furniture. A subtree is a node only when it joins the app
   lifecycle on its own: own outliving state, appearance work, a
   navigation destination, its own boundary call.
-- **A decision labels its alternative arrows with the deciding value**
-  (`-->|isLoggedIn|`). Unlabeled arrows are composition. Possibility,
-  never sequence.
+- **A labeled arrow is a presence condition.** Unlabeled arrows are
+  composition, children that always exist together. A label names the
+  value that must hold for the child to exist, in the code's own words
+  (`-->|isAdding|`, `-->|!path.isEmpty|`). Arrows labeled with the same
+  deciding value are alternatives
+  (`-->|isLoggedIn|`, `-->|!isLoggedIn|`; three arrows on one enum are a
+  switch). Arrows on different values are independent and may coexist.
+  Possibility, never sequence.
 - **Unbuilt nodes are bare leaves.** Mapped, reachable, empty. Finished
   design.
 
 One module is one mermaid, chopped at every level. A node carries its
 full contract everywhere it appears, as a child in its parent's map and
 as the root of its own. That is double-entry bookkeeping. Every block
-opens with a `%%` comment declaring its place. The root map:
+opens with a `%%` comment declaring its place. `APP-MAP.md` holds the
+root's structure block, the dependencies diagram, and the coupling
+diagram. The root map:
 
 ```mermaid
 %% Root: App
@@ -148,33 +168,39 @@ flowchart TD
     Landing -->|isLoggedIn| Tabs
 ```
 
+A decision's alternatives are drawn in its own map. In its parent's
+map it appears with its label and no arrows of its own.
+
 Tabs' map, with unlabeled arrows, plain composition:
 
 ```mermaid
 %% Root: Tabs · Parent: Landing (../MAP.md)
 flowchart TD
-    Tabs --> Library["Library<br/>· @Query<br/>· @AppStorage<br/>· dbService.deleteBook()"]
+    Tabs --> Library["Library<br/>· @Query<br/>· $settings.sortByAuthor<br/>· dbService.deleteBook()"]
     Tabs --> Search["Search<br/>· searchAPI.search()<br/>· navService.showDetail()"]
 ```
 
 Library's map. The fetch and the store live here, lifted out of the
-shelf that shows them:
+shelf that shows them. The sort preference is the root's `@AppStorage`,
+arriving as a binding inside the `settings` value; the shelf writes it,
+so the write crosses Library's edge too:
 
 ```mermaid
 %% Root: Library · Parent: Tabs (../MAP.md)
 flowchart TD
-    Library["Library<br/>· @Query<br/>· @AppStorage<br/>· dbService.deleteBook()"] --> BookShelf["BookShelf<br/>· onDelete"]
+    Library["Library<br/>· @Query<br/>· $settings.sortByAuthor<br/>· dbService.deleteBook()"] --> BookShelf["BookShelf<br/>· $sortByAuthor<br/>· onDelete"]
 ```
 
 BookShelf's map, beside its code. It takes `books` as a value (a sorted
-fetch, eventually), `sortByAuthor` as a binding (storage, eventually),
-and `onDelete` as a closure (a service, eventually). It is constructible
-from literals and complete before any of the three exists:
+fetch, eventually), `sortByAuthor` as a binding it writes (the root's
+storage, eventually), and `onDelete` as a closure (a service,
+eventually). It is constructible from literals and complete before any
+of the three exists:
 
 ```mermaid
 %% Root: BookShelf · Parent: Library (../MAP.md)
 flowchart TD
-    BookShelf["BookShelf<br/>· onDelete"] --> BookDetail["BookDetail<br/>· imageLoader.loadImage()"]
+    BookShelf["BookShelf<br/>· $sortByAuthor<br/>· onDelete"] --> BookDetail["BookDetail<br/>· imageLoader.loadImage()"]
 ```
 
 Leaves get no structure map. A map earns its existence by having
@@ -211,9 +237,13 @@ classDiagram
     class NavService {
         showDetail(bookId)
     }
+    class Settings {
+        sortByAuthor
+    }
 
     BookShelf ..> Book
     Library ..> DbService
+    Library ..> Settings
     Search ..> NavService
 ```
 
@@ -227,35 +257,49 @@ The world's surface, and one fact about it. The root sets all of it. No
 usage lines. Usage is written on the nodes themselves.
 
 - **A dependency is an environment value: a plain struct composed of
-  closures, lets, or bindings**, with a no-op default. No protocols, no
-  classes, no reference-type service objects. No `.live`, `.preview`,
+  closures, lets, or bindings**, with a no-op default. The live value,
+  the preview default, and the scenario's logger are member sets of
+  that one struct. No protocols, no
+  classes, no reference-type service objects; the code skill names the
+  three cases where a protocol wins. No `.live`, `.preview`,
   or `.unimplemented` statics and no `+Live` files. The root builds the
   live value inline where it sets it. How a contract is written,
   defaulted, and set at the root is in
   `../data-coupling/references/modules.md`.
 - Name the boundary, not the tech: `dbService`, not `swiftData`. Native
-  materialization (`@Query`, `@AppStorage`) gets no cylinder. The root
-  does not set it. It is facts arriving, tagged on the node label. How
+  materialization (`@Query`) gets no cylinder. The root does not set
+  it. It is facts arriving, tagged on the node label. The root's own
+  `@AppStorage` reaches features through a `settings` cylinder, a
+  struct of bindings; handed through the inits of nodes that never use
+  it, the write would land on each of their labels. Nor does a sealed
+  action get one, `· dismiss()`; Apple sets it. How
   a capability's closure is assembled behind its cylinder is
   implementation detail and never drawn.
 - **Setting a value is normal data flow.** One arrow from the root into
   the box. A second arrow into the box means a value was set below the
-  root.
+  root. The root is the root of the tree that is running: the app's
+  `@main`, a scenario, a preview. Each sets every app-provided value its
+  tree reads, and nothing below it sets any.
 - **Top to bottom is the order the root sets them.** A derived service
-  lists its ingredients, which must sit above it.
+  lists its ingredients, which must sit above it. Where nothing is
+  derived, the order is still the root's own and constrains nothing. The
+  column runs outermost first. In the code the chain reads the other
+  way: a modifier that reads another's value is written first, inside
+  it.
 
 ```mermaid
 %% Root: App · Dependencies
 flowchart LR
     subgraph Dependencies
         direction TB
+        settings[(settings)]
         imageLoader[(imageLoader)]
         searchAPI[(searchAPI)]
         dbService[(dbService)]
         navService[(navService)]
         loginState[(loginState)]
         syncService[("syncService<br/>· dbService<br/>· searchAPI")]
-        imageLoader ~~~ searchAPI ~~~ dbService ~~~ navService ~~~ loginState ~~~ syncService
+        settings ~~~ imageLoader ~~~ searchAPI ~~~ dbService ~~~ navService ~~~ loginState ~~~ syncService
     end
 
     App --> Dependencies
@@ -285,7 +329,8 @@ though the system held the pen. The system moving focus logs nothing,
 because focus is the system's.
 
 A declaration is an acceptance criterion transcribed. *Given* names
-constructor arguments and stubs, *when* an interaction, *then* the log. "Given no
+constructor arguments, stubs, and what a materialized source holds,
+*when* an interaction, *then* the log. "Given no
 connection, when the user searches, then it reports offline and writes
 no books":
 
@@ -307,13 +352,18 @@ decision to cross it. The rest is in `references/evidence.md`.
 One `sequenceDiagram` per acceptance criterion whose log crosses the
 node's edge, that is, a call, a callback, or a write into a source the
 node was handed or materializes. Arrows into the node are the *when*.
-Arrows out are the *then*, one log entry each, in order, so the test's
-array is exactly the out-arrows. Dashed arrows back are supplied data,
+Arrows out are the *then*, one log entry each, so the test's array is
+exactly the out-arrows, in their order where the criterion names one;
+where it does not, the test sorts them into one fixed order before
+comparing. A payload is written as the criterion
+names it, a `Book` by its title. The names are what a test asserts
+exactly; a value is asserted as the test's author sees fit. Dashed arrows back are supplied data,
 never entries. A stimulus is `User`, `System`, or a child firing a
 callback the parent handed it (`AddItem->>ShoppingList: onAdd eggs`),
 which is the only way an event reaches a parent from inside its own
-tree. Own-state-only criteria stay arrays in the test. The map shows
-edges.
+tree. A subscription is a call that returns a stream, logged once when
+made; each event it delivers is a `System->>Node` stimulus.
+Own-state-only criteria stay arrays in the test. The map shows edges.
 
 ```mermaid
 %% Evidence: Search · Parent: Tabs (../MAP.md)
@@ -336,7 +386,8 @@ words are in `references/notation.md`.
 
 **Architecting a new app or feature.** `references/architecting.md`.
 The owner decides the tree. Draw it with the user and agree it. Declare
-evidence for every edge-crossing node. Run `scripts/mapcheck.py`. Build
+evidence for every edge-crossing node. Run `scripts/mapcheck.py`, and
+with `--sources` once code exists. Build
 root-down, each node's evidence holding before the next. Cylinders
 last, each tested once for real. In a mapped repo a feature enters the
 map first, and the map diff is the design review.
@@ -346,8 +397,8 @@ map first, and the map diff is the design review.
 point, attribute every I/O call to the node that decides it, apply the
 cuts while walking, verify values are set at the root only, write
 depth-1 maps. Never invent evidence. Draw a block only where a pinned
-log already exists. Present the two or three most interesting findings.
-The first map is a free architecture review.
+log already exists. Present the findings. The first map is a free
+architecture review.
 
 **Maintaining.** The map is code. Any change that moves a decision,
 changes a contract, adds a capability, or changes what a node does at
@@ -374,7 +425,7 @@ The articles' terms, and what the map calls them.
 | evidence block (Diagram 4) | an acceptance criterion drawn. "The test wants the evidence, not the effect": *given* in the header, *when* as in-arrows, the log as out-arrows |
 | contract line | the outbound half of the wireframe you can type-check: what the node materializes, calls, or calls back |
 | cylinder | dependency parameterization: a capability as a closure, set at the root as an environment value |
-| `@` line (materialization) | on the node, a source of truth it holds and the root does not set, so no cylinder. To the node's core it is data at the boundary, which is dependency rejection: a scenario supplies it as a value or a binding. The masterclass calls that storage a dependency, a declared claim on it |
+| `@` line (materialization) | on the node, a value it materializes from a source that outlives it, which the root does not set, so no cylinder. To the node's core it is data at the boundary, which is dependency rejection: a scenario supplies it as a value or a binding. The masterclass calls that storage a dependency, a declared claim on it |
 | data coupling layer (Diagram 2) | the same: the one shared module, free of behavior, the models, closure signatures, and the environment entries that carry them |
 | depth 1 | mock depth, constant at one, extended to the root (values set there only) and to maps (one level) |
 | scenario | the same: a test-host view owning real state and handing down logged boundaries |

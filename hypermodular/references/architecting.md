@@ -39,7 +39,8 @@ holds.
    `MAP.md`, before any code. Own-state-only criteria are written as
    arrays in the test, also before code. A node with calls on its label
    and no block is not ready to build.
-3. **Run the checker.** `scripts/mapcheck.py` on the repo: zero errors,
+3. **Run the checker.** `scripts/mapcheck.py` on the repo, `--sources`
+   once code exists: zero errors,
    and every warning understood. The map is now the work fence.
 4. **Build root-down.** Implement a node only after its parent exists.
    For each node, its evidence holds (the test compares two values and

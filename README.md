@@ -6,18 +6,20 @@ One map, one module, one boundary. An architecture method where the app
 is modeled as small Mermaid maps that live in the repo, guide AI agents,
 and cannot rot, because the global view is derived, not maintained.
 
-This repo holds two agent skills. `hypermodular/` is the maps: draw the
-app, develop top-down, declare evidence. `data-coupling/` is the code:
-how a SwiftUI node is written, cut into shell and core, tested by its
-execution log, and how an app's modules meet through one data layer.
-Point Claude, or any agent that reads a `SKILL.md`, at either and it
-knows the method.
+This repo is a top-down app-making engine for agents, in two skills.
+`hypermodular/` is the maps: draw the app, develop top-down, declare
+evidence. `data-coupling/` is the code: how a SwiftUI node is written,
+cut into shell and core, tested by its execution log, and how an app's
+modules meet through one data layer. Point Claude, or any agent that
+reads a `SKILL.md`, at either and it knows the method. Point it at both
+and it writes the app, root down, each node proven by its log before
+the next is started.
 
 ## The idea
 
 Classic TDD, the mocks-all-the-way-down version that broke on every
 refactor, deserved to die. What is worth keeping is the part that keeps
-an AI agent honest: fast feedback it cannot talk its way out of.
+an AI agent honest: feedback it cannot talk its way out of.
 Hypermodular delivers that with two declarations instead of rituals.
 
 - **Structure before code.** The app is a tree of behavior, drawn before
@@ -26,7 +28,7 @@ Hypermodular delivers that with two declarations instead of rituals.
   That is finished design, not missing work.
 - **Evidence, not effects.** A node's behavior is declared as data:
   these values in, this execution log out. The log is its writes and
-  boundary calls, in order, with their payloads. No mocks, ever. A
+  boundary calls, in order, with their payloads. No mock objects, ever. A
   boundary in a spec is a logger, and checking a node is comparing two
   values.
 
@@ -59,7 +61,8 @@ flowchart TD
     Landing -->|isLoggedIn| Tabs
 ```
 
-A decision is a node with labeled alternative arrows. No diamonds.
+A labeled arrow is a presence condition; arrows on the same deciding
+value are alternatives. No diamonds.
 LoginScreen is an unbuilt leaf. Nobody knows or cares yet what is
 inside, and that is the point of top-down.
 
@@ -93,8 +96,8 @@ flowchart LR
 
 Even navigation is a dependency. `navService.showDetail(id)` is a call
 whose caller never knows which node answers, and cross-feature arrows
-are forbidden. The navigation state lives at the root. Callers get
-closures.
+are forbidden. The state a route writes lives at the root, and callers
+get closures. A node's own sheet or stack is its own state.
 
 **4. Evidence.** What does it do at its edge? One sequence diagram per
 acceptance criterion that crosses a boundary. Arrows into the node are
@@ -135,8 +138,9 @@ design change.
   `data-coupling/SKILL.md` as skills, then ask Claude to "map this project", "plan this app top-down", or
   "review this view".
 - **Claude Code CLI**: symlink (or copy) this repo's `hypermodular/` and
-  `data-coupling/` folders into `~/.claude/skills/`, or work in a repo
-  containing `APP-MAP.md`. `AGENTS.md` here teaches the rules to any
+  `data-coupling/` folders into `~/.claude/skills/`, and swift-core-flow's
+  `skill/` folder as `swift-core-flow` if you build with the macros, or
+  work in a repo containing `APP-MAP.md`. `AGENTS.md` here teaches the rules to any
   agent that reads it (Cursor, Codex), and `CLAUDE.md` is one line
   importing it.
 - **Reverse-engineering**: point the skill at an existing codebase and
@@ -157,6 +161,7 @@ design change.
 - [swift-core-flow](https://github.com/sisoje/swift-core-flow), the
   mechanics: macros for the functional-core / imperative-shell split,
   the execution log, and a hosted UI-test host that asserts it.
+  Its `skill/SKILL.md` is the adoption skill, the method mechanized.
 - **data-coupling** (this repo, `data-coupling/`), the code: the node
   model, lifting, the shell/core cut by hand or with `@Shell`, the
   execution log, the data coupling layer and the module graph.

@@ -31,7 +31,7 @@ Find every I/O touchpoint (network, storage, environment, timers,
 notifications, launch arguments) and attribute each to the node that
 decides it. That node gets the contract line. The service becomes a
 cylinder, named for the boundary rather than the tech (`dbService`,
-never `swiftData`). Native materialization (`@Query`, `@AppStorage`)
+never `swiftData`). Native materialization (`@Query`)
 becomes an `· @Source` line on the node that holds it, not a cylinder.
 
 Collect shared models and service signatures into the coupling diagram
@@ -57,8 +57,9 @@ decided, and the map must not pretend otherwise.
 Each of these was met mapping CoreFlowExample and is ruled in
 `notation.md`. Expect them.
 
-- **Several entry points over one library.** One tree per `@main` in
-  `APP-MAP.md`. Names unique across the repo.
+- **Several entry points over one library.** One tree per shipped
+  `@main` in `APP-MAP.md`; a test host is none. Names unique across the
+  repo.
 - **Built but mounted nowhere.** Components that exist, are tested, and
   are composed by no root. They go under `## Unmounted` with their full
   label and no arrows, so the contract has a copy to compare against

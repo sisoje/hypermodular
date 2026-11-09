@@ -14,14 +14,16 @@ free for an AI.
 
 **Node label = name on the first line, then one contract line per
 line**, using `<br/>`. Every contract line starts with `· ` (middle dot, space). The name is the text before the first `·`, so the merge
-key stays unambiguous even where `<br/>` does not render. Four kinds of
+key stays unambiguous even where `<br/>` does not render. Five kinds of
 contract line, distinguishable at a glance and by parser. `@`
-materializes, parens call, a bare dot reads, a bare name calls back:
+materializes, parens call, a bare dot reads, `$` writes a handed
+binding, a bare name calls back:
 
 - `· @Source` lines **materialize**. The `@` is the materialize marker.
   The word is the source's own name: a property wrapper (`· @Query`,
-  `· @AppStorage`, `· @FocusState`), or `· @ProcessInfo` for ambient
-  launch input. Source name only, written once however many keys the
+  `· @SceneStorage`, `· @FocusState`), or `· @ProcessInfo` for ambient
+  launch input. `@AppStorage` is the root's and reaches a node as a
+  binding, a `$` line. Source name only, written once however many keys the
   node holds. What the node derives from it (an isLoggedIn computed off
   a token) is code's business, not the map's. A wrapper earns a line
   only when it binds the node to a source of truth that outlives the
@@ -30,17 +32,26 @@ materializes, parens call, a bare dot reads, a bare name calls back:
   handles) gets no line, whatever its spelling.
 - `· <dep>.<func>()` lines **call** a capability from the dependency box
   (`· dbService.deleteBook()`). The parens are the mark. A call is an
-  event, and it logs.
+  event, and it logs. A sealed action Apple sets, `· dismiss()`,
+  `· openURL()`, is a call with no dependency and no cylinder, and it
+  logs under its own name.
 - `· <dep>.<value>` lines **read** a let or binding off a dependency
   (`· loginState.isLoggedIn`). Coupling without evidence. Reads never
   log, and a node whose dotted lines are all reads owes no evidence
   block. A decision node is usually this.
+- `· $<path>` lines **write** a binding the node was handed, by its
+  parent (`· $sortByAuthor`) or inside a dependency (`· $settings.city`,
+  and `settings` is then a cylinder). The write logs under the
+  property's name, the evidence names it as the label spells it
+  (`BookShelf->>sortByAuthor: true`, `Settings->>settings.city: Lisbon`),
+  and the checker requires some block to write it. The line is what
+  turns a `let` becoming a writable binding into a map diff.
 - `· name` lines (no `@`, no dot) **call back**: a closure the parent
   handed down as data (`· onSave`). It appears in the parent's map,
   where it is handed down, and in the node's own, like any contract
   line.
 
-Calls and callbacks produce evidence. Reads, materialized or off a
+Calls, callbacks, and binding writes produce evidence. Reads, materialized or off a
 dependency, do not, though a write to materialized storage is I/O and
 logs like any write (see `evidence.md`). The lines under the name are
 the node's entire outbound relationship with the world: everything it
@@ -52,8 +63,9 @@ everything and calls nothing. Nothing else ever goes in a label.
 - **Solid arrow `-->`** is data flow. The parent hands the child its
   data, bindings, and callbacks. The child never reaches up or
   sideways. Cross-feature arrows are forbidden. Features communicate
-  through data and capabilities. Navigation goes through `navService`,
-  and which node answers a route is composed up the tree.
+  through data and capabilities. Navigation across features goes
+  through `navService`, and which node answers a route is composed up
+  the tree. A node's own sheet or stack is its own state.
 - **A node is a collapsed subtree.** The screen plus all its view
   furniture (rows, buttons, design-system pieces) is one node. Internal
   attribution is meaningless. The node's contract is what crosses its
@@ -66,10 +78,13 @@ everything and calls nothing. Nothing else ever goes in a label.
   No diamonds, because deciding is what nodes do, but alternatives are
   structural. An agent must know whether children coexist or exclude
   each other. Unlabeled solid arrows are composition (children exist
-  together). Labeled arrows are alternatives, labeled with the value
-  that selects them (`-->|isLoggedIn|`, `-->|!isLoggedIn|`), which the
-  node's contract line already names (`loginState.isLoggedIn`). The
-  label states possibility, never sequence. What happens is the
+  together). A labeled arrow is a presence condition: the child exists
+  while the value holds (`-->|isAdding|`). Arrows labeled with the same
+  deciding value are alternatives (`-->|isLoggedIn|`, `-->|!isLoggedIn|`;
+  three arrows on one enum are a switch), and the node's contract lines
+  name that value (`loginState.isLoggedIn`) or receive it. Arrows on
+  different values are independent and may coexist. The label states
+  possibility, never sequence. What happens is the
   execution log's business.
 - **Unbuilt nodes are bare leaves.** Mapped, reachable, empty. The map
   runs ahead of the code. A leaf with no insides is finished design.
@@ -88,10 +103,11 @@ too.
 ## The dependency column (Diagram 3)
 
 - Cylinders are surfaces nodes must **call** or **read**: writes and
-  commands (`dbService` is writes only), non-native fetches
+  commands (`dbService` is writes only; a write may return a result), non-native fetches
   (`imageLoader`, `searchAPI`), capabilities (`navService`, closures
-  over root-owned navigation state), root-owned facts (`loginState`).
-  Native materialization (`@Query`, `@AppStorage`) gets no cylinder.
+  over root-owned navigation state), root-owned facts (`loginState`),
+  root-owned storage as bindings (`settings`). Native materialization
+  (`@Query`) gets no cylinder.
   The root does not set it. It is facts arriving, tagged in the node
   label. The masterclass calls that storage a dependency, a declared
   claim on the storage that supplies the value at creation, and a
@@ -128,7 +144,8 @@ too.
   ingredients must appear above it in the column. An ingredient below
   is an order violation you can see. The modifiers that set the values
   are implementation detail and never drawn.
-- `fill:none` on every box. Stack cylinders with invisible `~~~` links.
+- `fill:none` on the Dependencies box, the one subgraph. Nodes keep the
+  renderer's default. Stack cylinders with invisible `~~~` links.
 
 ## Identity rules: combining maps
 
@@ -140,9 +157,10 @@ alone.
   the whole app and identical everywhere the node appears, as a leaf in
   its parent's map and as the root of its own. The name is the join
   key.
-- **One tree per entry point.** A repo with several `@main` targets
-  holds one tree per target in `APP-MAP.md`, each with its own
-  `%% Root:` block. Names are unique across the repo, not the tree. A
+- **One tree per shipped entry point.** A repo with several shipped
+  `@main` targets holds one tree per target in `APP-MAP.md`, each with
+  its own `%% Root:` block. A test host that renders scenarios is not
+  a tree; it is drawn nowhere. Names are unique across the repo, not the tree. A
   component that is built but mounted by no root is listed under a
   `## Unmounted` heading in a block headed `%% Root: App · Unmounted`,
   name and full label, no arrows, so its contract has a copy to compare
@@ -194,10 +212,13 @@ is a finding, like a label mismatch.
   lifecycle, scene phase, deep links. `Child->>Node: callback payload`
   for a child firing a callback the node handed it
   (`AddItem->>ShoppingList: onAdd eggs`). None is ever a log entry. The
-  third is the only way an event reaches a parent from inside its own
-  tree, and it is checkable: the named callback must be a `· name` line
-  on that child's label, and the same event appears as an out-arrow in
-  the child's own block (see `evidence.md`, one event two edges). A
+  third is the only stimulus from inside the node's own tree, and it is
+  checkable: the named callback must be a `· name` line on that child's
+  label, and the same event appears as an out-arrow in the child's own
+  block (see `evidence.md`, one event two edges). A child writing a
+  binding the node handed it is not a stimulus; at the node's edge it
+  is the node's own out-arrow, `Node->>name: value`, the other way one
+  event has two edges. A
   parent handing down a new value is not a stimulus. It is a new given,
   so start a second block. (The alternative reading, that an
   `.onChange(of:)` reaction makes it a genuine when, is open.
@@ -210,15 +231,16 @@ is a finding, like a label mismatch.
   name. `Search->>searchAPI.search: dune` is `"search dune"`, and
   `LoginScreen->>authService.logIn: ""` is `"logIn"`. The test compares
   the whole array with one equality, so a call the block did not name
-  fails it. Where the requirement names no order, compare as a set.
-  Where only the decision matters, assert the decision and skip the
-  log. Never a subsequence.
+  fails it. Where the requirement names no order, the test sorts those
+  entries into one fixed order before comparing, duplicates kept, and
+  the block shows that order. Never a subsequence.
 - **Dashed arrows back are supplied data**: `target-->>Node: value` or
   `throws`, drawn only when it explains a later entry. Never an entry.
   The call is the event. What comes back is data.
 - **Targets are the node's edge and nothing else**: a contract line (a
   capability call, named without its parens, or a callback) or a stored property of the node, meaning own state, a binding it was
-  handed, or a materialized source being written. Any other target is a finding. A grandchild on a
+  handed, bare or dotted as its `$` line spells it, or a materialized
+  source being written. Any other target is a finding. A grandchild on a
   lifeline is depth 2, visible.
 - **`loop` when the requirement names no count**, exactly as order is
   asserted only when the requirement names an order. The test then
@@ -247,13 +269,25 @@ unreviewed behavior change.
 
 `scripts/mapcheck.py <repo>` runs the reconstruction check and
 everything else the maps alone can verify: id = name, the `·` grammar,
-label double-entry, every call and read line naming a cylinder, the
-order of the dependency column, evidence targets against labels,
+label double-entry, every call, read, and dotted `$` line naming a
+cylinder, the order of the dependency column, evidence targets against labels,
 reserved-word quoting, depth 1. It exits non-zero on any error.
 
-What it cannot see is code, that is, whether every call in a node's
-Swift is on its label and whether a bare evidence target is a real
-stored property, and it says so (`UNVERIF`). `scripts/test.sh` runs its
-fixtures: `fixtures/clean` (CoreFlowExample's validated maps, zero
-errors) and `fixtures/broken` (the same with thirteen planted
-violations, all caught; wrong on purpose, never an example).
+Without the code it cannot see whether a bare evidence target is a
+real stored property, and it says so (`UNVERIF`). With
+`--sources <dir> [<dir> ...]` it reads the Swift and closes the
+registry: each mapped node is matched to the type of its name, the
+label is derived from the type's body, and the two are compared both
+ways. A call, a dependency read, a `@Binding` write, a callback call,
+or a `@Query`, `@SceneStorage`, `@FocusState` in the Swift with no
+line on the label is an error, the fence breach. A label line with
+nothing behind it in the Swift is an error, stale. A bare evidence
+target that is no stored property of the type is an error, so the
+evidence vocabulary is closed again. `@AppStorage` in any type but the
+root is an error (F32). A `View` on no map that reads a cylinder is a
+warning, furniture doing a node's work. The reading is textual, the
+code is written by the method, so its forms are few. `scripts/test.sh`
+runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
+with Swift stubs, zero errors, nothing unverified) and
+`fixtures/broken` (the same with fourteen map violations and six code
+findings planted, all caught; wrong on purpose, never an example).
