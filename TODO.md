@@ -382,7 +382,25 @@
     checker clean. Also from the run: a real mini app is an xcodegen
     project, never a package (template changed); the checker counts a
     callback handed down by name; the library target needs the
-    isolation setting too.
+    isolation setting too. Rerun the same evening, same prompt, same
+    model, empty directory, skills with the F34 sentences: the cold
+    agent produced the shape unprompted, the node owning four drafts
+    and four errors as `@State`, each field's binding intercepted in a
+    setter that stores the text and writes the error, the rules static
+    functions on the model, the field a binding and a label. The
+    owner's brief in product words was enough once the sentence was
+    there. Two more sentences from it: the error is stored, not
+    derived, so the judgment is an event (the agent met "derive instead
+    of store" against the setter writing the error); `TestScenario`
+    lives in the host target when there is no bundle. Material for the
+    owner's library, not the method: the agent ran the blocks in a
+    throwaway UI bundle and found the macOS `TextField` writes its
+    binding on focus, several times per keystroke, and on focus loss,
+    so a one-character edit logs about ten entries and every field
+    block became a `loop`; and the log element's accessibility label is
+    capped near 512 characters, after which `JsonUtils.decode` fails on
+    its `try!`, so a full-form log cannot be asserted through
+    `logNames`.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

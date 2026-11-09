@@ -378,6 +378,7 @@ either way.
   above the view that shows its result, in the setter of the binding
   handed down. A form's node owns the draft and its errors, intercepts
   each field's binding to store the text and write that field's error,
+  stored and not derived so that the judgment is an event in the log,
   and the fields view is bindings and labels with nothing decided in
   it.
 - **Test the action, not the aftermath.** The test proves an action
