@@ -307,7 +307,10 @@ view. A view made only of `let`s, bindings, environment reads, and
 closures is already a core, and gets no shell. The composition root is
 never cut either. It owns the app's state, hands it down as bindings,
 sets the live values, and has no scenario; its one child is the first
-core.
+core. A core starts no free-floating `Task`. Work a tap starts is
+`@UnstructuredTask` under the library, a slot that logs like state and
+whose entry the block declares, or `.task(id:)` keyed on a value that
+is `Equatable` by nature.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a
