@@ -594,7 +594,14 @@
     exempts I/O, the boundary being the I/O not the inputs; and
     "each node's evidence holds before the next is started" now admits
     a block whose stimulus is a child's callback, proven with that
-    child. Then the draft
+    child. A Sonnet medium run on the finished skills, the probe for
+    the reflexes: none appeared, eight loose `@State`s, no errors
+    struct, no class or protocol, the model assembled in Save, the
+    layer its own package, the file write at the root; nine tests,
+    every block driven and matched. Two clauses for the CoreFlow skill:
+    an `@UnstructuredTask` writes state through a captured `$binding`,
+    never `self`; the app links the features package where there is
+    one. Then the draft
     too: "having the state Address is not right, we need fluffy states,
     only on clicking Save we should assemble the model; fluffy increases
     composability." A form's node owns one `String` per field, loose,
