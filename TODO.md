@@ -443,7 +443,15 @@
     runs, no output hand-fixed. One contradiction it found, fixed: the
     CoreFlow skill's do-not "keep a draft in a `@Shell` core" now says
     a draft no criterion names; a form's fields stay in the core behind
-    a transformer.
+    a transformer. An Opus medium run of the same prompt produced the
+    same shape, drove the live app and the host through the macOS
+    accessibility API, and matched every block entry for entry. Four
+    sentences from its list: a synthesized `Codable` cannot be declared
+    from another file, so the root encodes a dictionary or writes
+    `encode(to:)`; `@Capability` skips stored `@Binding`s, so labels are
+    computed re-exports and output bindings take their own names; the
+    isolation setting is never on the UI-test bundle, the unit bundle
+    is fine; `@TestLog` also serves a logger that must read a given.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

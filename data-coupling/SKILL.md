@@ -443,7 +443,9 @@ nowhere but in that layer's types.
 - **Data carries no behavior.** Models are stored properties and
   initializers, and conform to nothing. `Identifiable` is a consumer's
   need, named at the call site with `id: \.id` or declared in the
-  consumer's own module. Computed members live as pure extensions in
+  consumer's own module. A synthesized conformance, `Codable`, cannot
+  be declared from another file, so the root that writes JSON encodes
+  a dictionary or writes `encode(to:)` itself. Computed members live as pure extensions in
   the feature layer. A class as data only when it earns it, for a lifecycle a struct
   cannot own, for `@Bindable` decomposition, or for per-element
   observation, and even then it stays pure data. A delegate a framework
