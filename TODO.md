@@ -533,9 +533,13 @@
     the method adds: `@TestState` is `@State` that logs, private as
     Apple asks, so out of the init; I relayed the complaint as a
     library finding and then explained Apple back in the skill, both
-    wrong, both undone. What stands: a form cut with the macro replays
-    its typing as the given, and the 512 cap then forces short test
-    data.
+    wrong, both undone. The owner's ruling closes it: `@TestState` is a
+    source of truth, so whoever would give it a value holds the truth,
+    and then the right tool is a binding handed down, not own state. A
+    given that would seed own state says the state is not the node's.
+    One sentence in each skill. What stands of the run's complaint: a
+    form whose draft is its own replays the typing as the given, and the
+    512 cap then forces short test data.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

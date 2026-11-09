@@ -379,8 +379,10 @@ either way.
 - **A UI test here is a unit test, the unit being one core.** A second,
   test-only `@main` renders one scenario named at launch and nothing
   else of the app. One scenario per core, its givens as parameters, and
-  the same scenario is the preview and the launch target. The host is
-  the swift-core-flow skill's.
+  the same scenario is the preview and the launch target. A given that
+  would have to set the node's own state says the truth is above the
+  node: it arrives as a binding, and the state is not the node's. The
+  host is the swift-core-flow skill's.
 - **Effects log, getters don't.** Writes and calls fire once per event.
   Reads fire on the render scheduler's timing. Never log from a `get`.
   Under `@Shell` every private `@State` of the core logs, so a draft no
