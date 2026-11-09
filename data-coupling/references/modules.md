@@ -14,7 +14,11 @@ general form.
 A module that holds state couples every importer to what it holds. A
 stateless module is algorithms and cores, importable anywhere, tested
 alone, owned by anyone. The state sits at the top, in the app that
-composes the modules.
+composes the modules. Each module is its own package: `DataCoupling`,
+`Features`, one per I/O boundary that earns a package, a backend or a
+sync engine, and the app target that links them all. The layer is the
+only package the others share, so a backend implements the layer's
+contracts without importing a feature.
 
 What the modules share is one more module, the data coupling layer. It
 is free of behavior: the models, the closure signatures, and the

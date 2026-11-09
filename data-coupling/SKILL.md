@@ -437,12 +437,18 @@ data coupling is the weakest kind: they share values and nothing else,
 no object, no protocol, no container. This method builds the whole app
 on that one kind. Features never import each other and never import
 I/O. The app imports everything. What they all share is one package of
-pure data, the data coupling layer, `DataCoupling`, which depends on
-nothing of yours. A feature is written against that package alone, so
-it is constructible from literals of its types and tested without the
-rest of the app existing. The composition root constructs the live
-values, the features consume them, and the two meet nowhere but in
-this package. Diagram 2 on the map draws it.
+pure data, the data coupling layer, `DataCoupling`, its own package
+that depends on nothing of yours. The features package depends on it.
+An I/O package, a backend, a store, depends on it to implement its
+contracts and never sees a feature. The app depends on all of them,
+owns the state, and sets the live values, one modifier per I/O
+framework in its `Dependencies/`. On disk that is `Packages/DataCoupling`,
+`Packages/Features`, `Packages/<IO>` as needed, and the app target
+beside them. A feature is written against the layer alone, so it is
+constructible from literals of its types and tested without the rest
+of the app existing. The composition root constructs the live values,
+the features consume them, and the two meet nowhere but in this
+package. Diagram 2 on the map draws it.
 
 What it holds, by folder:
 
