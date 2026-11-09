@@ -552,7 +552,28 @@
     sits in its own directory of the map tree when the sources are
     flat; the layer's "zero dependencies" means of your own, the macro
     library for its public inits excepted; `@UnstructuredTask` logs each
-    assignment as `task` and the block declares it.
+    assignment as `task` and the block declares it. The owner then
+    corrected the layer twice more: it is its own package, since
+    features, I/O packages, and the app all depend on it and a backend
+    must never see a feature (the expenses app's graph, read critically
+    the same evening: nineteen feature files reading `modelContext`,
+    wire types in the shared layer, a ViewState umbrella, minted dates,
+    redundant `defaultValue` statics); and the skill must explain the
+    layer, not list it. The Layer section is now an explanation, what
+    data coupling is, the package graph, the folders, what never goes
+    in, no tests because no behavior, SwiftUI imported for its types
+    because seeing is not dependency. The engine test, Opus high with
+    the prompt saying only "the data coupling layer as the skill
+    describes it", produced `Packages/DataCoupling` with one target and
+    no dependencies, `Packages/Features`, the app with `Dependencies/`,
+    gates green, every block driven and matched. It put the errors
+    value in Features because the section said both "a validation's
+    errors" in `Values/` and "a type one screen keeps to itself" stays
+    out; the section now says values live in the layer even when one
+    screen reads them, and what stays out is a helper that is not
+    data. Three more clauses: the scenario's own `@TestState` carries a
+    given; the test produces a child-callback stimulus by driving the
+    real child; a path dependency's package name is the directory's.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

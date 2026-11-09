@@ -224,7 +224,9 @@ is a finding, like a label mismatch.
   third is the only stimulus from inside the node's own tree, and it is
   checkable: the named callback must be a `· name` line on that child's
   label, and the same event appears as an out-arrow in the child's own
-  block (see `evidence.md`, one event two edges). A child writing a
+  block (see `evidence.md`, one event two edges). The test produces
+  that stimulus by driving the real child, which is the child's own
+  host under the scenario. A child writing a
   binding the node handed it is not a stimulus; at the node's edge it
   is the node's own out-arrow, `Node->>name: value`, the other way one
   event has two edges. A

@@ -386,8 +386,8 @@ either way.
   would have to set the node's own state says the truth is above the
   node: it arrives as a binding, and the state is not the node's. A
   scenario is cheap, so a different given is another scenario, or
-  another parameter on the same one, its own `@TestState` set to that
-  value. The host is the swift-core-flow skill's.
+  another parameter on the same one, the scenario's own `@TestState`
+  set to that value and handed down. The host is the swift-core-flow skill's.
 - **Effects log, getters don't.** Writes and calls fire once per event.
   Reads fire on the render scheduler's timing. Never log from a `get`.
   Under `@Shell` every private `@State` of the core logs, so a draft no
@@ -455,8 +455,10 @@ What it holds, by folder:
 - `Models/`. The app's records, SwiftData `@Model` classes or structs,
   stored `var` properties with defaults and a public initializer, so
   `.init()` is the empty one.
-- `Values/`. What a feature computes and another shows: a balance, a
-  debt, a validation's errors. Plain structs of stored properties.
+- `Values/`. What a feature computes and shows: a balance, a debt, a
+  validation's errors. Plain structs of stored properties. They live
+  here even when one screen is the only reader, because they are data
+  of the app; what stays out is a helper that is not data.
 - `Enums/`. The app's closed sets: a category, a payment method, an
   appearance.
 - `Services/`. The contracts: one struct of closures per boundary, the
@@ -468,8 +470,8 @@ What it holds, by folder:
   so no feature names a key.
 
 What it never holds: a method, a computed property, an `import` of an
-I/O framework, a conformance nothing needs, or a type one screen keeps
-to itself, a sort option, a sheet enum. It does import SwiftUI, for
+I/O framework, a conformance nothing needs, or a screen's helper that
+is not data of the app, a sort option, a sheet enum. It does import SwiftUI, for
 `Binding`, `EnvironmentValues`, and `@Entry`; those are types, and
 nothing in the layer ever enters the render runtime. Seeing is not
 dependency; using is. An import sees. The rule against UI imports in a
