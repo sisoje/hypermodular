@@ -396,14 +396,17 @@ either way.
   what the core owns is what its blocks declare. What moves below the
   core is storage a criterion never names, never a rule. A rule runs
   above the view that shows its result, in the setter of the binding
-  handed down. A form's node owns the draft and one `String?` error per
-  field, intercepts each field's binding to store the text and write
+  handed down. A form's node owns one `String` per field and one
+  `String?` error per field, loose state, never a model as its draft;
+  loose state composes, since any field can be handed anywhere as a
+  binding, and the model is assembled only when Save hands it on. The
+  node intercepts each field's binding to store the text and write
   that field's error, stored and not derived so that the judgment is an
   event in the log, and the fields view is bindings and labels with
   nothing decided in it. The errors are never gathered into a struct;
   four fields are four errors, each beside its field. The interception is one value, a transformer, the transformative
   kind of node: a struct whose stored properties are `@Binding`s, the
-  node's raw draft and its per-field errors, and whose outputs are the
+  node's raw fields and their errors, and whose outputs are the
   intercepted field bindings and the labels. It holds no state and composes, one transformer's output binding
   being the next one's input, so a plain test constructs it over local
   variables, writes through an output binding, and reads the error

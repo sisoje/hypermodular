@@ -581,7 +581,14 @@
     is the ViewState umbrella the do-not list already named, and it
     appeared because my `Values/` example said "a validation's errors".
     The example is gone, the do-not names an errors struct, and the form
-    sentences say one error per field, never a struct.
+    sentences say one error per field, never a struct. Then the draft
+    too: "having the state Address is not right, we need fluffy states,
+    only on clicking Save we should assemble the model; fluffy increases
+    composability." A form's node owns one `String` per field, loose,
+    never a model, because loose state composes, any field handed
+    anywhere as a binding, and the model exists only when Save
+    assembles it. Both skills say so; the CoreFlow example changed from
+    `draft: Address` to `street: String`.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
