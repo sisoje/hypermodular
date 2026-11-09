@@ -45,7 +45,9 @@ holds.
 4. **Build root-down.** Implement a node only after its parent exists.
    For each node, its evidence holds (the test compares two values and
    passes) before the next node is started. Hand it literals for data
-   and loggers for closures. Nothing beneath it needs to exist.
+   and loggers for closures. Nothing beneath it needs to exist, with
+   one exception: a block whose stimulus is a child's callback is
+   proven with that child, since the test drives the real child.
 5. **Satisfy the cylinders last.** Fetch, storage, service: all
    eventually. Each live closure arrives to find its consumers and
    their evidence already written, and is tested once, for real, in

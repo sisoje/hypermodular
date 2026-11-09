@@ -264,8 +264,10 @@ part of the contract, scatters the type across packages, and forces a
 jump from the modifier that sets the value to another file to read the
 wiring. The no-op
 default already serves previews and tests, and a scenario builds the
-logger. Corollary: if a value can be created with no inputs, it does
-not belong in the environment.
+logger. Corollary: a pure value that can be created with no inputs, a
+formatter, a calendar, does not belong in the environment; I/O with no
+inputs, a file written to the temporary directory, still does, since
+the boundary is the I/O, not the inputs.
 
 ## Flow, not injection
 

@@ -400,7 +400,8 @@ words are in `references/notation.md`.
 The owner decides the tree. Draw it with the user and agree it. Declare
 evidence for every edge-crossing node. Run `scripts/mapcheck.py`, and
 with `--sources` once code exists. Build
-root-down, each node's evidence holding before the next. Cylinders
+root-down, each node's evidence holding before the next, a parent
+whose block starts with a child's callback proven with that child. Cylinders
 last, each tested once for real. In a mapped repo a feature enters the
 map first, and the map diff is the design review.
 

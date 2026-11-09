@@ -581,7 +581,20 @@
     is the ViewState umbrella the do-not list already named, and it
     appeared because my `Values/` example said "a validation's errors".
     The example is gone, the do-not names an errors struct, and the form
-    sentences say one error per field, never a struct. Then the draft
+    sentences say one error per field, never a struct. An Astra high
+    run of the packages prompt (sandboxed, no network, so it designed
+    and wrote from zero and the gates ran outside; a second short pass
+    verified `swift test` and the checker inside, `xcodebuild` blocked
+    by cache writes, no Swift changes) produced the loose-state form
+    before the sentence existed: eight `@State`s, no errors struct, the
+    model assembled in the Save closure, `@Capability`, the layer as
+    its own package with two files. Two of its findings were reference
+    contradictions, fixed: "a value creatable with no inputs does not
+    belong in the environment" in `modules.md` and `notation.md` now
+    exempts I/O, the boundary being the I/O not the inputs; and
+    "each node's evidence holds before the next is started" now admits
+    a block whose stimulus is a child's callback, proven with that
+    child. Then the draft
     too: "having the state Address is not right, we need fluffy states,
     only on clicking Save we should assemble the model; fluffy increases
     composability." A form's node owns one `String` per field, loose,

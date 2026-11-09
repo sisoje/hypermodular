@@ -128,8 +128,9 @@ too.
 - **No `.live`, `.preview`, or `.unimplemented` statics, and no `+Live`
   files.** The root builds the live value inline, at the one place it
   sets it. The environment default is the minimal no-op and already
-  serves previews and tests. A scenario builds the logger. A value that
-  can be made with no inputs does not belong in the environment.
+  serves previews and tests. A scenario builds the logger. A pure value
+  that can be made with no inputs does not belong in the environment;
+  I/O with no inputs still does.
 - Name the boundary, not the tech: `dbService`, not `swiftData`.
 - Name a closure for what the caller means. A verb is a command
   (`showDetail`, `deleteBook`). A past-tense clause is a notification
