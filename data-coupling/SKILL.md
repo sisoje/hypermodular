@@ -462,7 +462,8 @@ What it holds, by folder:
 - `Services/`. The contracts: one struct of closures per boundary, the
   store, the backend, the scanner, notifications, each with its
   `@Entry` no-op default. The backend's operations are closures here
-  too, with the wire types they carry.
+  too, taking and returning the app's models; its wire types stay in
+  the backend package, which is the only thing that reads them.
 - `Settings`. The root's `@AppStorage` keys as one struct of bindings,
   so no feature names a key.
 
