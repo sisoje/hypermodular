@@ -430,8 +430,11 @@ boundary, and the hosted test in swift-core-flow are in
 ## Layer: the data coupling layer
 
 What the modules share is one more module, free of behavior: the data
-coupling layer, the models, the closure signatures, and the
-`EnvironmentValues` entries that propagate them. The composition root
+coupling layer, a package named `DataCoupling` that depends on nothing
+of yours. It holds the models, the enums, the values a feature computes
+and shows, a validation's errors among them, the contracts as closure
+signatures with the `EnvironmentValues` entries that propagate them,
+and the root's settings as a struct of bindings. The composition root
 constructs the implementations, features consume them, and the two meet
 nowhere but in that layer's types.
 
@@ -455,8 +458,9 @@ nowhere but in that layer's types.
   can tell. The contract exists before anything implements it, so a
   feature is built and tested against the struct before a server
   answers. `grep URLSession` finds one file.
-- **Data carries no behavior.** Models are stored properties and
-  initializers, and conform to nothing. `Identifiable` is a consumer's
+- **Data carries no behavior.** Models are stored `var` properties
+  with defaults and a public initializer, so `.init()` is the empty
+  one, and they conform to nothing. `Identifiable` is a consumer's
   need, named at the call site with `id: \.id` or declared in the
   consumer's own module. A synthesized conformance, `Codable`, cannot
   be declared from another file, so the root that writes JSON encodes

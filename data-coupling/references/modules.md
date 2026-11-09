@@ -83,12 +83,11 @@ one thing, a package of pure data. Data is the abstraction.
   section), each with its `@Entry`. A contract lives in the layer even
   when its implementation lives in some other package. Folders slice by
   what the closure struct is, never by which package implements it.
-- **Only shared types.** A type earns its place by crossing a module
-  boundary, either referenced by another type in the layer or used by
-  more than one feature or module. A model or enum one feature uses
-  stays local to that feature. Promoting it bloats the package
-  everything depends on and manufactures false coupling. When in doubt,
-  grep its usages first.
+- **Data, not helpers.** Models, enums, contracts, and the values a
+  feature computes and shows live in the layer whoever consumes them;
+  that is the package everything reads. A helper type one feature keeps
+  private, a sort option, a sheet enum, stays in that feature. When in
+  doubt, ask whether it is data of the app or furniture of a screen.
 - **No unnecessary conformances, even on data.** Drop `Identifiable`,
   `Sendable`, `Codable`, and `CaseIterable` unless something concrete
   needs them. `ForEach(books, id: \.id)` needs no conformance;
