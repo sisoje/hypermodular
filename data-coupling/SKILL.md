@@ -167,7 +167,8 @@ source of most broken SwiftUI mental models.
   root owns. The logging binding in a test is the same pair with a
   different `set`. A binding is not a handle on a stored value. It is
   the one place a write can be intercepted, and it need not end in
-  storage at all.
+  storage at all. A field's rule is its ordinary case: the setter
+  stores the text and writes the error, and the field shows both.
 - **Classes sit outside the graph.** Put a screen's state in an
   `@Observable` or `ObservableObject` and the runtime no longer owns it.
   The object can be aliased, can outlive the node, and any holder can
@@ -372,7 +373,13 @@ either way.
   Under `@Shell` every private `@State` of the core logs, so a draft no
   criterion names lives in a furniture view below the core; the
   placement declares that keystrokes are not the node's evidence, and
-  what the core owns is what its blocks declare.
+  what the core owns is what its blocks declare. What moves below the
+  core is storage a criterion never names, never a rule. A rule runs
+  above the view that shows its result, in the setter of the binding
+  handed down. A form's node owns the draft and its errors, intercepts
+  each field's binding to store the text and write that field's error,
+  and the fields view is bindings and labels with nothing decided in
+  it.
 - **Test the action, not the aftermath.** The test proves an action
   executed with the right input, the closure called with the expected
   model or the binding written, plus the state the event leaves behind,

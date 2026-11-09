@@ -362,6 +362,27 @@
     system's item type, the stored `dueDate` on the model (a stored
     property is data), furniture between a node and its child node,
     and a stale `clock.today` (the root's business).
+  - **F34, the rules went down with the draft.** The address-form run
+    (Sonnet medium, 2026-11-09, `scripts/engine-run-prompt-address.md`,
+    output in the owner's `~/Desktop/address-form`): gates green, the
+    rules a pure extension on the model, no validator object, and the
+    fields view owning the four drafts, trimming, validating, and
+    gating Save, with the node above it an empty `let onSave`. The
+    owner: "all implementation details need to be erased from the view,
+    validation comes from above, we intercept the text field binding
+    into validation above", and "this is worse than MVVM". F25 had said
+    where the draft's storage goes and nothing about the rules, so the
+    agent buried both. Ruled: what moves below the core is storage a
+    criterion never names, never a rule; a rule runs above the view in
+    the setter of the binding handed down; a form's node owns the draft
+    and its errors, intercepts each field's binding, and the fields
+    view is bindings and labels. Sentences in the data-coupling skill
+    (F25's bullet and the interception-point bullet) and the CoreFlow
+    skill; the Desktop app rewritten that way, both targets building,
+    checker clean. Also from the run: a real mini app is an xcodegen
+    project, never a package (template changed); the checker counts a
+    callback handed down by name; the library target needs the
+    isolation setting too.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
