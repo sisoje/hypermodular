@@ -154,7 +154,12 @@ with `@Shell`, depending on the sibling `../CoreFlow` checkout.
 `scripts/engine-run-prompt-garden.md` is a brief the method did not
 shape, in the product's words, for finding what the rules cannot
 express. `scripts/engine-run-prompt-address.md` is a validated form
-whose save is a closure, a brief that tempts a validator object.
+whose save is a closure, a brief that tempts a validator object. The
+drift review is `scripts/drift-review-prompt.md`: export the first
+five commits, hand the prompt to a fresh model, and read what it calls
+lost, reversed, or contradictory. Run it after a stretch of rulings;
+three readers ran it on 2026-11-09 and their findings are under F32 in
+`TODO.md`.
 
 ## Related
 
