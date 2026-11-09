@@ -539,7 +539,20 @@
     given that would seed own state says the state is not the node's.
     One sentence in each skill. What stands of the run's complaint: a
     form whose draft is its own replays the typing as the given, and the
-    512 cap then forces short test data.
+    512 cap then forces short test data. The address prompt then
+    changed shape at the owner's word: the flat `Sources/AddressForm/`
+    I had dictated became the method's graph, a package with
+    `AddressData` (the layer, depending on nothing of yours) and
+    `AddressFeatures` (the core, the scenarios, the public
+    `TestScenario`, the plain tests under `swift test`), and two
+    xcodegen app targets on top holding only the root, the live
+    modifiers, and `main.swift`. A Sonnet medium run built it as asked,
+    gates green, eight plain tests, the app linking `AddressFeatures`
+    alone. Three clauses from its list: a leaf's evidence-only `MAP.md`
+    sits in its own directory of the map tree when the sources are
+    flat; the layer's "zero dependencies" means of your own, the macro
+    library for its public inits excepted; `@UnstructuredTask` logs each
+    assignment as `task` and the block declares it.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

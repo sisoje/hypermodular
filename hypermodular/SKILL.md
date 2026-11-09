@@ -23,8 +23,10 @@ leaves. Each node's evidence is declared before its code. The map is
 Mermaid in markdown (`APP-MAP.md` at the repo root, `MAP.md` beside each
 mapped subtree), so it renders in every GitHub or GitLab PR, always
 visible and always diffable. The map tree may stand apart from the
-source tree. A `MAP.md` inside a Swift package's `Sources/` is listed
-in the target's `exclude`.
+source tree, one directory per node, which is where a leaf's
+evidence-only `MAP.md` sits when the sources are flat. A `MAP.md`
+inside a Swift package's `Sources/` is listed in the target's
+`exclude`.
 
 The map is behavioral, not an inventory. It shows where decisions live
 and what they ask of the world, nothing else. A node's whole observable

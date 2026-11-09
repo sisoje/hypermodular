@@ -180,7 +180,7 @@ implementation and test variants, the struct wins.
 
 ```mermaid
 flowchart BT
-    Data["DataCoupling<br/>models · enums · values<br/>contracts: structs of closures + @Entry<br/>zero dependencies · zero behavior"]
+    Data["DataCoupling<br/>models · enums · values<br/>contracts: structs of closures + @Entry<br/>zero dependencies of your own · zero behavior"]
     Features["Features<br/>all screens and business logic<br/>knows no implementation exists"]
     CommonUI["CommonUI<br/>model-free presentation<br/>depends on nothing"]
     IO["an I/O module<br/>REST client · sync engine · …<br/>constructs its contract inline"]
