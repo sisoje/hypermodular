@@ -400,7 +400,27 @@
     block became a `loop`; and the log element's accessibility label is
     capped near 512 characters, after which `JsonUtils.decode` fails on
     its `try!`, so a full-form log cannot be asserted through
-    `logNames`.
+    `logNames`. Third run the same evening, after the owner asked for
+    "a special validator struct, raw bindings as inputs, error labels
+    and intercepted bindings as output, unit-testable without the view
+    runtime" and two sentences went into the skill (the interception
+    is a transformer; a transformer of bindings gets a plain test): the
+    cold agent wrote exactly that, `AddressFields`, eight raw bindings
+    in, four `(text, error)` pairs out, a `judge()` for Save, no state,
+    the rules static functions, the row a binding and a label, the node
+    owning eight `@State`s. It ran every block in a throwaway UI bundle
+    and every array matched exactly, because it added
+    `guard $0 != text.wrappedValue` to the interception: the macOS
+    `TextField` writes the held value on focus and on blur, and the
+    guard makes a no-change write store nothing and judge nothing.
+    Open as F35: is dropping a no-change write the method's answer to
+    the system's write storm (the log shows changes, exact arrays, no
+    `loop`), or must the storm be declared as-is. Also open: the brief
+    asked for two application targets and the agent left its harness,
+    a `bundle.ui-testing` target, in `project.yml`; and nobody wrote
+    the plain test the transformer exists for, since the prompt names
+    no unit-test target. Owner's call whether the template asks for
+    one.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
