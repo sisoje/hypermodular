@@ -459,7 +459,11 @@ What it holds, by folder:
 
 What it never holds: a method, a computed property, an `import` of an
 I/O framework, a conformance nothing needs, or a type one screen keeps
-to itself, a sort option, a sheet enum. Behavior lives in the features
+to itself, a sort option, a sheet enum. It does import SwiftUI, for
+`Binding`, `EnvironmentValues`, and `@Entry`; those are types, and
+nothing in the layer ever enters the render runtime. The rule against
+UI imports in a data layer is an object-oriented reflex, not this
+method's. Behavior lives in the features
 as pure extensions and in the root as live closures. The layer has no
 tests, since it has no behavior to be wrong about; the compiler is its
 test. Data is the abstraction.
