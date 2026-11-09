@@ -272,7 +272,7 @@ def check_code(dirs, cyls, treeroots):
                 if tgt not in f["stored"]: err(rel, f"{n.name}: evidence target '{tgt}' is no stored property of {n.name} in {Path(t.file).name}")
                 unverified[:] = [u for u in unverified if not u.endswith(f"{n.name}: bare target '{tgt}' assumed a stored property (needs code)")]
     for t in types.values():
-        if t.name in nodes or not ({"View", "ViewModifier"} & t.kinds): continue
+        if t.name in nodes or t.name.endswith("Scenario") or not ({"View", "ViewModifier"} & t.kinds): continue
         f = facts(t)
         for key in sorted(f["env"] & set(cyls)): warn("code", f"{t.name} ({Path(t.file).name}): on no map, reads dependency {key}")
         if "@Query" in f["materializes"]: warn("code", f"{t.name} ({Path(t.file).name}): on no map, materializes @Query")
@@ -356,7 +356,7 @@ def main(root, sources=()):
     for u in dict.fromkeys(unverified): print("UNVERIF ", u)
     code = f", {ntypes} Swift types" if ntypes is not None else ""
     print(f"\n{len(files_seen)} files, {len(blocks)} blocks, {len(nodes)} nodes, {len(cyls)} cylinders{code} — "
-          f"{len(errors)} errors, {len(warnings)} warnings, {len(unverified)} unverified")
+          f"{len(errors)} errors, {len(warnings)} warnings, {len(dict.fromkeys(unverified))} unverified")
     return 1 if errors else 0
 
 if __name__ == "__main__":

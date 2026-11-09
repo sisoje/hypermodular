@@ -281,7 +281,11 @@ usage lines. Usage is written on the nodes themselves.
   `@main`, a scenario, a preview. Each sets every app-provided value its
   tree reads, and nothing below it sets any.
 - **Top to bottom is the order the root sets them.** A derived service
-  lists its ingredients, which must sit above it. Where nothing is
+  lists its ingredients, which must sit above it. A consequence every
+  write must carry, a reminder scheduled for each saved plant, is the
+  root's composition, a derived `dbService` listing `reminderService`
+  as its ingredient, never the same call repeated on each node that
+  writes. Where nothing is
   derived, the order is still the root's own and constrains nothing. The
   column runs outermost first. In the code the chain reads the other
   way: a modifier that reads another's value is written first, inside

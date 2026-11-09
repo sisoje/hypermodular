@@ -184,7 +184,9 @@ alone.
   structure, `%% Evidence: BookDetail · Parent: BookShelf (../MAP.md)`
   for evidence, `%% Root: App · Dependencies`, `· Coupling`, and
   `· Unmounted` for the three app-level blocks. The root map's comment
-  is `%% Root: App`. The block stays self-contained when extracted.
+  is `%% Root: <Root>`, the root named for the `@main` type or for the
+  view a package exports as its root; the examples call it `App`. The
+  block stays self-contained when extracted.
   Following parent links upward reaches `APP-MAP.md`. Following names
   downward reaches any node.
 - **Reconstruction check**: parent links form a single tree with no

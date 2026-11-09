@@ -340,6 +340,28 @@
     early sentence taken back into Diagram 3: the live value, the
     preview default, and the scenario's logger are member sets of one
     struct.
+  - **F33, a consequence every write must carry.** The Garden brief's
+    "every plant gets a reminder on its due day" landed on three labels
+    as `reminderService.schedule()`, on the sheet, the detail, and the
+    undo bar, because the cold agent found no notation for a cross-node
+    invariant (third Garden pass, Sonnet medium, 2026-11-09, the first
+    run gated by `--sources`: 0 errors, build clean, nothing
+    unverified, every declared array matching its scenario, and the
+    maps used `$settings.city`, presence conditions, own navigation
+    state, and a subscription stream with `System` stimuli as ruled).
+    Ruled the same day: it is the root's composition, a derived
+    `dbService` listing `reminderService` as its ingredient, which the
+    dependency column already draws; a node names only its write. One
+    sentence in Diagram 3. Also from the run: the root node is named
+    for the `@main` type or the view a package exports (restored in
+    `notation.md`; the morning's cut of that sentence was premature);
+    a `*Scenario` type is exempt from the checker's unmapped-view
+    warning; the checker's unverified count is deduplicated; the
+    CoreFlow skill names the package spelling of main-actor isolation.
+    Judged no gap: the photo picker's load as a contract taking the
+    system's item type, the stored `dueDate` on the model (a stored
+    property is data), furniture between a node and its child node,
+    and a stale `clock.today` (the root's business).
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
