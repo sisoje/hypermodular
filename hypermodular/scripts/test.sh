@@ -27,9 +27,10 @@ diff /tmp/mapcheck-want.txt /tmp/mapcheck-got.txt && echo "all planted violation
 python3 mapcheck.py fixtures/broken | grep -q "^WARNING .*in-arrow from .Parent." && echo "parent in-arrow warns, as intended" || { echo "FAIL: Parent in-arrow should warn"; exit 1; }
 # the code-side half: the clean Swift stubs verify every bare target; the broken ones plant one of each code finding
 echo "clean + sources:" && python3 mapcheck.py fixtures/clean --sources fixtures/clean/Sources | tail -1 | grep -q " 0 errors, 0 warnings, 0 unverified" || { echo "FAIL: clean sources should verify everything"; exit 1; }
-echo "broken + sources:" && python3 mapcheck.py fixtures/broken --sources fixtures/broken/Sources | grep -E '^(ERROR|WARNING) +(code:|SaveButton/MAP.md: SaveButton: evidence target)' | sed -E 's/^(ERROR|WARNING) +//' | sort > /tmp/mapcheck-code-got.txt || true
+echo "broken + sources:" && python3 mapcheck.py fixtures/broken --sources fixtures/broken/Sources | grep -E '^(ERROR|WARNING) +(code:|SaveButton/MAP.md: SaveButton: evidence target|ReadingListScreen/MAP.md: ReadingListScreen: arrow label)' | sed -E 's/^(ERROR|WARNING) +//' | sort > /tmp/mapcheck-code-got.txt || true
 sort > /tmp/mapcheck-code-want.txt <<'WANT'
 code: ReadingListScreen: label '· navService.showDetail()' has no such call in ReadingListScreen.swift
+ReadingListScreen/MAP.md: ReadingListScreen: arrow label 'ghost' names no stored property or read of ReadingListScreen in ReadingListScreen.swift
 code: SaveButton: label '· analytics.track()' has no such call in SaveButton.swift
 code: SaveButton: label '· $prefs.name' but SaveButton.swift never touches prefs.name
 SaveButton/MAP.md: SaveButton: evidence target 'userName' is no stored property of SaveButton in SaveButton.swift

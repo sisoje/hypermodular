@@ -86,7 +86,8 @@ subgraph), no emoji, no status marks.
   test is the log.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. No protocols, no classes, no reference
-  types. Setting = putting a value into the environment at the root.
+  types, with the three protocol cases the code skill names. Setting =
+  putting a value into the environment at the root.
   Deriving = building a new value from values already there. No
   `.live`, `.preview`, or `.unimplemented` statics and no `+Live`
   files. The root builds the live value inline where it sets it. The
@@ -102,7 +103,7 @@ subgraph), no emoji, no status marks.
   design-system pieces) never gets a node. The contract is what crosses
   the node's edge. A subtree splits out only when it joins the app
   lifecycle on its own (own outliving state, appearance work,
-  navigation destination, own boundary call).
+  navigation destination, own boundary call or callback).
 - **Shell/core split is implementation detail** and is never drawn.
   How to cut, by hand or with `@Shell`:
   `data-coupling/references/shell-core.md`.
@@ -119,7 +120,7 @@ subgraph), no emoji, no status marks.
   point (solid arrows), attribute each I/O call to the node that decides
   it, apply the cut rules while walking, extract shared types and
   services into the coupling diagram, verify values are set at the root
-  only. Present the map plus the two or three most interesting findings.
+  only. Present the map plus the findings.
 - **New feature in a mapped repo**: add nodes and arrows to the map
   first, agree the diff, then build root-down, evidence declared before
   code.

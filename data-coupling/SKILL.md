@@ -56,8 +56,10 @@ from inputs to children; the runtime owns the pixels. A ViewModel takes
 logic out of a node that is already only logic, and adds an object to
 hold it. The cut that matters runs between data and the closures that
 act on it. State is open, plain data that drives the view. Behavior is
-closures the app sets into the flow at the root. The UI is pure and
-data-driven, and the main app is where behavior enters.
+closures the app sets into the flow at the root. A rule the feature
+owns, a validation, is a pure function of its state and stays with it.
+The UI is pure and data-driven, and the main app is where behavior
+enters.
 
 That is the opposite of the OOP doctrine. Kay's object retained,
 protected, and hid its state. Parnas had asked only to hide the design
@@ -141,8 +143,9 @@ source of most broken SwiftUI mental models.
   re-created each wave over that slot. A transformer is a transformative
   node: pure flow through it, references in, bindings and labels out,
   created in the wave and gone with it, no slot. State lives in the
-  first kind, rules in the second, and both are values a test
-  constructs from literals.
+  first kind, rules in the second. A transformer has no state, so its
+  methods make no object, and its plain test is data in and data out,
+  like any calculation; the node's log stays the test of the node.
 - **Dependencies are recorded by access.** A wrapper read during `body`
   registers its storage against that slot. A write to registered
   storage invalidates the slots that depend on it, and the runtime

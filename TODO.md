@@ -460,7 +460,32 @@
     untouched field "Required" live; the sentence now says dropped
     whole, before the rule runs. Two more clauses: a callback alone
     makes a node, and a returning closure writes its result after the
-    parens in the coupling diagram.
+    parens in the coupling diagram. Opus high then ran the drift review
+    (`scripts/drift-review-prompt.md`) against `c02560c`: structural
+    ideas kept nearly verbatim, the map side matured, the oracle
+    drifted, fourteen contradictions, more than the early repo's seven
+    and clustered in the day's additions. Twelve fixed the same
+    evening: the protocol ban in AGENTS and the notation points at the
+    code skill's three cases; "or callback" in the node criterion
+    everywhere; "two or three findings" gone from AGENTS; focus is
+    system state the node writes, so the node's write logs and the
+    system's move does not; `async` marks what the core awaits and a
+    fire-and-forget closure is a synchronous boundary; record-as-is
+    gains "a write of the value already held is not behavior, an
+    interception that drops it is code, and the log records what that
+    code does"; a rule the feature owns is a pure function of its state
+    and stays with it, beside "behavior is closures the app sets at the
+    root"; a transformer has no state, so its methods make no object
+    and its plain test is data in and data out while the node's log
+    stays the node's test; the CoreFlow cut sentence notes
+    `@AppStorage` stays at the uncut root; the fixture counts agree.
+    And the first commit's "the deciding value is named on the label"
+    is a check again: with `--sources` a presence-condition arrow whose
+    label names nothing the node holds or reads is an error, with a
+    fixture. Left to the owner, two of its restore items that are
+    rulings: exact payload comparison by default against "a value is
+    asserted as the test's author sees fit", and a compiled example app
+    inside the doctrine repo, which the owner has kept out on purpose.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

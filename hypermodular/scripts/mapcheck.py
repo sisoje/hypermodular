@@ -28,7 +28,8 @@ With --sources DIR [DIR ...], the code-side half. Each mapped node is
 matched to the Swift type of its name and its label is derived from
 the type's body, then compared both ways:
 
-  code          a call, read, binding write, callback call or hand-down, or
+  code          a presence-condition arrow label that names nothing the
+                node holds or reads; a call, read, binding write, callback call or hand-down, or
                 materialization in the Swift with no line on the label
                 (the fence breach); a label line with nothing behind it
                 in the Swift (stale); a bare evidence target that is no
@@ -55,7 +56,7 @@ BLOCK = re.compile(r"```mermaid\n(.*?)```", re.S)
 HEAD = re.compile(r"^%% (Root|Evidence): (\w+)(?: · (?:Parent: (\w+) \(([^)]+)\)|(Dependencies|Unmounted|Coupling)))?\s*$")
 LABELED = re.compile(r'(\w+)\["([^"]*)"\]')
 CYL = re.compile(r'(\w+)\[\("?([^")\]]*)"?\)\]')
-ARROW = re.compile(r'^\s*(\w+)(?:\["[^"]*"\])?\s*-->(?:\|[^|]*\|)?\s*(\w+)')
+ARROW = re.compile(r'^\s*(\w+)(?:\["[^"]*"\])?\s*-->(?:\|([^|]*)\|)?\s*(\w+)')
 SEQ = re.compile(r'^\s*("?[\w.]+"?)\s*(-->>|->>)\s*("?[\w.]+"?)\s*:\s*(.*)$')
 
 def split_label(raw):
@@ -73,7 +74,7 @@ def kind(line):
 child_stimuli = []
 
 class Node:
-    def __init__(self, name): self.name = name; self.labels = {}; self.evidence = []
+    def __init__(self, name): self.name = name; self.labels = {}; self.evidence = []; self.conditions = []
 nodes, files_seen, blocks = {}, {}, []
 
 def node(name): return nodes.setdefault(name, Node(name))
@@ -108,8 +109,9 @@ def parse_structure(b):
     for ln in b["body"]:
         a = ARROW.match(ln)
         if not a: continue
-        src, dst = a.groups()
+        src, cond, dst = a.groups()
         if src != b["name"]: err(rel, f"arrow from '{src}' in a block rooted at '{b['name']}' (depth > 1)")
+        if cond: node(src).conditions.append((rel, cond.strip()))
         # a bare id is a copy of the label with an empty contract — it
         # takes part in double-entry like any other appearance
         if dst not in labeled: record(dst, (), f"child-of-{b['name']}"); labeled.add(dst)
@@ -266,6 +268,11 @@ def check_code(dirs, cyls, treeroots):
         for m in sorted(f["materializes"] - label_mats):
             if m == "@AppStorage" and not is_root: err("code", f"{n.name}: @AppStorage below the root in {Path(t.file).name} (F32: the root owns the keys, a feature receives a binding)")
             elif m != "@AppStorage": err("code", f"{n.name}: {Path(t.file).name} materializes {m} with no '· {m}' on the label")
+        # a presence condition names a value the node holds or reads
+        known = f["stored"] | f["env"] | {r.split(".")[-1] for r in f["reads"]} | {b.split(".")[-1] for b in label_bindings} | {r.split(".")[-1] for r in label_reads}
+        for rel, cond in n.conditions:
+            if not (set(re.findall(r"[A-Za-z_]\w*", cond)) & known):
+                err(rel, f"{n.name}: arrow label '{cond}' names no stored property or read of {n.name} in {Path(t.file).name}")
         # evidence bare targets are stored properties
         for rel, outs in n.evidence:
             for tgt in outs:

@@ -16,7 +16,9 @@ code-side half (`--sources`). The clean stubs verify every bare
 evidence target; the broken ones plant a call with no label line, an
 `@AppStorage` below the root, a label line with no code behind it, an
 evidence target that is no stored property, and a view on no map that
-reads a cylinder.
+reads a cylinder, and a presence-condition arrow whose label names
+nothing the node holds; with the two planted stale labels that is
+eight code errors and one warning.
 
 `sh scripts/test.sh` asserts the clean fixture has zero errors and the
 broken one reports exactly the planted list, nothing more, with and

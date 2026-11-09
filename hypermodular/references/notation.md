@@ -27,7 +27,9 @@ binding, a bare name calls back:
   node holds. What the node derives from it (an isLoggedIn computed off
   a token) is code's business, not the map's. A wrapper earns a line
   only when it binds the node to a source of truth that outlives the
-  node: a store, defaults, system state such as focus. Machinery whose
+  node: a store, defaults, or system state such as focus, which the
+  system owns and the node writes, so the node's write logs and the
+  system's move does not. Machinery whose
   whole lifetime is the node's (own state, gesture transients, task
   handles) gets no line, whatever its spelling.
 - `· <dep>.<func>()` lines **call** a capability from the dependency box
@@ -71,7 +73,7 @@ everything and calls nothing. Nothing else ever goes in a label.
   attribution is meaningless. The node's contract is what crosses its
   edge. A subtree becomes its own node only when it joins the app
   lifecycle on its own: own outliving state, appearance work, a
-  navigation destination, or its own boundary call. View modifiers
+  navigation destination, or its own boundary call or callback. View modifiers
   follow the same rule. A modifier is a node only if it carries
   contract lines. One with own state alone is furniture.
 - **A decision marks its alternative arrows with the deciding value.**
@@ -118,7 +120,8 @@ too.
   and never drawn.
 - **A dependency is an environment value: a plain struct composed of
   closures, lets, or bindings.** Pure value, no protocols, no classes,
-  no reference-type service objects. Capabilities as closures, facts as
+  no reference-type service objects, the code skill's three protocol
+  cases excepted. Capabilities as closures, facts as
   lets, shared mutable state as bindings, mixed in one struct. Setting
   means putting a value into the environment at the root. Deriving
   means building a new value from values already there. Nothing else.
@@ -287,11 +290,13 @@ or a `@Query`, `@SceneStorage`, `@FocusState` in the Swift with no
 line on the label is an error, the fence breach. A label line with
 nothing behind it in the Swift is an error, stale. A bare evidence
 target that is no stored property of the type is an error, so the
-evidence vocabulary is closed again. `@AppStorage` in any type but the
+evidence vocabulary is closed again. A presence-condition arrow whose
+label names nothing the node holds or reads is an error, so a renamed
+state leaves no stale arrow. `@AppStorage` in any type but the
 root is an error (F32). A `View` on no map that reads a cylinder is a
 warning, furniture doing a node's work. The reading is textual, the
 code is written by the method, so its forms are few. `scripts/test.sh`
 runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
 with Swift stubs, zero errors, nothing unverified) and
-`fixtures/broken` (the same with fourteen map violations and six code
+`fixtures/broken` (the same with fourteen map violations and eight code
 findings planted, all caught; wrong on purpose, never an example).

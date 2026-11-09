@@ -18,9 +18,9 @@ and every call with its payload. Two kinds of entry, nothing else.
 - **A boundary call logs** under the closure's name, with its
   arguments, whatever the closure's shape: a fire-and-forget command,
   an `async throws` fetch, a returning query to the world. Impurity is
-  visible in the signature (Wlaschin). `async` and `throws` mark the
-  world-crossing that makes a closure a boundary rather than a pure
-  helper. The call is the event. What comes back, a value or a thrown
+  visible in the signature (Wlaschin). `async` and `throws` mark what
+  the core awaits; a fire-and-forget closure is a boundary too, and
+  synchronous. The call is the event. What comes back, a value or a thrown
   error, is supplied data, not evidence.
 
 **Reads never log.** A query's answer is data handed in, and getters
@@ -81,7 +81,9 @@ The block is the source and the test is written from it.
   snapshot-stable, declare a symbolic payload for it.
 - Record the behavior as-is. A text field that writes its binding twice
   per keystroke logs twice per keystroke. Evidence records what
-  happens, not an idealization.
+  happens, not an idealization. A write of the value already held is
+  not behavior; an interception that drops it is code, and the log
+  records what that code does.
 - A workflow is a rule. When a later call consumes an earlier call's
   result, or a failure triggers a compensating call, the node that
   decides the later call declares both in one block: the result is a
