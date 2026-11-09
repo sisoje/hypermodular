@@ -381,11 +381,13 @@ either way.
   each field's binding to store the text and write that field's error,
   stored and not derived so that the judgment is an event in the log,
   and the fields view is bindings and labels with nothing decided in
-  it. The interception is one value, a transformer: a struct that
-  takes the node's raw bindings, the draft and the errors, and hands
-  back the intercepted field bindings and the labels. It holds no
-  state, so a plain test drives it with bindings over local variables
-  and reads the errors back, no view runtime.
+  it. The interception is one value, a transformer: a struct whose
+  stored properties are `@Binding`s, the node's raw draft and errors,
+  and whose outputs are the intercepted field bindings and the labels.
+  It holds no state and composes, one transformer's output binding
+  being the next one's input, so a plain test constructs it over local
+  variables, writes through an output binding, and reads the error
+  back, no view runtime.
 - **Test the action, not the aftermath.** The test proves an action
   executed with the right input, the closure called with the expected
   model or the binding written, plus the state the event leaves behind,
