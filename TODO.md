@@ -516,7 +516,22 @@
     flake instead of a rerun habit; "two or three findings" left the
     last reference. Not done, by ruling: a speed goal for the oracle,
     and a per-block declaration of the no-change guard, which the
-    doctrine states once for every interception.
+    doctrine states once for every interception. Sonnet xhigh then ran
+    the address prompt against the fixed skills: gates green, seven
+    plain tests, the transformer and the capability as before, the live
+    JSON write proven by a plain test of the extracted function, and
+    one regression that was a reference's fault: it followed
+    `shell-core.md`'s `.task(id: pendingSave)` example, which keys on a
+    model array, and had to make `Address` `Equatable` against the
+    layer rule. The example now keys on a count, with the sentence that
+    a `.task(id:)` id is `Equatable` by nature and never a model made
+    so, and a tap-started job is `@UnstructuredTask` under the library.
+    Two more clauses: an error is written only when it changes, so
+    `judge()` logs no `nil` storm; I/O with no inputs, a file write, is
+    still a contract. For the library owner: a `@TestState` cannot be
+    given an initial value by the scenario, so a filled form has no
+    given and every block replays the typing, which with the 512 cap
+    forces one-letter test data.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

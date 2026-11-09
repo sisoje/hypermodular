@@ -401,7 +401,8 @@ either way.
   variables, writes through an output binding, and reads the error
   back, no view runtime. A write of the value already held changes no
   source of truth, so the interception drops it whole, before the rule
-  runs, and the system's focus and blur writes neither store nor judge. Under swift-core-flow its
+  runs, and the system's focus and blur writes neither store nor judge;
+  an error too is written only when it changes. Under swift-core-flow its
   outputs are one tuple, `@Capability` (the library's skill).
 - **Test the action, not the aftermath.** The test proves an action
   executed with the right input, the closure called with the expected
@@ -522,7 +523,8 @@ written, and the reader is the writer, so it binds too.
   when the app supplies the rule.
 - **A dependency whose live value can be made with no inputs**, a
   formatter, a calendar, a pure calculation. It is a constant. Use it
-  directly, never through the environment. The clock is not one. The
+  directly, never through the environment. I/O with no inputs, a file
+  written to the temporary directory, is still a contract. The clock is not one. The
   current date is a fact an ancestor owns and hands down, a `let` or an
   environment value, never a closure the node calls, so a scenario can
   fix it. A delay the node awaits is an async effect, a closure the

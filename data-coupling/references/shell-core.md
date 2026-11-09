@@ -307,7 +307,7 @@ struct BookShelfShell: View {
     @Environment(\.library) private var library
     @Binding var sortByAuthor: Bool
     @State private var books: [Book]?
-    @State private var pendingSave: [Book]?
+    @State private var saveCount = 0
 
     var body: some View {
         BookShelf(
@@ -315,23 +315,25 @@ struct BookShelfShell: View {
             sortByAuthor: $sortByAuthor,
             onDelete: { book in
                 books?.removeAll { $0.id == book.id }
-                pendingSave = books
+                saveCount += 1
             })
         .task(id: sortByAuthor) { books = try? await library.fetch(sortByAuthor) }
-        .task(id: pendingSave) { if let pendingSave { try? await library.save(pendingSave) } }
+        .task(id: saveCount) { if let books, saveCount > 0 { try? await library.save(books) } }
     }
 }
 ```
 
 Every async job is structured. `.task` binds the work to the view's
 lifetime, and `.task(id:)` restarts it on change, cancelling the stale
-job at its next suspension point. No free-floating `Task`, and nothing
-a test cannot reach. The shell is a view, so it tests like one. Hand it
+job at its next suspension point. Its id is a value that is `Equatable`
+by nature, a flag, a count, a string, never a model made `Equatable`
+for it; the count is what lets the same save run twice. No
+free-floating `Task`, and nothing a test cannot reach. The shell is a view, so it tests like one. Hand it
 a logged `LibraryService` through the environment and it produces a log
 of its own.
 
-When a job must outlive a `.task`, such as a download the user starts
-with a tap, swift-core-flow's `@UnstructuredTask` holds it in a
+A job the user starts with a tap, a save or a download, is
+swift-core-flow's `@UnstructuredTask` where the library is present: it holds it in a
 view-owned slot that cancels the previous task on replacement and the
 live one on teardown, and logs every assignment like `@TestState`. Use
 a capture list in the task closure. Capturing the view keeps the
