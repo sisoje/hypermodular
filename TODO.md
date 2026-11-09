@@ -528,10 +528,14 @@
     so, and a tap-started job is `@UnstructuredTask` under the library.
     Two more clauses: an error is written only when it changes, so
     `judge()` logs no `nil` storm; I/O with no inputs, a file write, is
-    still a contract. For the library owner: a `@TestState` cannot be
-    given an initial value by the scenario, so a filled form has no
-    given and every block replays the typing, which with the 512 cap
-    forces one-letter test data.
+    still a contract. The run's "a `@TestState` cannot be given an
+    initial value" was wrong as stated, and so was my relay of it: the
+    library seals only the `@Shell` Core's copy, which is private; an
+    internal `@TestState`, on a scenario or a hand-written core, is a
+    defaulted init parameter, so a given can seed own state. The
+    CoreFlow skill now says so. What stands is narrower: a form cut with
+    the macro replays its typing as the given, and the 512 cap then
+    forces short test data.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
