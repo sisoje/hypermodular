@@ -389,8 +389,10 @@ either way.
   the labels. It holds no state and composes, one transformer's output binding
   being the next one's input, so a plain test constructs it over local
   variables, writes through an output binding, and reads the error
-  back, no view runtime. Under swift-core-flow its outputs are one
-  tuple, `@Capability` (the library's skill).
+  back, no view runtime. A write of the value already held changes no
+  source of truth, so the interception drops it, and the system's
+  focus and blur writes never enter the log. Under swift-core-flow its
+  outputs are one tuple, `@Capability` (the library's skill).
 - **Test the action, not the aftermath.** The test proves an action
   executed with the right input, the closure called with the expected
   model or the binding written, plus the state the event leaves behind,

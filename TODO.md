@@ -420,7 +420,20 @@
     a `bundle.ui-testing` target, in `project.yml`; and nobody wrote
     the plain test the transformer exists for, since the prompt names
     no unit-test target. Owner's call whether the template asks for
-    one.
+    one. Fourth run, after the owner asked for `@Binding` properties on
+    the validator and a unit test, and the skill said so: the agent
+    wrote `AddressFieldRules` with `@Binding var address` and
+    `@Binding var errors`, four computed `Binding<String>` outputs, a
+    `judgeAll()`, the same no-change guard, a pure fields view, and five
+    Swift Testing tests over local variables with no view runtime,
+    green under `xcodebuild test`; it removed its throwaway UI target
+    this time. F35 ruled on that second independent appearance: a
+    write of the value already held changes no source of truth, the
+    interception drops it. Also from the run: a silence on a contract
+    line is an edge event, so the criterion is drawn (notation); the
+    host's mapped wrappers carry explicit types (CoreFlow skill); the
+    template says the Swift 6 language mode, since "Swift 6.4" is a
+    toolchain, not a mode.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

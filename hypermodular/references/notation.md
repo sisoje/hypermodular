@@ -200,7 +200,9 @@ node's edge, meaning at least one entry is a boundary event: a call, a
 callback, or a write into a source the node was handed or materializes.
 A criterion whose log is own state only stays an array in the test and
 is not drawn. The map shows edges, and behavior that cannot break a
-contract has nothing to show on it. "Optional" means own state only,
+contract has nothing to show on it. A silence on a contract line,
+Save tapped and nothing handed on, is an edge event, so that criterion
+is drawn with its `Note`. "Optional" means own state only,
 never "skipped". A node with a call on its label and no evidence block
 is a finding, like a label mismatch.
 
