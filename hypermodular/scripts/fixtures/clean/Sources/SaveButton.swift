@@ -7,8 +7,8 @@ struct SaveButton: View {
     @State private var userName = ""
 
     var body: some View {
+        SaveRow(draft: draft, onSave: onSave)   // the callback handed down by name, called in furniture
         Button("Save") {
-            onSave(draft)
             Task {
                 do {
                     let id = try await getUserName()
@@ -19,4 +19,10 @@ struct SaveButton: View {
             }
         }
     }
+}
+
+private struct SaveRow: View {
+    let draft: String
+    let onSave: (String) -> Void
+    var body: some View { Button("Save draft") { onSave(draft) } }
 }

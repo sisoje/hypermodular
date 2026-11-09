@@ -28,7 +28,7 @@ With --sources DIR [DIR ...], the code-side half. Each mapped node is
 matched to the Swift type of its name and its label is derived from
 the type's body, then compared both ways:
 
-  code          a call, read, binding write, callback call, or
+  code          a call, read, binding write, callback call or hand-down, or
                 materialization in the Swift with no line on the label
                 (the fence breach); a label line with nothing behind it
                 in the Swift (stale); a bare evidence target that is no
@@ -228,7 +228,8 @@ def facts(t):
         if re.search(rf"\${b}\b", body) or re.search(rf"\b{b}(?:\.wrappedValue)?\s*(?:=[^=]|\+=|-=|\.toggle\(|\.append\()", body):
             f["binding_writes"].add(b)
     for c in f["callbacks"]:
-        if re.search(rf"\b{c}\??\s*\(", body): f["callbacks_called"].add(c)
+        # called, or handed down by name to the subtree that calls it
+        if len(re.findall(rf"\b{c}\b", body)) > 1: f["callbacks_called"].add(c)
     return f
 
 def check_code(dirs, cyls, treeroots):
