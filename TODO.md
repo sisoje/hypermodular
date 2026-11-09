@@ -433,7 +433,17 @@
     line is an edge event, so the criterion is drawn (notation); the
     host's mapped wrappers carry explicit types (CoreFlow skill); the
     template says the Swift 6 language mode, since "Swift 6.4" is a
-    toolchain, not a mode.
+    toolchain, not a mode. Fifth run, with the capability paragraph and
+    the computed-node sentence in the skills: `@Capability struct
+    AddressFieldsTransformer`, eight `@Binding` inputs, four field
+    bindings, four messages, and `judge()` as outputs, the view handed
+    `fields.capability` and nothing else, seven plain tests green,
+    gates green. The whole shape the owner described arrived from the
+    product-words brief and five sentences of doctrine across five
+    runs, no output hand-fixed. One contradiction it found, fixed: the
+    CoreFlow skill's do-not "keep a draft in a `@Shell` core" now says
+    a draft no criterion names; a form's fields stay in the core behind
+    a transformer.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
