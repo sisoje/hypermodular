@@ -429,14 +429,39 @@ boundary, and the hosted test in swift-core-flow are in
 
 ## Layer: the data coupling layer
 
-What the modules share is one more module, free of behavior: the data
-coupling layer, a package named `DataCoupling` that depends on nothing
-of yours. It holds the models, the enums, the values a feature computes
-and shows, a validation's errors among them, the contracts as closure
-signatures with the `EnvironmentValues` entries that propagate them,
-and the root's settings as a struct of bindings. The composition root
-constructs the implementations, features consume them, and the two meet
-nowhere but in that layer's types.
+Constantine ranked the ways two modules can depend on each other, and
+data coupling is the weakest kind: they share values and nothing else,
+no object, no protocol, no container. This method builds the whole app
+on that one kind. Features never import each other and never import
+I/O. The app imports everything. What they all share is one package of
+pure data, the data coupling layer, `DataCoupling`, which depends on
+nothing of yours. A feature is written against that package alone, so
+it is constructible from literals of its types and tested without the
+rest of the app existing. The composition root constructs the live
+values, the features consume them, and the two meet nowhere but in
+this package. Diagram 2 on the map draws it.
+
+What it holds, by folder:
+
+- `Models/`. The app's records, SwiftData `@Model` classes or structs,
+  stored `var` properties with defaults and a public initializer, so
+  `.init()` is the empty one.
+- `Values/`. What a feature computes and another shows: a balance, a
+  debt, a validation's errors. Plain structs of stored properties.
+- `Enums/`. The app's closed sets: a category, a payment method, an
+  appearance.
+- `Services/`. The contracts: one struct of closures per boundary, the
+  store, the backend, the scanner, notifications, each with its
+  `@Entry` no-op default. The backend's operations are closures here
+  too, with the wire types they carry.
+- `Settings`. The root's `@AppStorage` keys as one struct of bindings,
+  so no feature names a key.
+
+What it never holds: a method, a computed property, an `import` of an
+I/O framework, a conformance nothing needs, or a type one screen keeps
+to itself, a sort option, a sheet enum. Behavior lives in the features
+as pure extensions and in the root as live closures. Data is the
+abstraction.
 
 - **A contract is a struct of closures, lets, or bindings** with a
   defaulted initializer, and its `@Entry` default is the minimal no-op,
@@ -470,8 +495,7 @@ nowhere but in that layer's types.
   observation, and even then it stays pure data. A delegate a framework
   requires is a class too, private to the root modifier that owns it. `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
-  task, stop a manager, tear down a subscription. A type earns its place
-  in the layer only by crossing a module boundary.
+  task, stop a manager, tear down a subscription.
 - **The root sets live values inline, where it sets them.** One
   modifier per I/O framework the root wires, each imported in one file,
   the chain applied inline at `@main`. A modifier that reads a value
