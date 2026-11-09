@@ -239,8 +239,9 @@ is a finding, like a label mismatch.
   prefix, a space, and the payload; an empty payload leaves the bare
   name. `Search->>searchAPI.search: dune` is `"search dune"`, and
   `LoginScreen->>authService.logIn: ""` is `"logIn"`. The test compares
-  the whole array with one equality, so a call the block did not name
-  fails it. Where the requirement names no order, the test sorts those
+  the names whole with one equality, so a call the block did not name
+  fails it, and each value as the author spells it, a deterministic
+  spelling, symbolic where a description is not stable. Where the requirement names no order, the test sorts those
   entries into one fixed order before comparing, duplicates kept, and
   the block shows that order. Never a subsequence.
 - **Dashed arrows back are supplied data**: `target-->>Node: value` or

@@ -505,6 +505,9 @@ library's own skill, `skill/SKILL.md` in
 
 ## Do not
 
+The first group breaks the method. The second is how this code is
+written, and the reader is the writer, so it binds too.
+
 - **A ViewModel, or any `@Observable` or `ObservableObject` owning a
   screen's state and actions.** A node is already pure logic. Pulling
   logic out of it separates logic from logic and adds an object.
@@ -533,6 +536,12 @@ library's own skill, `skill/SKILL.md` in
   of the binding it hands down.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
+- **Designing for the what-if.** "What if someone forgets to set the
+  entry?" Then the no-op default runs and the preview shows it. The
+  architecture does not protect itself from its authors.
+
+The code, as it is written here:
+
 - **Grouping for grouping's sake.** A `ViewState` umbrella, a data
   struct wrapped around a single view's properties, a helper that wraps
   a single-use sequence. Each is a jump the reader must make. Bundle by
@@ -547,9 +556,6 @@ library's own skill, `skill/SKILL.md` in
   the one case it is.
 - **Trivial comments.** A comment says what the code cannot, the why,
   or it is not there.
-- **Designing for the what-if.** "What if someone forgets to set the
-  entry?" Then the no-op default runs and the preview shows it. The
-  architecture does not protect itself from its authors.
 
 ## Vocabulary
 

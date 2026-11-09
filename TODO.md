@@ -504,10 +504,19 @@
     restore item "a per-line contract criterion as a check" is built:
     the checker warns for every call or callback line no evidence block
     writes, and on the book app it found one, Search's
-    `navService.showDetail()`, declared and never tested. Left to the
-    owner, again: exact payloads by default; fencing the taste items in
-    the do-not list; a declared guard in the block when an interception
-    drops writes; a speed or flakiness statement for the oracle.
+    `navService.showDetail()`, declared and never tested; the book app
+    gained a second Search scenario, the block, and a ninth UI test.
+    The owner then said fix all: the "one equality" sentences now say
+    the names are compared whole with one equality and each value as
+    the author spells it, one deterministic spelling, symbolic where a
+    description is not stable, which is the names-over-values ruling
+    and the early determinism rule in one breath; the do-not list is
+    two marked groups, what breaks the method and how this code is
+    written, nothing cut; the CoreFlow rerun clause names the one known
+    flake instead of a rerun habit; "two or three findings" left the
+    last reference. Not done, by ruling: a speed goal for the oracle,
+    and a per-block declaration of the no-change guard, which the
+    doctrine states once for every interception.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

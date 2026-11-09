@@ -82,8 +82,7 @@ address until now, and the first map is the artifact that gives every
 feature one. Say which nodes the user's features turned out to be, and
 which of them had been spread across layers with nothing to construct.
 
-Then the maps, plus the two or three most interesting things they
-reveal. Typical candidates: a dependency box far larger than the
+Then the maps, plus the findings they reveal. Typical candidates: a dependency box far larger than the
 feature count suggests; modules that share so many types they are one
 module in disguise; values set below the root; a decision that lives in
 a surprising node; components nobody mounts. Say what each would take

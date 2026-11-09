@@ -349,8 +349,9 @@ no books":
 
 The simplest case is the shelf, `["sortByAuthor true", "delete Dune"]`,
 a binding write and a callback, nothing behind either. The test
-compares the whole log with one equality, so a call the declaration
-did not name fails it. Assert order only when the requirement names
+compares the names whole with one equality, so a call the declaration
+did not name fails it, and each value as the author spells it, one
+deterministic spelling per entry. Assert order only when the requirement names
 it. Silence is evidence. Record the
 behavior as-is. One integration test per cylinder, at the shell, owns
 each boundary's real implementation. A node's evidence proves only the
