@@ -153,7 +153,8 @@ produce. `scripts/engine-run-prompt-coreflow.md` is the same brief cut
 with `@Shell`, depending on the sibling `../CoreFlow` checkout.
 `scripts/engine-run-prompt-garden.md` is a brief the method did not
 shape, in the product's words, for finding what the rules cannot
-express.
+express. `scripts/engine-run-prompt-address.md` is a validated form
+whose save is a closure, a brief that tempts a validator object.
 
 ## Related
 
