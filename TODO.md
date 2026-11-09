@@ -574,6 +574,14 @@
     data. Three more clauses: the scenario's own `@TestState` carries a
     given; the test produces a child-callback stimulus by driving the
     real child; a path dependency's package name is the directory's.
+    The owner then struck the errors struct itself: "why grouping? it is
+    a mental retardation from OOP, why is it not in a proper view?"
+    Four fields are four `String?` errors, each beside its field, state
+    of the node and label of the row; gathering them into `AddressErrors`
+    is the ViewState umbrella the do-not list already named, and it
+    appeared because my `Values/` example said "a validation's errors".
+    The example is gone, the do-not names an errors struct, and the form
+    sentences say one error per field, never a struct.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

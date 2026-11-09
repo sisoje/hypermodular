@@ -396,14 +396,15 @@ either way.
   what the core owns is what its blocks declare. What moves below the
   core is storage a criterion never names, never a rule. A rule runs
   above the view that shows its result, in the setter of the binding
-  handed down. A form's node owns the draft and its errors, intercepts
-  each field's binding to store the text and write that field's error,
-  stored and not derived so that the judgment is an event in the log,
-  and the fields view is bindings and labels with nothing decided in
-  it. The interception is one value, a transformer, the transformative
+  handed down. A form's node owns the draft and one `String?` error per
+  field, intercepts each field's binding to store the text and write
+  that field's error, stored and not derived so that the judgment is an
+  event in the log, and the fields view is bindings and labels with
+  nothing decided in it. The errors are never gathered into a struct;
+  four fields are four errors, each beside its field. The interception is one value, a transformer, the transformative
   kind of node: a struct whose stored properties are `@Binding`s, the
-  node's raw draft and errors, and whose outputs are the intercepted
-  field bindings and the labels. It holds no state and composes, one transformer's output binding
+  node's raw draft and its per-field errors, and whose outputs are the
+  intercepted field bindings and the labels. It holds no state and composes, one transformer's output binding
   being the next one's input, so a plain test constructs it over local
   variables, writes through an output binding, and reads the error
   back, no view runtime. A write of the value already held changes no
@@ -456,9 +457,10 @@ What it holds, by folder:
   stored `var` properties with defaults and a public initializer, so
   `.init()` is the empty one.
 - `Values/`. What a feature computes and shows: a balance, a debt, a
-  validation's errors. Plain structs of stored properties. They live
-  here even when one screen is the only reader, because they are data
-  of the app; what stays out is a helper that is not data.
+  scan result. Plain structs of stored properties. They live here even
+  when one screen is the only reader, because they are data of the
+  app; what stays out is a helper that is not data. A field's error is
+  not a value of the app: it is a `String?` beside its field.
 - `Enums/`. The app's closed sets: a category, a payment method, an
   appearance.
 - `Services/`. The contracts: one struct of closures per boundary, the
@@ -594,9 +596,11 @@ written, and the reader is the writer, so it binds too.
 The code, as it is written here:
 
 - **Grouping for grouping's sake.** A `ViewState` umbrella, a data
-  struct wrapped around a single view's properties, a helper that wraps
-  a single-use sequence. Each is a jump the reader must make. Bundle by
-  operation, not by screen. A `View` is already a struct.
+  struct wrapped around a single view's properties, an errors struct
+  gathering one `String?` per field, a helper that wraps a single-use
+  sequence. Each is a jump the reader must make. Bundle by operation,
+  not by screen. A `View` is already a struct, and a field's error
+  belongs beside the field.
 - **Data-driving statically known content.** Three onboarding pages are
   three views, or an enum with an exhaustive `switch`, never a `[Page]`
   replayed through `ForEach` with `lastPage = 2`. What is fixed at
