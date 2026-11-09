@@ -460,8 +460,9 @@ What it holds, by folder:
 What it never holds: a method, a computed property, an `import` of an
 I/O framework, a conformance nothing needs, or a type one screen keeps
 to itself, a sort option, a sheet enum. Behavior lives in the features
-as pure extensions and in the root as live closures. Data is the
-abstraction.
+as pure extensions and in the root as live closures. The layer has no
+tests, since it has no behavior to be wrong about; the compiler is its
+test. Data is the abstraction.
 
 - **A contract is a struct of closures, lets, or bindings** with a
   defaulted initializer, and its `@Entry` default is the minimal no-op,
