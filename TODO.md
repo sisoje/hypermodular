@@ -529,13 +529,13 @@
     Two more clauses: an error is written only when it changes, so
     `judge()` logs no `nil` storm; I/O with no inputs, a file write, is
     still a contract. The run's "a `@TestState` cannot be given an
-    initial value" was wrong as stated, and so was my relay of it: the
-    library seals only the `@Shell` Core's copy, which is private; an
-    internal `@TestState`, on a scenario or a hand-written core, is a
-    defaulted init parameter, so a given can seed own state. The
-    CoreFlow skill now says so. What stands is narrower: a form cut with
-    the macro replays its typing as the given, and the 512 cap then
-    forces short test data.
+    initial value" is `@State`'s own semantics, nothing the library or
+    the method adds: `@TestState` is `@State` that logs, private as
+    Apple asks, so out of the init; I relayed the complaint as a
+    library finding and then explained Apple back in the skill, both
+    wrong, both undone. What stands: a form cut with the macro replays
+    its typing as the given, and the 512 cap then forces short test
+    data.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
