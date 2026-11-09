@@ -134,7 +134,10 @@ lifted only when another node must drive it.
 - **A node is a collapsed subtree.** Rows, buttons, and design-system
   pieces are furniture. A subtree is a node only when it joins the app
   lifecycle on its own: own outliving state, appearance work, a
-  navigation destination, its own boundary call.
+  navigation destination, its own boundary call. The map draws
+  persisted nodes, the ones the runtime keeps a slot for. A
+  transformer, pure flow through a struct of bindings with no slot, is
+  never drawn; it lives inside the node whose state it reads.
 - **A labeled arrow is a presence condition.** Unlabeled arrows are
   composition, children that always exist together. A label names the
   value that must hold for the child to exist, in the code's own words

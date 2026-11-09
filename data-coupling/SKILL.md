@@ -136,6 +136,13 @@ source of most broken SwiftUI mental models.
   nodes. Node values are created and discarded each wave. Identity is
   structural, type and position among siblings, unless `.id()` overrides
   it. Flipping an `if` is a teardown, not an update.
+- **Two kinds of node.** A view is a persisted node: the runtime keeps
+  its identity slot and its state across waves, and the value is
+  re-created each wave over that slot. A transformer is a transformative
+  node: pure flow through it, references in, bindings and labels out,
+  created in the wave and gone with it, no slot. State lives in the
+  first kind, rules in the second, and both are values a test
+  constructs from literals.
 - **Dependencies are recorded by access.** A wrapper read during `body`
   registers its storage against that slot. A write to registered
   storage invalidates the slots that depend on it, and the runtime
@@ -381,12 +388,10 @@ either way.
   each field's binding to store the text and write that field's error,
   stored and not derived so that the judgment is an event in the log,
   and the fields view is bindings and labels with nothing decided in
-  it. The interception is one value, a transformer, a computed node:
-  a view is a node the runtime persists, an identity slot with state,
-  and a transformer is a node created in the wave and gone with it, a
-  struct whose stored properties are `@Binding`s, the node's raw draft
-  and errors, and whose outputs are the intercepted field bindings and
-  the labels. It holds no state and composes, one transformer's output binding
+  it. The interception is one value, a transformer, the transformative
+  kind of node: a struct whose stored properties are `@Binding`s, the
+  node's raw draft and errors, and whose outputs are the intercepted
+  field bindings and the labels. It holds no state and composes, one transformer's output binding
   being the next one's input, so a plain test constructs it over local
   variables, writes through an output binding, and reads the error
   back, no view runtime. A write of the value already held changes no
@@ -548,14 +553,14 @@ The articles' terms. Use them. They make discussion precise in a way
 
 | Term | Meaning |
 |---|---|
-| node | a view or view modifier, an ephemeral value created fresh each wave |
+| node, persisted | a view or view modifier: the runtime keeps its identity slot and state across waves, the value is created fresh each wave |
 | network | the identity, position, and attached storage the runtime retains across waves |
 | flow | data moving during a wave, down into inits or up through preference accumulation; every flow terminates in node creation or a source of truth |
 | transformation | `body`, input data in, child nodes created |
 | wave | one pass of re-creation; the runtime re-runs the transformations whose inputs changed, and no others |
 | source of truth | storage some node owns (`@State`, `@AppStorage`, `@SceneStorage`); changing one triggers the next wave |
 | self-loop | `@State`, an edge to the node's own next creation, not to another node |
-| transformer | a computed node: a struct of `@Binding` inputs whose outputs are intercepted bindings and labels, created in the wave and gone with it, no slot, so it tests as a pure value |
+| node, transformative (transformer) | pure flow through it: a struct of `@Binding` inputs whose outputs are intercepted bindings and labels, created in the wave and gone with it, no slot, so it tests as a pure value |
 | boundary event | a binding write or action call; re-enters the flow only if it changes a source of truth |
 | reshaping | a wave that changes structure, not only values; the rare case |
 | reference | `@Binding`, `@Environment`, or `@Query`: holds no state. A binding is a `get`/`set` pair an ancestor built and handed in at the initializer; an environment value is one an ancestor set above with `.environment(...)`; a query is a filtered read of the store the root opened |
