@@ -28,10 +28,10 @@ this skill is that model applied: to where state lives, to what a
 service is, to how a view is cut and tested, and to how the modules of
 an app meet.
 
-Three sources, in order of authority. When this file and a source
-disagree, flag it. Where the owner has since ruled against a source,
-the environment read being the case (F23 in the repo's `TODO.md`), the
-ruling wins and this file carries it.
+Three sources this file was distilled from. What wins, in order: a
+ruling recorded in the repo's `TODO.md`, then this file, then the
+sources; a disagreement with a source is flagged, not obeyed, the
+environment read being the case (F23).
 
 - [SwiftUI Data Flow Masterclass](https://medium.com/@redhotbits/swiftui-data-flow-masterclass-099f0768f776),
   the model: nodes, identity, waves, boundary events, the shell/core
@@ -120,7 +120,9 @@ below is one of them applied.
    the log. State is not centralized on principle.
 3. **Anything constructible from literals is testable by construction.**
    If a core cannot be constructed from inline literals, a boundary is
-   missing, and the call site shows it before any test runs.
+   missing, and the call site shows it before any test runs. The
+   construction is the scenario's, where the environment resolves; a
+   unit bundle constructs the same core and sees only defaults.
 
 ## Model: a node in a network
 

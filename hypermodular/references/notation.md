@@ -46,7 +46,7 @@ binding, a bare name calls back:
   and `settings` is then a cylinder). The write logs under the
   property's name, the evidence names it as the label spells it
   (`BookShelf->>sortByAuthor: true`, `Settings->>settings.city: Lisbon`),
-  and the checker requires some block to write it. The line is what
+  and the checker reports a `$` line no block writes. The line is what
   turns a `let` becoming a writable binding into a map diff.
 - `· name` lines (no `@`, no dot) **call back**: a closure the parent
   handed down as data (`· onSave`). It appears in the parent's map,
@@ -139,7 +139,9 @@ too.
   environment the same way a parent hands values to a child. A second
   arrow into the box means a value was set below the root.
 - **The column is ordered. Top to bottom is the order the root sets
-  them.** The invisible `~~~` chain is semantic, not layout. The root's
+  them.** The invisible `~~~` chain is semantic, not layout: it is the
+  order the root sets them, which constrains a derived service's place
+  and nothing else. The root's
   modifiers are applied in sequence, and a later one may read services
   already in the environment and combine them into a new one. A derived service uses the node-label grammar: name on the first
   line, then one line per ingredient it reads,

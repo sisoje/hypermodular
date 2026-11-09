@@ -3,8 +3,10 @@
 This repo defines the hypermodular method (Top-Down Development).
 `hypermodular/SKILL.md` is the source of truth for the maps and
 `data-coupling/SKILL.md` for the code. This file is your working
-summary. When the two disagree, `SKILL.md` wins. Flag the
-disagreement. The skill's `references/` hold the detail:
+summary. What wins, in order: a ruling recorded in `TODO.md`, then
+the two skills, then this file, then the owner's articles the skills
+were distilled from. Flag a disagreement, never obey it. The skill's
+`references/` hold the detail:
 `architecting.md` (new app or feature), `reverse-engineering.md`
 (legacy codebase), `notation.md` (the complete grammar and the
 checker), `evidence.md` (declaring behavior as a log),
@@ -54,7 +56,7 @@ its own.
 |------|---------|
 | `A --> B` | Data flow: parent hands facts, bindings, and callbacks down. Also root to Dependencies box (setting a value is normal data flow). |
 | `A -->\|cond\| B` | A presence condition: the child exists while the labeled value holds. Arrows on the same deciding value are alternatives, on different values independent. Unlabeled arrows are composition (children coexist). |
-| `Node["Name<br/>· @Query<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: store, scene storage, focus; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder. `· dep.value` reads a let or binding off a dependency and never logs. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and some block must name it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
+| `Node["Name<br/>· @Query<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: store, scene storage, or focus, which the system owns and the node writes; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder. `· dep.value` reads a let or binding off a dependency and never logs. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and the checker reports a block that never names it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
 | `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, never `swiftData`). |
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top to bottom in the order the root sets them. Derived services list their ingredients, which must sit above them. |
 | `A ~~~ B` | Invisible link. Orders the dependency column. |
@@ -86,7 +88,8 @@ subgraph), no emoji, no status marks.
   test is the log.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. No protocols, no classes, no reference
-  types, with the three protocol cases the code skill names. Setting =
+  types, with the three protocol cases and the two class cases, data
+  that earns it and a framework delegate, the code skill names. Setting =
   putting a value into the environment at the root.
   Deriving = building a new value from values already there. No
   `.live`, `.preview`, or `.unimplemented` statics and no `+Live`

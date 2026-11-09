@@ -15,7 +15,8 @@ verified from the maps alone:
                 a cylinder in the box ('· dismiss()', a sealed action
                 Apple sets, has no dot and needs none); a derived cylinder's ingredients
                 sit above it
-  evidence      dotted targets are label call lines or dotted '· $' lines; bare targets are
+  evidence      every call, callback, and '· $' line on a label is the target of some
+                block (reported when not); dotted targets are label call lines or dotted '· $' lines; bare targets are
                 label callbacks, label '· $binding' lines, or
                 (unverifiable here) stored properties; every '· $binding'
                 line is written in some block; reserved names are quoted; a node with
@@ -355,6 +356,9 @@ def main(root, sources=()):
             warn("evidence", f"{n.name}: label has '· ${b}' but no evidence block writes it")
         if (calls or callbacks or bindings) and not n.evidence:
             warn("evidence", f"{n.name}: label has calls ({', '.join(sorted(calls | callbacks | bindings))}) but no evidence block")
+        elif n.evidence:
+            for line in sorted((calls | callbacks) - written):
+                warn("evidence", f"{n.name}: label line '{line}' is written in no evidence block")
 
     treeroots = {b["name"] for b in blocks if b["kind"] == "Root" and not b["special"] and b["parent"] is None}
     ntypes = check_code(sources, cyls, treeroots) if sources else None

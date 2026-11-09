@@ -82,8 +82,9 @@ writes. When the question is how a node's Swift should look, go there.
    literals, and anything constructible from literals is testable by
    construction. Declare the evidence before implementing.
    Implementation means making the declaration hold. Never observe
-   effects behind a boundary, and never simulate behavior. A boundary
-   in a spec is a logger, and checking a node is comparing two values.
+   effects behind a boundary, and never simulate behavior; a stub that
+   returns supplied data simulates nothing. A boundary in a spec is a
+   logger, and checking a node is comparing two values.
    Refactor the node and the log cannot change. Only a changed
    requirement can. That is why the log, not the structure, is the
    contract.

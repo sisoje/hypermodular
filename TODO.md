@@ -486,6 +486,28 @@
     rulings: exact payload comparison by default against "a value is
     asserted as the test's author sees fit", and a compiled example app
     inside the doctrine repo, which the owner has kept out on purpose.
+    Sonnet high then ran the committed template against `2ca6686`,
+    same verdict, maturing maps and a drifting oracle, and eight live
+    contradictions, five of them new: fixed the same evening. One
+    precedence order now stands in AGENTS and the code skill, a ruling
+    in `TODO.md`, then the skills, then AGENTS, then the articles, a
+    disagreement flagged and never obeyed; "constructible from
+    literals" names the scenario as the construction where the
+    environment resolves; "never simulate behavior" adds that a stub
+    returning supplied data simulates nothing; AGENTS names the two
+    class cases beside the three protocol cases and says focus is the
+    system's, written by the node; the `~~~` chain is semantic as the
+    order the root sets them and constrains a derived service's place
+    only; "the checker requires" became "reports", since a
+    reverse-engineered map may lack the block; the validation
+    reference's two stale lines (thirteen, unwritten) updated. Its
+    restore item "a per-line contract criterion as a check" is built:
+    the checker warns for every call or callback line no evidence block
+    writes, and on the book app it found one, Search's
+    `navService.showDetail()`, declared and never tested. Left to the
+    owner, again: exact payloads by default; fencing the taste items in
+    the do-not list; a declared guard in the block when an interception
+    drops writes; a speed or flakiness statement for the oracle.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

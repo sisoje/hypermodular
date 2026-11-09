@@ -569,11 +569,12 @@ from the proposal above:
   uses both. Read it as two choices, not one.
 - **F11.** The map-side half is `scripts/mapcheck.py`, tested on the
   maps above (`../scripts/fixtures/clean`, zero errors) and on a copy
-  with thirteen planted errors and two planted warnings
+  with fourteen planted errors and two planted warnings
   (`scripts/fixtures/broken`; the errors asserted exactly, nothing
   extra; `scripts/test.sh`). The code-side half (every call in a node's
   Swift on its label; bare evidence targets being real stored
-  properties) is unwritten (`TODO.md`).
+  properties) was built 2026-11-09 as `--sources` (`notation.md`, the
+  checker).
 - **F12.** Scoped to sequence diagrams, where it was tested. Flowchart
   ids colliding with flowchart keywords is untested and unruled.
 - **F13 (from review).** Evidence-only `MAP.md` files were orphans. The
