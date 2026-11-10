@@ -317,6 +317,12 @@ four loose `@State`s and assembles the `Address` only when Save hands
 it on. Where the shell's own writes are to log, it carries `@Shell`
 ("When to split" below).
 
+The example wires the transformer by hand so that it reads without the
+library. With swift-core-flow the transformer carries `@Capability`,
+and the shell takes `AddressFields(...).capability`, one tuple of the
+field bindings, the messages, and `judge`, and hands the core nothing
+else (the library's skill, "Transformers").
+
 ## What a core consumes: three shapes of I/O
 
 A closure of any signature is a behavior. The core calls it and does

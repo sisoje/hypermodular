@@ -883,7 +883,13 @@
     address runs guessed; and in the CoreFlow skill, a UI-test bundle
     beside a package links the library that holds `TestScenario`. The
     agent read swift-core-flow's sources and hosted examples to set the
-    bundle up, beyond what the brief allowed, and said so. A fifth
+    bundle up, beyond what the brief allowed, and said so. The run
+    wired the transformer by hand and left `@Capability` off, "as the
+    `shell-core.md` worked example does"; the owner asked whether the
+    rules do not hint at it. They do, in the code skill's form passage
+    and the CoreFlow skill's "Transformers", and the example added that
+    morning outweighed the hint. The example now names `@Capability`
+    as its form under the library. A fifth
     sentence, that the service decides whether a returning write is
     synchronous or `async`, was written and removed the same day. The
     owner called the question wrong. The code skill already says a
