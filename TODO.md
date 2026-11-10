@@ -794,7 +794,10 @@
     `SaveButton` stub had the same `Task` in a button and now holds it
     in a slot, its block declaring the assignment; the broken fixture
     plants four habit warnings. `notation.md`, the fixtures' README,
-    AGENTS, and two bullets of the code skill say so.
+    AGENTS, and two bullets of the code skill say so. The four engine
+    briefs now ask the run to report every rule it broke on purpose and
+    every warning it left standing, each with its reason, so a grader
+    can tell a chosen break from a miss.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
