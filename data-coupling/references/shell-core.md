@@ -471,6 +471,13 @@ own.
 - **One shell wherever the I/O is, not one per view.** A view made only
   of `let`s, bindings, and closures is already a core. A shell on it
   adds nothing.
+- **Shells and cores cascade.** A core's child may be a shell with a
+  core of its own, to any depth. Where a piece of state should sit is
+  never a puzzle to solve for the whole feature. It sits in the node
+  that uses it, and when a scenario or a preview must hand it in, one
+  more shell goes above that node. Each node is tested alone as a
+  unit, and the composition works because every edge between them is
+  data. That is what hypermodular means.
 - **Screen first for a new screen.** The core is written before the
   view that feeds it, read off the screen one property per element,
   with the design's own rules in it (`SKILL.md`, "Cut"). The view above

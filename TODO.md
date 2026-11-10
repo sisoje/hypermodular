@@ -691,9 +691,12 @@
     hand-written shell carries `@Shell`, so the real shell is proven,
     not only the core. It closes F38's
     open question. The bullet in `shell-core.md`, "When to split", and
-    one sentence in the code skill's "Screen first". Not done: the
-    CoreFlow skill and `scripts/engine-run-prompt-coreflow.md` were
-    written under the old default and are not reread against this.
+    one sentence in the code skill's "Screen first". The address
+    brief no longer dictates the macro, so a cold run shows the
+    agent's own choice; the CoreFlow and Garden briefs keep the
+    sentence, since those runs exist to exercise `@Shell`. Not done:
+    the CoreFlow skill was written under the old default and is not
+    reread against this.
   - **F36 to F39, the audit the owner asked for the same day.** Three
     things said and not written, now in: a binding into one enum case
     needs a case path, machinery that exists only because the facts
@@ -712,6 +715,15 @@
     is said out loud, with the rule and the reason, so that a break is
     a decision and not a miss. That half is the agent's and is not
     ruled.
+  - **F41, shells and cores cascade.** The agent asked where a sheet
+    flag lives in a screen-first core, in the core or handed in from
+    the shell. The owner, 2026-11-10: the question is wrong, "we can
+    have cascade of shell/cores, why not, thats why we say
+    hypermodular, we test each node as unit, and when composed the
+    composition will work". State sits in the node that uses it, one
+    more shell goes above when a scenario must hand it in, to any
+    depth. F30 stands untouched. One bullet in `shell-core.md`, "When
+    to split", and one sentence in the code skill's "Cut".
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

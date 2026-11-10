@@ -359,7 +359,9 @@ session, a socket, a token refresher: a service that holds state is
 wrapped in closures at the root before it is set, and the core reads
 the closures. And there is one shell wherever the I/O is, not one per
 view. A view made only of `let`s, bindings, environment reads, and
-closures is already a core, and gets no shell. The composition root is
+closures is already a core, and gets no shell. Shells and cores
+cascade, a core's child a shell with its own core, each node tested
+alone, the composition holding because every edge is data. The composition root is
 never cut either. It owns the app's state, hands it down as bindings,
 sets the live values, and has no scenario; its one child is the first
 core. No node starts a `Task` it does not hold. Work an event starts,
