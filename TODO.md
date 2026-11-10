@@ -745,6 +745,35 @@
     `@Previewable @State` stand as they were. Sentences in
     `shell-core.md` (the by-hand example, the naming bullets, the
     checklist) and in the code skill's test section.
+  - **F43, converting a codebase that already exists.** The owner,
+    2026-11-10, on the agent's remark that conversion is a different
+    job from writing new code: "didnt we had separate skill already? do
+    it". There was none. The older `swiftui-mv-architecture` skill had
+    a reference, `refactoring-from-mvvm.md`, whose "after" shapes are
+    now this method's do-nots, a `State` struct beside a `Logic`
+    struct, a phase enum, a `Task` in the button, a session object.
+    Written new as the code skill's fifth reference,
+    `references/converting.md`, the pair of the map skill's
+    `reverse-engineering.md`: one node at a time, the two kinds of
+    legacy view (own wrappers get `@Shell` as they stand, F39; an
+    object is taken apart and the screen modeled again, F38), a table
+    from each part of an object to where it goes, the order for one
+    node, the service wrapped at the root and not rewritten, the edge
+    with unconverted code, what the old habits propose instead, when
+    to leave a screen alone, a checklist. Its signup example, before
+    and after, builds against swift-core-flow in the Swift 6 language
+    mode with the main-actor default; it was not run. Pointed at from
+    both skills, AGENTS, and the README, and the code skill's
+    description names the job so it loads for it. A reference and not
+    a third skill, the agent's choice: the code skill already loads on
+    "refactoring" and on every object word, and the rules it applies
+    live there. Derived by the agent from standing rulings and not
+    ruled as such: criteria are agreed before a node is converted,
+    never read off the code (from "evidence is not reverse-engineered");
+    a legacy parent may hand a converted child its object's method as a
+    closure; each conversion moves one contract up to the root; a
+    screen nobody is changing is left alone (F40). Not tried on a cold
+    agent.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

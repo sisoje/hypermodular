@@ -9,6 +9,7 @@ description: >
   environment. A view is cut into shell and core, by hand or with
   swift-core-flow's @Shell, and a test reads the execution log. Use
   whenever writing, reviewing, refactoring, or designing SwiftUI code;
+  converting or migrating a legacy codebase one view at a time;
   deciding where state lives; adding a service, capability, environment
   value, or @Entry; making a view testable or previewable; laying out
   packages and modules; or whenever ViewModels, MVVM, @StateObject, TCA,
@@ -43,10 +44,12 @@ environment read being the case (F23).
   mechanics: the cut and the log as macros, and a hosted UI-test host
   that asserts the log.
 
-Four references hold the detail, one per job: `references/data-flow.md`
+Five references hold the detail, one per job: `references/data-flow.md`
 (the runtime model), `references/shell-core.md` (cutting a view),
 `references/testing.md` (the execution log and the test host),
-`references/modules.md` (the data coupling layer and the module graph).
+`references/modules.md` (the data coupling layer and the module graph),
+`references/converting.md` (a codebase that already exists, taken out
+of its ViewModels one node at a time).
 
 ## The rule
 
@@ -651,7 +654,8 @@ and why, where it is broken.
   data, set and read like any value; the methods make it the object.
   Erase the object into closures: networking as an async function, a
   validator as a value computed from the state, or as a plain closure
-  when the app supplies the rule.
+  when the app supplies the rule. Where each part of an existing one
+  goes is the table in `references/converting.md`.
 - **A dependency whose live value can be made with no inputs**, a
   formatter, a calendar, a pure calculation. It is a constant. Use it
   directly, never through the environment. I/O with no inputs, a file

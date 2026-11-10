@@ -49,6 +49,8 @@ and the details each needs have a reference:
   order of work, what to present.
 - `references/reverse-engineering.md`, a codebase that exists and has
   no map: the walk, what legacy code throws at the notation, findings.
+  Converting its code afterwards is the data-coupling skill's
+  `references/converting.md`.
 - `references/notation.md`, the complete grammar: every label-line
   kind, identity rules, the dependency column, evidence blocks,
   reserved words, the checker.

@@ -1,6 +1,7 @@
 # Reverse-engineering: mapping a codebase that already exists
 
-The legacy job. Code exists, no map does. The first map of a codebase
+The legacy job. Code exists, no map does. Converting the code the map
+describes is the code skill's job, `data-coupling/references/converting.md`. The first map of a codebase
 is a free architecture review. Present it as one. `notation.md` has the
 grammar. `coreflow-example-validation.md` is a complete worked run.
 

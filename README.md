@@ -164,7 +164,8 @@ design change.
   Its `skill/SKILL.md` is the adoption skill, the method mechanized.
 - **data-coupling** (this repo, `data-coupling/`), the code: the node
   model, lifting, the shell/core cut by hand or with `@Shell`, the
-  execution log, the data coupling layer and the module graph.
+  execution log, the data coupling layer and the module graph, and
+  converting a codebase that already exists.
 - **hypermodular** (this repo, `hypermodular/`), the method: draw the
   maps, develop top-down, let evidence keep everyone honest.
 

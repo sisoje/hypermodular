@@ -145,6 +145,12 @@ subgraph), no emoji, no status marks.
 - **New feature in a mapped repo**: add nodes and arrows to the map
   first, agree the diff, then build root-down, evidence declared before
   code.
+- **Converting an existing codebase**: map it first, then one node at
+  a time. A view with its own wrappers gets `@Shell` as it stands. A
+  view driven by an object is modeled again from its screen, and the
+  object is taken apart by the table in
+  `data-coupling/references/converting.md`. The service behind it is
+  wrapped in a contract at the root and not rewritten.
 - **Maintenance**: the map is code. Update affected maps (structure or
   evidence) in the same commit as the change, and run `mapcheck.py`
   with `--sources` on the code.
