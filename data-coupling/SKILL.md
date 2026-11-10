@@ -381,7 +381,10 @@ the node controls the work and a test reads it. `.task` and
 `.task(id:)` are the runtime's events. Appearance starts the work and
 disappearance cancels it, and the node decides neither. They are kept
 for work that belongs to appearance or to a value that is `Equatable`
-by nature, a load, a refetch when the sort changes.
+by nature, a load, a refetch when the sort changes. A subscription
+sits in a node whose lifetime covers every moment its events must be
+handled, and it starts in that node's `.task`, never where the
+contract's value is built.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a

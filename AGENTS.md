@@ -78,7 +78,8 @@ subgraph), no emoji, no status marks.
 - **No cross-feature arrows.** Navigation across features is a call to
   `navService` with a route and data. The caller never knows which node
   answers. A node's own sheet or stack is its own state, lifted only
-  when another node must drive it.
+  when another node must drive it. A system event the stack's owner
+  subscribes to is not a cross-feature call.
 - **Four keys decide a design: construction, usage, actions,
   mockability.** Whatever the root can name it builds and hands down
   as a projection, `@AppStorage` by its key, the container, the

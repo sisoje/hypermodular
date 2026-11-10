@@ -123,7 +123,16 @@ never reaches up or sideways, and cross-feature arrows are forbidden.
 Navigation across features is a call to `navService` with a route and
 data; the state it writes lives at the root, and the caller never knows
 which node answers. A node's own sheet or stack is its own state,
-lifted only when another node must drive it.
+lifted only when another node must drive it. A system event a node
+subscribes to, a notification tap, a deep link, does not by itself
+make navigation cross-feature. The node that owns the stack may
+subscribe and write its own navigation state. Moving that decision
+out of the node, into a router or a service beneath it so that the
+view only displays, is the object reflex. The node is the logic. The state is lifted, and
+`navService` appears, when another node must open the same
+destination, or when the event must be handled while the stack's owner
+is not mounted. Then the listener sits in a node that is mounted, and
+that node calls `navService`.
 
 - **Mermaid id = node name, always.** The name is the join key that
   merges maps back into one tree.

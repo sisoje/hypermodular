@@ -841,9 +841,24 @@
     owner: "nop really doesnt matter, throw or fatal error". The
     default throws, or is a `fatalError` where it cannot throw, and the
     signature is never bent for it; "never a trap" is gone from
-    `modules.md`. Open, for the owner: whether a
-    listener inside the feature that answers a notification still
-    calls `navService`; how the root's own `@AppStorage` is written on
+    `modules.md`. On whether a listener inside the feature that answers
+    a notification still calls `navService`, the owner: "i have no idea
+    ask astra in codex". Astra at high effort, read-only, given the
+    Garden code and F30, F33, F37, F41, answered that it does not: F30
+    lifts a stack only when another node must drive it, a subscription's
+    events are `System->>Node` stimuli, and a notification's outside
+    origin makes no second navigating node. It changes when another
+    feature must open the same destination, or when delivery must
+    outlive the stack's owner; then the `.task` moves to a node that is
+    mounted and that node calls `navService`. The agent agrees, since
+    it is F30 applied. Written as three sentences, in the map skill's
+    navigation paragraph, beside `.task` in the code skill, and in
+    AGENTS. Ruled by the owner the same day: "yes dude puting logic
+    below the view is OOP brainwashed reflex". A fourth sentence in the
+    map skill says so: moving the decision out of the node into a
+    router or a service beneath it is the object reflex, the node is
+    the logic.
+    Open, for the owner: how the root's own `@AppStorage` is written on
     its label; what a framework delegate does with an event that
     arrives before any node subscribes. Material for the CoreFlow
     skill, not applied because the grader did not verify it: without a
