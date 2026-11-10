@@ -870,6 +870,18 @@
     UI-test bundle the address run read the log on macOS from the log
     element's `AXDescription` (names) and `AXValue` (values), and the
     Garden run could not read it at all.
+  - **The address brief builds for the iPhone.** The owner, 2026-11-10:
+    "i hate ui tests on my macbook it occupies my mouse, and iphone
+    runs in simulator freely". The first cold run of the day had no
+    bundle and proved its arrays by scripting the Mac's accessibility,
+    which takes the mouse. `scripts/engine-run-prompt-address.md` now
+    asks for an iPhone app on the iPhone 18 Pro simulator, a UI-test
+    bundle with one method per evidence block, a derived data path
+    inside the output directory, and forbids driving the Mac's own
+    interface. The packages keep macOS 14 beside iOS 17 only so the
+    plain tests run under `swift test`. The bundle is the agent's
+    reading of the owner's reason, since the earlier stance was that a
+    play run needs none.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
