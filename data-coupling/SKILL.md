@@ -242,8 +242,13 @@ cannot be used.
 - **What did not happen: injection.** Injection, in the object sense,
   implies a stored reference to a stateful service, a lifetime the
   consumer manages. A view stores closures, but it is an ephemeral
-  value with no lifetime and nowhere to inject into. Dependencies flow,
-  like everything else. Data at the boundary is dependency rejection:
+  value with no lifetime and nowhere to inject into. The object world
+  takes the view for a physical thing, one that exists and waits,
+  which is why it injects a ViewModel into it. In a reactive system
+  there is no such thing. What is called a view is only called one. It
+  is a value, recomputed and composed when it is needed, from
+  dependencies that are themselves flowing. Dependencies flow, like
+  everything else. Data at the boundary is dependency rejection:
   values in, values out. Closures at the boundary are dependency
   parameterization: behavior handed in as a function. Neither is
   injection.

@@ -653,7 +653,12 @@
     idiots conflate struct-view with actual-view, swiftui is reactive,
     it is based on state (graph), so its values graph recomputes and
     lifecycle comes as effect on it". One bullet in the code skill's
-    "Model", beside "the struct has no lifecycle".
+    "Model", beside "the struct has no lifecycle". And later the same
+    day: "in OOP worlds view is always physical, so they inject VM into
+    it; in reactive world there is no view, it is flowing and not
+    physical, it is recomputed and composed as needed from dependencies
+    that are flowing", and "a view is just called the view". Four
+    sentences in the code skill's "Lift", in the bullet on injection.
   - **F38, screen first.** Ruled by the owner 2026-11-10, from the
     address form: "what you see on screen you need to model directly",
     "textfield yields binding, error label yields let", "no
