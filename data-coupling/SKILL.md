@@ -655,7 +655,9 @@ and why, where it is broken.
   Erase the object into closures: networking as an async function, a
   validator as a value computed from the state, or as a plain closure
   when the app supplies the rule. Where each part of an existing one
-  goes is the table in `references/converting.md`.
+  goes is the table in `references/converting.md`. `mapcheck.py
+  --sources` warns on an `ObservableObject`, on an object wrapper, and
+  on an `@Observable` class with a method.
 - **A dependency whose live value can be made with no inputs**, a
   formatter, a calendar, a pure calculation. It is a constant. Use it
   directly, never through the environment. I/O with no inputs, a file
@@ -685,7 +687,9 @@ and why, where it is broken.
   node does not await is a different thing. It is one closure call, it
   logs, and nobody starts a `Task` for it, the root's closure included.
   A `Task { }` inside a closure the root sets is lifecycle hidden in
-  creation, the object habit of a service that runs itself.
+  creation, the object habit of a service that runs itself. The map
+  skill's `mapcheck.py --sources` warns on a `Task` that is not
+  assigned.
 - **`.task` for work an event starts.** A counter or a flag stored
   only so that `.task(id:)` fires is state invented to reach the
   runtime's event. The event is a tap, so the node assigns a task it

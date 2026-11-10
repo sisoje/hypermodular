@@ -5,11 +5,12 @@ struct SaveButton: View {
     let getUserName: () async throws -> Int
     @State private var draft = "draft"
     @State private var userName = ""
+    @UnstructuredTask private var fetch: Task<Void, Never>?
 
     var body: some View {
         SaveRow(draft: draft, onSave: onSave)   // the callback handed down by name, called in furniture
         Button("Save") {
-            Task {
+            fetch = Task { [getUserName] in
                 do {
                     let id = try await getUserName()
                     userName = "\(id)"

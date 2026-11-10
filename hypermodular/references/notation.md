@@ -300,9 +300,17 @@ evidence vocabulary is closed again. A presence-condition arrow whose
 label names nothing the node holds or reads is an error, so a renamed
 state leaves no stale arrow. `@AppStorage` in any type but the
 root is an error (F32). A `View` on no map that reads a cylinder is a
-warning, furniture doing a node's work. The reading is textual, the
+warning, furniture doing a node's work. Two rules of the code skill
+that no map can show are warnings too. A `Task` nobody holds is a
+`Task` expression that is not assigned, returned, or awaited (F37). An
+object that owns state is an `ObservableObject`, a property under
+`@StateObject`, `@ObservedObject`, or `@EnvironmentObject`, or an
+`@Observable` class with a method. They are warnings and not errors,
+since a rule may be broken on purpose, and a run reports each one it
+leaves standing with the reason. The reading is textual, the
 code is written by the method, so its forms are few. `scripts/test.sh`
 runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
 with Swift stubs, zero errors, nothing unverified) and
-`fixtures/broken` (the same with fourteen map violations and eight code
-findings planted, all caught; wrong on purpose, never an example).
+`fixtures/broken` (the same with fourteen map violations, eight code
+findings, and four habit warnings planted, all caught; wrong on
+purpose, never an example).

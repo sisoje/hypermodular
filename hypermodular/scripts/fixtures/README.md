@@ -3,7 +3,9 @@
 - `clean/`: CoreFlowExample's maps as validated in
   `references/coreflow-example-validation.md`, with the two feature
   `@AppStorage` lines lifted to the root as a `settings` cylinder and
-  written as dotted `$` lines (2026-11-09). Correct; usable as examples.
+  written as dotted `$` lines (2026-11-09), and `SaveButton`'s stub
+  holding its task in a slot, with the assignment declared in its
+  block (2026-11-10, F37). Correct; usable as examples.
 - `broken/`: the same maps with fourteen errors and two warnings planted
   (depth-2 arrows, an orphan, a label mismatch, a missing cylinder, a
   reserved-word target, an unlabelled evidence call, a dotted `$` line
@@ -18,7 +20,10 @@ evidence target; the broken ones plant a call with no label line, an
 evidence target that is no stored property, and a view on no map that
 reads a cylinder, and a presence-condition arrow whose label names
 nothing the node holds; with the two planted stale labels that is
-eight code errors and one warning.
+eight code errors and one warning. Four more warnings are planted for
+the habits no map can show: a `Task` nobody holds, an object behind
+`@StateObject`, an `ObservableObject`, and an `@Observable` class with
+a method.
 
 `sh scripts/test.sh` asserts the clean fixture has zero errors and the
 broken one reports exactly the planted list, nothing more, with and

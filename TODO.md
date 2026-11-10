@@ -774,6 +774,27 @@
     closure; each conversion moves one contract up to the root; a
     screen nobody is changing is left alone (F40). Not tried on a cold
     agent.
+  - **F44, the checker sees two habits.** The owner, 2026-11-10, asked
+    whether the checker should enforce the day's rules: "do as you
+    think is best". The gates of an engine run were the checker, the
+    build, and the arrays, and all three pass with a `Task` in a button
+    or a ViewModel in the tree. With `--sources` the checker now warns
+    on a `Task` expression that is not assigned, returned, or awaited
+    (F37), and on an object that owns state: an `ObservableObject`, a
+    property under `@StateObject`, `@ObservedObject`, or
+    `@EnvironmentObject`, an `@Observable` class with a method.
+    Warnings and not errors, since F40 lets a rule be broken. The
+    invented model (F36) is not checked: text cannot tell a fused enum
+    from a finite choice, so it stays a review item. Tried on real
+    code before it landed: the conversion example's "before" file
+    raises all three and its "after" none; the Desktop address app
+    raises none; swift-core-flow's own hosted suite raises two, a
+    `Task` nobody holds in `FlowUpThrowsScenario.swift` and in
+    `TestActionScenario.swift`, both real. The clean fixture's
+    `SaveButton` stub had the same `Task` in a button and now holds it
+    in a slot, its block declaring the assignment; the broken fixture
+    plants four habit warnings. `notation.md`, the fixtures' README,
+    AGENTS, and two bullets of the code skill say so.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

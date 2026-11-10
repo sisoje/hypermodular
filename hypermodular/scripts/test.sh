@@ -38,5 +38,9 @@ code: FocusField: label '· @FocusState' but FocusField.swift has no FocusState
 code: AddBookField: AddBookField.swift calls bookStore.upsert() with no line on the label
 code: BookList: @AppStorage below the root in BookList.swift (F32: the root owns the keys, a feature receives a binding)
 code: Furniture (Furniture.swift): on no map, reads dependency bookStore
+code: SaveButton.swift: a Task nobody holds, 'Task {' (F37: assign it to a slot the node holds, or use .task)
+code: Furniture (Furniture.swift): holds an object through @StateObject (state is loose @State, behavior is closures)
+code: SaveViewModel (SaveViewModel.swift): an ObservableObject (an object that owns state and actions is a ViewModel by any name)
+code: Session (SaveViewModel.swift): an @Observable class with methods (only stored properties make it data)
 WANT
 diff /tmp/mapcheck-code-want.txt /tmp/mapcheck-code-got.txt && echo "all planted code findings caught, nothing extra" || { echo "FAIL: code findings differ"; exit 1; }

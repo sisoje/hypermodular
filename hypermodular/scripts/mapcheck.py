@@ -36,6 +36,12 @@ the type's body, then compared both ways:
                 in the Swift (stale); a bare evidence target that is no
                 stored property of the type; @AppStorage below the root
                 (F32); a View on no map that reads a cylinder (warning)
+  habits        two rules of the code skill no map can show, as
+                warnings: a Task nobody holds (F37), which is a Task
+                expression not assigned, returned, or awaited; and an
+                object that owns state, which is an ObservableObject, a
+                property under @StateObject, @ObservedObject, or
+                @EnvironmentObject, or an @Observable class with methods
 
 Usage: mapcheck.py [repo-root] [--sources DIR ...]   (exit 1 on any error)
 """
@@ -165,9 +171,12 @@ BINDING = re.compile(r"^\s*@Binding\s+(?:(?:private|fileprivate|internal|public)
 MATERIALIZERS = [("@Query", "@Query"), ("QueryView(", "@Query"), ("@SceneStorage", "@SceneStorage"),
                  ("@FocusState", "@FocusState"), ("@AppStorage", "@AppStorage"), ("ProcessInfo", "@ProcessInfo")]
 
+TASK = re.compile(r"\bTask\s*(?:\.detached\s*)?[({]")
+OBJECT_WRAPPERS = ("@StateObject", "@ObservedObject", "@EnvironmentObject")
+
 class SwiftType:
     def __init__(self, name, file):
-        self.name, self.file, self.body, self.kinds, self.attrs = name, file, "", set(), set()
+        self.name, self.file, self.body, self.kinds, self.attrs, self.decls = name, file, "", set(), set(), set()
 
 def strip_comments(src):
     src = re.sub(r"/\*.*?\*/", "", src, flags=re.S)
@@ -200,6 +209,7 @@ def read_swift(dirs):
                 t = types.setdefault(name, SwiftType(name, str(p)))
                 t.body += "\n" + body_at(text, m.end() - 1)
                 t.attrs |= set(re.findall(r"@\w+", attrs or ""))
+                t.decls.add(kw)
                 t.kinds |= {c.strip() for c in (conf or "").split(",") if c.strip()}
     return types
 
@@ -235,8 +245,34 @@ def facts(t):
         if len(re.findall(rf"\b{c}\b", body)) > 1: f["callbacks_called"].add(c)
     return f
 
+def check_habits(dirs, types):
+    """Two rules of the code skill that no map can show. Warnings, since a rule may be broken on purpose."""
+    for d in dirs:
+        for p in sorted(Path(d).rglob("*.swift")):
+            if any(part.startswith(".") or part == ".build" for part in p.parts): continue
+            lines = strip_comments(p.read_text()).splitlines()
+            for i, ln in enumerate(lines):
+                m = TASK.search(ln)
+                if not m: continue
+                before = ln[:m.start()].rstrip()
+                if not before:   # the assignment may end the line above
+                    before = next((l.rstrip() for l in reversed(lines[:i]) if l.strip()), "")
+                    before = before if before.endswith("=") else ""
+                discarded = re.search(r"(?:^|[\s({,;])_\s*=$", before)
+                held = (before.endswith("=") and not discarded) or re.search(r"\b(?:return|await)$", before)
+                if not held: warn("code", f"{p.name}: a Task nobody holds, '{ln.strip()[:48]}' (F37: assign it to a slot the node holds, or use .task)")
+    for t in types.values():
+        where = f"{t.name} ({Path(t.file).name})"
+        top = depth0_lines(t.body)
+        for w in OBJECT_WRAPPERS:
+            if any(w in ln for ln in top): warn("code", f"{where}: holds an object through {w} (state is loose @State, behavior is closures)")
+        if "ObservableObject" in t.kinds: warn("code", f"{where}: an ObservableObject (an object that owns state and actions is a ViewModel by any name)")
+        elif "@Observable" in t.attrs and "class" in t.decls and any(re.search(r"\bfunc\s+\w+", ln) for ln in top):
+            warn("code", f"{where}: an @Observable class with methods (only stored properties make it data)")
+
 def check_code(dirs, cyls, treeroots):
     types = read_swift(dirs)
+    check_habits(dirs, types)
     for n in nodes.values():
         contract = max(n.labels, key=len, default=())
         t = types.get(n.name)
