@@ -330,11 +330,6 @@ in and how a test stands in for it.
 | black hole | a sink the core gives data to and forgets | a closure: `save(model)`, `haptic()`, analytics | a spy. Assert it was called, with the right payload. Whether it persists or fires is the boundary's own test |
 | async effect that can fail | a result the core awaits but does not implement | an `async throws` closure: `try await load()` | a stub per edge case (a value, an error, a delay), one test each. The result, error, and loading handling live in the core |
 
-A write may answer, with an id, a path, or an error. It is then a
-closure that returns or throws, synchronous where the service answers
-at once and `async` where it waits. The service decides which. Whether
-a task would have to be held is never the reason for either.
-
 The core decides what to do. The boundary does the I/O. Pick any
 screen. Its entire relationship to the outside world is a handful of
 these, all visible in its property list. No hidden service locator, no

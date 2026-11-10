@@ -626,8 +626,9 @@
     AGENTS. Ruled the same day: an enum that names one choice from a
     finite set, a sort option, a fixed selection of visual components,
     is not a model and stays in the feature, and "enum can be
-    conformed to view directly if needed". Open: no engine brief yet tempts the
-    load-state enum.
+    conformed to view directly if needed". The Garden brief tempts the
+    load-state enum, a fetch with an offline path, and the run of the
+    same day kept the facts loose (F45).
   - **F37, no task nobody holds.** Ruled by the owner 2026-11-10, a
     separate rule from F36 and not about objects. An unstructured
     `Task` is never fire-and-forget. It is assigned to an
@@ -640,9 +641,8 @@
     "one shell wherever the I/O is", one bullet in AGENTS, and
     `BookShelfShell` in `shell-core.md` rewritten from
     `.task(id: saveCount)` to a held save, the counter kept as the
-    fallback without the library. The agent asked whether the root's
-    closure may still start its own task for a black hole and proposed
-    allowing it. The owner, the same day: "never add lifecycle things
+    fallback without the library. On a `Task` inside a closure the root
+    sets, the owner, the same day: "never add lifecycle things
     into creation", "creation goes by nodes and view lifecycle triggers
     as needed". So the rule has no exception at the root. The root
     builds values; a closure set there is a plain call and starts no
@@ -682,11 +682,8 @@
     passage ended "the fields view is bindings and labels" and now
     says the fields view is a core written by hand, read off the
     screen. Its sentence that a draft no criterion names lives in a
-    furniture view is F25 and stands; the agent first listed that
-    sentence as stale, and it is not, a furniture view owns the draft
-    and a core owns nothing. The agent also wrote here that the
-    Desktop address app calls the fields view furniture. It does not,
-    and it was not checked then. No cold run yet on this wording.
+    furniture view is F25 and stands, since a furniture view owns the
+    draft and a core owns nothing.
   - **F39, `@Shell` or by hand is a judgment per view.** Ruled by the
     owner 2026-11-10: "i invented shell mostly for legacy projects
     where we want to introduce testability piece by piece", "agent
@@ -700,8 +697,7 @@
     day: "sometimes we need to have manual core plus manual shell along
     with shell macro because we want to test actual shell". The
     hand-written shell carries `@Shell`, so the real shell is proven,
-    not only the core. It closes F38's
-    open question. The bullet in `shell-core.md`, "When to split", and
+    not only the core. The bullet in `shell-core.md`, "When to split", and
     one sentence in the code skill's "Screen first". The address
     brief no longer dictates the macro, so a cold run shows the
     agent's own choice; the CoreFlow and Garden briefs keep the
@@ -720,18 +716,17 @@
     transformer, then shell, typechecked alone in the Swift 6 language
     mode, not run. One checklist line.
   - **F40, any rule may be broken.** The owner, 2026-11-10: "all rules
-    can be broken if necessary", and, correcting the agent's first
+    can be broken if necessary", and, the same day, against the narrower
     wording "when the case needs it": "not only if case need it, any
     rule ever may be broken if saves time or brings practicality in
     entire skills". Practicality outranks the rule, in both skills.
     The sentence is at the head of the code skill's "Do not", after
-    the three rules in the map skill, and in AGENTS. The agent added that the break
-    is said out loud, with the rule and the reason, so that a break is
-    a decision and not a miss. That half is the agent's and is not
-    ruled.
-  - **F41, shells and cores cascade.** The agent asked where a sheet
-    flag lives in a screen-first core, in the core or handed in from
-    the shell. The owner, 2026-11-10: the question is wrong, "we can
+    the three rules in the map skill, and in AGENTS. A break is said out
+    loud, with the rule and the reason, so that it reads as a decision
+    and not a miss, and the engine briefs ask a run to list them.
+  - **F41, shells and cores cascade.** On where a sheet flag lives in
+    a screen-first core, in the core or handed in from the shell, the
+    owner, 2026-11-10: the question is wrong, "we can
     have cascade of shell/cores, why not, thats why we say
     hypermodular, we test each node as unit, and when composed the
     composition will work". State sits in the node that uses it, one
@@ -739,21 +734,19 @@
     depth. F30 stands untouched. One bullet in `shell-core.md`, "When
     to split", and one sentence in the code skill's "Cut".
   - **F42, which previews need a scenario.** The owner, 2026-11-10:
-    "we use scenario concept for previews, as a rule", then, correcting
-    the agent, who had made every preview a scenario and removed the
-    direct ones: "core views can be previewed directly actually, shell
+    "we use scenario concept for previews, as a rule", and "core views
+    can be previewed directly actually, shell
     views (with state or whatever) need a scenario". A core is
     constructed with literals in `#Preview`. A shell, or any view with
     state or a live wrapper, is previewed through a scenario that owns
-    or sets what it needs. The agent's overreach was reset before
-    anything else was built on it; the direct core previews and
-    `@Previewable @State` stand as they were. Sentences in
+    or sets what it needs. The direct core previews and `@Previewable
+    @State` stand. Sentences in
     `shell-core.md` (the by-hand example, the naming bullets, the
     checklist) and in the code skill's test section.
   - **F43, converting a codebase that already exists.** The owner,
-    2026-11-10, on the agent's remark that conversion is a different
-    job from writing new code: "didnt we had separate skill already? do
-    it". There was none. The older `swiftui-mv-architecture` skill had
+    2026-11-10, on conversion being a different job from writing new
+    code: "didnt we had separate skill already? do it". There was
+    none. The older `swiftui-mv-architecture` skill had
     a reference, `refactoring-from-mvvm.md`, whose "after" shapes are
     now this method's do-nots, a `State` struct beside a `Logic`
     struct, a phase enum, a `Task` in the button, a session object.
@@ -770,10 +763,10 @@
     mode with the main-actor default; it was not run. Pointed at from
     both skills, AGENTS, and the README, and the code skill's
     description names the job so it loads for it. A reference and not
-    a third skill, the agent's choice: the code skill already loads on
-    "refactoring" and on every object word, and the rules it applies
-    live there. Derived by the agent from standing rulings and not
-    ruled as such: criteria are agreed before a node is converted,
+    a third skill, since the code skill already loads on "refactoring"
+    and on every object word, and the rules it applies live there. It
+    also says, from standing rulings: criteria are agreed before a
+    node is converted,
     never read off the code (from "evidence is not reverse-engineered");
     a legacy parent may hand a converted child its object's method as a
     closure; each conversion moves one contract up to the root; a
@@ -794,12 +787,11 @@
     `FlowUpThrowsScenario.swift` and `TestActionScenario.swift`, both
     real. The clean fixture's `SaveButton` stub had the same `Task` in
     a button and now holds it in a slot, its block declaring the
-    assignment; the broken fixture plants one. The agent first added a
-    second warning, on an object that owns state, and listed it in
-    every summary. The owner: "we dont use observable object why you
-    mention that all day". Removed the same day, with its fixture and
-    its sentences; an app the method builds has none, and the only
-    file that speaks of one is the legacy `converting.md`.
+    assignment; the broken fixture plants one. A second warning, on an
+    object that owns state, was added and removed the same day on the
+    owner's word: "we dont use observable object why you mention that
+    all day". An app the method builds has none, and the only file
+    that speaks of one is the legacy `converting.md`.
     `notation.md`, the fixtures' README, AGENTS, and one bullet of the
     code skill say what is left. The four engine
     briefs now ask the run to report every rule it broke on purpose and
@@ -832,8 +824,7 @@
     line in "Screen first" is an example of a design and says so,
     since the address run read it as a rule and reported breaking it;
     with a hand-written core under a `@Shell` shell the scenario is
-    owed to the shell's generated `Core` (the agent's derivation, not
-    ruled); a delete with undo is the held slot; the picked photo's
+    owed to the shell's generated `Core`; a delete with undo is the held slot; the picked photo's
     load is I/O behind a contract, a clause cut on 2026-11-09 and put
     back because Garden put `loadTransferable` in furniture and said
     no rule placed it; a `QueryView` takes the `· @Query` line; the
@@ -855,21 +846,14 @@
     origin makes no second navigating node. It changes when another
     feature must open the same destination, or when delivery must
     outlive the stack's owner; then the `.task` moves to a node that is
-    mounted and that node calls `navService`. The agent agrees, since
-    it is F30 applied. Written as three sentences, in the map skill's
+    mounted and that node calls `navService`. It is F30 applied.
+    Written as three sentences, in the map skill's
     navigation paragraph, beside `.task` in the code skill, and in
     AGENTS. Ruled by the owner the same day: "yes dude puting logic
     below the view is OOP brainwashed reflex". A fourth sentence in the
     map skill says so: moving the decision out of the node into a
     router or a service beneath it is the object reflex, the node is
     the logic.
-    Open, for the owner: how the root's own `@AppStorage` is written on
-    its label; what a framework delegate does with an event that
-    arrives before any node subscribes. Material for the CoreFlow
-    skill, not applied because the grader did not verify it: without a
-    UI-test bundle the address run read the log on macOS from the log
-    element's `AXDescription` (names) and `AXValue` (values), and the
-    Garden run could not read it at all.
   - **The address brief builds for the iPhone.** The owner, 2026-11-10:
     "i hate ui tests on my macbook it occupies my mouse, and iphone
     runs in simulator freely". The first cold run of the day had no
@@ -879,9 +863,7 @@
     bundle with one method per evidence block, a derived data path
     inside the output directory, and forbids driving the Mac's own
     interface. The packages keep macOS 14 beside iOS 17 only so the
-    plain tests run under `swift test`. The bundle is the agent's
-    reading of the owner's reason, since the earlier stance was that a
-    play run needs none. Run the same day on Sonnet medium, about
+    plain tests run under `swift test`. Run the same day on Sonnet medium, about
     eight minutes, output `~/Desktop/engine-2026-11-10/address-form-ios`:
     checker with sources 0 errors 0 warnings 0 unverified, 8 plain
     tests green, the build clean, and five evidence tests green in the
@@ -893,10 +875,7 @@
     `savedPath = try? save(address)`, noting that the `async` form
     would have needed a held task. The owner asked for the code to be
     read "for the purpose of improving skill clarity and precision".
-    Five sentences from it: a write that answers is a closure that
-    returns or throws, synchronous where the service answers at once
-    and `async` where it waits, the task never the reason (the agent's
-    derivation, not ruled); the block's spelling and the macro's
+    Four sentences from it: the block's spelling and the macro's
     spelling of one value are no mismatch; with all three pieces
     `AddressFormCore` is the hand-written screen and `AddressForm.Core`
     the shell's generated twin; with several packages and an app the
@@ -904,7 +883,14 @@
     address runs guessed; and in the CoreFlow skill, a UI-test bundle
     beside a package links the library that holds `TestScenario`. The
     agent read swift-core-flow's sources and hosted examples to set the
-    bundle up, beyond what the brief allowed, and said so.
+    bundle up, beyond what the brief allowed, and said so. A fifth
+    sentence, that the service decides whether a returning write is
+    synchronous or `async`, was written and removed the same day. The
+    owner called the question wrong. The code skill already says a
+    closure of any signature is a behavior, and the node that calls it
+    dictates the signature. The old `swiftui-mv-architecture` skill's
+    link was moved out of `~/.agents/skills` into its `.trash`, on the
+    owner's word, so Codex no longer loads it beside this one.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
@@ -919,7 +905,8 @@
   `data-coupling` stays (2026-11-09). Whether the public
   `swiftui-mv-architecture` repo points here or stays as it is; its
   installed skill symlink was moved to `~/.claude/skills/.trash/` on
-  2026-11-05 and `~/.claude/skills/data-coupling` links here. Pushing
+  2026-11-05, and out of `~/.agents/skills` the same way on
+  2026-11-10, and `~/.claude/skills/data-coupling` links here. Pushing
   `main`: one local commit over `a3a815c`, nothing pushed.
 
 - **Next: both skills on a real project.** Map it with `hypermodular/`,
