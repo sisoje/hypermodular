@@ -20,12 +20,9 @@ AddressForm/
     Dependencies/
       AddressFile/                   one package per dependency that does I/O
         Tests/AddressFileTests/      the one integration test of its boundary
-      AddressPrint/                  a second answer to the same contract
   App/
     project.yml                      the spec the Xcode project is generated from
-    Root/AddressApp.swift            the one @main file, shared by every app target
-    AddressApp/Exports.swift         this target's picks
-    AddressAppFixtures/Exports.swift
+    AddressApp/AddressApp.swift      the @main file, the whole app target
     TestHost/main.swift
     UITests/
   .gitignore                         *.xcodeproj, DerivedData/, .build/
@@ -43,16 +40,36 @@ root, apart from the packages. Every package is a folder under
 
 | Module | Depends on | Its public surface |
 |---|---|---|
-| `DataCoupling` | nothing of yours | models, values, enums, contracts with their `@Entry` |
-| `Features` | `DataCoupling`, swift-core-flow where it is used, a model-free presentation package if there is one | the top node of its tree, and `TestScenario` |
+| `DataCoupling` | swift-core-flow, which it re-exports, and nothing of yours | models, values, enums, contracts with their `@Entry` |
+| `Features` | `DataCoupling`, and a model-free presentation package if there is one | the top node of its tree, and `TestScenario` |
 | a dependency | `DataCoupling`, platform frameworks, the transport or SDK library it wraps | one `inject` view modifier |
-| an app target | `Features` and the dependencies it picked | nothing |
+| the app target | `Features` and every dependency | nothing |
 | the test host | `Features`, `CoreFlowUITestHost` | nothing |
 | the UI-test bundle | `CoreFlowUITesting`, and `Features` to name the cases | nothing |
 
 No dependency imports `Features`. No dependency imports another
 dependency. `Features` imports no dependency. The compiler holds all
 three, because each is a package and its manifest lists what it sees.
+
+## One import reaches everything a feature needs
+
+The layer depends on swift-core-flow and re-exports it. The features
+package re-exports the layer. Each is one file of one line.
+
+```swift
+// Packages/DataCoupling/Sources/DataCoupling/Exports.swift
+@_exported import CoreFlow
+
+// Packages/Features/Sources/Features/Exports.swift
+@_exported import DataCoupling
+```
+
+An `@_exported import` in one file of a module makes that module
+visible in every file of it. So every feature file sees the layer and
+the macros and writes neither import, and a dependency that imports
+`DataCoupling` has the macros too. The library appears in one manifest,
+the layer's. The app target has no such file. It is one source file,
+and it imports what it names.
 
 ## A package manifest
 
@@ -84,8 +101,8 @@ let package = Package(
 )
 ```
 
-`DataCoupling` has no `dependencies`. `Features` adds swift-core-flow
-and a `FeaturesTests` target.
+`DataCoupling` lists swift-core-flow and nothing else. `Features` lists
+`DataCoupling` and has a `FeaturesTests` target.
 
 ## A dependency package
 
@@ -114,12 +131,12 @@ struct Injector: ViewModifier {
 }
 ```
 
-- **The function is named `inject` and the contract's name**,
+- **The function is named `inject` and what it sets**,
   `injectAddressService()`, `injectBackend(baseURL:)`. What the root
   must supply is its parameters.
-- **The package is named for how it answers**, `AddressFile`,
-  `AddressPrint`, `Backend`, `SyncEngine`. It is never named as the
-  contract's type. A module and a type of one name shadow each other.
+- **The package is never named as the contract's type.** A module and
+  a type of one name shadow each other. `AddressService` is the
+  contract, so the package is `AddressFile`.
 - **Its logic is internal functions** the closures call, here
   `write(_:to:)`, each taking its inputs as parameters.
 - **A derived dependency** declares `@Environment` reads of its
@@ -133,34 +150,16 @@ struct Injector: ViewModifier {
 - **Its test target holds the one integration test of the boundary.**
   The real file is written, the real request is made, once.
 
-## Two answers to one contract
+## The app target
 
-A second package may answer the same contract, with the same `inject`
-function, the same name and the same parameters.
-
-```swift
-// Packages/Dependencies/AddressPrint/Sources/AddressPrint/AddressPrint.swift
-import DataCoupling
-import SwiftUI
-
-public extension View {
-    /// Sets `addressService`. The address is printed and nothing is stored.
-    func injectAddressService() -> some View {
-        modifier(Injector())
-    }
-}
-```
-
-The two are never linked into one target. A target picks one.
-
-## The app targets
-
-The `@main` file is one file, shared by every app target. It owns the
-root's state, constructs the features' top node, and applies the
-`inject` chain inline. It imports no dependency by name.
+The app is one file. It owns the root's state, constructs the
+features' top node, and applies the `inject` chain inline. It imports
+the features and each dependency by name.
 
 ```swift
-// App/Root/AddressApp.swift
+// App/AddressApp/AddressApp.swift
+import AddressFile
+import Features
 import SwiftUI
 
 @main
@@ -174,26 +173,6 @@ struct AddressApp: App {
 }
 ```
 
-Each app target adds one file that names what it picked. An
-`@_exported import` in one file of a target makes that module visible
-in every file of the target, so the shared file needs no import of its
-own.
-
-```swift
-// App/AddressApp/Exports.swift
-@_exported import AddressFile
-@_exported import Features
-
-// App/AddressAppFixtures/Exports.swift
-@_exported import AddressPrint
-@_exported import Features
-```
-
-Production against fixtures is which packages a target links, with no
-line of the app's source changed. Two targets that compile one `@main`
-file are one tree on the map. The map does not show which package
-answers a contract, and it should not.
-
 ## The project file
 
 An app is an Xcode project generated by xcodegen, never a bare package
@@ -201,13 +180,10 @@ and never a project kept by hand. The spec is `App/project.yml`, and
 `xcodegen generate --spec App/project.yml` writes the project beside
 it. Paths in the spec are relative to `App/`.
 
-Two target templates carry what the targets share. `Application` is an
-iPhone app that links the features and carries the main-actor default.
-`Pick` gives a target the shared `Root/` folder and the folder of its
-own name, where its `Exports.swift` is. An app target is then its two
-templates and the dependency packages it picked. The test host is an
-`Application` without `Pick`, since its `main.swift` is its own root.
-The UI-test bundle never carries the main-actor default.
+One target template, `Application`, carries what the app and the test
+host share: an iPhone app whose sources are the folder of its own
+name, that links the features and carries the main-actor default. The
+UI-test bundle never carries that default.
 
 ```yaml
 name: AddressForm
@@ -225,12 +201,12 @@ packages:
   DataCoupling: { path: ../Packages/DataCoupling }
   Features: { path: ../Packages/Features }
   AddressFile: { path: ../Packages/Dependencies/AddressFile }
-  AddressPrint: { path: ../Packages/Dependencies/AddressPrint }
   CoreFlow: { path: ../../CoreFlow }
 targetTemplates:
   Application:
     type: application
     platform: iOS
+    sources: ["${target_name}"]
     dependencies:
       - package: Features
     settings:
@@ -238,20 +214,13 @@ targetTemplates:
         SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
     scheme: {}
-  Pick:
-    sources: [Root, "${target_name}"]
 targets:
   AddressApp:
-    templates: [Application, Pick]
+    templates: [Application]
     dependencies:
       - package: AddressFile
-  AddressAppFixtures:
-    templates: [Application, Pick]
-    dependencies:
-      - package: AddressPrint
   TestHost:
     templates: [Application]
-    sources: [TestHost]
     dependencies:
       - package: CoreFlow
         product: CoreFlow
@@ -276,8 +245,7 @@ schemes:
 ```
 
 Each application gets a scheme of its own name from `scheme: {}`, and
-`Evidence` runs the UI tests. A third pick, a staging backend, is one
-more target of three lines and one more `Exports.swift`.
+`Evidence` runs the UI tests.
 
 ## The test side
 
@@ -311,12 +279,14 @@ more target of three lines and one more `Exports.swift`.
 
 - [ ] `Packages/DataCoupling`, `Packages/Features`, and one package per
       I/O dependency under `Packages/Dependencies/`.
+- [ ] The layer re-exports swift-core-flow, and the features re-export
+      the layer. No feature file imports either by name.
 - [ ] No dependency's manifest lists `Features` or another dependency.
 - [ ] Each dependency has exactly one public declaration, its `inject`
       function, and a test target with its integration test.
-- [ ] One `@main` file in `App/Root/`, importing no dependency by
-      name. Each app target has its own `Exports.swift`.
+- [ ] The app target is one `@main` file in `App/`, with no exports
+      file.
 - [ ] The map folders are at the repo root, one per node.
 - [ ] The project is generated from `App/project.yml` and not
       committed, with the test host and the UI-test bundle beside the
-      app targets.
+      app target.

@@ -921,117 +921,93 @@
     file with the view that is there". The chain is the scenario and
     the `#Preview` that shows it, and the vocabulary table has the
     term.
-  - **F47, a dependency is a package, and a target picks its
-    dependencies.** The owner, 2026-11-10: "dependencies live in
-    Dependencies directory and each one is a package, at least
-    dependencies that touch outside world", "i think all heavy
-    dependencies need package", "sometimes dependency just wires two
-    existing ones into a new one, but it also can have a package",
-    "dependency packages see only data coupling layer, so
+  - **F47, a dependency is a package.** The owner, 2026-11-10:
+    "dependencies live in Dependencies directory and each one is a
+    package, at least dependencies that touch outside world", "i think
+    all heavy dependencies need package", "sometimes dependency just
+    wires two existing ones into a new one, but it also can have a
+    package", "dependency packages see only data coupling layer, so
     dependencies DO NOT see features", "a dependency will usually
-    expose just a view modifier with inject prefix". And the
-    consequence: "i can have an app core, and just by cherrypicking
-    correct dependency i can run it, mock backend and real backend,
-    two targets with the same app file as long as inject function is
-    called same", and "the app core source file can in theory be same,
-    just cherrypicking packages can achieve us with mock vs prod". And
-    the name for it: "this is just simple dep
-    inversion principle, people talking for decades about it and they
-    never did it properly, they depend on protocols but protocol still
-    sits in entire module". Checked against the expenses app by the
-    agent and by Astra at high effort, read-only. It has three
-    dependency packages, eight modifier files in the app target, every
-    one exposing an `inject` function over an internal modifier, and a
-    derived dependency, the sync engine, that is a package and reads
-    its ingredients from the environment without importing the package
-    that implements them. Three of the eight in-app files use symbols
-    that live in the features, a sort enum, a parser, a user helper,
-    and compile because the app target re-exports the features. A
-    package boundary would have refused each. That is the reason
-    written into the rule, and why the line is I/O and not size: the
-    largest dependency there is an in-app file, and "heavy" has no
-    threshold an agent can apply. Astra's two corrections are in the
-    wording: "never another dependency" allows the transport or SDK
-    library a dependency wraps, and the public surface is exactly one
-    `inject` modifier, where one existing package also exports a
-    factory and its coders. The rule: every dependency that does I/O
-    is its own package under `Packages/Dependencies/`, a derived one
-    too; it imports the layer and what it wraps, never the features,
-    never another dependency; one public `inject` modifier; its
-    integration test in its own target; the app file imports no
-    dependency by name, and each target lists its picks in one file of
-    `@_exported import` lines. Built to check it, the same day: one
-    `App.swift` whose only import is SwiftUI, two packages each
-    exposing `injectBackend()`, two app targets each with its own
-    one-line exports file, and both targets build. The owner, on
-    reading it: "your rule is
-    correct, dependency sees data coupling and no other dependencies
-    nor feature". It replaces "the modifiers need not be packages" and
-    the app-resident `Dependencies/` folder. In the code
-    skill's layer section, `modules.md` (the graph, the dependency
-    bullet, the reason, the checklist), AGENTS, `converting.md`, and
-    the address brief. The three one-package miniature briefs keep
-    their modifiers in the library target. Not written: re-exporting
-    swift-core-flow from the layer, which the owner raised as a maybe.
-    The expenses app does not use the library, and the layer is the
-    one package every dependency imports, so every dependency would
-    build the macros.
+    expose just a view modifier with inject prefix". And the name for
+    it: "this is just simple dep inversion principle, people talking
+    for decades about it and they never did it properly, they depend
+    on protocols but protocol still sits in entire module". Checked
+    against the expenses app by the agent and by Astra at high effort,
+    read-only. It has three dependency packages, eight modifier files
+    in the app target, every one exposing an `inject` function over an
+    internal modifier, and a derived dependency, the sync engine, that
+    is a package and reads its ingredients from the environment
+    without importing the package that implements them. Three of the
+    eight in-app files use symbols that live in the features, a sort
+    enum, a parser, a user helper, and compile because the app target
+    re-exports the features. A package boundary would have refused
+    each. That is the reason written into the rule, and why the line
+    is I/O and not size: the largest dependency there is an in-app
+    file, and "heavy" has no threshold an agent can apply. Astra's two
+    corrections are in the wording: "never another dependency" allows
+    the transport or SDK library a dependency wraps, and the public
+    surface is exactly one `inject` modifier. The rule: every
+    dependency that does I/O is its own package under
+    `Packages/Dependencies/`, a derived one too; it imports the layer
+    and what it wraps, never the features, never another dependency;
+    one public `inject` modifier; its integration test in its own
+    target; a failure is thrown, never dressed as a result. The owner,
+    on reading it: "your rule is correct, dependency sees data
+    coupling and no other dependencies nor feature". It replaces "the
+    modifiers need not be packages" and the app-resident
+    `Dependencies/` folder. In the code skill's layer section,
+    `modules.md` (the graph, the dependency bullet, the reason, the
+    checklist), AGENTS, `converting.md`, and the address brief. The
+    three one-package miniature briefs keep their modifiers in the
+    library target.
   - **F48, the layout in one reference.** The owner, 2026-11-10, asked
-    whether an app-structure skill is needed, then: "wrapup these
-    rules", "make app form example where save address is a special
-    dependency, it will have prod, write to file, and fixture to print
-    only". Not a skill. `data-coupling/references/app-structure.md` is
-    the code skill's sixth reference: the tree on disk, who sees whom,
-    a package manifest, a dependency package with its one `inject`
-    function, two answers to one contract, the shared `@main` file and
-    a target's `Exports.swift`, the xcodegen project file with two app
-    targets, the test host, and the UI-test bundle, the test side,
-    where a file goes, a checklist. One refinement of F47 came out of
-    writing it: the `inject` function is named for the boundary it
-    sets and the package for how it answers, since two packages that
-    answer one boundary must share the function's name, and a module
-    is never named as the contract's type. The address brief lost its
+    whether an app-structure skill is needed, then "wrapup these
+    rules". Not a skill. `data-coupling/references/app-structure.md`
+    is the code skill's sixth reference: the tree on disk, who sees
+    whom, the two re-exports, a package manifest, a dependency package
+    with its one `inject` function, the one-file app target, the
+    xcodegen project file, the test side, where a file goes, a
+    checklist. A module is never named as its contract's type. On the
+    owner's "xcodeproj is usually in root, but i dont like it" and
+    "improve it best you can": of the well-known open apps only
+    Point-Free's isowords keeps the project out of the root, in
+    `App/`, with the modules at the root, and the reference does the
+    same. `App/` holds `project.yml`, the app's one file, the test
+    host, and the UI tests; the project is generated into `App/` and
+    ignored by git; one xcodegen target template, `Application`,
+    serves the app and the test host. The address brief lost its
     layout paragraph and points at the reference, as the owner asked
-    on 2026-11-09, "the skill, not the prompt, carries the layer". It
-    now asks for two save dependencies and two app targets from one
-    `@main` file. Run cold on Sonnet medium the same day, about eight
-    minutes, output `~/Desktop/engine-2026-11-10/address-form-deps`:
-    every gate green by its report, two dependency packages
-    `AddressFile` and `AddressPrint` each exposing
-    `injectAddressService()` with its test, one `@main` file importing
-    only SwiftUI, an `Exports.swift` per target, `AddressFormCore` in
-    its own file, the preview chain in the view's file, `@Capability`
-    on the transformer, the save `async` in a held task. Then the
-    layout itself, on the owner's "xcodeproj is usually in root, but i
-    dont like it" and "improve it best you can". Of the well-known
-    open apps only Point-Free's isowords keeps the project out of the
-    root, in `App/`, with the modules at the root. The reference now
-    does the same: `App/` holds `project.yml`, the shared `Root/`
-    file, a folder per target, the test host, and the UI tests; the
-    project is generated into `App/` and ignored by git; two xcodegen
-    target templates, `Application` and `Pick`, make an app target
-    three lines. Proven before it was written: the passing iPhone
-    run's code moved into that layout builds both app targets and
-    passes its five evidence tests in the simulator. Four sentences
-    from the run's list are in: an iOS-only modifier sits behind
-    `#if os(iOS)` since the package builds for the Mac to run its
-    plain tests; a dependency's integration test calls its internal
-    function through `@testable import`; two targets that compile one
-    `@main` file are one tree; entries with no order are sorted by
-    name and then by value. Then the same brief ran cold in the `App/`
-    layout, Sonnet medium, about six minutes, output
-    `~/Desktop/engine-2026-11-10/address-form-app`: the tree exactly
-    as the reference draws it, `App/Root`, a folder per target,
-    `App/project.yml`, the project ignored by git, every gate green by
-    its report. Three sentences from reading its code. Its production
-    dependency caught the write's error and returned "not saved: ..."
-    in the path's place, behind a contract that cannot throw; the
-    reference now says a failure is thrown and never dressed as a
-    result, since the skill already puts error handling in the core.
-    Typed text in an evidence block is one stimulus followed by one
-    out-arrow per write, the form all three address runs of the day
-    arrived at alone. The layer's contract and its entry are public
-    in a package.
+    on 2026-11-09, "the skill, not the prompt, carries the layer".
+    Sentences from the day's address runs, all in: an iOS-only
+    modifier sits behind `#if os(iOS)` since the features build for
+    the Mac to run their plain tests; a dependency's integration test
+    calls its internal function through `@testable import`; entries
+    with no order are sorted by name and then by value; typed text in
+    an evidence block is one stimulus followed by one out-arrow per
+    write; the layer's contract and its entry are public in a package.
+  - **F49, no fixtures target, and two re-exports.** For some hours on
+    2026-11-10 the skills also said a target picks its dependencies:
+    two packages answering one contract under one `inject` name, two
+    app targets compiling one `@main` file, an `Exports.swift` per
+    target. It was built and it worked, and two example apps on the
+    owner's Desktop have that shape (`address-form-deps`,
+    `address-form-app`). The owner, the same day: "this idea with
+    shared app for prod and fixtures is bad, remove fixtures for now",
+    then "you dont need to export nothing in the app because it will
+    be one file or so, better reexport coreflow from data layer", and
+    "feature package need to have visibility to data layer and
+    coreflow from everywhere". Removed from the code skill,
+    `modules.md`, AGENTS, the reference, and the brief: the second
+    answer, the second target, the per-target exports file. Written
+    in their place: the layer depends on swift-core-flow and
+    re-exports it; the features package re-exports the layer; so a
+    feature file imports neither by name, and the library sits in one
+    manifest; the app target is one file that imports what it names.
+    Built before it was written, from the passing iPhone run's code:
+    no feature file imports the layer or the library, eight plain
+    tests green, the app builds, five evidence tests green in the
+    simulator. The CoreFlow skill says the same in its install
+    section. No new example was run. The owner: "wait for rerun".
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

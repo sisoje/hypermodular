@@ -540,7 +540,11 @@ no object, no protocol, no container. This method builds the whole app
 on that one kind. Features never import each other and never import
 I/O. The app imports everything. What they all share is one package of
 pure data, the data coupling layer, `DataCoupling`, its own package
-that depends on nothing of yours. The features package depends on it.
+that depends on nothing of yours. Where swift-core-flow is used the
+layer depends on it and re-exports it, `@_exported import CoreFlow`,
+and the features package re-exports the layer the same way, so every
+feature file sees the layer and the macros and imports neither by
+name. The features package depends on it.
 A dependency, the live side of a contract, a backend, a store,
 depends on it too, to implement what the contract asks, and never sees
 a feature. The app depends on all of them, owns the state, and sets
@@ -639,22 +643,11 @@ test. Data is the abstraction.
   dependency exposes exactly one public thing, a `View` extension
   named `inject` and the boundary it sets, `injectBackend(baseURL:)`,
   `injectHaptics()`, over an internal modifier that builds the live
-  value and sets it. The package is named for how it answers, so two
-  packages can answer one boundary under one function name. What the root must supply is that function's
+  value and sets it. The package is never named as the contract's
+  type, since a module and a type of one name shadow each other. What the root must supply is that function's
   parameters. The one integration test of the boundary lives in the
-  package's own test target.
-- **A target picks its dependencies.** The app file names only the
-  `inject` functions. Two packages that expose the same function, the
-  same name and the same parameters, are interchangeable, a `Backend`
-  that calls the server and a `FixtureBackend` that answers from
-  fixtures. Two app targets compile the same `@main` file, link
-  different packages, and the features cannot tell which. Production
-  against fixtures is a choice of packages, with no line of the app's
-  source changed. The app
-  file imports no dependency by name. Each target has one small file
-  of `@_exported import` lines naming the packages it picked. The
-  tree, the manifests, and the project file are in
-  `references/app-structure.md`.
+  package's own test target. The tree, the manifests, and the project
+  file are in `references/app-structure.md`.
 - **The root sets live values inline, where it sets them.** One
   dependency per I/O framework the root wires, the framework imported
   in that package alone, each `inject` applied inline at `@main`. A modifier that reads a value

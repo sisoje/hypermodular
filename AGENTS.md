@@ -113,8 +113,8 @@ subgraph), no emoji, no status marks.
   does I/O is its own package under `Packages/Dependencies/`, however
   small. It sees the data coupling layer and what it wraps, never a
   feature, never another dependency, and it exposes one public
-  `inject` view modifier, so a target picks its dependencies by what
-  it links.
+  `inject` view modifier. The layer re-exports swift-core-flow and the
+  features re-export the layer, so a feature file imports neither.
   Deriving = building a new value from values already there. No
   `.live`, `.preview`, or `.unimplemented` statics and no `+Live`
   files. The root builds the live value inline where it sets it. The
@@ -150,8 +150,8 @@ subgraph), no emoji, no status marks.
   only. Present the map plus the findings.
 - **New app**: maps first, then evidence, then code laid out as
   `data-coupling/references/app-structure.md` gives it, the layer, the
-  features, one package per dependency, the app targets with their
-  `Exports.swift`, the test host, and the UI-test bundle.
+  features, one package per dependency, the one-file app target under
+  `App/`, the test host, and the UI-test bundle.
 - **New feature in a mapped repo**: add nodes and arrows to the map
   first, agree the diff, then build root-down, evidence declared before
   code.

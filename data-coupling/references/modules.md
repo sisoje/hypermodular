@@ -250,13 +250,10 @@ error. In a package the same line does not compile. The line for what
 must be a package is I/O, never size. A haptics dependency of thirty
 lines is one.
 
-A target picks its dependencies. The app file names the `inject`
-functions and imports no dependency by name, and each target lists the
-packages it picked in one file of `@_exported import` lines. Two
-packages exposing the same `inject` function, same name and same
-parameters, are interchangeable. One app target links the server's
-backend, another links fixtures, and both compile the same `@main`
-file.
+The layer is the one package that lists swift-core-flow, and it
+re-exports it. The features package re-exports the layer. A feature
+file then sees the layer and the macros with no import of either, and
+the library's version is set in one manifest.
 
 Where each of these sits on disk, its manifest, and the project file
 are in `app-structure.md`.
