@@ -150,10 +150,14 @@ effects in its type, and pure logic has none.
 
 The default is the minimal no-op. An environment value's default is
 `.init()` with do-nothing closures, never a `static let live`. The default is what previews and tests get. It already stubs every shape
-of I/O, and a scenario overrides every closure the node's label names. A closure that
-must return returns nothing: an empty collection, or `nil` through an
-optional result, which is the honest shape for a fetch that may find
-nothing. Never a blank value that looks real, and never a trap.
+of I/O, and a scenario overrides every closure the node's label names. What the
+default of a closure that must return a value does is of no
+importance. It throws where the closure throws, and where it cannot
+throw it is a `fatalError`. An empty collection will do where the
+result is one. The default is never a reason to change the signature,
+which the node that calls it dictates, so no result is made optional
+to give the default a `nil` to return. Never a blank value that looks
+real.
 
 Mark closure types `@Sendable` only when a closure crosses an isolation
 boundary. Under a main-actor default isolation most never do. Do not

@@ -835,9 +835,13 @@
     feature package's one public view is the top node of its own tree.
     And the checker: a root modifier that reads one cylinder to derive
     another no longer warns, the one warning Garden left standing.
-    Open, for the owner: what a no-op default returns for a closure
-    that both throws and returns a value, where `modules.md` forced
-    `String?` and gave the contract two ways to fail; whether a
+    Ruled the same day, on what a no-op default returns for a closure
+    that both throws and returns a value, where `modules.md` had
+    forced `String?` and given the contract two ways to fail. The
+    owner: "nop really doesnt matter, throw or fatal error". The
+    default throws, or is a `fatalError` where it cannot throw, and the
+    signature is never bent for it; "never a trap" is gone from
+    `modules.md`. Open, for the owner: whether a
     listener inside the feature that answers a notification still
     calls `navService`; how the root's own `@AppStorage` is written on
     its label; what a framework delegate does with an event that
