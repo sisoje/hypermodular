@@ -672,10 +672,16 @@
     "nothing decided in it". A paragraph and a table in the code
     skill's "Cut", one bullet in `shell-core.md` and in AGENTS. Whether
     the state owner above is a `@Shell` or a hand-written shell is
-    F39. Unruled: own `@State` nobody outside sets,
-    a sheet flag, stays in the core as F30 says. Not done: the CoreFlow
-    skill's form example and the Desktop address app still call the
-    fields view furniture; no cold run yet on this wording.
+    F39. Where own `@State` such as a sheet flag sits is F41. The
+    CoreFlow skill carries it too, since the same day: its form
+    passage ended "the fields view is bindings and labels" and now
+    says the fields view is a core written by hand, read off the
+    screen. Its sentence that a draft no criterion names lives in a
+    furniture view is F25 and stands; the agent first listed that
+    sentence as stale, and it is not, a furniture view owns the draft
+    and a core owns nothing. The agent also wrote here that the
+    Desktop address app calls the fields view furniture. It does not,
+    and it was not checked then. No cold run yet on this wording.
   - **F39, `@Shell` or by hand is a judgment per view.** Ruled by the
     owner 2026-11-10: "i invented shell mostly for legacy projects
     where we want to introduce testability piece by piece", "agent
@@ -694,10 +700,12 @@
     one sentence in the code skill's "Screen first". The address
     brief no longer dictates the macro, so a cold run shows the
     agent's own choice; the CoreFlow and Garden briefs keep the
-    sentence, since those runs exist to exercise `@Shell`. Not done:
-    the CoreFlow skill still says "with the library present it is the
-    cut; a hand-written shell and core pair is for a project without
-    it" (its line 63), the old default.
+    sentence, since those runs exist to exercise `@Shell`. The CoreFlow
+    skill said "with the library present it is the cut; a hand-written
+    shell and core pair is for a project without it"; changed the same
+    day, on the owner's word, to the per-view judgment, with the held
+    task (F37), the direct preview of a core (F42), and F40's sentence.
+    Committed on CoreFlow's `main`, not pushed.
   - **F36 to F39, the audit the owner asked for the same day.** Three
     things said and not written, now in: a binding into one enum case
     needs a case path, machinery that exists only because the facts
