@@ -331,9 +331,10 @@ from a parent's value, a `@Query`, or state. A `@Binding` comes from
 where the write is judged. A closure comes from a parent's callback, a
 contract, or a closure that assembles and forwards. The view above
 owns and wires. Where nothing is judged on a write there is no
-transformer. With `@Shell` the view above is the shell the macro cuts,
-and its state logs. The screen's view owns no live wrapper, so it is a
-core as written and is never cut.
+transformer. The screen's view owns no live wrapper, so it is a core
+as written and is never cut. The view above is a shell written by
+hand, or a `@Shell` where its writes are to log. That choice is made
+per view (`references/shell-core.md`, "When to split").
 
 This is modeling one screen, not building a system. A SwiftUI screen
 is cheap to write, so nothing is saved by sharing one, and it is read

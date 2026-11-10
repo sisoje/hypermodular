@@ -122,8 +122,8 @@ subgraph), no emoji, no status marks.
   lifecycle on its own (own outliving state, appearance work,
   navigation destination, own boundary call or callback).
 - **Shell/core split is implementation detail** and is never drawn.
-  How to cut, by hand or with `@Shell`:
-  `data-coupling/references/shell-core.md`.
+  The cut is by hand or with `@Shell`, judged per view, and
+  `data-coupling/references/shell-core.md` says how.
 - **Leaves get no structure map.** A map earns its existence by having
   arrows. A leaf's contract lives in its parent's map. A leaf whose
   evidence crosses its edge gets a `MAP.md` of evidence only.

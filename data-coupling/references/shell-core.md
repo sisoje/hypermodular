@@ -372,10 +372,29 @@ own.
 - **Split when** the view owns a live wrapper and a preview or a test
   needs a state the wrapper cannot easily produce, or a boundary event
   you want to assert.
-- **Cut with `@Shell` wherever the library is present.** It is the
-  shorter code, and own state stays where it is used and still logs.
-  Cut by hand only without the library; then state a test must reach
-  moves up to the shell and enters the core as `@Binding`.
+- **`@Shell` or by hand is judged per view, as the work goes.** Neither
+  is the default.
+  - **`@Shell`** was made for a view that already exists, a legacy
+    screen with its wrappers fused in. One attribute makes it testable
+    and nothing is rewritten, so a project gains tests one view at a
+    time. It is also the practical choice wherever the state and the
+    `body` that uses it are to be tested together, in one log. Own
+    state stays where it is used and logs at the write site, and a
+    sealed action, a focus write, and a query are covered by the same
+    cut.
+  - **By hand** fits a new screen modeled from the design. The core
+    owns no wrapper, so there is nothing to cut, and a scenario or a
+    preview constructs any state of it from literals. State a test
+    must reach lives in the shell and enters the core as `@Binding`,
+    and a rule sits in a transformer between them.
+  - **All three together** when the shell itself is to be tested. The
+    core is written by hand from the screen, the shell is written by
+    hand above it, and that shell carries `@Shell`. The core's scenario
+    proves the screen from literals. The macro's cut of the shell
+    proves the real shell, its state writes, its wiring into the core,
+    and its contract calls, in one log. A hand-written shell without
+    the macro is proven only through its contracts.
+  - Without the library the cut is by hand.
 
 ## Naming and layout
 

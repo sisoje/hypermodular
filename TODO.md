@@ -658,17 +658,30 @@
     node, the contract before what fulfils it. F34 stands and is
     renamed in one clause: its fields view is that core, no longer
     "nothing decided in it". A paragraph and a table in the code
-    skill's "Cut", one bullet in `shell-core.md` and in AGENTS. The
-    agent's reconciliation, not yet ruled: the state owner above is
-    still cut with `@Shell` where the library is present, so the
-    judgment stays an event in its log, and only the screen's core is
-    written by hand, because it owns no wrapper to cut. The owner said
-    "maybe its best to manually model it without macro"; if that means
-    the state owner too, "cut with `@Shell` wherever the library is
-    present" changes. Also unruled: own `@State` nobody outside sets,
+    skill's "Cut", one bullet in `shell-core.md` and in AGENTS. Whether
+    the state owner above is a `@Shell` or a hand-written shell is
+    F39. Unruled: own `@State` nobody outside sets,
     a sheet flag, stays in the core as F30 says. Not done: the CoreFlow
     skill's form example and the Desktop address app still call the
     fields view furniture; no cold run yet on this wording.
+  - **F39, `@Shell` or by hand is a judgment per view.** Ruled by the
+    owner 2026-11-10: "i invented shell mostly for legacy projects
+    where we want to introduce testability piece by piece", "agent
+    need to evaluate on the go whether is better to use shell or
+    manually to write core and shell", "sometimes shell macro is simply
+    practical and allows us to test in integration with core". This
+    replaces "cut with `@Shell` wherever the library is present". The
+    macro is for a view that already exists and for testing state and
+    `body` together in one log; by hand is for a new screen modeled
+    from the design (F38). And the three together, the owner the same
+    day: "sometimes we need to have manual core plus manual shell along
+    with shell macro because we want to test actual shell". The
+    hand-written shell carries `@Shell`, so the real shell is proven,
+    not only the core. It closes F38's
+    open question. The bullet in `shell-core.md`, "When to split", and
+    one sentence in the code skill's "Screen first". Not done: the
+    CoreFlow skill and `scripts/engine-run-prompt-coreflow.md` were
+    written under the old default and are not reread against this.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
