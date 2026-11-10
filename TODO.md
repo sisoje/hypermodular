@@ -695,8 +695,9 @@
     brief no longer dictates the macro, so a cold run shows the
     agent's own choice; the CoreFlow and Garden briefs keep the
     sentence, since those runs exist to exercise `@Shell`. Not done:
-    the CoreFlow skill was written under the old default and is not
-    reread against this.
+    the CoreFlow skill still says "with the library present it is the
+    cut; a hand-written shell and core pair is for a project without
+    it" (its line 63), the old default.
   - **F36 to F39, the audit the owner asked for the same day.** Three
     things said and not written, now in: a binding into one enum case
     needs a case path, machinery that exists only because the facts
