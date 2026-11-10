@@ -966,18 +966,15 @@
     is the code skill's sixth reference: the tree on disk, who sees
     whom, the two re-exports, a package manifest, a dependency package
     with its one `inject` function, the one-file app target, the
-    xcodegen project file, the test side, where a file goes, a
-    checklist. A module is never named as its contract's type, and the
+    project script, the test side, where a file goes, a checklist. A module is never named as its contract's type, and the
     `inject` function carries the dependency's own name, as in the
     owner's app, `injectBackend`, `injectSyncEngine`. On the
     owner's "xcodeproj is usually in root, but i dont like it" and
     "improve it best you can": of the well-known open apps only
     Point-Free's isowords keeps the project out of the root, in
     `App/`, with the modules at the root, and the reference does the
-    same. `App/` holds `project.yml`, the app's one file, the test
-    host, and the UI tests; the project is generated into `App/` and
-    ignored by git; one xcodegen target template, `Application`,
-    serves the app and the test host. The address brief lost its
+    same. `App/` holds the project and the script that writes it, the
+    app's one file, the test host, and the UI tests (F50). The address brief lost its
     layout paragraph and points at the reference, as the owner asked
     on 2026-11-09, "the skill, not the prompt, carries the layer".
     Sentences from the day's address runs, all in: an iOS-only
@@ -1013,6 +1010,35 @@
     sometime have parameters, for prod it may have params, but for
     fixtures may not". So two dependencies that answer one contract
     need not share a signature, which the removed rule had required. No new example was run. The owner: "wait for rerun".
+  - **F50, the project is the output of a script, and a third
+    skill.** The owner, 2026-11-10, asked whether xcodegen is right or
+    "generative approach like in coreflow", then: "ok switch to this
+    approach, explain it as a skill for agents maybe, you have example
+    from coreflow, also you can point the skill to coreflow way".
+    swift-core-flow writes its hosted project with Apple's own
+    `xcrun xcodeproj`, in `CoreFlowHosted/generate.sh`. The engine
+    now does the same. Reasons: the tool ships with Xcode and
+    xcodegen does not; folders are synchronized with disk, so a new
+    file changes nothing; the project is one JSON file of about four
+    kilobytes, committed, so a repository opens without a step; the
+    library the method builds on already works this way. The cost is
+    that no agent knows the tool, so `xcode-project/SKILL.md` teaches
+    it: the script for an app with a test host and a UI-test bundle
+    over four local packages, a table of the commands, the facts that
+    bite (a new target has no phases, a synchronized group is named
+    for its directory, a package is addressed by identity, a product
+    is linked per target, no scheme is written, the ids are made
+    predictable), what is committed, and swift-core-flow's script as
+    the worked example. Read from the tool's own help and proven
+    before it was written: the script in the skill generated the
+    address layout's project, the app built, five evidence tests
+    passed in the simulator under the test bundle's own scheme, and a
+    second run of the script gave the same bytes. `app-structure.md`
+    carries the script in short and points at the skill; the address
+    brief names the skill and `App/generate.sh`; xcodegen, its spec,
+    and its target template are gone from the reference. The skill is
+    linked into `~/.claude/skills` and `~/.agents/skills` beside the
+    other two. Not rerun cold, on the owner's "wait for rerun".
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

@@ -137,8 +137,8 @@ design change.
 - **Claude app / Cowork**: save `hypermodular/SKILL.md` and
   `data-coupling/SKILL.md` as skills, then ask Claude to "map this project", "plan this app top-down", or
   "review this view".
-- **Claude Code CLI**: symlink (or copy) this repo's `hypermodular/` and
-  `data-coupling/` folders into `~/.claude/skills/`, and swift-core-flow's
+- **Claude Code CLI**: symlink (or copy) this repo's `hypermodular/`,
+  `data-coupling/`, and `xcode-project/` folders into `~/.claude/skills/`, and swift-core-flow's
   `skill/` folder as `swift-core-flow` if you build with the macros, or
   work in a repo containing `APP-MAP.md`. `AGENTS.md` here teaches the rules to any
   agent that reads it (Cursor, Codex), and `CLAUDE.md` is one line
@@ -166,6 +166,9 @@ design change.
   model, lifting, the shell/core cut by hand or with `@Shell`, the
   execution log, the data coupling layer and the module graph, and
   converting a codebase that already exists.
+- **xcode-project** (this repo, `xcode-project/`), the project file:
+  a `generate.sh` that writes an app's Xcode project from nothing with
+  Apple's `xcrun xcodeproj`.
 - **hypermodular** (this repo, `hypermodular/`), the method: draw the
   maps, develop top-down, let evidence keep everyone honest.
 

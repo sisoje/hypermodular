@@ -17,7 +17,10 @@ checker), `evidence.md` (declaring behavior as a log),
 
 ## What this repo is
 
-A top-down app-making engine for agents, as two skills and a method.
+A top-down app-making engine for agents, as two skills and a method,
+and a third small skill, `xcode-project/`, for the one tool the engine
+needs that agents do not know, Apple's `xcrun xcodeproj`, with which a
+`generate.sh` writes an app's Xcode project.
 `hypermodular/` models apps as depth-1
 Mermaid maps (`APP-MAP.md` at a repo root, `MAP.md` beside each mapped
 subtree). The maps are the architecture doc, the agent work fence, and
@@ -151,7 +154,8 @@ subgraph), no emoji, no status marks.
 - **New app**: maps first, then evidence, then code laid out as
   `data-coupling/references/app-structure.md` gives it, the layer, the
   features, one package per dependency, the one-file app target under
-  `App/`, the test host, and the UI-test bundle.
+  `App/`, the test host, and the UI-test bundle, the Xcode project
+  written by `App/generate.sh` as `xcode-project/SKILL.md` teaches.
 - **New feature in a mapped repo**: add nodes and arrows to the map
   first, agree the diff, then build root-down, evidence declared before
   code.
