@@ -609,6 +609,24 @@
     anywhere as a binding, and the model exists only when Save
     assembles it. Both skills say so; the CoreFlow example changed from
     `draft: Address` to `street: String`.
+  - **F36, no invented model in a feature.** Ruled by the owner
+    2026-11-10, from the reflexes an agent brings. An enum is a model,
+    so one rule covers both: a model exists because the data layer
+    already defines it, a `Decodable` from the backend, and a feature
+    never invents one. Its state is loose fields. The reason is
+    composability and orthogonality, the owner's words: "in swiftui we
+    optimize for composability, we dont have objects, state lives
+    outside the views", "its about orthogonality". The load-state enum
+    with associated values, written so "impossible" states cannot be
+    represented, is the named case: loading, error, and result cannot
+    be handed down or animated apart once fused. The owner: "keep
+    state fluffy", "don't artificially couple data pieces together so
+    tomorrow they are hard to decompose". One bullet in the code
+    skill's list, beside "Grouping for grouping's sake", and one in
+    AGENTS. The agent's reading, not yet ruled: a feature-private sort
+    option or sheet enum is one fact with a closed set of values, not
+    a model, and stays. Open: no engine brief yet tempts the
+    load-state enum.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

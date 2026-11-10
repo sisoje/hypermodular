@@ -604,6 +604,28 @@ The code, as it is written here:
   sequence. Each is a jump the reader must make. Bundle by operation,
   not by screen. A `View` is already a struct, and a field's error
   belongs beside the field.
+- **A model invented in a feature.** A model is a struct or an enum
+  that groups facts, and it exists because the data layer already
+  defines it, a `Decodable` the backend returns, a `@Model` the store
+  keeps. A feature never invents one. The reason is composability.
+  A feature's state is loose fields, and loose fields are orthogonal.
+  Each one changes without touching the others, so each is handed down
+  as its own binding, animated on its own, and logged as its own
+  write, and any subset of them composes into a child. A model couples
+  its fields. Whoever needs one receives all of them. The object
+  doctrine grouped state to guard it, and here there is no object to
+  guard, since state lives outside the node that renders it. A struct
+  around a view's fields is one invented model. `enum LoadState { case loading, failed(String), loaded([Book]) }`
+  is another, written so that an "impossible" state cannot be
+  represented. Loading, the error, and the result are three facts,
+  `isLoading`, `error`, `books`. Fused, none can be handed down alone,
+  and a refresh that keeps the old list on screen while it loads has
+  no case. No state is impossible here. Every state is valid, and a
+  combination the view does not show is a missing branch in `body`.
+  Facts grouped today must be taken apart tomorrow, when one is needed
+  somewhere the others are not. A sort option or a sheet enum is not a
+  model. It is one fact with a closed set of values, and it stays in
+  the feature.
 - **Data-driving statically known content.** Three onboarding pages are
   three views, or an enum with an exhaustive `switch`, never a `[Page]`
   replayed through `ForEach` with `lastPage = 2`. What is fixed at

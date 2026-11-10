@@ -86,6 +86,10 @@ subgraph), no emoji, no status marks.
   Behavior is closures the root sets, and a write or a call is the
   event. Every boundary is a value a scenario stands in for, so the
   test is the log.
+- **No invented model in a feature.** A struct or an enum that groups
+  facts exists because the data layer already defines it. A feature's
+  state is loose fields, never a load-state enum. Loose fields are
+  orthogonal, so they compose.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. No protocols, no classes, no reference
   types, with the three protocol cases and the two class cases, data
