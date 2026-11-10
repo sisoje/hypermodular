@@ -363,6 +363,12 @@ own.
 - **One shell wherever the I/O is, not one per view.** A view made only
   of `let`s, bindings, and closures is already a core. A shell on it
   adds nothing.
+- **Screen first for a new screen.** The core is written before the
+  view that feeds it, read off the screen one property per element,
+  with the design's own rules in it (`SKILL.md`, "Cut"). The view above
+  is then the answer to where each property comes from. The three
+  extraction rules above are for a view that already exists with its
+  wrappers.
 - **Split when** the view owns a live wrapper and a preview or a test
   needs a state the wrapper cannot easily produce, or a boundary event
   you want to assert.

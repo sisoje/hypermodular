@@ -299,6 +299,49 @@ By hand, the shell and the core are two types in two files. A screen
 is named `…Screen`, a reusable view by its role, `Row`, `Sheet`,
 `Style`.
 
+**Screen first.** A core is modeled directly from the screen, the
+Figma frame or the manager's sentence, before anything that feeds it
+exists. One property per thing the screen shows or accepts, the one
+SwiftUI's own control asks for.
+
+| On the screen | Core property |
+|---|---|
+| text, image, badge | `let title: String` |
+| something sometimes there, a spinner, an error label, an empty state | the value that decides it, `let isLoading: Bool`, `let streetError: String?` |
+| a list | `let books: [Book]` |
+| text field, toggle, picker, slider | `@Binding var street: String` |
+| button, swipe action, row tap | `let onSave: () -> Void` |
+| pull to refresh | `let onRefresh: () async -> Void` |
+
+Two checks. Every property is something you can point at on the
+screen, so nothing is invented. Two screenshots that differ differ in
+an init argument, so nothing is hidden and every state of the screen
+is a construction from literals.
+
+What the design says about the screen is the core's logic, and it is
+written in the core as it was said. "If there is an error, the field
+turns red and Save is disabled" is a branch on `streetError` and a
+`canSave` computed from the errors, and a scenario that hands in an
+error proves it. Whether there is an error is decided above, and the
+core never knows how.
+
+Then each property gets one source in the view above. A `let` comes
+from a parent's value, a `@Query`, or state. A `@Binding` comes from
+`$state`, a parent's binding, or a transformer's intercepted binding
+where the write is judged. A closure comes from a parent's callback, a
+contract, or a closure that assembles and forwards. The view above
+owns and wires. Where nothing is judged on a write there is no
+transformer. With `@Shell` the view above is the shell the macro cuts,
+and its state logs. The screen's view owns no live wrapper, so it is a
+core as written and is never cut.
+
+This is modeling one screen, not building a system. A SwiftUI screen
+is cheap to write, so nothing is saved by sharing one, and it is read
+like a book, top to bottom, each line a thing on the screen. The core
+is written for this screen, with this screen's names. No generic form,
+no field descriptor, no `Validator<T>`, no core shared by two screens
+because they look alike today.
+
 Either way, what reaches a core is a value. A model context, a
 session, a socket, a token refresher: a service that holds state is
 wrapped in closures at the root before it is set, and the core reads
@@ -407,8 +450,10 @@ either way.
   binding, and the model is assembled only when Save hands it on. The
   node intercepts each field's binding to store the text and write
   that field's error, stored and not derived so that the judgment is an
-  event in the log, and the fields view is bindings and labels with
-  nothing decided in it. The errors are never gathered into a struct;
+  event in the log, and the fields view is the core read off the
+  screen, bindings and labels. It decides nothing about whether a field
+  is wrong, and what the screen does with an error it was handed is its
+  own logic. The errors are never gathered into a struct;
   four fields are four errors, each beside its field. The interception is one value, a transformer, the transformative
   kind of node: a struct whose stored properties are `@Binding`s, the
   node's raw fields and their errors, and whose outputs are the
@@ -656,7 +701,7 @@ The code, as it is written here:
 - **A struct that only switches over an enum.** Any value can conform
   to `View`. An enum that renders itself conforms directly.
 - **Generic implementations.** Most problems are static. Model each as
-  the one case it is.
+  the one case it is, screen by screen.
 - **Trivial comments.** A comment says what the code cannot, the why,
   or it is not there.
 

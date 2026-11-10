@@ -86,6 +86,12 @@ subgraph), no emoji, no status marks.
   Behavior is closures the root sets, and a write or a call is the
   event. Every boundary is a value a scenario stands in for, so the
   test is the log.
+- **Screen first.** A core is modeled directly from the screen, one
+  property per thing it shows or accepts, a `let` for a label, a
+  `@Binding` for a field, a closure for a button. What the design says
+  the screen does, "if error then", is the core's logic and stays in
+  it. Whether there is an error is decided above. One screen at a
+  time, nothing generic. A screen is cheap and reads like a book.
 - **No invented model in a feature.** A struct or an enum that groups
   facts exists because the data layer already defines it. A feature's
   state is loose fields, never a load-state enum. Loose fields are

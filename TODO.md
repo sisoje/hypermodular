@@ -642,6 +642,33 @@
     fallback without the library. Open: the black-hole passage says
     "the root's closure may start its own task", which is an unheld
     `Task` at the root.
+  - **F38, screen first.** Ruled by the owner 2026-11-10, from the
+    address form: "what you see on screen you need to model directly",
+    "textfield yields binding, error label yields let", "no
+    overthinking", and "if figma or manager says 'if error then' its
+    the core logic, we put it in core and is testable, we dont
+    overgeneralize, simple screen by screen modeling", and "swiftui
+    screens are cheap and need to be readable like a book". A core is
+    read
+    off the screen before anything that feeds it exists, one property
+    per element; the design's own rules about the screen are branches
+    in the core over values it was handed; whether there is an error
+    is decided above, in a transformer between the state and the
+    core's binding; nothing generic. It is rule 1 applied inside a
+    node, the contract before what fulfils it. F34 stands and is
+    renamed in one clause: its fields view is that core, no longer
+    "nothing decided in it". A paragraph and a table in the code
+    skill's "Cut", one bullet in `shell-core.md` and in AGENTS. The
+    agent's reconciliation, not yet ruled: the state owner above is
+    still cut with `@Shell` where the library is present, so the
+    judgment stays an event in its log, and only the screen's core is
+    written by hand, because it owns no wrapper to cut. The owner said
+    "maybe its best to manually model it without macro"; if that means
+    the state owner too, "cut with `@Shell` wherever the library is
+    present" changes. Also unruled: own `@State` nobody outside sets,
+    a sheet flag, stays in the core as F30 says. Not done: the CoreFlow
+    skill's form example and the Desktop address app still call the
+    fields view furniture; no cold run yet on this wording.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
