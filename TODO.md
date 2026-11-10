@@ -994,9 +994,31 @@
     layout paragraph and points at the reference, as the owner asked
     on 2026-11-09, "the skill, not the prompt, carries the layer". It
     now asks for two save dependencies and two app targets from one
-    `@main` file. The project file in the reference joins the one the
-    iPhone run built and the two-target proof; the run that follows is
-    its first build as one piece.
+    `@main` file. Run cold on Sonnet medium the same day, about eight
+    minutes, output `~/Desktop/engine-2026-11-10/address-form-deps`:
+    every gate green by its report, two dependency packages
+    `AddressFile` and `AddressPrint` each exposing
+    `injectAddressService()` with its test, one `@main` file importing
+    only SwiftUI, an `Exports.swift` per target, `AddressFormCore` in
+    its own file, the preview chain in the view's file, `@Capability`
+    on the transformer, the save `async` in a held task. Then the
+    layout itself, on the owner's "xcodeproj is usually in root, but i
+    dont like it" and "improve it best you can". Of the well-known
+    open apps only Point-Free's isowords keeps the project out of the
+    root, in `App/`, with the modules at the root. The reference now
+    does the same: `App/` holds `project.yml`, the shared `Root/`
+    file, a folder per target, the test host, and the UI tests; the
+    project is generated into `App/` and ignored by git; two xcodegen
+    target templates, `Application` and `Pick`, make an app target
+    three lines. Proven before it was written: the passing iPhone
+    run's code moved into that layout builds both app targets and
+    passes its five evidence tests in the simulator. Four sentences
+    from the run's list are in: an iOS-only modifier sits behind
+    `#if os(iOS)` since the package builds for the Mac to run its
+    plain tests; a dependency's integration test calls its internal
+    function through `@testable import`; two targets that compile one
+    `@main` file are one tree; entries with no order are sorted by
+    name and then by value.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

@@ -249,8 +249,8 @@ is a finding, like a label mismatch.
   address by its fields. A macro logs the value's description, so the
   test asserts `Optional("Required")` or the model's printed form. The
   two spellings name one value and are no mismatch. Where the requirement names no order, the test sorts those
-  entries into one fixed order before comparing, duplicates kept, and
-  the block shows that order. Never a subsequence.
+  entries into one fixed order before comparing, by name and then by
+  value, duplicates kept, and the block shows that order. Never a subsequence.
 - **Dashed arrows back are supplied data**: `target-->>Node: value` or
   `throws`, drawn only when it explains a later entry. Never an entry.
   The call is the event. What comes back is data.
