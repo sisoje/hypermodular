@@ -140,6 +140,15 @@ source of most broken SwiftUI mental models.
   nodes. Node values are created and discarded each wave. Identity is
   structural, type and position among siblings, unless `.id()` overrides
   it. Flipping an `if` is a teardown, not an update.
+- **Lifecycle is an effect of the graph, never of creation.** The
+  struct is a value that describes a node. It is not the view on
+  screen, and taking the one for the other is the object habit. The
+  system is reactive. State changes, the graph recomputes its values,
+  and appearance, disappearance, and `.task` are what the runtime does
+  as a result. So nothing that creates a value starts work, not an
+  `init`, not `body`, not a closure the root builds. A value is created
+  every wave and creating it causes nothing. Work hangs on lifecycle,
+  `.task`, or on an event, a task the node holds.
 - **Two kinds of node.** A view is a persisted node: the runtime keeps
   its identity slot and its state across waves, and the value is
   re-created each wave over that slot. A transformer is a transformative
@@ -377,8 +386,14 @@ in and how a test stands in for it:
 The core's need decides the shape. Awaited, it is an async effect.
 Fired and forgotten, a black hole. The same `save` can be either.
 `async` is the I/O marker for what the core awaits. A black hole is
-synchronous because the core does not await it; the root's closure may
-start its own task. An `async` or `throws` closure announces a boundary
+synchronous because the core does not await it. The root's closure
+starts no `Task` for it. Creation is not lifecycle. The root builds
+values and sets them, and that is all a closure set there does when it
+is called, a plain call into the service. Work is started by a node,
+by `.task` when the runtime's lifecycle is the trigger, or by a task
+the node holds when an event is. A closure whose work is asynchronous
+is `async`, and the node that calls it owns the task it runs in. An
+`async` or `throws` closure announces a boundary
 that belongs behind a contract. Pure logic is synchronous and
 non-throwing, and needing `async` in it means the code is in the wrong
 layer. `grep async` finds every awaited boundary. The wrapper table, the worked
@@ -659,7 +674,9 @@ and why, where it is broken.
   `Task { [save] in ... }`, since capturing the view keeps the storage
   alive and defeats the cancel on removal. A call whose result the
   node does not await is a different thing. It is one closure call, it
-  logs, and the node starts no `Task` for it.
+  logs, and nobody starts a `Task` for it, the root's closure included.
+  A `Task { }` inside a closure the root sets is lifecycle hidden in
+  creation, the object habit of a service that runs itself.
 - **`.task` for work an event starts.** A counter or a flag stored
   only so that `.task(id:)` fires is state invented to reach the
   runtime's event. The event is a tap, so the node assigns a task it

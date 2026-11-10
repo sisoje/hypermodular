@@ -102,7 +102,8 @@ subgraph), no emoji, no status marks.
 - **No `Task` nobody holds.** Work an event starts is a task assigned
   to an `@UnstructuredTask` slot, which cancels on replacement and on
   node removal. `.task` is the runtime's event, kept for appearance
-  and for a value that already exists.
+  and for a value that already exists. Creation is not lifecycle, so
+  a closure the root sets starts no `Task` either.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. No protocols, no classes, no reference
   types, with the three protocol cases and the two class cases, data

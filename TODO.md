@@ -640,9 +640,20 @@
     "one shell wherever the I/O is", one bullet in AGENTS, and
     `BookShelfShell` in `shell-core.md` rewritten from
     `.task(id: saveCount)` to a held save, the counter kept as the
-    fallback without the library. Open: the black-hole passage says
-    "the root's closure may start its own task", which is an unheld
-    `Task` at the root.
+    fallback without the library. The agent asked whether the root's
+    closure may still start its own task for a black hole and proposed
+    allowing it. The owner, the same day: "never add lifecycle things
+    into creation", "creation goes by nodes and view lifecycle triggers
+    as needed". So the rule has no exception at the root. The root
+    builds values; a closure set there is a plain call and starts no
+    `Task`; work is started by a node, by `.task` or by a held task; an
+    asynchronous closure is `async` and the calling node owns the task.
+    "The root's closure may start its own task" is gone from the
+    black-hole passage. And the reason under it, the owner: "OOP
+    idiots conflate struct-view with actual-view, swiftui is reactive,
+    it is based on state (graph), so its values graph recomputes and
+    lifecycle comes as effect on it". One bullet in the code skill's
+    "Model", beside "the struct has no lifecycle".
   - **F38, screen first.** Ruled by the owner 2026-11-10, from the
     address form: "what you see on screen you need to model directly",
     "textfield yields binding, error label yields let", "no
