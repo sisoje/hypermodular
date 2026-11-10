@@ -109,7 +109,12 @@ subgraph), no emoji, no status marks.
   closures, lets, or bindings. No protocols, no classes, no reference
   types, with the three protocol cases and the two class cases, data
   that earns it and a framework delegate, the code skill names. Setting =
-  putting a value into the environment at the root.
+  putting a value into the environment at the root. A dependency that
+  does I/O is its own package under `Packages/Dependencies/`, however
+  small. It sees the data coupling layer and what it wraps, never a
+  feature, never another dependency, and it exposes one public
+  `inject` view modifier, so a target picks its dependencies by what
+  it links.
   Deriving = building a new value from values already there. No
   `.live`, `.preview`, or `.unimplemented` statics and no `+Live`
   files. The root builds the live value inline where it sets it. The

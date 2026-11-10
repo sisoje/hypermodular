@@ -217,7 +217,9 @@ deleted. The class `API` is as it was.
 A service that holds state, a session, a socket, a database handle, a
 token refresher, stays the class it is, behind the contract's closures.
 No node reads the handle. It is converted last, or never. What converts
-is who names it, and after step 6 one file does.
+is who names it, and after step 6 one file does. Once the service can
+leave the app target, it and its wrapper become a package under
+`Packages/Dependencies/` that exposes one `inject` modifier.
 
 A closure the root sets is a plain call into the service. It starts no
 `Task`. Where the service's work is asynchronous the closure is

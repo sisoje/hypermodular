@@ -183,6 +183,16 @@ or when an API has ten or more methods with shared default
 implementations. For the rest, a handful of closures with one live
 implementation and test variants, the struct wins.
 
+This is the dependency inversion principle, carried out. The principle
+asks both sides to depend on an abstraction and neither on the other.
+As it is usually practiced the abstraction is a protocol, and the
+protocol sits in a whole module, beside its implementation or beside
+its consumer. Importing the protocol imports that module, so one side
+still sees the other and nothing was inverted. Here the abstraction is
+a struct of closures in a package of its own that holds only data. A
+feature imports that package, a dependency imports that package, and
+neither can name anything of the other.
+
 ## The module graph
 
 ```mermaid
@@ -190,28 +200,22 @@ flowchart BT
     Data["DataCoupling<br/>models · enums · values<br/>contracts: structs of closures + @Entry<br/>zero dependencies of your own · zero behavior"]
     Features["Features<br/>all screens and business logic<br/>knows no implementation exists"]
     CommonUI["CommonUI<br/>model-free presentation<br/>depends on nothing"]
-    IO["an I/O module<br/>REST client · sync engine · …<br/>constructs its contract inline"]
-    subgraph App["App: composition root"]
-        direction LR
-        Inj["one modifier per system framework<br/>StoreKit · Vision · Keychain · SwiftData · …"]
-    end
+    Deps["Dependencies, one package each<br/>REST client · sync engine · StoreKit · Vision · Keychain · SwiftData · …<br/>each exposes one inject modifier"]
+    App["App: composition root<br/>applies the inject chain"]
     Features --> Data
     Features --> CommonUI
-    IO --> Data
-    Inj --> Data
+    Deps --> Data
     App --> Features
-    App --> IO
-    classDef plain fill:none
-    class App plain
+    App --> Deps
 ```
 
-Read the arrows. Every dependency points at data. Features and the I/O
-modules never meet at compile time. A sync engine consumes the REST
-contract as a value read from the environment, not the package that
-implements it. What you will not find: a feature importing an I/O
-module, an I/O module importing another, a protocol, a container, a
-mock target. I/O modules meet only through data, wired by the
-environment at runtime.
+Read the arrows. Every dependency points at data. Features and the
+dependency packages never meet at compile time. A sync engine consumes
+the REST contract as a value read from the environment, not the
+package that implements it. What you will not find: a feature
+importing a dependency, a dependency importing another or importing
+the features, a protocol, a container, a mock target. Dependencies
+meet only through data, wired by the environment at runtime.
 
 - **Features** hold all screens and feature logic plus a pure shared
   layer: side-effect-free calculators, extensions on the layer's types,
@@ -220,17 +224,37 @@ environment at runtime.
   frameworks, files, the network) is not. That goes through a contract.
 - **Model-free presentation** (`CommonUI`) never depends on the data
   layer. Design-system pieces take values, not models.
-- **An I/O module** depends on the data layer and on whatever transport
-  it needs. Its root modifier constructs the live contract inline. Its logic
-  is plain functions taking those dependencies as parameters.
+- **A dependency** is a package under `Packages/Dependencies/`, one
+  for each boundary that does I/O, however small, and one for each
+  dependency derived from others. It depends on the data layer, on
+  platform frameworks, and on the transport or SDK library it wraps,
+  which is a library and sets no contract. Its one public declaration
+  is a `View` extension, `injectSyncEngine()`, over an internal
+  modifier that constructs the live contract inline. Its logic is
+  plain internal functions taking its inputs as parameters. A derived
+  one declares `@Environment` reads of its ingredients, whose
+  contracts, entries, and payload types are all in the layer. Its
+  boundary's one integration test is in its own test target.
 - **The app** is a pure composition shell: `@main`, the model container,
   the chain of modifiers that set the live values. The feature package
   exports one public view, the top node of its own tree, which the
   app's root constructs. Everything else in the package is internal.
 
-The modifiers need not be packages. Each is already a module in
-everything but name, one file, one system framework, one contract, and
-promoting one to a package changes no import.
+Each dependency is a package because the boundary of a package is the
+only thing that stops a dependency from seeing a feature. A modifier
+file in the app target sees everything the app imports, and a sort
+enum or a parser that lives in a feature gets used there with no
+error. In a package the same line does not compile. The line for what
+must be a package is I/O, never size. A haptics dependency of thirty
+lines is one.
+
+A target picks its dependencies. The app file names the `inject`
+functions and imports no dependency by name, and each target lists the
+packages it picked in one file of `@_exported import` lines. Two
+packages exposing the same `inject` function, same name and same
+parameters, are interchangeable. One app target links the server's
+backend, another links fixtures, and both compile the same `@main`
+file.
 
 ## The composition root
 
@@ -243,9 +267,9 @@ flat and inline.
   inputs: a base URL, a transport closure, `\.modelContext`, a contract
   set upstream. Implementation logic the closures call is plain
   `internal` functions taking those as parameters.
-- **One modifier per dependency, one system framework per file.**
+- **One modifier per dependency, one system framework per dependency.**
   StoreKit, Vision, LocalAuthentication, Security, and UserNotifications
-  each appear in one file in the codebase. A dependency may bundle
+  each appear in one package in the codebase. A dependency may bundle
   related contracts and carry its implementation details privately.
 - **The chain is applied inline at the root**, with no umbrella wrapper.
   It is used once, and it reads top to bottom. Ordering matters only
@@ -359,10 +383,13 @@ smaller record sliced off for a feature is taste, not rescue.
       defaulted initializer and an `@Entry` whose default is `.init()`.
 - [ ] Every `async` and `throws` lives in a contract closure. Pure logic
       has none.
-- [ ] Features and I/O modules depend on the data layer and never on
+- [ ] Features and dependencies depend on the data layer and never on
       each other. Presentation depends on nothing.
-- [ ] Live values are built inline at the root, one modifier per system
-      framework, each framework imported in one file.
+- [ ] Every dependency that does I/O is its own package under
+      `Packages/Dependencies/`, imports no feature and no other
+      dependency, and exposes exactly one public `inject` modifier.
+- [ ] Live values are built inline in those modifiers, one system
+      framework per dependency, and the root applies the chain.
 - [ ] No `.live`, `.preview`, or `.unimplemented` statics, no `+Live`
       files, no singleton, no container, no protocol for mocking.
 - [ ] Previews rely on the defaults and touch no real storage.

@@ -538,12 +538,17 @@ on that one kind. Features never import each other and never import
 I/O. The app imports everything. What they all share is one package of
 pure data, the data coupling layer, `DataCoupling`, its own package
 that depends on nothing of yours. The features package depends on it.
-An I/O package, a backend, a store, depends on it to implement its
-contracts and never sees a feature. The app depends on all of them,
-owns the state, and sets the live values, one modifier per I/O
-framework in its `Dependencies/`. On disk that is `Packages/DataCoupling`,
-`Packages/Features`, `Packages/<IO>` as needed, and the app target
-beside them. A feature is written against the layer alone, so it is
+A dependency, the live side of a contract, a backend, a store,
+depends on it too, to implement what the contract asks, and never sees
+a feature. The app depends on all of them, owns the state, and sets
+the live values by applying each dependency's one modifier in a chain
+at the root. On disk that is `Packages/DataCoupling`,
+`Packages/Features`, `Packages/Dependencies/<Name>` for each
+dependency, and the app target beside them. This is dependency
+inversion carried out. A protocol that sits in the module of its
+implementation inverts nothing, since importing it imports the
+module. The contract here sits in a package of pure data, and the two
+sides cannot see each other. A feature is written against the layer alone, so it is
 constructible from literals of its types and tested without the rest
 of the app existing. The composition root constructs the live values,
 the features consume them, and the two meet nowhere but in this
@@ -613,9 +618,40 @@ test. Data is the abstraction.
   requires is a class too, private to the root modifier that owns it. `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
+- **A dependency is a package under `Dependencies/`.** Every
+  dependency that does I/O, a system framework, storage, the network,
+  a device, is its own package in `Packages/Dependencies/`, however
+  small. Size is not the test. Touching the outside world is. A
+  dependency derived from contracts already set, a sync engine built
+  on the backend and the store, is a package there too. It reads its
+  ingredients from the environment by their types in the layer, so it
+  imports no other dependency. A dependency imports the layer, platform
+  frameworks, and the transport or SDK library it wraps, and nothing
+  else of yours. It never imports the features and never another
+  dependency. The package boundary is what holds that. A modifier file
+  in the app target sees whatever the app sees, a feature's enum, a
+  feature's parser, and nothing stops it from using them. What a
+  dependency needs from a feature is either data, which moves into the
+  layer, or logic, which stays in the feature behind the contract. A
+  dependency exposes exactly one public thing, a `View` extension
+  named `inject` and its own name, `injectBackend(baseURL:)`,
+  `injectHaptics()`, over an internal modifier that builds the live
+  value and sets it. What the root must supply is that function's
+  parameters. The one integration test of the boundary lives in the
+  package's own test target.
+- **A target picks its dependencies.** The app file names only the
+  `inject` functions. Two packages that expose the same function, the
+  same name and the same parameters, are interchangeable, a `Backend`
+  that calls the server and a `FixtureBackend` that answers from
+  fixtures. Two app targets compile the same `@main` file, link
+  different packages, and the features cannot tell which. Production
+  against fixtures is a choice of packages, with no line of the app's
+  source changed. The app
+  file imports no dependency by name. Each target has one small file
+  of `@_exported import` lines naming the packages it picked.
 - **The root sets live values inline, where it sets them.** One
-  modifier per I/O framework the root wires, each imported in one file,
-  the chain applied inline at `@main`. A modifier that reads a value
+  dependency per I/O framework the root wires, the framework imported
+  in that package alone, each `inject` applied inline at `@main`. A modifier that reads a value
   another sets is written first, inside it, so the code reads the
   dependency column bottom-up. SwiftData's `@Model` and `@Query` are
   materialization and import it where they stand. No `.live`,

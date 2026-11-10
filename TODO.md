@@ -921,6 +921,61 @@
     file with the view that is there". The chain is the scenario and
     the `#Preview` that shows it, and the vocabulary table has the
     term.
+  - **F47, a dependency is a package, and a target picks its
+    dependencies.** The owner, 2026-11-10: "dependencies live in
+    Dependencies directory and each one is a package, at least
+    dependencies that touch outside world", "i think all heavy
+    dependencies need package", "sometimes dependency just wires two
+    existing ones into a new one, but it also can have a package",
+    "dependency packages see only data coupling layer, so
+    dependencies DO NOT see features", "a dependency will usually
+    expose just a view modifier with inject prefix". And the
+    consequence: "i can have an app core, and just by cherrypicking
+    correct dependency i can run it, mock backend and real backend,
+    two targets with the same app file as long as inject function is
+    called same", and "the app core source file can in theory be same,
+    just cherrypicking packages can achieve us with mock vs prod". And
+    the name for it: "this is just simple dep
+    inversion principle, people talking for decades about it and they
+    never did it properly, they depend on protocols but protocol still
+    sits in entire module". Checked against the expenses app by the
+    agent and by Astra at high effort, read-only. It has three
+    dependency packages, eight modifier files in the app target, every
+    one exposing an `inject` function over an internal modifier, and a
+    derived dependency, the sync engine, that is a package and reads
+    its ingredients from the environment without importing the package
+    that implements them. Three of the eight in-app files use symbols
+    that live in the features, a sort enum, a parser, a user helper,
+    and compile because the app target re-exports the features. A
+    package boundary would have refused each. That is the reason
+    written into the rule, and why the line is I/O and not size: the
+    largest dependency there is an in-app file, and "heavy" has no
+    threshold an agent can apply. Astra's two corrections are in the
+    wording: "never another dependency" allows the transport or SDK
+    library a dependency wraps, and the public surface is exactly one
+    `inject` modifier, where one existing package also exports a
+    factory and its coders. The rule: every dependency that does I/O
+    is its own package under `Packages/Dependencies/`, a derived one
+    too; it imports the layer and what it wraps, never the features,
+    never another dependency; one public `inject` modifier; its
+    integration test in its own target; the app file imports no
+    dependency by name, and each target lists its picks in one file of
+    `@_exported import` lines. Built to check it, the same day: one
+    `App.swift` whose only import is SwiftUI, two packages each
+    exposing `injectBackend()`, two app targets each with its own
+    one-line exports file, and both targets build. The owner, on
+    reading it: "your rule is
+    correct, dependency sees data coupling and no other dependencies
+    nor feature". It replaces "the modifiers need not be packages" and
+    the app-resident `Dependencies/` folder. In the code
+    skill's layer section, `modules.md` (the graph, the dependency
+    bullet, the reason, the checklist), AGENTS, `converting.md`, and
+    the address brief. The three one-package miniature briefs keep
+    their modifiers in the library target. Not written: re-exporting
+    swift-core-flow from the layer, which the owner raised as a maybe.
+    The expenses app does not use the library, and the layer is the
+    one package every dependency imports, so every dependency would
+    build the macros.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
