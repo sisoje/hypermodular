@@ -724,6 +724,18 @@
     more shell goes above when a scenario must hand it in, to any
     depth. F30 stands untouched. One bullet in `shell-core.md`, "When
     to split", and one sentence in the code skill's "Cut".
+  - **F42, which previews need a scenario.** The owner, 2026-11-10:
+    "we use scenario concept for previews, as a rule", then, correcting
+    the agent, who had made every preview a scenario and removed the
+    direct ones: "core views can be previewed directly actually, shell
+    views (with state or whatever) need a scenario". A core is
+    constructed with literals in `#Preview`. A shell, or any view with
+    state or a live wrapper, is previewed through a scenario that owns
+    or sets what it needs. The agent's overreach was reset before
+    anything else was built on it; the direct core previews and
+    `@Previewable @State` stand as they were. Sentences in
+    `shell-core.md` (the by-hand example, the naming bullets, the
+    checklist) and in the code skill's test section.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

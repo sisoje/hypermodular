@@ -141,7 +141,10 @@ every edge case is a constructor argument:
 ```
 
 Every visual variant is a one-line preview, and every behavior is an
-assertion on the core's boundary events (`testing.md`).
+assertion on the core's boundary events (`testing.md`). A core is
+previewed directly like this, constructed with literals. A shell, or
+any view that owns state or reads a live wrapper, is previewed through
+a scenario, which owns or sets what the view needs.
 
 ## Worked example, with `@Shell`
 
@@ -520,8 +523,11 @@ own.
 - A hand-written core is `internal`, not `private`. Tests and previews
   construct it directly. Shell and core read together, so they live in
   the same file until it grows past comfortable scrolling.
-- Previews are constructions of the core with literals. A preview of a
-  shell is `@Query` hitting a container, which is an integration test.
+- A core's preview is a construction of the core with literals,
+  written directly in `#Preview`. A view with state or a live wrapper,
+  a shell, is previewed through a scenario and never bare. A bare
+  preview of a shell is `@Query` hitting a container, which is an
+  integration test.
   Previews never touch real storage. The environment default serves
   them, and a specific value comes from `@Previewable @State` bound into
   a defaulted initializer.
@@ -552,7 +558,8 @@ logged as `(name, value)`.
       list. Every `async` or `throws` is behind a closure.
 - [ ] The shell's `body` constructs the core and terminates its
       boundaries. The real `body` exists once.
-- [ ] Previews are on the core and touch no real storage.
+- [ ] A core is previewed directly, a shell through a scenario, and no
+      preview touches real storage.
 - [ ] On a new screen, every core property is a thing on the screen,
       and two screenshots that differ differ in an init argument. No
       model the feature invented, no `Task` nobody holds.

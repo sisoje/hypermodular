@@ -450,7 +450,10 @@ either way.
 - **A UI test here is a unit test, the unit being one core.** A second,
   test-only `@main` renders one scenario named at launch and nothing
   else of the app. One scenario per core, its givens as parameters, and
-  the same scenario is the preview and the launch target. A given that
+  the same scenario is the preview and the launch target. A core can
+  also be previewed directly, constructed with literals. A view that
+  owns state or reads a live wrapper, a shell, is previewed only
+  through a scenario. A given that
   would have to set the node's own state says the truth is above the
   node: it arrives as a binding, and the state is not the node's. A
   scenario is cheap, so a different given is another scenario, or
