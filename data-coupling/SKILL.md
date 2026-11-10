@@ -307,10 +307,15 @@ view. A view made only of `let`s, bindings, environment reads, and
 closures is already a core, and gets no shell. The composition root is
 never cut either. It owns the app's state, hands it down as bindings,
 sets the live values, and has no scenario; its one child is the first
-core. A core starts no free-floating `Task`. Work a tap starts is
-`@UnstructuredTask` under the library, a slot that logs like state and
-whose entry the block declares, or `.task(id:)` keyed on a value that
-is `Equatable` by nature.
+core. No node starts a `Task` it does not hold. Work an event starts,
+a tap, is assigned to an `@UnstructuredTask` slot under the library, a
+slot that logs like state and whose entry the block declares. The
+assignment is a write the node makes at a moment the node chooses, so
+the node controls the work and a test reads it. `.task` and
+`.task(id:)` are the runtime's events. Appearance starts the work and
+disappearance cancels it, and the node decides neither. They are kept
+for work that belongs to appearance or to a value that is `Equatable`
+by nature, a load, a refetch when the sort changes.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a
@@ -590,6 +595,24 @@ written, and the reader is the writer, so it binds too.
   a value the node does not own, a scroll, a haptic, dismissing a
   sheet. An effect on a write to state the node owns rides the setter
   of the binding it hands down.
+- **A `Task` nobody holds.** `Button("Save") { Task { try await save() } }`
+  starts work that nothing cancels. It outlives the node, a second tap
+  runs a second copy beside the first, and its writes land in a node
+  that may be gone. An unstructured task is always assigned, to an
+  `@UnstructuredTask` slot of swift-core-flow or to a
+  `Binding<Task<Success, Failure>?>` a parent backs with one. The slot
+  cancels the previous task when a new one is assigned and the live
+  one when the node is removed, writing `nil` cancels on demand, and
+  each assignment logs. The task closure takes a capture list,
+  `Task { [save] in ... }`, since capturing the view keeps the storage
+  alive and defeats the cancel on removal. A call whose result the
+  node does not await is a different thing. It is one closure call, it
+  logs, and the node starts no `Task` for it.
+- **`.task` for work an event starts.** A counter or a flag stored
+  only so that `.task(id:)` fires is state invented to reach the
+  runtime's event. The event is a tap, so the node assigns a task it
+  holds. `.task` is for appearance and for a value that already
+  exists.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
 - **Designing for the what-if.** "What if someone forgets to set the

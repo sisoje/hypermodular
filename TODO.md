@@ -627,6 +627,21 @@
     option or sheet enum is one fact with a closed set of values, not
     a model, and stays. Open: no engine brief yet tempts the
     load-state enum.
+  - **F37, no task nobody holds.** Ruled by the owner 2026-11-10, a
+    separate rule from F36 and not about objects. An unstructured
+    `Task` is never fire-and-forget. It is assigned to an
+    `@UnstructuredTask` slot or a binding backed by one, which cancels
+    on replacement and on node removal. `.task` is the runtime's
+    lifecycle event, which the node does not control; a held
+    assignment is controlled and tested. So `.task` stays for
+    appearance and value-keyed work, and work an event starts is held.
+    Two bullets in the code skill's first list, the sentence beside
+    "one shell wherever the I/O is", one bullet in AGENTS, and
+    `BookShelfShell` in `shell-core.md` rewritten from
+    `.task(id: saveCount)` to a held save, the counter kept as the
+    fallback without the library. Open: the black-hole passage says
+    "the root's closure may start its own task", which is an unheld
+    `Task` at the root.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

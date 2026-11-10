@@ -90,6 +90,10 @@ subgraph), no emoji, no status marks.
   facts exists because the data layer already defines it. A feature's
   state is loose fields, never a load-state enum. Loose fields are
   orthogonal, so they compose.
+- **No `Task` nobody holds.** Work an event starts is a task assigned
+  to an `@UnstructuredTask` slot, which cancels on replacement and on
+  node removal. `.task` is the runtime's event, kept for appearance
+  and for a value that already exists.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. No protocols, no classes, no reference
   types, with the three protocol cases and the two class cases, data

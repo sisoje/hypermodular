@@ -307,37 +307,56 @@ struct BookShelfShell: View {
     @Environment(\.library) private var library
     @Binding var sortByAuthor: Bool
     @State private var books: [Book]?
-    @State private var saveCount = 0
+    @UnstructuredTask private var save: Task<Void, Never>?
 
     var body: some View {
         BookShelf(
             books: books ?? [],
             sortByAuthor: $sortByAuthor,
             onDelete: { book in
-                books?.removeAll { $0.id == book.id }
-                saveCount += 1
+                let kept = (books ?? []).filter { $0.id != book.id }
+                books = kept
+                save = Task { [library] in try? await library.save(kept) }
             })
         .task(id: sortByAuthor) { books = try? await library.fetch(sortByAuthor) }
-        .task(id: saveCount) { if let books, saveCount > 0 { try? await library.save(books) } }
     }
 }
 ```
 
-Every async job is structured. `.task` binds the work to the view's
-lifetime, and `.task(id:)` restarts it on change, cancelling the stale
-job at its next suspension point. Its id is a value that is `Equatable`
-by nature, a flag, a count, a string, never a model made `Equatable`
-for it; the count is what lets the same save run twice. No
-free-floating `Task`, and nothing a test cannot reach. The shell is a view, so it tests like one. Hand it
-a logged `LibraryService` through the environment and it produces a log
-of its own.
+No node starts a `Task` it does not hold, and the trigger decides the
+form. The fetch belongs to a value, the sort, so it is `.task(id:)`.
+`.task` binds the work to the view's lifetime, and `.task(id:)`
+restarts it on change, cancelling the stale job at its next suspension
+point. Its id is a value that is `Equatable` by nature, a flag, a
+count, a string, never a model made `Equatable` for it. Both are the
+runtime's events. Appearance starts the work and disappearance cancels
+it, and the node decides neither, so they are kept for work that
+belongs to appearance or to a value that already exists.
 
-A job the user starts with a tap, a save or a download, is
-swift-core-flow's `@UnstructuredTask` where the library is present: it holds it in a
+The save is started by an event, a delete, so the shell assigns it. A
+job the user starts with a tap, a save or a download, is
+swift-core-flow's `@UnstructuredTask`: it holds the task in a
 view-owned slot that cancels the previous task on replacement and the
-live one on teardown, and logs every assignment like `@TestState`. Use
-a capture list in the task closure. Capturing the view keeps the
-storage alive and defeats the teardown cancel.
+live one on teardown, and logs every assignment like `@TestState`.
+Writing `nil` cancels on demand, and `save != nil` is the fact that
+work is in progress. The assignment is a write the node makes at a
+moment the node chooses, so the node controls the work and a test
+reads it. A second delete replaces the first save, and the new one
+carries the whole list. Use a capture list in the task closure.
+Capturing the view keeps the storage alive and defeats the teardown
+cancel. A child that starts the work receives the slot as a
+`Binding<Task<Void, Never>?>`, `$save`, and its write cancels and logs
+the same way.
+
+Without the library a tap has no held form, since a hand-written slot
+is a class in `@State`. The fallback there, and only there, is a count
+the event increments and `.task(id: saveCount)` runs on, the count
+being what lets the same save run twice.
+
+Nothing here is free-floating, and nothing a test cannot reach. The
+shell is a view, so it tests like one. Hand it a logged
+`LibraryService` through the environment and it produces a log of its
+own.
 
 ## When to split, and when not to
 
