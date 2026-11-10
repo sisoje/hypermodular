@@ -42,7 +42,10 @@ holds.
 3. **Run the checker.** `scripts/mapcheck.py` on the repo, `--sources`
    once code exists: zero errors,
    and every warning understood. The map is now the work fence.
-4. **Build root-down.** Implement a node only after its parent exists.
+4. **Build root-down.** The code is laid out as the data-coupling
+   skill's `references/app-structure.md` gives it, the layer, the
+   features, one package per dependency, the app under `App/`.
+   Implement a node only after its parent exists.
    For each node, its evidence holds (the test compares two values and
    passes) before the next node is started. Hand it literals for data
    and loggers for closures. Nothing beneath it needs to exist, with

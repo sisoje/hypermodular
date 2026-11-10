@@ -641,7 +641,7 @@ test. Data is the abstraction.
   dependency needs from a feature is either data, which moves into the
   layer, or logic, which stays in the feature behind the contract. A
   dependency exposes exactly one public thing, a `View` extension
-  named `inject` and the boundary it sets, `injectBackend(baseURL:)`,
+  named `inject` and the dependency's own name, `injectBackend(baseURL:)`,
   `injectHaptics()`, over an internal modifier that builds the live
   value and sets it. The package is never named as the contract's
   type, since a module and a type of one name shadow each other. What the root must supply is that function's

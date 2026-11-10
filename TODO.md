@@ -967,7 +967,9 @@
     whom, the two re-exports, a package manifest, a dependency package
     with its one `inject` function, the one-file app target, the
     xcodegen project file, the test side, where a file goes, a
-    checklist. A module is never named as its contract's type. On the
+    checklist. A module is never named as its contract's type, and the
+    `inject` function carries the dependency's own name, as in the
+    owner's app, `injectBackend`, `injectSyncEngine`. On the
     owner's "xcodeproj is usually in root, but i dont like it" and
     "improve it best you can": of the well-known open apps only
     Point-Free's isowords keeps the project out of the root, in
@@ -1007,7 +1009,10 @@
     no feature file imports the layer or the library, eight plain
     tests green, the app builds, five evidence tests green in the
     simulator. The CoreFlow skill says the same in its install
-    section. No new example was run. The owner: "wait for rerun".
+    section. The owner, for when fixtures return: "inject will
+    sometime have parameters, for prod it may have params, but for
+    fixtures may not". So two dependencies that answer one contract
+    need not share a signature, which the removed rule had required. No new example was run. The owner: "wait for rerun".
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

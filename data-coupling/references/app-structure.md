@@ -117,7 +117,7 @@ import SwiftUI
 
 public extension View {
     /// Sets `addressService`. The address is written as JSON to a file.
-    func injectAddressService() -> some View {
+    func injectAddressFile() -> some View {
         modifier(Injector())
     }
 }
@@ -131,9 +131,12 @@ struct Injector: ViewModifier {
 }
 ```
 
-- **The function is named `inject` and what it sets**,
-  `injectAddressService()`, `injectBackend(baseURL:)`. What the root
-  must supply is its parameters.
+- **The function is named `inject` and the dependency's own name**,
+  `injectAddressFile()`, `injectBackend(baseURL:)`. A dependency may
+  set several related contracts, and it still has one name. What the
+  root must supply is the function's parameters, and each dependency
+  has its own. A backend that calls a server takes a base URL. One
+  that answers from fixtures takes nothing.
 - **The package is never named as the contract's type.** A module and
   a type of one name shadow each other. `AddressService` is the
   contract, so the package is `AddressFile`.
@@ -167,7 +170,7 @@ struct AddressApp: App {
     var body: some Scene {
         WindowGroup {
             AddressScreen()
-                .injectAddressService()
+                .injectAddressFile()
         }
     }
 }
