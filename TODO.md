@@ -1018,7 +1018,20 @@
     plain tests; a dependency's integration test calls its internal
     function through `@testable import`; two targets that compile one
     `@main` file are one tree; entries with no order are sorted by
-    name and then by value.
+    name and then by value. Then the same brief ran cold in the `App/`
+    layout, Sonnet medium, about six minutes, output
+    `~/Desktop/engine-2026-11-10/address-form-app`: the tree exactly
+    as the reference draws it, `App/Root`, a folder per target,
+    `App/project.yml`, the project ignored by git, every gate green by
+    its report. Three sentences from reading its code. Its production
+    dependency caught the write's error and returned "not saved: ..."
+    in the path's place, behind a contract that cannot throw; the
+    reference now says a failure is thrown and never dressed as a
+    result, since the skill already puts error handling in the core.
+    Typed text in an evidence block is one stimulus followed by one
+    out-arrow per write, the form all three address runs of the day
+    arrived at alone. The layer's contract and its entry are public
+    in a package.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

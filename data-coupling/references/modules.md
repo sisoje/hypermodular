@@ -42,6 +42,8 @@ struct LibraryService {
 extension EnvironmentValues {
     @Entry var library = LibraryService()     // the default is the minimal no-op
 }
+// In the layer's package both are public, the struct with a public
+// initializer and the entry in a `public extension`.
 ```
 
 `id` is an initializer argument, never generated inside the model and

@@ -218,7 +218,10 @@ is a finding, like a label mismatch.
   node's parent is `Unmounted (../APP-MAP.md)`). `%% Given:
   <construction>` states the given: constructor arguments and stubs.
 - **Arrows into the node are the *when***, and there are three kinds.
-  `User->>Node: interaction` for input. `System->>Node: event` for
+  `User->>Node: interaction` for input. One stimulus may be followed
+  by several entries. Typed text is one arrow, `User->>AddressForm:
+  type 123 in postal code`, and one out-arrow for every write it
+  causes, a keystroke at a time. `System->>Node: event` for
   lifecycle, scene phase, deep links. `Child->>Node: callback payload`
   for a child firing a callback the node handed it
   (`AddItem->>ShoppingList: onAdd eggs`). None is ever a log entry. The

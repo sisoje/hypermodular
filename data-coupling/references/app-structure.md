@@ -125,6 +125,11 @@ struct Injector: ViewModifier {
 - **A derived dependency** declares `@Environment` reads of its
   ingredients on the `Injector`. Their contracts and entries are in the
   layer, so it imports no other dependency.
+- **A failure is thrown.** Work that can fail makes the closure
+  `throws`. A dependency never catches its own failure to hand back a
+  string or a default in a result's place. What a failure shows is the
+  node's logic, and the node cannot decide it once the failure has been
+  dressed as a result.
 - **Its test target holds the one integration test of the boundary.**
   The real file is written, the real request is made, once.
 
