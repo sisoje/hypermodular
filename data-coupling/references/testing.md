@@ -172,8 +172,10 @@ time, designed once.
   real. At the edge, every boundary event enters the log instead of
   crossing into an effect. Nothing is behind the boundaries, so no side
   effect exists beyond them.
-- **The granularity is the shell/core cut.** One scenario per core, in
-  its own file, and a core exists wherever the I/O is. A screen with one
+- **The granularity is the shell/core cut.** One scenario per core.
+  The preview chain, the scenario and its `#Preview`, lives in one
+  file with the view that is there. A core exists wherever the I/O
+  is. A screen with one
   shell is one unit. A component with its own boundaries is its own
   unit, testable alone. The scenario holds the mock state, pre-filled
   so the action under test is reachable, with every binding wrapped to
@@ -189,7 +191,7 @@ time, designed once.
   reads the log through the transport, and compares. It links the
   testing product, which imports XCTest, and nothing else does.
 - **It grows one unit at a time.** A new unit is one enum case, one
-  scenario file, and one test. The host never learns the app's
+  scenario beside its view, and one test. The host never learns the app's
   structure, so it never changes when the app does.
 
 Why a host at all: `@State`, focus, gestures, the environment, and

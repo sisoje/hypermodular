@@ -908,7 +908,19 @@
     code skill's second do-not list states the rule with its one
     exception, small private furniture of a single view, and the
     worked examples in `shell-core.md` and `converting.md` name a file
-    for each piece.
+    for each piece. The agent had put the scenario on the own-file
+    list. The owner, the same day: "only scenario lives where the real
+    view is, i mean it should, but hand written core is own",
+    "generated core is generated obviously". A scenario lives in the
+    file of the real view it stages, a hand-written core in its own
+    file, and a generated `Core` has none. `testing.md` had said "one
+    scenario per core, in its own file", and all four engine briefs
+    sent the scenarios to a `Scenarios/` folder; both now say the file
+    of the view it stages. The CoreFlow skill says the same. The
+    owner's wording, used in all of them: "preview chain lives in one
+    file with the view that is there". The chain is the scenario and
+    the `#Preview` that shows it, and the vocabulary table has the
+    term.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

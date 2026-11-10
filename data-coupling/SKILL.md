@@ -751,11 +751,14 @@ The code, as it is written here:
   of a fixed selection of components to show, each is one fact, and it
   stays in the feature. Such an enum can conform to `View` itself.
 - **Several types in one file.** Most types get a file of their own,
-  named for the type: a core, a shell, a transformer, a scenario, a
+  named for the type: a hand-written core, a shell, a transformer, a
   contract, a model, a root modifier. A hand-written core never sits
-  in its shell's file. A type is found by the name of its file. What
-  stays beside its owner is small private furniture that one view
-  alone uses, a row, a label.
+  in its shell's file. A type is found by the name of its file. The
+  preview chain lives in one file with the view that is there. The
+  chain is the scenario that stages the view and the `#Preview` that
+  shows it. Small private furniture that the view alone uses, a row,
+  a label, stays in that file too. A generated `Core` has no file. The
+  macro writes it.
 - **Data-driving statically known content.** Three onboarding pages are
   three views, or an enum with an exhaustive `switch`, never a `[Page]`
   replayed through `ForEach` with `lastPage = 2`. What is fixed at
@@ -788,6 +791,7 @@ The articles' terms. Use them. They make discussion precise in a way
 | machinery | Apple's UI-runtime wrappers that hold no suppliable data (gestures, focus, namespaces, metrics) |
 | shell / core | the view owning the live property wrappers and services, one wherever the I/O is / the feature as pure transformation, values and closures in, children and boundary events out |
 | scenario | a test-host view owning real `@State`, handing down only logged boundaries |
+| preview chain | the scenario that stages a view and the `#Preview` that shows it, in one file with that view |
 | execution log | the ordered `(name, value)` record of boundary events, every write and call with its payload; a core's behavior, as data |
 | mock depth | how many levels of internals a mock must assume; transitive through an object graph, constant at one for a closure |
 | wireframe you can type-check | the feature modeled against nothing: compiles, names every dependency, implements no behavior |
