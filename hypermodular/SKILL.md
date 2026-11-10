@@ -24,7 +24,10 @@ Mermaid in markdown (`APP-MAP.md` at the repo root, `MAP.md` beside each
 mapped subtree), so it renders in every GitHub or GitLab PR, always
 visible and always diffable. The map tree may stand apart from the
 source tree, one directory per node, which is where a leaf's
-evidence-only `MAP.md` sits when the sources are flat. A `MAP.md`
+evidence-only `MAP.md` sits when the sources are flat. Where the code
+is several packages and an app, the tree stands at the repo root, a
+directory per node named for the node, each child's inside its
+parent's. A `MAP.md`
 inside a Swift package's `Sources/` is listed in the target's
 `exclude`.
 

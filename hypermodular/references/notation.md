@@ -244,7 +244,11 @@ is a finding, like a label mismatch.
   `LoginScreen->>authService.logIn: ""` is `"logIn"`. The test compares
   the names whole with one equality, so a call the block did not name
   fails it, and each value as the author spells it, a deterministic
-  spelling, symbolic where a description is not stable. Where the requirement names no order, the test sorts those
+  spelling, symbolic where a description is not stable. The block
+  writes a payload as the criterion names it, `Required`, `nil`, an
+  address by its fields. A macro logs the value's description, so the
+  test asserts `Optional("Required")` or the model's printed form. The
+  two spellings name one value and are no mismatch. Where the requirement names no order, the test sorts those
   entries into one fixed order before comparing, duplicates kept, and
   the block shows that order. Never a subsequence.
 - **Dashed arrows back are supplied data**: `target-->>Node: value` or

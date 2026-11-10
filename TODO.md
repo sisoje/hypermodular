@@ -881,7 +881,30 @@
     interface. The packages keep macOS 14 beside iOS 17 only so the
     plain tests run under `swift test`. The bundle is the agent's
     reading of the owner's reason, since the earlier stance was that a
-    play run needs none.
+    play run needs none. Run the same day on Sonnet medium, about
+    eight minutes, output `~/Desktop/engine-2026-11-10/address-form-ios`:
+    checker with sources 0 errors 0 warnings 0 unverified, 8 plain
+    tests green, the build clean, and five evidence tests green in the
+    iPhone 18 Pro simulator, every gate rerun by the grader, the UI
+    tests included. The same three pieces as the Sonnet high run,
+    unasked, and the no-op default throws as ruled that afternoon, the
+    result not optional. One difference between the two runs: this one
+    made the save a synchronous `throws -> String` and wrote
+    `savedPath = try? save(address)`, noting that the `async` form
+    would have needed a held task. The owner asked for the code to be
+    read "for the purpose of improving skill clarity and precision".
+    Five sentences from it: a write that answers is a closure that
+    returns or throws, synchronous where the service answers at once
+    and `async` where it waits, the task never the reason (the agent's
+    derivation, not ruled); the block's spelling and the macro's
+    spelling of one value are no mismatch; with all three pieces
+    `AddressFormCore` is the hand-written screen and `AddressForm.Core`
+    the shell's generated twin; with several packages and an app the
+    map tree stands at the repo root, a directory per node, which both
+    address runs guessed; and in the CoreFlow skill, a UI-test bundle
+    beside a package links the library that holds `TestScenario`. The
+    agent read swift-core-flow's sources and hosted examples to set the
+    bundle up, beyond what the brief allowed, and said so.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
