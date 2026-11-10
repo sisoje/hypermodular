@@ -5,7 +5,10 @@ This repo defines the hypermodular method (Top-Down Development).
 `data-coupling/SKILL.md` for the code. This file is your working
 summary. What wins, in order: a ruling recorded in `TODO.md`, then
 the two skills, then this file, then the owner's articles the skills
-were distilled from. Flag a disagreement, never obey it. The skill's
+were distilled from. Flag a disagreement, never obey it. Any rule in
+either skill may be broken whenever breaking it saves time or is the
+more practical thing to do. Practicality outranks the rule. The break
+is said out loud, with the rule and the reason. The skill's
 `references/` hold the detail:
 `architecting.md` (new app or feature), `reverse-engineering.md`
 (legacy codebase), `notation.md` (the complete grammar and the

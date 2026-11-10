@@ -91,6 +91,11 @@ writes. When the question is how a node's Swift should look, go there.
    requirement can. That is why the log, not the structure, is the
    contract.
 
+Any rule in this skill, these three included, may be broken whenever
+breaking it saves time or is the more practical thing to do.
+Practicality outranks the rule. The one who breaks it says which rule
+and why, where it is broken.
+
 ## One law: depth 1, the cure for death by a thousand mocks
 
 Mock depth is the number of layers of internal behavior a test double

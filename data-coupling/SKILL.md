@@ -614,7 +614,11 @@ library's own skill, `skill/SKILL.md` in
 ## Do not
 
 The first group breaks the method. The second is how this code is
-written, and the reader is the writer, so it binds too.
+written, and the reader is the writer, so it binds too. Any rule in
+this skill, in this list or anywhere above it, may be broken whenever
+breaking it saves time or is the more practical thing to do.
+Practicality outranks the rule. The one who breaks it says which rule
+and why, where it is broken.
 
 - **A ViewModel, or any `@Observable` or `ObservableObject` owning a
   screen's state and actions.** A node is already pure logic. Pulling
@@ -695,9 +699,10 @@ The code, as it is written here:
   which exists only because the facts were fused. No state is impossible here. Every state is valid, and a
   combination the view does not show is a missing branch in `body`.
   Facts grouped today must be taken apart tomorrow, when one is needed
-  somewhere the others are not. A sort option or a sheet enum is not a
-  model. It is one fact with a closed set of values, and it stays in
-  the feature.
+  somewhere the others are not. An enum that names one choice from a
+  finite set is not a model. A sort option, which sheet is open, which
+  of a fixed selection of components to show, each is one fact, and it
+  stays in the feature. Such an enum can conform to `View` itself.
 - **Data-driving statically known content.** Three onboarding pages are
   three views, or an enum with an exhaustive `switch`, never a `[Page]`
   replayed through `ForEach` with `lastPage = 2`. What is fixed at

@@ -623,9 +623,10 @@
     state fluffy", "don't artificially couple data pieces together so
     tomorrow they are hard to decompose". One bullet in the code
     skill's list, beside "Grouping for grouping's sake", and one in
-    AGENTS. The agent's reading, not yet ruled: a feature-private sort
-    option or sheet enum is one fact with a closed set of values, not
-    a model, and stays. Open: no engine brief yet tempts the
+    AGENTS. Ruled the same day: an enum that names one choice from a
+    finite set, a sort option, a fixed selection of visual components,
+    is not a model and stays in the feature, and "enum can be
+    conformed to view directly if needed". Open: no engine brief yet tempts the
     load-state enum.
   - **F37, no task nobody holds.** Ruled by the owner 2026-11-10, a
     separate rule from F36 and not about objects. An unstructured
@@ -690,6 +691,16 @@
     "Worked example, screen first" in `shell-core.md`, core, then
     transformer, then shell, typechecked alone in the Swift 6 language
     mode, not run. One checklist line.
+  - **F40, any rule may be broken.** The owner, 2026-11-10: "all rules
+    can be broken if necessary", and, correcting the agent's first
+    wording "when the case needs it": "not only if case need it, any
+    rule ever may be broken if saves time or brings practicality in
+    entire skills". Practicality outranks the rule, in both skills.
+    The sentence is at the head of the code skill's "Do not", after
+    the three rules in the map skill, and in AGENTS. The agent added that the break
+    is said out loud, with the rule and the reason, so that a break is
+    a decision and not a miss. That half is the agent's and is not
+    ruled.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
