@@ -148,6 +148,10 @@ subgraph), no emoji, no status marks.
   it, apply the cut rules while walking, extract shared types and
   services into the coupling diagram, verify values are set at the root
   only. Present the map plus the findings.
+- **New app**: maps first, then evidence, then code laid out as
+  `data-coupling/references/app-structure.md` gives it, the layer, the
+  features, one package per dependency, the app targets with their
+  `Exports.swift`, the test host, and the UI-test bundle.
 - **New feature in a mapped repo**: add nodes and arrows to the map
   first, agree the diff, then build root-down, evidence declared before
   code.

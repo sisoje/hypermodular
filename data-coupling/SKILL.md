@@ -12,7 +12,8 @@ description: >
   converting or migrating a legacy codebase one view at a time;
   deciding where state lives; adding a service, capability, environment
   value, or @Entry; making a view testable or previewable; laying out
-  packages and modules; or whenever ViewModels, MVVM, @StateObject, TCA,
+  packages and modules; starting an app or adding a package, a target,
+  or a dependency to one; or whenever ViewModels, MVVM, @StateObject, TCA,
   reducers, DI containers, protocols for mocking, or .live/.preview
   statics come up. The hypermodular skill beside this one draws the
   maps. This skill writes the code the maps describe.
@@ -44,12 +45,14 @@ environment read being the case (F23).
   mechanics: the cut and the log as macros, and a hosted UI-test host
   that asserts the log.
 
-Five references hold the detail, one per job: `references/data-flow.md`
+Six references hold the detail, one per job: `references/data-flow.md`
 (the runtime model), `references/shell-core.md` (cutting a view),
 `references/testing.md` (the execution log and the test host),
 `references/modules.md` (the data coupling layer and the module graph),
 `references/converting.md` (a codebase that already exists, taken out
-of its ViewModels one node at a time).
+of its ViewModels one node at a time), `references/app-structure.md`
+(what goes where on disk: the packages, the targets, the project
+file).
 
 ## The rule
 
@@ -634,9 +637,10 @@ test. Data is the abstraction.
   dependency needs from a feature is either data, which moves into the
   layer, or logic, which stays in the feature behind the contract. A
   dependency exposes exactly one public thing, a `View` extension
-  named `inject` and its own name, `injectBackend(baseURL:)`,
+  named `inject` and the boundary it sets, `injectBackend(baseURL:)`,
   `injectHaptics()`, over an internal modifier that builds the live
-  value and sets it. What the root must supply is that function's
+  value and sets it. The package is named for how it answers, so two
+  packages can answer one boundary under one function name. What the root must supply is that function's
   parameters. The one integration test of the boundary lives in the
   package's own test target.
 - **A target picks its dependencies.** The app file names only the
@@ -648,7 +652,9 @@ test. Data is the abstraction.
   against fixtures is a choice of packages, with no line of the app's
   source changed. The app
   file imports no dependency by name. Each target has one small file
-  of `@_exported import` lines naming the packages it picked.
+  of `@_exported import` lines naming the packages it picked. The
+  tree, the manifests, and the project file are in
+  `references/app-structure.md`.
 - **The root sets live values inline, where it sets them.** One
   dependency per I/O framework the root wires, the framework imported
   in that package alone, each `inject` applied inline at `@main`. A modifier that reads a value

@@ -976,6 +976,27 @@
     The expenses app does not use the library, and the layer is the
     one package every dependency imports, so every dependency would
     build the macros.
+  - **F48, the layout in one reference.** The owner, 2026-11-10, asked
+    whether an app-structure skill is needed, then: "wrapup these
+    rules", "make app form example where save address is a special
+    dependency, it will have prod, write to file, and fixture to print
+    only". Not a skill. `data-coupling/references/app-structure.md` is
+    the code skill's sixth reference: the tree on disk, who sees whom,
+    a package manifest, a dependency package with its one `inject`
+    function, two answers to one contract, the shared `@main` file and
+    a target's `Exports.swift`, the xcodegen project file with two app
+    targets, the test host, and the UI-test bundle, the test side,
+    where a file goes, a checklist. One refinement of F47 came out of
+    writing it: the `inject` function is named for the boundary it
+    sets and the package for how it answers, since two packages that
+    answer one boundary must share the function's name, and a module
+    is never named as the contract's type. The address brief lost its
+    layout paragraph and points at the reference, as the owner asked
+    on 2026-11-09, "the skill, not the prompt, carries the layer". It
+    now asks for two save dependencies and two app targets from one
+    `@main` file. The project file in the reference joins the one the
+    iPhone run built and the two-target proof; the run that follows is
+    its first build as one piece.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

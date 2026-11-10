@@ -256,6 +256,9 @@ parameters, are interchangeable. One app target links the server's
 backend, another links fixtures, and both compile the same `@main`
 file.
 
+Where each of these sits on disk, its manifest, and the project file
+are in `app-structure.md`.
+
 ## The composition root
 
 Every app has one, `@main`, where the live values are set once. Keep it
