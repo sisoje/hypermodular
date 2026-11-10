@@ -682,6 +682,14 @@
     one sentence in the code skill's "Screen first". Not done: the
     CoreFlow skill and `scripts/engine-run-prompt-coreflow.md` were
     written under the old default and are not reread against this.
+  - **F36 to F39, the audit the owner asked for the same day.** Three
+    things said and not written, now in: a binding into one enum case
+    needs a case path, machinery that exists only because the facts
+    were fused (F36); screen first is building top-down inside one
+    node, in the skill's own text (F38); and the three pieces as code,
+    "Worked example, screen first" in `shell-core.md`, core, then
+    transformer, then shell, typechecked alone in the Swift 6 language
+    mode, not run. One checklist line.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

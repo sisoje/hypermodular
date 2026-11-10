@@ -301,7 +301,8 @@ is named `…Screen`, a reusable view by its role, `Row`, `Sheet`,
 
 **Screen first.** A core is modeled directly from the screen, the
 Figma frame or the manager's sentence, before anything that feeds it
-exists. One property per thing the screen shows or accepts, the one
+exists. This is building top-down inside one node, the contract before
+what fulfils it. One property per thing the screen shows or accepts, the one
 SwiftUI's own control asks for.
 
 | On the screen | Core property |
@@ -334,7 +335,8 @@ owns and wires. Where nothing is judged on a write there is no
 transformer. The screen's view owns no live wrapper, so it is a core
 as written and is never cut. The view above is a shell written by
 hand, or a `@Shell` where its writes are to log. That choice is made
-per view (`references/shell-core.md`, "When to split").
+per view (`references/shell-core.md`, "When to split"). The three
+pieces as code are "Worked example, screen first" in the same file.
 
 This is modeling one screen, not building a system. A SwiftUI screen
 is cheap to write, so nothing is saved by sharing one, and it is read
@@ -689,7 +691,8 @@ The code, as it is written here:
   represented. Loading, the error, and the result are three facts,
   `isLoading`, `error`, `books`. Fused, none can be handed down alone,
   and a refresh that keeps the old list on screen while it loads has
-  no case. No state is impossible here. Every state is valid, and a
+  no case. A binding into one case takes extra machinery, a case path,
+  which exists only because the facts were fused. No state is impossible here. Every state is valid, and a
   combination the view does not show is a missing branch in `body`.
   Facts grouped today must be taken apart tomorrow, when one is needed
   somewhere the others are not. A sort option or a sheet enum is not a

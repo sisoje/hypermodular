@@ -206,6 +206,114 @@ diagnoses anything else. They are the view's own source of truth, never
 something a caller supplies. A plain `private` field with no wrapper is
 a compile error, because pure data flow has no room for opaque state.
 
+## Worked example, screen first
+
+A new screen starts from the design, not from a view to cut. The
+address form has two fields, an error label under each, and a Save
+button. Three pieces, written in this order.
+
+```swift
+struct Address { var street: String; var city: String }
+
+// 1. The core, read off the screen. Two fields, two error labels, one button.
+struct AddressFormCore: View {
+    @Binding var street: String
+    let streetError: String?
+    @Binding var city: String
+    let cityError: String?
+    let onSave: () -> Void
+
+    // The design: "Save is disabled while an error shows."
+    var canSave: Bool { streetError == nil && cityError == nil }
+
+    var body: some View {
+        Form {
+            TextField("Street", text: $street)
+            if let streetError { Text(streetError).foregroundStyle(.red) }
+            TextField("City", text: $city)
+            if let cityError { Text(cityError).foregroundStyle(.red) }
+            Button("Save", action: onSave).disabled(!canSave)
+        }
+    }
+}
+
+// 2. The transformer, where a write is judged. Raw bindings in,
+//    intercepted bindings out. No state.
+struct AddressFields {
+    @Binding var street: String
+    @Binding var streetError: String?
+    @Binding var city: String
+    @Binding var cityError: String?
+
+    var streetField: Binding<String> {
+        Binding(get: { street }, set: { text in
+            guard text != street else { return }
+            street = text
+            let error = Self.required(text)
+            if error != streetError { streetError = error }
+        })
+    }
+
+    var cityField: Binding<String> {
+        Binding(get: { city }, set: { text in
+            guard text != city else { return }
+            city = text
+            let error = Self.required(text)
+            if error != cityError { cityError = error }
+        })
+    }
+
+    func judge() -> Bool {
+        streetError = Self.required(street)
+        cityError = Self.required(city)
+        return streetError == nil && cityError == nil
+    }
+
+    static func required(_ text: String) -> String? {
+        text.trimmingCharacters(in: .whitespaces).isEmpty ? "Required" : nil
+    }
+}
+
+// 3. The shell. It owns the state and wires it. It decides nothing.
+struct AddressForm: View {
+    @State private var street = ""
+    @State private var streetError: String?
+    @State private var city = ""
+    @State private var cityError: String?
+    let onSave: (Address) -> Void
+
+    var body: some View {
+        let fields = AddressFields(
+            street: $street, streetError: $streetError,
+            city: $city, cityError: $cityError)
+        AddressFormCore(
+            street: fields.streetField, streetError: streetError,
+            city: fields.cityField, cityError: cityError,
+            onSave: {
+                if fields.judge() { onSave(Address(street: street, city: city)) }
+            })
+    }
+}
+
+#Preview("An error, no typing") {
+    AddressFormCore(
+        street: .constant(""), streetError: "Required",
+        city: .constant("Belgrade"), cityError: nil,
+        onSave: {})
+}
+```
+
+The core's initializer is the screen's inventory, and the preview
+constructs a state no typing would reach in one step. The design's
+sentence about Save is a computed value in the core. The rule, what
+makes a street wrong, is in the transformer, and a plain test writes
+through `streetField` over local variables and reads `streetError`
+back. A write of the value already held is dropped before the rule
+runs, and an error is written only when it changes. The shell holds
+four loose `@State`s and assembles the `Address` only when Save hands
+it on. Where the shell's own writes are to log, it carries `@Shell`
+("When to split" below).
+
 ## What a core consumes: three shapes of I/O
 
 A closure of any signature is a behavior. The core calls it and does
@@ -438,3 +546,6 @@ logged as `(name, value)`.
 - [ ] The shell's `body` constructs the core and terminates its
       boundaries. The real `body` exists once.
 - [ ] Previews are on the core and touch no real storage.
+- [ ] On a new screen, every core property is a thing on the screen,
+      and two screenshots that differ differ in an init argument. No
+      model the feature invented, no `Task` nobody holds.
