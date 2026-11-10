@@ -220,9 +220,9 @@ environment at runtime.
   it needs. Its root modifier constructs the live contract inline. Its logic
   is plain functions taking those dependencies as parameters.
 - **The app** is a pure composition shell: `@main`, the model container,
-  the chain of modifiers that set the live values. The single public
-  view of the feature package is
-  its root. Everything else in it is internal.
+  the chain of modifiers that set the live values. The feature package
+  exports one public view, the top node of its own tree, which the
+  app's root constructs. Everything else in the package is internal.
 
 The modifiers need not be packages. Each is already a module in
 everything but name, one file, one system framework, one contract, and

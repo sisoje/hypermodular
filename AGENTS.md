@@ -29,8 +29,7 @@ authority on how the code looks. There is no build step. The
 deliverable is the doctrine. The one piece of code is
 `hypermodular/scripts/mapcheck.py`, the registry check, the maps alone
 and with `--sources` the maps against the Swift, where it also warns
-on a `Task` nobody holds and on an object that owns state
-(`scripts/test.sh` runs its fixtures).
+on a `Task` nobody holds (`scripts/test.sh` runs its fixtures).
 
 ## The three rules (follow them in any mapped repo)
 

@@ -774,30 +774,78 @@
     closure; each conversion moves one contract up to the root; a
     screen nobody is changing is left alone (F40). Not tried on a cold
     agent.
-  - **F44, the checker sees two habits.** The owner, 2026-11-10, asked
-    whether the checker should enforce the day's rules: "do as you
-    think is best". The gates of an engine run were the checker, the
-    build, and the arrays, and all three pass with a `Task` in a button
-    or a ViewModel in the tree. With `--sources` the checker now warns
-    on a `Task` expression that is not assigned, returned, or awaited
-    (F37), and on an object that owns state: an `ObservableObject`, a
-    property under `@StateObject`, `@ObservedObject`, or
-    `@EnvironmentObject`, an `@Observable` class with a method.
-    Warnings and not errors, since F40 lets a rule be broken. The
+  - **F44, the checker sees a `Task` nobody holds.** The owner,
+    2026-11-10, asked whether the checker should enforce the day's
+    rules: "do as you think is best". The gates of an engine run were
+    the checker, the build, and the arrays, and all three pass with a
+    `Task` in a button. With `--sources` the checker now warns on a
+    `Task` expression that is not assigned, returned, or awaited (F37).
+    A warning and not an error, since F40 lets a rule be broken. The
     invented model (F36) is not checked: text cannot tell a fused enum
     from a finite choice, so it stays a review item. Tried on real
     code before it landed: the conversion example's "before" file
-    raises all three and its "after" none; the Desktop address app
-    raises none; swift-core-flow's own hosted suite raises two, a
-    `Task` nobody holds in `FlowUpThrowsScenario.swift` and in
-    `TestActionScenario.swift`, both real. The clean fixture's
-    `SaveButton` stub had the same `Task` in a button and now holds it
-    in a slot, its block declaring the assignment; the broken fixture
-    plants four habit warnings. `notation.md`, the fixtures' README,
-    AGENTS, and two bullets of the code skill say so. The four engine
+    raises it and its "after" does not; the Desktop address app raises
+    none; swift-core-flow's own hosted suite raises two, in
+    `FlowUpThrowsScenario.swift` and `TestActionScenario.swift`, both
+    real. The clean fixture's `SaveButton` stub had the same `Task` in
+    a button and now holds it in a slot, its block declaring the
+    assignment; the broken fixture plants one. The agent first added a
+    second warning, on an object that owns state, and listed it in
+    every summary. The owner: "we dont use observable object why you
+    mention that all day". Removed the same day, with its fixture and
+    its sentences; an app the method builds has none, and the only
+    file that speaks of one is the legacy `converting.md`.
+    `notation.md`, the fixtures' README, AGENTS, and one bullet of the
+    code skill say what is left. The four engine
     briefs now ask the run to report every rule it broke on purpose and
     every warning it left standing, each with its reason, so a grader
     can tell a chosen break from a miss.
+  - **F45, two cold runs on the day's rules.** Sonnet high through the
+    Agent tool, 2026-11-10, the briefs filled in under
+    `~/Desktop/engine-2026-11-10/` with the prompts saved beside the
+    outputs. Address form, about 22 minutes: checker with sources 0
+    errors 0 warnings 0 unverified, 15 plain tests green, `xcodebuild`
+    succeeded, all three rerun by the agent that graded. The brief no
+    longer dictates the cut, and the run chose the three pieces
+    unasked: `AddressFormCore` written by hand, "read off the screen"
+    in its own comment, a hand-written `AddressForm` above it carrying
+    `@Shell`, eight loose `@State`s, the `Address` assembled on Save,
+    the save a `Task` held in an `@UnstructuredTask` slot with a
+    capture list and a binding write, no `Task` in the root's closure,
+    the core previewed from literals and the shells through scenarios.
+    It drove both hosted scenarios through macOS accessibility and
+    reports all five arrays matching; the grader read one block
+    against its scenario and ran none. Garden, about 24 minutes, the
+    brief still dictating `@Shell`: 0 errors, a clean build, the arrays
+    derived and not observed. The forecast is two loose facts, `low`
+    and `isOffline`, no phase enum; the timed undo is a held task that
+    awaits the delay and deletes, Undo writing `nil`; the forecast is
+    `.task(id:)` on the city and the reminder taps a `.task` over a
+    stream; nothing starts a `Task` in a root closure. Both runs
+    listed the rules they broke on purpose, as the briefs now ask.
+    Sentences made from them the same day: the "Save is disabled"
+    line in "Screen first" is an example of a design and says so,
+    since the address run read it as a rule and reported breaking it;
+    with a hand-written core under a `@Shell` shell the scenario is
+    owed to the shell's generated `Core` (the agent's derivation, not
+    ruled); a delete with undo is the held slot; the picked photo's
+    load is I/O behind a contract, a clause cut on 2026-11-09 and put
+    back because Garden put `loadTransferable` in furniture and said
+    no rule placed it; a `QueryView` takes the `· @Query` line; the
+    feature package's one public view is the top node of its own tree.
+    And the checker: a root modifier that reads one cylinder to derive
+    another no longer warns, the one warning Garden left standing.
+    Open, for the owner: what a no-op default returns for a closure
+    that both throws and returns a value, where `modules.md` forced
+    `String?` and gave the contract two ways to fail; whether a
+    listener inside the feature that answers a notification still
+    calls `navService`; how the root's own `@AppStorage` is written on
+    its label; what a framework delegate does with an event that
+    arrives before any node subscribes. Material for the CoreFlow
+    skill, not applied because the grader did not verify it: without a
+    UI-test bundle the address run read the log on macOS from the log
+    element's `AXDescription` (names) and `AXValue` (values), and the
+    Garden run could not read it at all.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

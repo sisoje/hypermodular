@@ -20,10 +20,8 @@ evidence target; the broken ones plant a call with no label line, an
 evidence target that is no stored property, and a view on no map that
 reads a cylinder, and a presence-condition arrow whose label names
 nothing the node holds; with the two planted stale labels that is
-eight code errors and one warning. Four more warnings are planted for
-the habits no map can show: a `Task` nobody holds, an object behind
-`@StateObject`, an `ObservableObject`, and an `@Observable` class with
-a method.
+eight code errors and one warning. One more warning is planted for a
+habit no map can show, a `Task` nobody holds.
 
 `sh scripts/test.sh` asserts the clean fixture has zero errors and the
 broken one reports exactly the planted list, nothing more, with and

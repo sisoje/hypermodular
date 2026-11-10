@@ -452,7 +452,9 @@ swift-core-flow's `@UnstructuredTask`: it holds the task in a
 view-owned slot that cancels the previous task on replacement and the
 live one on teardown, and logs every assignment like `@TestState`.
 Writing `nil` cancels on demand, and `save != nil` is the fact that
-work is in progress. The assignment is a write the node makes at a
+work is in progress. A delete the user may undo for a few seconds is
+the same slot. The task awaits the delay, a contract's `async` closure,
+then calls the delete, and Undo writes `nil`. The assignment is a write the node makes at a
 moment the node chooses, so the node controls the work and a test
 reads it. A second delete replaces the first save, and the new one
 carries the whole list. Use a capture list in the task closure.
@@ -509,11 +511,14 @@ own.
     and a rule sits in a transformer between them.
   - **All three together** when the shell itself is to be tested. The
     core is written by hand from the screen, the shell is written by
-    hand above it, and that shell carries `@Shell`. The core's scenario
-    proves the screen from literals. The macro's cut of the shell
-    proves the real shell, its state writes, its wiring into the core,
-    and its contract calls, in one log. A hand-written shell without
-    the macro is proven only through its contracts.
+    hand above it, and that shell carries `@Shell`. The macro's cut of
+    the shell proves the real shell, its state writes, its wiring into
+    the core, and its contract calls, in one log. The evidence blocks
+    are proven on the shell's generated `Core`, so the scenario is owed
+    to that one. The hand-written core is constructed from literals in
+    its preview, and gets a scenario of its own only when a block is
+    declared on it. A hand-written shell without the macro is proven
+    only through its contracts.
   - Without the library the cut is by hand.
 
 ## Naming and layout

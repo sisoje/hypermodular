@@ -292,7 +292,10 @@ against data at the boundary. Three rules cut it:
    values. `@Shell` copies it into the generated core as a test wrapper
    instead, live when hosted, defaulted otherwise. A system UI that runs
    out of process, the photo picker, the share sheet, is machinery too.
-   The shell owns it and hands the core its result as a value. The
+   The shell owns it and hands the core its result as a value. Loading
+   what the user picked, the photo's bytes, is I/O. It is an `async`
+   closure on a contract the node calls, never a call inside furniture
+   that no label shows. The
    environment is not machinery. A core reads it as it reads a binding.
    Apple's sealed actions are the by-hand exception in the table below.
 
@@ -332,11 +335,14 @@ an init argument, so nothing is hidden and every state of the screen
 is a construction from literals.
 
 What the design says about the screen is the core's logic, and it is
-written in the core as it was said. "If there is an error, the field
-turns red and Save is disabled" is a branch on `streetError` and a
-`canSave` computed from the errors, and a scenario that hands in an
-error proves it. Whether there is an error is decided above, and the
-core never knows how.
+written in the core as it was said. Where a design says "if there is
+an error, the field turns red and Save is disabled", that is a branch
+on `streetError` and a `canSave` computed from the errors, and a
+scenario that hands in an error proves it. Where another design leaves
+Save enabled and has it do nothing, the core has no `canSave`. The
+sentence is an example of a design, never a rule of the method, and
+the core follows the design it was given. Whether there is an error is
+decided above, and the core never knows how.
 
 Then each property gets one source in the view above. A `let` comes
 from a parent's value, a `@Query`, or state. A `@Binding` comes from
@@ -453,7 +459,12 @@ either way.
 - **A UI test here is a unit test, the unit being one core.** A second,
   test-only `@main` renders one scenario named at launch and nothing
   else of the app. One scenario per core, its givens as parameters, and
-  the same scenario is the preview and the launch target. A core can
+  the same scenario is the preview and the launch target. Where a
+  hand-written core sits under a shell that carries `@Shell`, the
+  scenario is owed to the shell's generated `Core`, the one the
+  evidence blocks are proven on, and it drives the hand-written core
+  through it. The hand-written core gets a scenario of its own only
+  when a block is declared on it. A core can
   also be previewed directly, constructed with literals. A view that
   owns state or reads a live wrapper, a shell, is previewed only
   through a scenario. A given that
@@ -655,9 +666,7 @@ and why, where it is broken.
   Erase the object into closures: networking as an async function, a
   validator as a value computed from the state, or as a plain closure
   when the app supplies the rule. Where each part of an existing one
-  goes is the table in `references/converting.md`. `mapcheck.py
-  --sources` warns on an `ObservableObject`, on an object wrapper, and
-  on an `@Observable` class with a method.
+  goes is the table in `references/converting.md`.
 - **A dependency whose live value can be made with no inputs**, a
   formatter, a calendar, a pure calculation. It is a constant. Use it
   directly, never through the environment. I/O with no inputs, a file
