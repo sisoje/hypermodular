@@ -338,8 +338,10 @@ contract's no-op default is all three shapes stubbed, and a test
 overrides every closure the node's label names.
 
 `async` is the I/O marker for what the core awaits. A black hole is
-synchronous because the core does not await it; the root's closure may
-start its own task. Effects belong in the type signature. A closure
+synchronous because the core does not await it. The root's closure
+starts no `Task` for it, since creation is not lifecycle; work that is
+asynchronous is an `async` closure, and the node that calls it owns the
+task. Effects belong in the type signature. A closure
 typed `() async throws -> Void` reads as "async effect that can fail".
 See `async` or `throws` in a signature and you are looking at a
 boundary that belongs behind a contract, never inline in view logic.
