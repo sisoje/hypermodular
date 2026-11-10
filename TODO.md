@@ -897,6 +897,18 @@
     dictates the signature. The old `swiftui-mv-architecture` skill's
     link was moved out of `~/.agents/skills` into its `.trash`, on the
     owner's word, so Codex no longer loads it beside this one.
+  - **F46, most types get a file of their own.** The owner,
+    2026-11-10, reading the iPhone address run, where the hand-written
+    `AddressFormCore` sat in its shell's file: "deserves own file",
+    "tell him most of types deserve own file". The cause was in the
+    reference. The code skill said "the shell and the core are two
+    types in two files", and `shell-core.md` said they "live in the
+    same file until it grows past comfortable scrolling"; the run
+    followed the second. That sentence is replaced, a bullet in the
+    code skill's second do-not list states the rule with its one
+    exception, small private furniture of a single view, and the
+    worked examples in `shell-core.md` and `converting.md` name a file
+    for each piece.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

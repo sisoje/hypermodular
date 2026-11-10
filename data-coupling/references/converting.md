@@ -139,7 +139,7 @@ computed property is in the core, the method is a task the shell holds,
 and the service is behind a contract the root sets.
 
 ```swift
-// The layer. The node that calls it dictated the signature.
+// Backend.swift, in the layer. The node that calls it dictated the signature.
 struct Backend {
     var signup: (_ email: String, _ password: String) async throws -> Void = { _, _ in }
 }
@@ -148,7 +148,7 @@ extension EnvironmentValues {
     @Entry var backend = Backend()
 }
 
-// The core, read off the screen.
+// SignupCore.swift. The core, read off the screen.
 struct SignupCore: View {
     @Binding var email: String
     @Binding var password: String
@@ -168,7 +168,7 @@ struct SignupCore: View {
     }
 }
 
-// The shell. Loose state, the contract, and the task it holds.
+// Signup.swift. The shell. Loose state, the contract, and the task it holds.
 struct Signup: View {
     @Environment(\.backend) private var backend: Backend
     @State private var email = ""

@@ -750,6 +750,12 @@ The code, as it is written here:
   finite set is not a model. A sort option, which sheet is open, which
   of a fixed selection of components to show, each is one fact, and it
   stays in the feature. Such an enum can conform to `View` itself.
+- **Several types in one file.** Most types get a file of their own,
+  named for the type: a core, a shell, a transformer, a scenario, a
+  contract, a model, a root modifier. A hand-written core never sits
+  in its shell's file. A type is found by the name of its file. What
+  stays beside its owner is small private furniture that one view
+  alone uses, a row, a label.
 - **Data-driving statically known content.** Three onboarding pages are
   three views, or an enum with an exhaustive `switch`, never a `[Page]`
   replayed through `ForEach` with `lastPage = 2`. What is fixed at

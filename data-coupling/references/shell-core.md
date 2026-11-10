@@ -218,6 +218,7 @@ button. Three pieces, written in this order.
 ```swift
 struct Address { var street: String; var city: String }
 
+// AddressFormCore.swift
 // 1. The core, read off the screen. Two fields, two error labels, one button.
 struct AddressFormCore: View {
     @Binding var street: String
@@ -240,6 +241,7 @@ struct AddressFormCore: View {
     }
 }
 
+// AddressFields.swift
 // 2. The transformer, where a write is judged. Raw bindings in,
 //    intercepted bindings out. No state.
 struct AddressFields {
@@ -277,6 +279,7 @@ struct AddressFields {
     }
 }
 
+// AddressForm.swift
 // 3. The shell. It owns the state and wires it. It decides nothing.
 struct AddressForm: View {
     @State private var street = ""
@@ -538,8 +541,9 @@ own.
   A `Host` and `Core` pair of files is the same split with the shell
   named for its job.
 - A hand-written core is `internal`, not `private`. Tests and previews
-  construct it directly. Shell and core read together, so they live in
-  the same file until it grows past comfortable scrolling.
+  construct it directly. The shell and the core are two types in two
+  files, `BookList.swift` and `BookListCore.swift`, and the transformer
+  is a third. Most types get a file of their own, named for the type.
 - A core's preview is a construction of the core with literals,
   written directly in `#Preview`. A view with state or a live wrapper,
   a shell, is previewed through a scenario and never bare. A bare
