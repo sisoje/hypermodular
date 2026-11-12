@@ -459,7 +459,9 @@ arguments in order, each written as the criterion names it:
 `isLoading true`, `onDelete Dune` (a `Book`, by its title), `token nil`,
 `load`, `dismiss`, `setStarred Dune true`. The name is `setStarred`, not
 `favorites.setStarred`. That is the hand-written logger's spelling.
-Under swift-core-flow the log is two arrays, names and values. The
+Under swift-core-flow no logger is written by hand. A boundary's
+closure is a `@TestAction`, a contract's closure included, and the
+log is two arrays, names and values. The
 names are the contract, asserted whole and in order. A value is
 asserted as the test's author sees fit, an optional unwrapped, a model
 by its title, a class by one field. The evidence block is the same

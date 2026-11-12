@@ -312,7 +312,11 @@ a view-layer observer replaying history.
 - **`@TestAction var save: (Item) -> Void = { _ in }`** makes reading
   the property the logged action. Each call logs an arity-shaped
   payload, then forwards, with `return`, `try`, and `await` carried
-  through.
+  through. A contract's closure is declared the same way, with the
+  stub's answer as its default, and handed to the contract,
+  `AddressService(save: save)`. The wrapper exists so that no scenario
+  writes a logger by hand, and no payload is formatted to make the log
+  read like the block.
 - **`@TestFocusState`** keeps native focus behavior and logs
   programmatic writes. `@TestEnvironment(\.dismiss)` logs each call
   and runs the real action. That is the "did it really dismiss" test

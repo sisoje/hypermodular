@@ -1186,6 +1186,23 @@
     gone too, as in "mermaid id = node name". No fact was dropped. A
     script did the rewording and every changed line was read after it,
     about 180, with a dozen fixed by hand.
+  - **F57, a contract's closure is a `@TestAction`.** The owner,
+    2026-11-12, on a scenario from the day's run that set a contract
+    with a closure calling `log("save", ...)` over a string it built
+    from the address's four fields: "in my articles and examples and
+    core flow i made test action to avoid testlog usage manually, this
+    is garbage". The cause was the CoreFlow skill itself. Its one
+    scenario example logged `deleteBook` by hand with `@TestLog`, and
+    its text sent a scenario to `@TestLog` whenever "a payload needs
+    the spelling the criterion uses". Every address run but one
+    followed that. The example now declares
+    `@TestAction private var deleteBook`, the text says a contract's
+    closure is a `@TestAction` with the stub's answer as its default,
+    handed to the contract, and the hand-written form is shown as what
+    a scenario does not hold. A different answer is another scenario,
+    since a default cannot read a parameter. `@TestLog` is named as
+    the seam under the wrappers. The code skill's test section and
+    `testing.md` say the same.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
