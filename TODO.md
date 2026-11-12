@@ -1223,7 +1223,12 @@
     reference: the layer's two manifest lines for the library, that
     its types take `@Flowable`, and that the features' top node is
     `public` with a `public init()` written out, which six runs in a
-    row had to work out.
+    row had to work out. And into the xcode-project skill's script,
+    one line, `ALWAYS_SEARCH_USER_PATHS NO`: the run reported that
+    every build warned about the traditional header map. Checked on a
+    copy of the run before it went in, one warning without the line
+    and none with it, the app building, the seven evidence tests
+    passing, and the script still regenerating the same bytes.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

@@ -210,7 +210,8 @@ cd "$(dirname "$0")"
 rm -rf AddressForm.xcodeproj
 xcrun xcodeproj init AddressForm.xcodeproj
 # project settings: SDKROOT iphoneos, IPHONEOS_DEPLOYMENT_TARGET 17.0,
-# SWIFT_VERSION 6.0, CODE_SIGNING_ALLOWED NO, the bundle identifier
+# SWIFT_VERSION 6.0, CODE_SIGNING_ALLOWED NO, ALWAYS_SEARCH_USER_PATHS NO,
+# the bundle identifier
 
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
 xcrun xcodeproj pkg add-local ../Packages/Features

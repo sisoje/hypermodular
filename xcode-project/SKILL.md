@@ -63,6 +63,7 @@ xcrun xcodeproj setting set IPHONEOS_DEPLOYMENT_TARGET 17.0
 xcrun xcodeproj setting set TARGETED_DEVICE_FAMILY 1
 xcrun xcodeproj setting set SWIFT_VERSION 6.0
 xcrun xcodeproj setting set CODE_SIGNING_ALLOWED NO
+xcrun xcodeproj setting set ALWAYS_SEARCH_USER_PATHS NO
 xcrun xcodeproj setting set PRODUCT_BUNDLE_IDENTIFIER 'dev.addressform.$(TARGET_NAME)'
 
 # The packages, each a path relative to this folder. The last is the
@@ -155,7 +156,10 @@ Product types are short names: `application`, `framework`,
 - **A new target has two settings and no more.** `PRODUCT_NAME` is
   `$(TARGET_NAME)`, and `GENERATE_INFOPLIST_FILE` is `YES` for an
   application, a framework, a bundle, and a test bundle. Everything
-  else is the script's to set.
+  else is the script's to set. A new project has none of the settings
+  Xcode's own templates add, so the script sets
+  `ALWAYS_SEARCH_USER_PATHS` to `NO`. Without it every build warns
+  that the traditional header map is no longer supported.
 - **A synchronized folder is named for its directory.** In
   `group add NAME --filesystem-path DIR`, `NAME` has to equal the
   basename of `DIR`, or the command is refused. A relative `DIR` is
