@@ -1324,6 +1324,20 @@
     `Settings`, which F59 found does not compile on the Mac. The
     shape was read from the owner's expenses app, a layer struct of
     bindings set by one modifier that owns every key.
+  - **F61, `Maps/` is the one placement.** The owner, 2026-11-12, on
+    the map changes: "my ask was to have entire app possible as
+    mermaid... but also separate md per feature per flow", then "ok do
+    whats best". The skill had two placements, beside the code when
+    the sources were flat and under `Maps/` when the code was packages
+    and an app, and `AGENTS.md` still gave "beside each mapped subtree"
+    as the default. Two placements is one more decision for an agent,
+    and the method's output is packages and an app. Now one rule:
+    `APP-MAP.md` at the repo root, every node's `MAP.md` under
+    `Maps/`, a directory per node, each child's inside its parent's,
+    the top node's parent link `(../../APP-MAP.md)`. The fixtures
+    moved under `Maps/` with their links, the test's paths followed,
+    and `architecting.md`, `reverse-engineering.md`, and the two long
+    briefs say the same.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

@@ -43,7 +43,7 @@ something to draw around.
 ## Write the maps
 
 Depth-1 blocks with identity headers, `APP-MAP.md` at the root, a
-`MAP.md` beside every node with children. Run `scripts/mapcheck.py`
+`MAP.md` under `Maps/` for every node with children. Run `scripts/mapcheck.py`
 before presenting. A map that does not reconstruct is not finished.
 
 **Evidence is not reverse-engineered.** Draw an evidence block only

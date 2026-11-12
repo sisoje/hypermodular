@@ -29,8 +29,9 @@ holds.
 ## The order of work
 
 1. **Draw the structure.** `APP-MAP.md` with the root tree, the
-   dependency column, the coupling diagram. A `MAP.md` beside every
-   node that has children. Every node carries its full label. Every
+   dependency column, the coupling diagram. A `MAP.md` under `Maps/`
+   for every node that has children, each child's directory inside its
+   parent's. Every node carries its full label. Every
    block declares its place. Unbuilt leaves are finished design. A leaf
    with no insides is mapped, reachable, and empty, and that is
    correct.

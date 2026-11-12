@@ -1,7 +1,7 @@
 ## Evidence
 
 ```mermaid
-%% Evidence: FocusField · Parent: Unmounted (../APP-MAP.md)
+%% Evidence: FocusField · Parent: Unmounted (../../APP-MAP.md)
 %% Given: settings.toggleCount 0 · unfocused
 sequenceDiagram
     User->>FocusField: tap focusTextField

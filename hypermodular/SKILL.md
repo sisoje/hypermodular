@@ -20,21 +20,17 @@ description: >
 TDD means Top-Down Development. The app is modeled as a tree of
 behavior before it is built. Development flows from the root toward the
 leaves. Each node's evidence is declared before its code. The map is
-Mermaid in markdown (`APP-MAP.md` at the repo root, `MAP.md` beside each
-mapped subtree), so it renders in every GitHub or GitLab PR, always
-visible and always diffable. The map tree may stand apart from the
-source tree, one directory per node, which is where a leaf's
-evidence-only `MAP.md` sits when the sources are flat. Where the code
-is several packages and an app, the maps do not sit beside the code.
-`APP-MAP.md` stays at the repo root and every node's `MAP.md` is under
-one folder there, `Maps/`, a directory per node named for the node,
-each child's inside its parent's. The top node's parent link is then
-`(../../APP-MAP.md)`. Nothing depends on where a map file sits. The
-checker matches a node to its Swift type by name, and one map tree
-spans the app target, the features, and the dependency packages, so
-it has no single place in the code to sit beside. A `MAP.md`
-inside a Swift package's `Sources/` is listed in the target's
-`exclude`.
+Mermaid in markdown, so it renders in every GitHub or GitLab PR, always
+visible and always diffable. `APP-MAP.md` is at the repo root. Every
+node's `MAP.md` is under one folder there, `Maps/`, a directory per
+node named for the node, each child's inside its parent's. The top
+node's parent link is `(../../APP-MAP.md)` and a child's is
+`(../MAP.md)`. The maps do not sit beside the code. Nothing depends on
+where a map file sits, since the checker matches a node to its Swift
+type by name, and one map tree spans the app target, the features, and
+the dependency packages, so it has no single place in the code to sit
+beside. A `MAP.md` left inside a Swift package's `Sources/` is listed
+in the target's `exclude`.
 
 The map is behavioral, not an inventory. It shows where decisions live
 and what they ask of the world, nothing else. A node's whole observable

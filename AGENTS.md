@@ -22,8 +22,8 @@ and a third small skill, `xcode-project/`, for the one tool the engine
 needs that agents do not know, Apple's `xcrun xcodeproj`, with which a
 `generate.sh` writes an app's Xcode project.
 `hypermodular/` models apps as depth-1
-Mermaid maps (`APP-MAP.md` at a repo root, `MAP.md` beside each mapped
-subtree). The maps are the architecture doc, the agent work fence, and
+Mermaid maps (`APP-MAP.md` at the repo root, one directory per node
+under `Maps/`). The maps are the architecture doc, the agent work fence, and
 the review surface, all at once. `data-coupling/` is the code side: how
 a SwiftUI node is written, cut into shell and core, tested by its
 execution log, and how an app's modules meet through one data layer.
