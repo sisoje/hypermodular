@@ -44,7 +44,7 @@ folder under `Packages/`, and every dependency is a folder under
 | Module | Depends on | Its public surface |
 |---|---|---|
 | `DataCoupling` | swift-core-flow, which it re-exports, and nothing of yours | models, values, enums, contracts with their `@Entry` |
-| `Features` | `DataCoupling`, and a model-free presentation package if there is one | the top node of its tree, and `TestScenario` |
+| `Features` | `DataCoupling`, and a model-free presentation package if there is one | the top node of its tree, `public` with a `public init()` written out, and `TestScenario` |
 | a dependency | `DataCoupling`, platform frameworks, the transport or SDK library it wraps | one `inject` view modifier |
 | the app target | `Features` and every dependency | nothing |
 | the test host | `Features`, `CoreFlowUITestHost` | nothing |
@@ -105,7 +105,19 @@ let package = Package(
 ```
 
 `DataCoupling` lists swift-core-flow and nothing else. `Features` lists
-`DataCoupling` and has a `FeaturesTests` target.
+`DataCoupling` and has a `FeaturesTests` target. The layer's two lines
+for the library are these, with the path of the checkout, or the
+package's URL and a version in its place.
+
+```swift
+dependencies: [.package(path: "../../../CoreFlow")],
+// in the target:
+dependencies: [.product(name: "CoreFlow", package: "CoreFlow")],
+```
+
+With the library re-exported, the layer's models and contracts take
+`@Flowable`, which writes the public memberwise initializer a type in
+a package needs.
 
 ## A dependency package
 

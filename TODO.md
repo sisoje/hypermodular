@@ -1205,7 +1205,25 @@
     a scenario does not hold. A different answer is another scenario,
     since a default cannot read a parameter. `@TestLog` is named as
     the seam under the wrappers. The code skill's test section and
-    `testing.md` say the same.
+    `testing.md` say the same. Run cold the next morning, 2026-11-13,
+    Sonnet xhigh on the short brief, eighteen minutes, output
+    `~/Desktop/address-form-clean`: both scenarios declare the
+    contract's closure as `@TestAction` and hand it over, the failing
+    save is a second scenario with its own default, and no `log(...)`
+    call is written anywhere. Every gate green and rerun by the
+    grader, the checker at 0 errors 0 warnings 0 unverified, four
+    plain tests, two integration tests, the script regenerating the
+    same bytes, the app build, seven evidence tests in the simulator.
+    It is also the first run after the strong words went (F56), and
+    the first whose layer takes `@Flowable` through the re-export. It
+    drew two nodes. It broke two rules and said so: it built the nodes
+    in one batch, and it launched the shipped app once from a
+    throwaway test, because no check the skills name proves the root
+    applies the `inject` chain. From its list, into the layout
+    reference: the layer's two manifest lines for the library, that
+    its types take `@Flowable`, and that the features' top node is
+    `public` with a `public init()` written out, which six runs in a
+    row had to work out.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
