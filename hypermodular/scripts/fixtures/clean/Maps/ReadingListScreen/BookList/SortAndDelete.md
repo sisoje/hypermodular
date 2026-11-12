@@ -1,5 +1,3 @@
-## Evidence
-
 ```mermaid
 %% Evidence: BookList · Parent: ReadingListScreen (../MAP.md)
 %% Given: @Query [Dune, Anathem] · settings.sortDescending false

@@ -1360,6 +1360,23 @@
     mutates, and "logic" names nothing precise. "Pure logic" for a
     calculation with no effects stays in the references, where it
     means a pure function.
+  - **F63, a flow is a file of its own.** The owner, 2026-11-12: "my
+    ask was to have entire app possible as mermaid... but also separate
+    md per feature per flow", then "ok do whats best". The whole app
+    was F52 and the file per feature was F51. A flow in the method is
+    an evidence block, one per acceptance criterion, and those sat
+    inside the node's `MAP.md` under `## Evidence`. Now each block is
+    a flow file in the node's directory under `Maps/`, beside its
+    `MAP.md`, named for the criterion, `Maps/Search/Offline.md`,
+    holding that one block and nothing else, with the parent link its
+    node's `MAP.md` carries. A leaf's directory holds flow files and
+    no `MAP.md`. The checker reads every `.md` under `Maps/` besides
+    the `MAP.md` files and warns on an evidence block left inside a
+    `MAP.md`. The fixtures' four evidence blocks are flow files now,
+    the test's paths followed, and the code skill's tree, the mapping
+    skill, `notation.md`, `architecting.md`, `AGENTS.md`, and the two
+    long briefs say the same. A user journey across several nodes
+    gets no hand-written file, by the depth-1 law.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

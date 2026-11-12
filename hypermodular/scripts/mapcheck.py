@@ -2,7 +2,7 @@
 """mapcheck — the registry check (F11): the maps alone, and with
 --sources the maps against the Swift.
 
-Walks a repo for APP-MAP.md / MAP.md, parses the mermaid blocks in the
+Walks a repo for APP-MAP.md, MAP.md, and the flow files under Maps/, parses the mermaid blocks in the
 skill's notation, and verifies what the doctrine promises can be
 verified from the maps alone:
 
@@ -102,6 +102,8 @@ def parse_file(path, root):
         if kindb == "Whole": whole_found.append(m.group(1).rstrip("\n")); continue
         b = dict(file=rel, kind=kindb, name=name, parent=parent, ppath=ppath,
                  special=special, body=lines[1:], dir=path.parent)
+        if kindb == "Evidence" and path.name == "MAP.md":
+            warn(rel, f"{name}: evidence block inside MAP.md (F63: a flow is a file of its own in the node's directory under Maps/)")
         blocks.append(b); files_seen[rel].append(b)
 
 def parse_structure(b):
@@ -391,8 +393,10 @@ def main(root, sources=(), write=False):
     root = Path(root).resolve()
     app = root / "APP-MAP.md"
     if not app.exists(): print(f"no APP-MAP.md under {root}"); return 2
-    for p in [app, *root.rglob("MAP.md")]:
-        if p.name == "MAP.md" or p == app: parse_file(p, root)
+    maps = root / "Maps"
+    flows = [p for p in maps.rglob("*.md") if p.name != "MAP.md"] if maps.is_dir() else []
+    for p in [app, *sorted(root.rglob("MAP.md")), *sorted(flows)]:
+        parse_file(p, root)
     cyls = {}
     for b in blocks:
         if b["special"] == "Dependencies": cyls.update(parse_dependencies(b))

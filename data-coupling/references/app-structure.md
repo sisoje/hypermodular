@@ -13,7 +13,8 @@ AddressForm/
   APP-MAP.md                         the whole app, drawn by the checker, then the root's three diagrams
   Maps/
     AddressScreen/MAP.md             one folder per node, named for the node,
-    AddressScreen/AddressForm/MAP.md each child's inside its parent's
+    AddressScreen/Save.md            a file per flow, one evidence block each
+    AddressScreen/AddressForm/Save.md   each child's inside its parent's; a leaf has flows and no MAP.md
   Packages/
     DataCoupling/                    the layer: Models/ Values/ Enums/ Services/
     Features/                        the nodes, their cores, transformers, and rules

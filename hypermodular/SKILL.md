@@ -23,8 +23,9 @@ leaves. Each node's evidence is declared before its code. The map is
 Mermaid in markdown, so it renders in every GitHub or GitLab PR, always
 visible and always diffable. `APP-MAP.md` is at the repo root. Every
 node's `MAP.md` is under one folder there, `Maps/`, a directory per
-node named for the node, each child's inside its parent's. The top
-node's parent link is `(../../APP-MAP.md)` and a child's is
+node named for the node, each child's inside its parent's. A node's
+evidence is a file per flow in that directory, beside its `MAP.md`.
+The top node's parent link is `(../../APP-MAP.md)` and a child's is
 `(../MAP.md)`. The maps do not sit beside the code. Nothing depends on
 where a map file sits, since the checker matches a node to its Swift
 type by name, and one map tree spans the app target, the features, and
@@ -243,7 +244,8 @@ flowchart TD
 
 Leaves get no structure map. A map earns its existence by having
 arrows. A leaf's contract lives in its parent's map. A leaf whose
-evidence crosses its edge gets a `MAP.md` of evidence blocks only.
+evidence crosses its edge gets a directory of flow files and no
+`MAP.md`.
 Merging these on their shared node names reconstructs the whole tree,
 which is the hypermodular property, demonstrated. The full grammar, the
 identity rules, and the multi-root and `Unmounted` forms are in
@@ -421,8 +423,11 @@ sequenceDiagram
     Search->>error: offline
 ```
 
-Blocks live in the node's own `MAP.md` under `## Evidence`, once. The
-block is the source and the test is written from it, double-entry like
+Each block is a flow file of its own, in the node's directory under
+`Maps/` beside its `MAP.md`, named for the criterion it declares,
+`Maps/Search/Offline.md`, holding that one block and nothing else. A
+block is written once. The block is the source and the test is
+written from it, double-entry like
 a label and its copy. Targets, stimuli, `loop`, silence, and reserved
 words are in `references/notation.md`.
 

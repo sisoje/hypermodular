@@ -198,7 +198,7 @@ alone.
   Following parent links upward reaches `APP-MAP.md`. Following names
   downward reaches any node.
 - **Reconstruction check**: parent links form a single tree with no
-  orphans, and every `MAP.md`, structure or evidence-only, is reachable.
+  orphans, and every map file, a `MAP.md` or a flow file, is reachable.
   When maintaining maps, verify this before committing.
 
 ## Evidence blocks (Diagram 4)
@@ -216,8 +216,8 @@ is a finding, like a label mismatch.
 
 - **Two comment lines open the block.** `%% Evidence: <Node> · Parent:
   <Parent> (../MAP.md)` places it, the same parent link every block
-  carries, so an evidence-only `MAP.md` is not an orphan (an unmounted
-  node's parent is `Unmounted (../APP-MAP.md)`). `%% Given:
+  carries, so a flow file is not an orphan (an unmounted node's parent
+  is `Unmounted (../../APP-MAP.md)`). `%% Given:
   <construction>` states the given: constructor arguments and stubs.
 - **Arrows into the node are the *when***, and there are three kinds.
   `User->>Node: interaction` for input. One stimulus may be followed
@@ -279,9 +279,13 @@ is a finding, like a label mismatch.
   name is the text inside the quotes, the same way it is the text
   before the first `·` on a label.
 
-Blocks live in the node's own `MAP.md`, under `## Evidence`, after the
-structure block if there is one. Evidence appears once. The parent's
-map stays structure-only. The block is the source and the test is
+Each block is a flow file of its own, in the node's directory under
+`Maps/` beside its `MAP.md`, named for the criterion it declares,
+`Maps/Search/Offline.md`, and holding that one block and nothing
+else. A leaf's directory holds its flow files and no `MAP.md`. The
+file's parent link is the one its node's `MAP.md` carries, since the
+two sit in one directory. Evidence appears once. The parent's map
+stays structure-only. The block is the source and the test is
 written from it. The two are double-entry like a label and its copy.
 Contracts are duplicated on purpose, and single-sourcing would have
 nothing to compare. A diagram and a test array that disagree are an
@@ -289,7 +293,10 @@ unreviewed behavior change.
 
 ## The checker
 
-`scripts/mapcheck.py <repo> --write` draws the whole app. It merges
+`scripts/mapcheck.py <repo>` reads `APP-MAP.md`, every `MAP.md`, and
+every other `.md` under `Maps/`, the flow files, and warns on an
+evidence block left inside a `MAP.md`. With `--write` it draws the
+whole app. It merges
 every structure block on the node names and puts one `flowchart TD`
 first in `APP-MAP.md`, headed `%% Whole: <Root>`, between two HTML
 comments that say it is drawn and not written by hand. It holds

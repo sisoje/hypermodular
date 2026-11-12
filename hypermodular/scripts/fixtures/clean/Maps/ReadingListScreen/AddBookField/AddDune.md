@@ -1,5 +1,3 @@
-## Evidence
-
 ```mermaid
 %% Evidence: AddBookField · Parent: ReadingListScreen (../MAP.md)
 %% Given: title ""

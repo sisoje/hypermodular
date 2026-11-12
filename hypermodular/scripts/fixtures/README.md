@@ -6,8 +6,9 @@
   written as dotted `$` lines (2026-11-09), and `SaveButton`'s stub
   holding its task in a slot, with the assignment declared in its
   block (2026-11-10, F37), and the whole-app diagram the checker
-  draws with `--write` first in `APP-MAP.md` (2026-11-12). Correct;
-  usable as examples.
+  draws with `--write` first in `APP-MAP.md` (2026-11-12), the node
+  maps under `Maps/` and each evidence block a flow file of its own
+  (2026-11-12, F61 and F63). Correct; usable as examples.
 - `broken/`: the same maps with fourteen errors and two warnings planted
   (depth-2 arrows, an orphan, a label mismatch, a missing cylinder, a
   reserved-word target, an unlabelled evidence call, a dotted `$` line

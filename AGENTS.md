@@ -23,7 +23,7 @@ needs that agents do not know, Apple's `xcrun xcodeproj`, with which a
 `generate.sh` writes an app's Xcode project.
 `hypermodular/` models apps as depth-1
 Mermaid maps (`APP-MAP.md` at the repo root, one directory per node
-under `Maps/`). The maps are the architecture doc, the agent work fence, and
+under `Maps/` holding its `MAP.md` and a file per flow). The maps are the architecture doc, the agent work fence, and
 the review surface, all at once. `data-coupling/` is the code side: how
 a SwiftUI node is written, cut into shell and core, tested by its
 execution log, and how an app's modules meet through one data layer.
@@ -68,7 +68,7 @@ its own.
 | `A ~~~ B` | Invisible link. Orders the dependency column. |
 | `%% Root: X · Parent: Y (../MAP.md)` | First line of every mermaid block. Self-describing placement. |
 | `%% Whole: X` | The whole app in one diagram, first in `APP-MAP.md`. `mapcheck.py --write` draws it by merging the depth-1 blocks on node names. Not written by hand. A stale one is a checker error. |
-| `%% Evidence: X · Parent: Y (../MAP.md)` + `%% Given: …` + `sequenceDiagram` | Diagram 4, one per acceptance criterion whose log crosses the node's edge. In-arrows are the when (`User`, `System`, or a child's callback), out-arrows the log in order, dashed arrows supplied data, `loop` a count unnamed, `Note` silence. Targets are contract lines or stored properties (own state, materialized sources). Quote mermaid-reserved names (`"title"`). Lives in the node's own `MAP.md` under `## Evidence`. Own-state-only criteria stay arrays in the test. |
+| `%% Evidence: X · Parent: Y (../MAP.md)` + `%% Given: …` + `sequenceDiagram` | Diagram 4, one per acceptance criterion whose log crosses the node's edge. In-arrows are the when (`User`, `System`, or a child's callback), out-arrows the log in order, dashed arrows supplied data, `loop` a count unnamed, `Note` silence. Targets are contract lines or stored properties (own state, materialized sources). Quote mermaid-reserved names (`"title"`). Lives in a flow file of its own, `Maps/<Node>/<Criterion>.md`, one block per file. Own-state-only criteria stay arrays in the test. |
 
 Style: mermaid id = node name (the name is the merge key). No
 colors, no fills (`fill:none` on the Dependencies box, the one
@@ -153,7 +153,8 @@ subgraph), no emoji, no status marks.
   `data-coupling/references/shell-core.md` says how.
 - **Leaves get no structure map.** A map earns its existence by having
   arrows. A leaf's contract lives in its parent's map. A leaf whose
-  evidence crosses its edge gets a `MAP.md` of evidence only.
+  evidence crosses its edge gets a directory of flow files and no
+  `MAP.md`.
 - **Contracts are duplicated on purpose** (parent's map and own map,
   identical). A mismatch between copies is an unreviewed design change.
   A contract change touches both maps in the same commit.

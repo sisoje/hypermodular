@@ -36,8 +36,8 @@ holds.
    with no insides is mapped, reachable, and empty, and that is
    correct.
 2. **Declare the evidence.** For every node whose log crosses its edge,
-   one evidence block per acceptance criterion, in the node's own
-   `MAP.md`, before any code. Own-state-only criteria are written as
+   one evidence block per acceptance criterion, each a flow file in
+   the node's directory under `Maps/`, before any code. Own-state-only criteria are written as
    arrays in the test, also before code. A node with calls on its label
    and no block is not ready to build.
 3. **Run the checker.** `scripts/mapcheck.py` on the repo, `--sources`
