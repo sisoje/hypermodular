@@ -202,8 +202,13 @@ produce. `scripts/engine-run-prompt-coreflow.md` is the same brief cut
 with `@Shell`, depending on the sibling `../CoreFlow` checkout.
 `scripts/engine-run-prompt-garden.md` is a brief the method did not
 shape, in the product's words, for finding what the rules cannot
-express. `scripts/engine-run-prompt-address.md` is a validated form
-whose save is a closure, a brief that tempts a validator object. The
+express. `scripts/engine-run-prompt-address.md` is a validated form,
+a brief that tempts a validator object. Those two are written as a
+brief is given to a person: the skills to read, the app in the
+product's words, the machine's limits, and what to report. They name
+no architecture, no layout, no order of work, and no forbidden
+pattern. All of that is the skills' to teach, and a run that needs it
+in the prompt has found a gap in a skill. The
 drift review is `scripts/drift-review-prompt.md`: export the first
 five commits, hand the prompt to a fresh model, and read what it calls
 lost, reversed, or contradictory. Run it after a stretch of rulings;

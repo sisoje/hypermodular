@@ -1124,6 +1124,24 @@
     stays, so an object was put beside it; a SwiftUI node only
     transforms its dependencies and nothing stays to attach a
     ViewModel to. The first hard rule in AGENTS says the same.
+  - **F55, a brief is given as to a person.** The owner, 2026-11-12:
+    "adress form is over instructing, isnt it? generaly prompt need to
+    be simple as you give it to a human and agent need to conclude
+    architecture from my skill". It was. The address brief was 640
+    words, most of them architecture: the order of work, the layout,
+    "the save is a dependency package of its own", six forbidden
+    patterns, and five gate commands. A run that passes with those in
+    the prompt shows the prompt works, not the skills. The address and
+    Garden briefs are now four short paragraphs, about 200 words: the
+    skills to read, the app in the product's words, the machine's
+    limits (the iPhone simulator, never the Mac's own interface), and
+    what to report. The address brief no longer says the address "is
+    handed to the app as one value", which told the agent the save is
+    a boundary. The gate commands the briefs carried are the skills'
+    own, and one that was only in the brief, the derived data path,
+    went into the xcode-project skill. AGENTS says what a brief holds.
+    The two one-package miniature briefs are as they were. Not run
+    yet on the short briefs.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

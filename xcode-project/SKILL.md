@@ -180,6 +180,8 @@ Product types are short names: `application`, `framework`,
   bundle's name, `xcodebuild test -scheme UITests`, which builds the
   application it depends on first. `xcodebuild -list` may leave the
   test bundle's scheme out of its list, and the scheme still runs.
+  Pass `-derivedDataPath DerivedData` beside the project, so a build
+  never picks up the products of another checkout.
 - **The ids are made predictable on purpose.** With the last line, two
   runs of the script give the same bytes, so the committed file changes
   only when the script does. Xcode writes its own ids back when it
