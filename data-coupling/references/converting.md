@@ -49,8 +49,11 @@ rules in `shell-core.md`.
 ## Taking an object apart
 
 A ViewModel, a store, a manager, a presenter all hold the same few
-things. Each has one place to go, and none of those places is another
-object.
+things, state and the behavior that mutates it. Each has one place to
+go, and none of those places is another object. The conversion has no
+remainder, since the state is consumed as values and the behavior as
+closures that mutate through those same values, which is the code
+skill's rule.
 
 | In the object | Where it goes |
 |---|---|

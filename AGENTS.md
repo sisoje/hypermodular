@@ -84,7 +84,9 @@ subgraph), no emoji, no status marks.
   hold a reference on an `@Observable` class it mutates, a model class
   or a framework delegate, and as rules
   that run above the view. The two are kept apart, not one object
-  holding both. "Logic" is not the word. A SwiftUI node is not a
+  holding both. "Logic" is not the word. Every ViewModel converts
+  with no remainder, its state consumed as values and its behavior as
+  closures that mutate through those same values. A SwiftUI node is not a
   physical view the way a UIKit view is. It only transforms its
   dependencies, so there is nothing to attach a ViewModel to.
 - **One tree per shipped `@main`** in `APP-MAP.md`; a test host is

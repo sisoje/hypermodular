@@ -1484,6 +1484,22 @@
     determinism as equality between the block and the test array; a
     compiled ground-truth app in reach of the repo. The fourth item,
     depth 1 restated to be true, is done above.
+  - **F68, every ViewModel converts with no remainder.** The owner,
+    2026-11-12, thinking out loud: "basicaly every viewmodel can be
+    transformed: rip it off into state and logic, lift both, consume
+    let or bindings or even reference model as pure model... but also
+    lift logic and do mutation in same way - operating on bindings to
+    perform mutation.... is it? it fits to this 'how its consumed'
+    philosophy?". It does. A ViewModel holds state and the behavior
+    that mutates it and nothing else. The state lifts and is consumed
+    as a `let`, a `@Binding`, or a reference model read as data. The
+    behavior lifts and is consumed the same way, as a closure that
+    mutates through the same bindings the view reads, or the same
+    model object. Both halves arrive as values, construction above
+    and capabilities below (F60), they meet in the binding, and
+    nothing is left over that needs an object. The code skill's rule
+    paragraph, `converting.md`'s table introduction, and the
+    `AGENTS.md` lift rule say so.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

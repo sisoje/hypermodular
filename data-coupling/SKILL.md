@@ -91,7 +91,14 @@ framework delegate. A rule the feature owns, a validation, is a pure
 function of its state and stays with the feature, run above the view
 that shows its result.
 The node is pure and data-driven, and the main app is where behavior
-enters.
+enters. That is also why every ViewModel converts with no remainder.
+It holds state and the behavior that mutates it, and nothing else.
+The state lifts and is consumed as a `let`, a `@Binding`, or a
+reference model read as data. The behavior lifts and is consumed the
+same way, as a closure, and it mutates through the same bindings the
+view reads, or the same model object. Both halves arrive as values,
+construction above and capabilities below, the two meet in the
+binding, and nothing is left over that needs an object to hold it.
 
 That is the opposite of the OOP doctrine. Kay's object retained,
 protected, and hid its state. Parnas had asked only to hide the design
