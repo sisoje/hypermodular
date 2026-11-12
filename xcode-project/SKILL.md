@@ -159,7 +159,10 @@ Product types are short names: `application`, `framework`,
   else is the script's to set. A new project has none of the settings
   Xcode's own templates add, so the script sets
   `ALWAYS_SEARCH_USER_PATHS` to `NO`. Without it every build warns
-  that the traditional header map is no longer supported.
+  that the traditional header map is no longer supported. An
+  `Info.plist` key is a build setting too, and is set the same way,
+  `setting set INFOPLIST_KEY_NSPhotoLibraryUsageDescription "..."
+  --target GardenApp`.
 - **A synchronized folder is named for its directory.** In
   `group add NAME --filesystem-path DIR`, `NAME` has to equal the
   basename of `DIR`, or the command is refused. A relative `DIR` is

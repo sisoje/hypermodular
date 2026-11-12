@@ -605,12 +605,16 @@ What it holds, by folder:
   `@Entry` no-op default. The backend's operations are closures here
   too, taking and returning the app's models; its wire types stay in
   the backend package, which is the only thing that reads them.
-- `Settings`. The root's `@AppStorage` keys as one struct of bindings,
-  so no feature names a key.
+- `AppSettings`. The root's `@AppStorage` keys as one struct of
+  bindings, so no feature names a key. The type is not called
+  `Settings`, which SwiftUI already has on the Mac, where the packages
+  also build.
 
 What it does not hold: a method, a computed property, an `import` of an
-I/O framework, a conformance nothing needs, or a screen's helper that
-is not data of the app, a sort option, a sheet enum. It does import SwiftUI, for
+I/O framework taken for its behavior, a conformance nothing needs, or a screen's helper that
+is not data of the app, a sort option, a sheet enum. A contract may
+take a system type the screen hands it, a `PhotosPickerItem`, and the
+layer then imports that framework for the type alone. It does import SwiftUI, for
 `Binding`, `EnvironmentValues`, and `@Entry`; those are types, and
 nothing in the layer ever enters the render runtime. Seeing is not
 dependency; using is. An import sees. The rule against UI imports in a

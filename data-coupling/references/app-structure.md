@@ -277,6 +277,8 @@ brief or the machine gives.
   nothing scripts the Mac's own interface.
 - **`TestScenario`** is public in `Features`, in its own file, and the
   bundle links `Features` to name its cases.
+- **A test that drives the system photo picker** needs a photo in the
+  simulator's library first, `xcrun simctl addmedia booted <file>`.
 
 ## Where a file goes
 

@@ -43,7 +43,9 @@ binding, a bare name calls back:
   block. A decision node is usually this.
 - `· $<path>` lines **write** a binding the node was handed, by its
   parent (`· $sortByAuthor`) or inside a dependency (`· $settings.city`,
-  and `settings` is then a cylinder). The write logs under the
+  and `settings` is then a cylinder). In the Swift such a binding is a
+  value read off the dependency and handed on with no `$`,
+  `TextField("City", text: settings.city)`. The write logs under the
   property's name, the evidence names it as the label spells it
   (`BookShelf->>sortByAuthor: true`, `Settings->>settings.city: Lisbon`),
   and the checker reports a `$` line no block writes. The line is what

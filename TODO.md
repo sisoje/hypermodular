@@ -1229,6 +1229,42 @@
     copy of the run before it went in, one warning without the line
     and none with it, the app building, the seven evidence tests
     passing, and the script still regenerating the same bytes.
+  - **F58, Garden on the short brief.** 2026-11-13, Sonnet medium,
+    twenty-two minutes, output `~/Desktop/garden-clean`, the first
+    Garden with no architecture in the prompt and the first in the new
+    layout. It produced, from the skills: the maps first with the
+    whole-app diagram, five nodes and six cylinders under `Maps/`,
+    the layer with an `@Model` and six `@Flowable` contracts, five
+    dependency packages each with one `inject` function and its own
+    tests (`PlantStore`, `Reminders`, `Weather`, `PhotoLibrary`,
+    `SystemClock`), a one-file root, `App/generate.sh`, the add form
+    as a hand-written core with a transformer, the forecast as loose
+    facts on `.task(id: city)`, the undo and the photo load as held
+    tasks, the reminder taps as a `.task` over a stream. Every gate
+    green and rerun by the grader: the checker at 0 errors 0 warnings
+    0 unverified, twelve package tests across six packages, the script
+    regenerating the same bytes, the app build, thirteen evidence
+    tests in the simulator. One real flaw in its output, from where it
+    put a held task: the delete's slot is in `PlantDetail`, so going
+    back within the five seconds cancels the delete. The skill now
+    says the slot sits in the node whose lifetime the work shares.
+    One claim of the run was tested and not confirmed. It reported
+    that the root's `$city`, handed straight into the environment
+    inside a struct, left readers below stale, and worked around it
+    with a `Binding(get:set:)` over a value read in the root's body.
+    A minimal app in the simulator, the binding handed straight in
+    from the `App` struct, showed the write to an always-mounted
+    reader and to a reader on a pushed screen after a writer in a
+    sheet. The rule stands as written and the workaround is not in
+    the skill. From the run's list, in: the settings type is
+    `AppSettings`, since `Settings` is SwiftUI's own on the Mac; a
+    contract may take a system type the screen hands it and the layer
+    imports that framework for the type; a `$settings.city` line is
+    `settings.city` handed on in the Swift; a test that drives the
+    photo picker needs a photo in the simulator's library; an
+    `Info.plist` key is a build setting. In the CoreFlow skill: a
+    subscription's stub is a `@TestAction` whose default returns a
+    stream that yields the given events and finishes.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

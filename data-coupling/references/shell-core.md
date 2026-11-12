@@ -465,7 +465,11 @@ live one on teardown, and logs every assignment like `@TestState`.
 Writing `nil` cancels on demand, and `save != nil` is the fact that
 work is in progress. A delete the user may undo for a few seconds is
 the same slot. The task awaits the delay, a contract's `async` closure,
-then calls the delete, and Undo writes `nil`. The assignment is a write the node makes at a
+then calls the delete, and Undo writes `nil`. The slot sits in the
+node whose lifetime the work shares, since removing that node cancels
+it. A delete started on a detail screen and meant to finish after the
+user has left it is held by the node above, the list. Held in the
+detail, going back within the few seconds would cancel the delete. The assignment is a write the node makes at a
 moment the node chooses, so the node controls the work and a test
 reads it. A second delete replaces the first save, and the new one
 carries the whole list. Use a capture list in the task closure.
