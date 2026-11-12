@@ -60,7 +60,7 @@ dependency, do not, though a write to materialized storage is I/O and
 logs like any write (see `evidence.md`). The lines under the name are
 the node's entire outbound relationship with the world: everything it
 materializes, calls, or calls back. A name-only label receives
-everything and calls nothing. Nothing else ever goes in a label.
+everything and calls nothing. Nothing else goes in a label.
 
 ## Structure arrows (Diagram 1)
 
@@ -101,8 +101,8 @@ and a map earns its existence by having arrows, flow to show. A leaf
 has no internal flow. Its contract lives in its parent's map, its only
 structural appearance, and the day a leaf grows children, its structure
 map is born together with them. A leaf whose evidence crosses its edge
-does get a `MAP.md`, holding evidence blocks only. Those are arrows
-too.
+gets a directory of flow files and no `MAP.md`. Those blocks are
+arrows too.
 
 ## The dependency column (Diagram 3)
 
@@ -186,7 +186,8 @@ alone.
   parent's map, its only structural appearance. (Label duplication
   applies only to nodes that appear twice. A leaf has one entry, so
   nothing to cross-check.) Evidence blocks are arrows as well. Any node
-  with a required evidence block has a `MAP.md`, structure or not.
+  with a required evidence block has a directory under `Maps/`, with a
+  `MAP.md` in it only when it has children.
 - **Every mermaid block declares its place** as its first line, inside
   the block: `%% Root: BookDetail · Parent: BookShelf (../MAP.md)` for
   structure, `%% Evidence: BookDetail · Parent: BookShelf (../MAP.md)`
@@ -229,7 +230,7 @@ is a finding, like a label mismatch.
   block of that node after `System->>Node: appears`, since the
   scenario mounts the node each time and the whole log is compared. `Child->>Node: callback payload`
   for a child firing a callback the node handed it
-  (`AddItem->>ShoppingList: onAdd eggs`). None is ever a log entry. The
+  (`AddItem->>ShoppingList: onAdd eggs`). None is a log entry. The
   third is the only stimulus from inside the node's own tree, and it is
   checkable: the named callback is a `· name` line on that child's
   label, and the same event appears as an out-arrow in the child's own
@@ -244,8 +245,9 @@ is a finding, like a label mismatch.
   `.onChange(of:)` reaction makes it a genuine when, is open.
   `Parent->>Node` warns rather than errors until it is ruled.)
 - **Arrows out of the node are the *then***. `Node->>target: payload`
-  is one entry, `(target, payload)`, in order. The array the test
-  asserts is exactly the ordered list of out-arrows, nothing else. In
+  is one entry, `(target, payload)`, in order. The names the test
+  asserts are exactly the ordered list of out-arrows, nothing else, and
+  each value is asserted as the test's author sees fit. In
   the array each entry is the target's own name without any `dep.`
   prefix, a space, and the payload; an empty payload leaves the bare
   name. `Search->>searchAPI.search: dune` is `"search dune"`, and

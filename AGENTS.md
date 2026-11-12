@@ -81,7 +81,8 @@ subgraph), no emoji, no status marks.
   kept apart from it. The state goes out of the view to the node above
   that can own it, as open data. The mutating behavior goes out too,
   as closures the root sets, operating on bindings, or where it must
-  hold a reference on an `@Observable` class it mutates, and as rules
+  hold a reference on an `@Observable` class it mutates, a model class
+  or a framework delegate, and as rules
   that run above the view. The two are kept apart, not one object
   holding both. "Logic" is not the word. A SwiftUI node is not a
   physical view the way a UIKit view is. It only transforms its
@@ -107,7 +108,7 @@ subgraph), no emoji, no status marks.
 - **Screen first.** A core is modeled directly from the screen, one
   property per thing it shows or accepts, a `let` for a label, a
   `@Binding` for a field, a closure for a button. What the design says
-  the screen does, "if error then", is the core's logic and stays in
+  the screen does, "if error then", is the core's own rule and stays in
   it. Whether there is an error is decided above. One screen at a
   time, nothing generic. A screen is cheap and reads like a book.
 - **No invented model in a feature.** A struct or an enum that groups

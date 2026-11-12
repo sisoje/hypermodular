@@ -6,8 +6,8 @@ Walks a repo for APP-MAP.md, MAP.md, and the flow files under Maps/, parses the 
 skill's notation, and verifies what the doctrine promises can be
 verified from the maps alone:
 
-  identity      every block's parent link resolves; every MAP.md is
-                reachable from APP-MAP.md (no orphans)
+  identity      every block's parent link resolves; every map file, a
+                MAP.md or a flow file, is reachable from APP-MAP.md (no orphans)
   id=name       a labeled node's mermaid id equals its name
   grammar       every contract line starts with '· '
   double-entry  a node's label as a child equals its label as a root

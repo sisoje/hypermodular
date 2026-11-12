@@ -43,10 +43,11 @@ decision does. Structure lives where authority lives, and the
 map is that structure, written down.
 
 The architecture this produces is hypermodular. One mermaid is one
-module is one boundary. No map knows more than one level, and the whole
-app is reconstructable by merging nodes on their names, so the global
-view is derivable and not maintained. The checker derives it.
-`mapcheck.py --write` draws the whole app as the first diagram of
+module is one boundary. No hand-written map knows more than one level,
+and the whole app is reconstructable by merging nodes on their names,
+so the global view is derivable and not maintained. The checker derives
+it. The whole-app diagram is that derived view, not a map anyone edits.
+`mapcheck.py --write` draws it as the first diagram of
 `APP-MAP.md`: every node with its contract, every condition, the
 dependencies, and a dotted line from each node to the dependencies its
 label names. That diagram is the one place the entire app is seen at
@@ -144,7 +145,7 @@ subscribes to, a notification tap, a deep link, does not by itself
 make navigation cross-feature. The node that owns the stack may
 subscribe and write its own navigation state. Moving that decision
 out of the node, into a router or a service beneath it so that the
-view only displays, is the object reflex. The node is the logic. The state is lifted, and
+view only displays, is the object reflex. The node is the transformation. The state is lifted, and
 `navService` appears, when another node must open the same
 destination, or when the event must be handled while the stack's owner
 is not mounted. Then the listener sits in a node that is mounted, and
@@ -201,7 +202,7 @@ flowchart TD
 Landing's map, the login gate, a decision node:
 
 ```mermaid
-%% Root: Landing · Parent: App (../APP-MAP.md)
+%% Root: Landing · Parent: App (../../APP-MAP.md)
 flowchart TD
     Landing["Landing<br/>· loginState.isLoggedIn"] -->|!isLoggedIn| LoginScreen
     Landing -->|isLoggedIn| Tabs
@@ -230,7 +231,7 @@ flowchart TD
     Library["Library<br/>· @Query<br/>· $settings.sortByAuthor<br/>· dbService.deleteBook()"] --> BookShelf["BookShelf<br/>· $sortByAuthor<br/>· onDelete"]
 ```
 
-BookShelf's map, beside its code. It takes `books` as a value (a sorted
+BookShelf's map, under `Maps/`. It takes `books` as a value (a sorted
 fetch, eventually), `sortByAuthor` as a binding it writes (the root's
 storage, eventually), and `onDelete` as a closure (a service,
 eventually). It is constructible from literals and complete before any
@@ -295,7 +296,9 @@ change.
 ## Diagram 3: dependencies
 
 The world's surface, and one fact about it. The root sets all of it. No
-usage lines. Usage is written on the nodes themselves.
+usage lines in this diagram. Usage is written on the nodes themselves,
+and the drawn whole-app diagram shows it as dotted lines because it
+merges the labels.
 
 - **A dependency is an environment value: a plain struct composed of
   closures, lets, or bindings**, with a no-op default. The live value,
@@ -434,7 +437,9 @@ words are in `references/notation.md`.
 ## Workflows
 
 **Architecting a new app or feature.** `references/architecting.md`.
-The owner decides the tree. Draw it with the user and agree it. Declare
+The owner decides the tree. Draw it with the user and agree it. Where
+nobody is there to agree it, as in an engine run, the agent decides and
+reports the map as its proposal. Declare
 evidence for every edge-crossing node. Run `scripts/mapcheck.py`, and
 with `--sources` once code exists. Build
 root-down, each node's evidence holding before the next, a parent

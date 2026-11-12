@@ -29,7 +29,7 @@ Hypermodular delivers that with two declarations instead of rituals.
   That is finished design, not missing work.
 - **Evidence, not effects.** A node's behavior is declared as data:
   these values in, this execution log out. The log is its writes and
-  boundary calls, in order, with their payloads. No mock objects, ever. A
+  boundary calls, in order, with their payloads. No mock objects. A
   boundary in a spec is a logger, and checking a node is comparing two
   values.
 
@@ -46,8 +46,10 @@ documentation honest at the same time.
 
 ## The four diagrams
 
-Every mapped node answers four questions, each with one small Mermaid
-diagram in a `MAP.md` beside its code (`APP-MAP.md` at the repo root).
+Every mapped node answers four questions with small Mermaid diagrams:
+its structure in a `MAP.md` under `Maps/`, its evidence in a file per
+flow beside it, and the app's coupling and dependencies in
+`APP-MAP.md` at the repo root.
 
 **1. Structure tree.** What is it made of? Solid arrows are data flow.
 The parent hands the child facts, bindings, and callbacks. A node's
@@ -56,7 +58,7 @@ label carries its whole contract, one `·`-bulleted line per capability.
 calls. The name stays the first line, whatever the renderer does.
 
 ```mermaid
-%% Root: Landing · Parent: App (../APP-MAP.md)
+%% Root: Landing · Parent: App (../../APP-MAP.md)
 flowchart TD
     Landing["Landing<br/>· loginState.isLoggedIn"] -->|!isLoggedIn| LoginScreen
     Landing -->|isLoggedIn| Tabs
@@ -102,8 +104,9 @@ get closures. A node's own sheet or stack is its own state.
 
 **4. Evidence.** What does it do at its edge? One sequence diagram per
 acceptance criterion that crosses a boundary. Arrows into the node are
-the *when*. Arrows out are the log, one entry each, in order, and the
-test's array is exactly those arrows. Behavior renders in the PR next
+the *when*. Arrows out are the log, one entry each, in order. The test
+asserts those names, whole and in order, and each value as its author
+sees fit. Behavior renders in the PR next
 to structure. A diagram and a test that disagree are an unreviewed
 change.
 

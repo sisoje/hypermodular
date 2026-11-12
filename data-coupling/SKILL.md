@@ -29,7 +29,8 @@ out of the view too, as closures the root sets and as rules that run
 above the view. Keep the two apart, the state plain data, the behavior
 closures over it, not one object holding both. Mutating behavior is
 simple. It operates on bindings, and where it must hold a reference,
-on an `@Observable` class it mutates. The word is not "logic", which
+on an `@Observable` class it mutates, in the class cases this skill
+names, a model class and a framework delegate. The word is not "logic", which
 names nothing precise. Do this first, before anything else in this
 skill, for every view you write.
 
@@ -85,8 +86,10 @@ object to hold it with the state. The cut that matters runs between
 data and the closures that act on it. State is open, plain data that
 drives the node. Behavior is closures the app sets into the flow at
 the root, and it operates on bindings, or where it must hold a
-reference, on an `@Observable` class it mutates. A rule the feature
-owns, a validation, is a pure function of its state and stays with it.
+reference, on an `@Observable` class it mutates, a model class or a
+framework delegate. A rule the feature owns, a validation, is a pure
+function of its state and stays with the feature, run above the view
+that shows its result.
 The node is pure and data-driven, and the main app is where behavior
 enters.
 
@@ -287,7 +290,9 @@ cannot be used.
   everything else. Data at the boundary is dependency rejection:
   values in, values out. Closures at the boundary are dependency
   parameterization: behavior handed in as a function. Neither is
-  injection.
+  injection. A dependency's one public function is still named
+  `inject`, the word a reader knows, and what it does is set a value
+  into the flow at the root.
 - **Where a closure enters, and where a write goes.** A closure the
   parent decides is an initializer argument: `onDelete`. A capability
   the app provides whoever the parent is a contract, set at the root
@@ -375,7 +380,7 @@ screen, so nothing is invented. Two screenshots that differ differ in
 an init argument, so nothing is hidden and every state of the screen
 is a construction from literals.
 
-What the design says about the screen is the core's logic, and it is
+What the design says about the screen is the core's own rule, and it is
 written in the core as it was said. Where a design says "if there is
 an error, the field turns red and Save is disabled", that is a branch
 on `streetError` and a `canSave` computed from the errors, and a
@@ -434,7 +439,7 @@ in and how a test stands in for it:
 
 | Shape | What it is | Flows in as | In a test |
 |---|---|---|---|
-| source of truth | input the core reads | a `let` (a fetch result), a `@Binding`, an environment value | hand it data: a constant binding, a stubbed array |
+| input | a fact the core reads | a `let` (a fetch result), a `@Binding`, an environment value | hand it data: a constant binding, a stubbed array |
 | black hole | a sink the core gives data to and forgets | a closure: `save(model)`, `haptic()`, analytics | a spy: assert it was called, with the right payload |
 | async effect that can fail | a result the core awaits but does not implement | an `async throws` closure: `try await load()` | a stub per edge case (a value, an error, a delay), one test each |
 
@@ -539,7 +544,7 @@ either way.
   event in the log, and the fields view is the core read off the
   screen, bindings and labels. It decides nothing about whether a field
   is wrong, and what the screen does with an error it was handed is its
-  own logic. The errors are not gathered into a struct;
+  own rule. The errors are not gathered into a struct;
   four fields are four errors, each beside its field. The interception is one value, a transformer, the transformative
   kind of node: a struct whose stored properties are `@Binding`s, the
   node's raw fields and their errors, and whose outputs are the
@@ -622,7 +627,7 @@ What it holds, by folder:
 - The settings, a contract in `Services/`. The root's `@AppStorage`
   keys as one struct of bindings, so no feature names a key.
 
-What it does not hold: a method, a computed property, an `import` of an
+What it does not hold: a method written by hand, a computed property, an `import` of an
 I/O framework taken for its behavior, a conformance nothing needs, or a screen's helper that
 is not data of the app, a sort option, a sheet enum. A contract may
 take a system type the screen hands it, a `PhotosPickerItem`, and the
@@ -704,7 +709,7 @@ test. Data is the abstraction.
   in the app target sees whatever the app sees, a feature's enum, a
   feature's parser, and nothing stops it from using them. What a
   dependency needs from a feature is either data, which moves into the
-  layer, or logic, which stays in the feature behind the contract. A
+  layer, or a rule, which stays in the feature behind the contract. A
   dependency exposes exactly one public thing, a `View` extension
   named `inject` and the dependency's own name, `injectBackend(baseURL:)`,
   `injectHaptics()`, over an internal modifier that builds the live

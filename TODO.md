@@ -1442,6 +1442,48 @@
     photo load and the real notification delivery are untested, since
     a `PhotosPickerItem` cannot be built in a test and a notification
     needs an app bundle.
+  - **F67, the drift review after F36 to F66.** 2026-11-12, the owner:
+    "can you check the drift versus original mission of this repo?"
+    Run by `scripts/drift-review-prompt.md` on Opus high against the
+    state at `e8d550c`, the first five commits exported as trees. Of
+    sixty-six early ideas it called thirty-one kept, fourteen
+    transformed, seven weakened, two lost (the mv-architecture
+    pointer, the `@AppStorage(key)` label), and nine reversed, every
+    reversal a recorded ruling: the maps apart from the code (F51,
+    F61), `@AppStorage` as the root's through a `settings` cylinder
+    (F32), sets as sorted arrays (F31), the workflow node and the
+    contract-line criterion and "who fired it" (F21 to F30), the
+    test host drawn nowhere (F24), rulings outranking the skills
+    (`AGENTS.md`). Verdict: the structural bet kept nearly verbatim,
+    the evidence oracle matured, three moves it calls drift rather
+    than maturing, rulings in `TODO.md` outranking the skills, any
+    rule breakable for practicality (F40), and the engine run with
+    nobody agreeing the map (F66). Fifteen live contradictions, most
+    from the day's layout and vocabulary rulings applied to some
+    files and not others. Eleven were text and are fixed in this
+    commit: "No map knows more than one level" now says hand-written
+    map and names the whole-app diagram a derived view; "beside its
+    code" in the mapping skill and the README; the top node's example
+    link `(../../APP-MAP.md)` in both; `notation.md`'s two sentences
+    giving a leaf a `MAP.md`; the README's four questions; "exactly
+    those arrows" in the README and `notation.md`, now the names
+    exactly and the values as the author sees fit (F31); the three
+    "ever"s F56 missed; Diagram 3's "no usage lines" scoped to that
+    diagram; "the node is the logic", "the core's logic" twice, "its
+    own logic", and "or logic" reworded (F62); the vocabulary table's
+    "source of truth" row renamed "input"; "stays with it" made "stays
+    with the feature, run above the view"; the `inject` name
+    reconciled with "neither is injection"; the `@Observable` clause
+    of F62 bound to the two class cases; "a method" in the layer's
+    list made "a method written by hand" (`@Flowable`); the
+    architecting workflow says the agent decides and reports when
+    nobody is there to agree (F66); the checker's docstring says map
+    file. Its restore list, for the owner: fold the standing rulings
+    into the skills and make `TODO.md` history that never outranks
+    them; a hard stop for the map diff in engine runs; payload
+    determinism as equality between the block and the test array; a
+    compiled ground-truth app in reach of the repo. The fourth item,
+    depth 1 restated to be true, is done above.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
