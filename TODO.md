@@ -1532,6 +1532,104 @@
     `· $path` lines, its parent-given closures the `· name` lines.
     The object gets no node and no cylinder. `reverse-engineering.md`
     says so under the walk.
+  - **F69, the repo read against the articles.** The owner,
+    2026-11-12: "check if this repo aligns with articles, what is
+    this repo missing or what is this repo wrong". Codex Astra was to
+    read and hit its usage limit before the first line, so a fresh
+    Opus at high effort read the seven articles and the two proposals
+    under `~/dev/articles`, then both skills, every reference, and
+    the CoreFlow skill, and listed 105 ideas, each marked aligned,
+    transformed, weakened, missing, or reversed. A Fable agent
+    checked that report line by line, and the cited lines were then
+    read once more by hand. Verdict: a faithful distillation of the
+    masterclass and the method article, much of it word for word,
+    with every large departure a recorded ruling (F22, F23, F31, F32,
+    F36, F37). The report quoted exactly and classified too strongly.
+    Of its five missing items, the plan as data was already refused,
+    as Wlaschin's interpretation, "too clever", in `modules.md`; the
+    sectioned-results mock is in the swift-core-flow README; the
+    token refresh has its parts in the skill; "Mock Roles, Not
+    Objects" is an argument and not a rule; and the client generated
+    from the server's document became the second ruling below.
+    Three rulings came out of the discussion. Closures in the
+    environment, the owner: "environment closures are fine because
+    we inject them high at hierarchy". Apple's guidance advises
+    against a closure in a custom environment key, since a closure
+    cannot be compared and setting it again invalidates its readers.
+    A contract is set high in the tree, at the root, where that is
+    rare, and the contract bullet now says so. The backend, the
+    owner: "backend contract normaly is generated with openspec api",
+    "bckend is just struct of closures", and "backend models go to
+    data layer". This reverses `32c1b6a`, "wire types stay in the
+    backend package". The generated contract and its models live in
+    the layer, the backend package holds the wiring, and the
+    networking bullet carries the networking draft's reason, that a
+    contract typed by hand is a second copy of the server's document.
+    One sentence there is the agent's and not the owner's, that what
+    a generator or a macro writes is taken as it is, since a
+    generated file carries members the layer rule would refuse from
+    a hand. Conformances, the owner, first on `Codable` and then
+    "similar with identifiable as long you dont introduce behaviour
+    to models or computed properties". This reverses "they conform to
+    nothing" and the sentence that the root encodes a dictionary
+    because a synthesized `Codable` cannot be declared from another
+    file. A model may conform where the conformance adds no behavior,
+    and one that needs a method or a computed property is not
+    declared on it. `id: \.id` at the call site stays a fine
+    spelling, and the two older engine prompts no longer forbid
+    `Identifiable`.
+    One question needed no ruling. The networking draft creates its
+    single-flight refresh task in a closure the root builds, and the
+    F37 do-not read as refusing any `Task { }` there. F37 is about a
+    task nobody holds. That task is assigned through a binding to a
+    slot the root owns, a held form the rule already names, so the
+    do-not now says "nobody holds" and gives the case. Two more were
+    the skill's own answers and stand: who owns the load is a choice
+    per feature, so the core that owns its loading flow stays, and
+    "closures the root sets" are the owner's words in the four keys.
+    Text that had fallen behind a ruling or a fact, fixed. "Inside a
+    class they do nothing" now excepts `@Binding`, which a
+    transformer is built from, and says what the others do; measured
+    on the 27.2 SDK, `@State` in a class drops the write and
+    `@AppStorage` writes to the defaults and does not follow them.
+    The wireframe sentence names the `@Environment` read (F23).
+    `shell-core.md` no longer calls `@Query` a source of truth (F32),
+    and the first I/O shape is "input" in its table and in
+    `testing.md`'s (F67). `data-flow.md` no longer passes a form's
+    fields as one bundle (F36). The one integration test of a
+    boundary was "at the shell" in five places and is now where the
+    live value is built, the dependency's own test target. The
+    direct-construction section of `testing.md` gave its verdict and
+    then the article's praise, and the two paragraphs are in order
+    now. Its sentence that a nonisolated test "traps under strict
+    concurrency" was measured false on Swift 6.4, and so was both
+    readers' correction, a compile-time error. The call compiles
+    with a warning and runs off the main actor. `data-flow.md` said,
+    with the masterclass, that a `@State` initial value is "evaluated
+    at every creation". Measured on the same SDK, a private one is
+    not evaluated at creation, zero times over three creations
+    against three for one that is not private. `shell-core.md` says
+    what a value left out of `dependencies:` costs. The validation
+    record carries a note that its printed maps predate F32 and F61.
+    The README's three strong words are reworded, F56 having named
+    the skills and not the README.
+    Not done. A stateful fake, which only the manifesto's draft
+    proposes. An exemption for a stateless helper, since the skill
+    already says a stateless struct's methods make no object. A
+    README sentence on who draws the map in an engine run, open
+    under F67. The Query article in the source lists, since it is
+    published unlisted. The `dependencies:` sentence in the CoreFlow
+    skill, which is another repository.
+    Where the articles now say otherwise, kept as F23 keeps its
+    record. The masterclass: `@Query` among the sources of truth and
+    the environment among the machinery (F23, F32), `@AppStorage` in
+    the feature's shell (F32), two levels of one unit (F23), and the
+    `@State` initial value. The method article: the shell owns the
+    one ambient read (F23), `.task(id: pendingSave)` (F37), the log
+    as a set (F31), "When unsure, lift" (F32), and `let id = UUID()`
+    on a model its literals build inside `body`, a new identity each
+    wave. The Query article: "`Query` is a source of truth" (F32).
+    The networking draft agrees with the layer after this ruling.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

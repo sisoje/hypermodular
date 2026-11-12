@@ -394,8 +394,8 @@ compares the names whole with one equality, so a call the declaration
 did not name fails it, and each value as the author spells it, one
 deterministic spelling per entry. Assert order only when the requirement names
 it. Silence is evidence. Record the
-behavior as-is. One integration test per cylinder, at the shell, owns
-each boundary's real implementation. A node's evidence proves only the
+behavior as-is. One integration test per cylinder, where its live
+value is built, owns each boundary's real implementation. A node's evidence proves only the
 decision to cross it. The rest is in `references/evidence.md`.
 
 ## Diagram 4: evidence

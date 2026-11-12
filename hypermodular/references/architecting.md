@@ -57,7 +57,7 @@ holds.
 5. **Satisfy the cylinders last.** Fetch, storage, service: all
    eventually. Each live closure arrives to find its consumers and
    their evidence already written, and is tested once, for real, in
-   one integration test at the shell.
+   one integration test where it is built.
 
 The feature inherits nothing and decides everything. Each
 implementation arrives to find its consumer's tests already written.

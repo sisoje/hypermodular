@@ -10,6 +10,12 @@ survive here, transcribed in Part 2, and its validated maps in
 `../scripts/fixtures/clean`. Nothing below should send a reader to that
 repo.
 
+The maps printed below are in the grammar of the day of the run. Two
+rulings came after it. `· @AppStorage` is no longer a feature's line,
+since the root owns the keys and a feature receives a binding (F32).
+A map now sits under `Maps/`, so a top node's parent link is
+`(../../APP-MAP.md)` (F61). The fixtures are current.
+
 ## The maps
 
 CoreFlowExample has two `@main` entry points over one library. The

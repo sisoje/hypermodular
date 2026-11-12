@@ -154,8 +154,8 @@ not a refactor; it changes what the node declares. That is why the log, not the 
 one artifact coupled to requirements rather than to how the code is
 arranged, so a harmless refactor cannot turn it red.
 
-One integration test per cylinder, at the shell, written once, owns
-each boundary's real implementation. A node's evidence proves only the
+One integration test per cylinder, where its live value is built,
+written once, owns each boundary's real implementation. A node's evidence proves only the
 decision to cross the boundary, not what lies behind it.
 
 ## Worked material

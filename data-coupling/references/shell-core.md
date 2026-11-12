@@ -337,7 +337,7 @@ in and how a test stands in for it.
 
 | Shape | What it is | Flows in as | In a test |
 |---|---|---|---|
-| source of truth | input the core reads | a `let` (a fetch result), a `@Binding` (storage), an environment value | hand it data, a constant binding or a stubbed array. You are not testing whether the source works, only that the core reads and derives from it correctly |
+| input | a fact the core reads | a `let` (a fetch result), a `@Binding` (storage), an environment value | hand it data, a constant binding or a stubbed array. You are not testing whether the source works, only that the core reads and derives from it correctly |
 | black hole | a sink the core gives data to and forgets | a closure: `save(model)`, `haptic()`, analytics | a spy. Assert it was called, with the right payload. Whether it persists or fires is the boundary's own test |
 | async effect that can fail | a result the core awaits but does not implement | an `async throws` closure: `try await load()` | a stub per edge case (a value, an error, a delay), one test each. The result, error, and loading handling live in the core |
 
@@ -361,8 +361,8 @@ is pure. `grep async` finds every awaited boundary.
 
 ## The SwiftData shell
 
-`@Query` is a source of truth whose configuration (filter, sort,
-section) is itself sourced from other truth, yet it is locked in at
+`@Query` is a read of the store whose configuration (filter, sort,
+section) comes from state, yet it is locked in at
 construction. Building it in a child's `init` off parent state
 constructs a new query on every parent re-render. Apple DTS confirmed a
 filtered `@Query` re-fetching once per keystroke in the parent. And
@@ -386,6 +386,10 @@ struct BookList: View {
     }
 }
 ```
+
+A value the query reads and `dependencies:` leaves out is a change the
+query does not follow. The list goes stale with no error and no
+warning.
 
 Two mock paths. `.mockQuery(QueryResult(wrappedValue: [dune]))` cans
 the result per type. Or seed an in-memory container and let the real

@@ -38,7 +38,7 @@ Hypermodular delivers that with two declarations instead of rituals.
 
 Every artifact describes one boundary, its own.
 
-- A logged boundary never simulates deeper than one step (mock depth 1).
+- A logged boundary does not simulate deeper than one step (mock depth 1).
 - Dependencies enter the flow at exactly one place, the root.
 - A map draws exactly one level, a node and its immediate children.
 
@@ -100,7 +100,7 @@ flowchart LR
 ```
 
 Even navigation is a dependency. `navService.showDetail(id)` is a call
-whose caller never knows which node answers, and cross-feature arrows
+whose caller does not know which node answers, and cross-feature arrows
 are forbidden. The state a route writes lives at the root, and callers
 get closures. A node's own sheet or stack is its own state.
 
@@ -128,7 +128,7 @@ sequenceDiagram
 
 One mermaid is one module is one boundary. No map knows more than one
 level. The whole app reconstructs by merging nodes on their names, so
-the global architecture view is always derivable and never maintained.
+the global architecture view is derived and not maintained by hand.
 Hand-maintained architecture docs rot. A derived view can only reveal
 disagreements between maps, which are exactly the bugs you want
 surfaced.

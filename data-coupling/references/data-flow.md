@@ -162,8 +162,10 @@ storage, a self-loop. A write now is the value read at the next
 creation. Tapping the star writes `isFavorite`, invalidating the slot,
 and the next `BookRow` creation reads `true`. The storage lives in the
 slot, which persists across waves as node values do not. So `= false`
-is not an assignment but an initial value, evaluated at every creation
-and used only the first time, when the slot is established. Hence
+is not an assignment but an initial value, used once, when the slot is
+established. On a `private` `@State` the expression is not evaluated at
+creation. On one that is not private it is evaluated at every creation
+and used only the first time. Hence
 `private`: the runtime owns that storage, not a caller. A plain
 `private let` or `var` would be state outside the flow. swift-core-flow
 makes that a compile error in both directions. `private` marks a source
@@ -262,11 +264,13 @@ type, and no struct is minted per field combination.
 
 This does not license bundling. A tuple of unrelated screen state is a
 `ViewState` umbrella minus the name. The test is whether these fields
-would still travel together if the screen split in two. A form's fields
-plus their submission status pass. They are one operation's payload and
-lifecycle. A search screen's `query`, `results`, and `scrollTarget`
-fail. Nothing but the screen relates them, so they stay separate
-`@State`s. Bundle by operation, not by screen. Today's screen is
+would still travel together if the screen split in two. A row's `title`
+and `author`, read off one record, pass. A form's fields do not. Each
+is its own `@State`, handed anywhere as a binding, and the model
+exists only when Save assembles it. A search screen's `query`,
+`results`, and `scrollTarget` fail too. Nothing but the screen relates
+them, so they stay separate `@State`s. Bundle what one record or one
+call already groups, not what one screen shows. Today's screen is
 tomorrow's two.
 
 ## Wrappers: sources, references, machinery
@@ -302,7 +306,10 @@ What the environment read means for a core is in `shell-core.md`.
 All three groups, and any custom `DynamicProperty`, resolve only inside a
 `View`, `App`, `Scene`, `ViewModifier`, or another `DynamicProperty`.
 The one exception is `@Binding`. It is a plain `get`/`set` pair, so it
-works in any struct. Inside a class every one of them does nothing.
+works in any struct. Inside a class the others are not installed.
+`@State` keeps its initial value and drops the write. `@AppStorage`
+writes to the defaults and does not follow them. Nothing there drives
+a wave.
 That is the single most common bug in MVVM-in-SwiftUI code, and a
 direct consequence of putting state where it does not belong.
 

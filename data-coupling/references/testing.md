@@ -49,7 +49,7 @@ By the shape of the boundary (`shell-core.md`):
 
 | Shape | The mock |
 |---|---|
-| source of truth | hand it data: a constant binding, a stubbed array. A logging binding when its writes are the evidence |
+| input | hand it data: a constant binding, a stubbed array. A logging binding when its writes are the evidence |
 | black hole | a spy closure. Assert it was called, with the right payload |
 | async effect that can fail | a stub per edge case (a value, an error, a delay), one test each |
 
@@ -78,6 +78,14 @@ calls its method. The whole test, for the loading shelf in
 }
 ```
 
+No render pipeline, no `.task`, no network. The driven sequence the
+edge case named, asserted in one line. The order is guaranteed, not
+conventional. `View` is a `@MainActor` protocol, so every member of a
+conforming type inherits its isolation, and nothing can interleave the
+writes. `@MainActor` on the test keeps the test on that actor. Without
+it the calls into the core compile with a warning and run off the main
+actor.
+
 This works only because every boundary of `LoadingShelf` enters at the
 initializer. A core that reads a contract from the environment sees the
 `@Entry` default here, since `@Environment` resolves only inside a
@@ -85,14 +93,6 @@ render pipeline, and `.environment(...)` on a struct in a unit bundle
 sets nothing. Nor is there a `@State`, a focus, or a `TextField` to
 drive. The form proves almost nothing. The hosted scenario is the
 test, and the rest of this file is about it.
-
-No render pipeline, no `.task`, no network. The driven sequence the
-edge case named, asserted in one line. The order is guaranteed, not
-conventional. `View` is a `@MainActor` protocol, so every member of a
-conforming type inherits its isolation, and nothing can interleave the
-writes. `@MainActor` on the test is required for the same reason. A
-nonisolated test touching a `View`-conforming type's members crosses an
-isolation boundary at runtime and traps under strict concurrency.
 
 ## The scenario
 
@@ -260,7 +260,8 @@ test at the price of simulating everything behind the interface. Here
 the coupling is data before any test exists, and the conversion has
 nothing left to do. What the real `fetch` does with a 304, or `save`
 with a conflict, is a separate question with a separate test, one per
-boundary, at the shell, written once. The feature does not ask it again.
+boundary, where its live value is built, the dependency's own test
+target, written once. The feature does not ask it again.
 
 **The log names only boundary events.** A log assertion is an
 interaction test, with one difference from the expectation-checking

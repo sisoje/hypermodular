@@ -49,14 +49,14 @@ extension EnvironmentValues {
 `id` is an initializer argument, not generated inside the model and
 not minted inside a node; a new id comes from the store or from a
 contract closure a scenario can fix, so payloads stay deterministic.
-The model conforms to nothing. A `@Model` class carries what SwiftData
-gives it, `PersistentModel` included, and nothing added. Identity is
-the consumer's to name, at
-the call site with `ForEach(books, id: \.id)`, or in the consumer's own
-module with `extension Book: @retroactive Identifiable {}` where an API
-such as `.sheet(item:)` demands the protocol. The mark is the truth:
-the layer does not conform, so no later conformance can collide. Two
-literals with the same `id` are one row to that `ForEach`, so a fixture
+The model may conform where the conformance adds no behavior,
+`Identifiable` over that stored `id`, a synthesized `Codable`. Seeing a
+protocol couples nothing. A `@Model` class carries what SwiftData
+gives it, `PersistentModel` included. What the model does not get is a
+method written by hand or a computed property. `ForEach(books, id: \.id)`
+names the key at the call site and needs no conformance, and either
+spelling is fine. Two
+literals with the same `id` are one row to a `ForEach`, so a fixture
 is a literal and needs no `static let` to hold identity across waves.
 
 The method article writes the same contract with `let` members marked
@@ -88,17 +88,20 @@ one thing, a package of pure data. Data is the abstraction.
 - **Contracts.** The service signatures, as structs of closures (next
   section), each with its `@Entry`. A contract lives in the layer even
   when its implementation lives in some other package. Folders slice by
-  what the closure struct is, not by which package implements it.
+  what the closure struct is, not by which package implements it. A
+  backend's contract and its models are here too, generated from the
+  server's OpenAPI document where it publishes one.
 - **Data, not helpers.** Models, enums, contracts, and the values a
   feature computes and shows live in the layer whoever consumes them;
   that is the package everything reads. A helper type one feature keeps
   private, a sort option, a sheet enum, stays in that feature. When in
   doubt, ask whether it is data of the app or furniture of a screen.
-- **No unnecessary conformances, even on data.** Drop `Identifiable`,
-  `Sendable`, `Codable`, and `CaseIterable` unless something concrete
-  needs them. `ForEach(books, id: \.id)` needs no conformance;
-  `Identifiable` is for the APIs that demand it, such as `.sheet(item:)`.
-  Prove necessity by building, not by guessing.
+- **A conformance is fine where it adds no behavior.** `Identifiable`
+  over a stored `id`, a synthesized `Codable`, `Sendable`,
+  `CaseIterable`. Seeing a protocol couples nothing. A conformance
+  that needs a method written by hand or a computed property,
+  `Comparable`, `CustomStringConvertible`, is not declared on a model.
+  The comparison is a pure function in the feature that orders by it.
 - **Defaulted initializers, not factories.** Give the initializer default
   parameter values instead of `make…` helpers, so the no-op default
   collapses to `.init()`. Do not add members "just in case".
@@ -406,8 +409,9 @@ smaller record sliced off for a feature is taste, not rescue.
 
 - **Property-wrapped dependencies inside a class.** `@Environment`,
   `@AppStorage`, `@Query`, and `@FocusState` resolve only inside a
-  `DynamicProperty` context. In a class they do nothing and raise no
-  error.
+  `DynamicProperty` context. In a class they drive no wave and raise no
+  error. `@AppStorage` there still writes to the defaults, and it does
+  not follow them.
 - **A service locator or singleton** (`Services.shared`). Untestable, no
   override points, shared mutable state. A value in the environment can
   be overridden at any level of the tree and needs no framework.

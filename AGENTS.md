@@ -121,7 +121,9 @@ subgraph), no emoji, no status marks.
   to an `@UnstructuredTask` slot, which cancels on replacement and on
   node removal. `.task` is the runtime's event, kept for appearance
   and for a value that already exists. Creation is not lifecycle, so
-  a closure the root sets starts no `Task` either.
+  a closure the root sets starts no `Task` nobody holds either. A task
+  a dependency shares between its callers, a token refresh, is held
+  in a slot the root owns.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. Every dependency has two parts. How it
   is constructed is the app's knowledge, the inputs the root supplies.

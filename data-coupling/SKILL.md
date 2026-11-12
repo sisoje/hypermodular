@@ -227,8 +227,10 @@ source of most broken SwiftUI mental models.
   opened. All three are data in. UI-runtime machinery (`@GestureState`, `@FocusState`,
   `@Namespace`, `@ScaledMetric`) holds nothing a caller could supply.
   All three groups resolve only inside a `View`, `App`, `Scene`,
-  `ViewModifier`, or another `DynamicProperty`. Inside a class they do
-  nothing.
+  `ViewModifier`, or another `DynamicProperty`. The one exception is
+  `@Binding`, a plain `get`/`set` pair that works in any struct, a
+  transformer included. Inside a class the others are not installed,
+  and nothing there drives a wave.
 - **A binding is an interception point.** `$state` is the simplest
   binding, a setter that only stores. Any other setter is the
   ancestor's decision about what the write means, and an effect rides
@@ -282,8 +284,8 @@ struct BookShelf: View {
 
 Nothing behind it exists and the feature compiles. It is a wireframe
 you can type-check. There is no singleton, no context, and no service locator
-to reach for, so every dependency is named at an initializer or it
-cannot be used.
+to reach for, so every dependency is named at an initializer or at an
+`@Environment` read, or it cannot be used.
 
 - **What did not happen: injection.** Injection, in the object sense,
   implies a stored reference to a stateful service, a lifetime the
@@ -574,8 +576,8 @@ either way.
   comparing, duplicates kept, and the block shows that order. Silence is evidence
   too. No `books` entry means the failure wrote nothing.
 - **Mock depth is one, permanently.** What the real `fetch` does with a
-  304 is a separate question with a separate test, one per boundary, at
-  the shell, written once. Refactor the core and the log cannot change.
+  304 is a separate question with a separate test, one per boundary, in
+  the dependency's own test target, written once. Refactor the core and the log cannot change.
   Only a changed requirement can. That is why the log is the contract.
 
 Scenarios, the host, transports across the UI-test process
@@ -629,14 +631,17 @@ What it holds, by folder:
 - `Services/`. The contracts: one struct of closures per boundary, the
   store, the backend, the scanner, notifications, each with its
   `@Entry` no-op default. The backend's operations are closures here
-  too, taking and returning the app's models; its wire types stay in
-  the backend package, which is the only thing that reads them.
+  too, and the models they take and return are in `Models/`, the
+  generated ones included. The backend package holds the wiring, the
+  transport, the decoder, and what the root hands it, a base URL, a
+  binding to the token.
 - The settings, a contract in `Services/`. The root's `@AppStorage`
   keys as one struct of bindings, so no feature names a key.
 
 What it does not hold: a method written by hand, a computed property, an `import` of an
-I/O framework taken for its behavior, a conformance nothing needs, or a screen's helper that
-is not data of the app, a sort option, a sheet enum. A contract may
+I/O framework taken for its behavior, a conformance that needs behavior, or a screen's helper that
+is not data of the app, a sort option, a sheet enum. What a generator
+or a macro writes is not written by hand and is taken as it is. A contract may
 take a system type the screen hands it, a `PhotosPickerItem`, and the
 layer then imports that framework for the type alone. It does import SwiftUI, for
 `Binding`, `EnvironmentValues`, and `@Entry`; those are types, and
@@ -664,7 +669,10 @@ test. Data is the abstraction.
   `.init()`. A single value the root supplies, the date, is a contract
   of one `let`, so the label reads `clock.today`. The `@Entry` belongs to the layer, beside the contract it
   defaults. An environment value is data flow: set at the root,
-  replaced by a scenario, read by a core. The nodes that consume it dictate its signature, not the
+  replaced by a scenario, read by a core. A closure in the environment
+  is fine. It cannot be compared, so setting a contract again
+  invalidates the nodes that read it, and a contract is set high in
+  the tree, at the root, where that is rare. The nodes that consume it dictate its signature, not the
   implementation that will satisfy it. No protocols, no classes, no
   reference-type service objects. A protocol wins only for Objective-C
   interop, a plugin API external callers must implement, or a
@@ -680,7 +688,11 @@ test. Data is the abstraction.
   `Settings()`, and a call resolves by its arguments.
 - **Networking is not a concept of the app.** The backend enters as a
   struct of async closures, one per operation, and the signature is the
-  whole contract. Above the root nothing names a session, a request, a
+  whole contract. Where the server publishes an OpenAPI document, the
+  struct and its models are generated from it and live in the layer,
+  and there the document states the signatures. A contract typed by
+  hand would be a second copy of that document with nothing holding
+  the two together. Above the root nothing names a session, a request, a
   status code, a header, or a decoder. Transport, decoding, retries,
   caching, and auth are closures composed at the root around one seam,
   not a subsystem a node can see. What answers the closures is the
@@ -691,11 +703,11 @@ test. Data is the abstraction.
   answers. `grep URLSession` finds one file.
 - **Data carries no behavior.** Models are stored `var` properties
   with defaults and a public initializer, so `.init()` is the empty
-  one, and they conform to nothing. `Identifiable` is a consumer's
-  need, named at the call site with `id: \.id` or declared in the
-  consumer's own module. A synthesized conformance, `Codable`, cannot
-  be declared from another file, so the root that writes JSON encodes
-  a dictionary or writes `encode(to:)` itself. Computed members live as pure extensions in
+  one. A conformance that adds no behavior is fine on a model,
+  `Identifiable` over a stored `id`, a synthesized `Codable`. Seeing a
+  protocol couples nothing. What a model does not get is behavior, a
+  method written by hand or a computed property, so a conformance
+  that needs one is not declared on it. Computed members live as pure extensions in
   the feature layer. A class as data only when it earns it, for a lifecycle a struct
   cannot own, for `@Bindable` decomposition, or for per-element
   observation, and even then it stays pure data. A delegate a framework
@@ -818,8 +830,12 @@ and why, where it is broken.
   alive and defeats the cancel on removal. A call whose result the
   node does not await is a different thing. It is one closure call, it
   logs, and nobody starts a `Task` for it, the root's closure included.
-  A `Task { }` inside a closure the root sets is lifecycle hidden in
-  creation, the object habit of a service that runs itself. The map
+  A `Task { }` nobody holds inside a closure the root sets is lifecycle hidden in
+  creation, the object habit of a service that runs itself. A task a
+  dependency shares between its callers, a token refresh that
+  concurrent calls join, is held like any other. It is assigned
+  through a binding to a slot the root owns, and the root can cancel
+  it. The map
   skill's `mapcheck.py --sources` warns on a `Task` that is not
   assigned.
 - **`.task` for work an event starts.** A counter or a flag stored
@@ -926,9 +942,9 @@ The articles' terms. Use them. They make discussion precise in a way
 - Lazar Otasevic, [swift-core-flow](https://github.com/sisoje/swift-core-flow),
   `@Shell`, `@TestState`, `@TestAction`, `QueryView`, `HostApp`
 - Lazar Otasevic, *Don't Separate Networking From Your UI, Eliminate It
-  From the App*, and [swift-declarative-openapi](https://github.com/sisoje/swift-declarative-openapi),
-  the backend as a struct of async closures derived from the spec the
-  server publishes
+  From the App*, and [swift-declarative-openapi-generator](https://github.com/sisoje/swift-declarative-openapi-generator),
+  the backend as a struct of async closures, and its models, written
+  from the OpenAPI document the server publishes
 - Edward Yourdon & Larry Constantine, *Structured Design* (1979), where
   the coupling taxonomy and the term "data coupling" come from
 - Scott Wlaschin, [Six approaches to dependency injection](https://fsharpforfunandprofit.com/posts/dependencies/)
