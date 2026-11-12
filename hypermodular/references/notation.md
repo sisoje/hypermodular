@@ -78,7 +78,7 @@ everything and calls nothing. Nothing else ever goes in a label.
   contract lines. One with own state alone is furniture.
 - **A decision marks its alternative arrows with the deciding value.**
   No diamonds, because deciding is what nodes do, but alternatives are
-  structural. An agent must know whether children coexist or exclude
+  structural. An agent needs to know whether children coexist or exclude
   each other. Unlabeled solid arrows are composition (children exist
   together). A labeled arrow is a presence condition: the child exists
   while the value holds (`-->|isAdding|`). Arrows labeled with the same
@@ -104,7 +104,7 @@ too.
 
 ## The dependency column (Diagram 3)
 
-- Cylinders are surfaces nodes must **call** or **read**: writes and
+- Cylinders are surfaces nodes **call** or **read**: writes and
   commands (`dbService` is writes only; a write may return a result), non-native fetches
   (`imageLoader`, `searchAPI`), capabilities (`navService`, closures
   over root-owned navigation state), root-owned facts (`loginState`),
@@ -147,7 +147,7 @@ too.
   already in the environment and combine them into a new one. A derived service uses the node-label grammar: name on the first
   line, then one line per ingredient it reads,
   `syncService[("syncService<br/>· dbService<br/>· searchAPI")]`. Its
-  ingredients must appear above it in the column. An ingredient below
+  ingredients appear above it in the column. An ingredient below
   is an order violation you can see. The modifiers that set the values
   are implementation detail and not drawn.
 - `fill:none` on the Dependencies box, the one subgraph. Nodes keep the
@@ -155,8 +155,8 @@ too.
 
 ## Identity rules: combining maps
 
-Depth-1 maps must recombine into one tree mechanically. Any agent (or
-script) must be able to answer "which node belongs where" from the files
+Depth-1 maps recombine into one tree mechanically. Any agent (or
+script) can answer "which node belongs where" from the files
 alone.
 
 - **One name, one node.** Node display names are globally unique across
@@ -226,7 +226,7 @@ is a finding, like a label mismatch.
   for a child firing a callback the node handed it
   (`AddItem->>ShoppingList: onAdd eggs`). None is ever a log entry. The
   third is the only stimulus from inside the node's own tree, and it is
-  checkable: the named callback must be a `· name` line on that child's
+  checkable: the named callback is a `· name` line on that child's
   label, and the same event appears as an out-arrow in the child's own
   block (see `evidence.md`, one event two edges). The test produces
   that stimulus by driving the real child, which is the child's own

@@ -671,7 +671,7 @@ test. Data is the abstraction.
   named `inject` and the dependency's own name, `injectBackend(baseURL:)`,
   `injectHaptics()`, over an internal modifier that builds the live
   value and sets it. The package is not named as the contract's
-  type, since a module and a type of one name shadow each other. What the root must supply is that function's
+  type, since a module and a type of one name shadow each other. What the root supplies is that function's
   parameters. The one integration test of the boundary lives in the
   package's own test target. The tree, the manifests, and the project
   file are in `references/app-structure.md`.

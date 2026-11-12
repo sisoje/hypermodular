@@ -10,7 +10,7 @@ grammar. `coreflow-example-validation.md` is a complete worked run.
 A layered codebase (UI, ViewModel, service, repository, networking) has
 a vertical axis, and it means existence: what had to be built before
 what. The map's vertical means authority: who decides, and what they
-ask of the world. The two will not line up, and the map must not be
+ask of the world. The two will not line up, and the map is not
 bent to mirror the layers that happen to be in front of you. A feature
 that is smeared across five layers, present everywhere and
 constructible nowhere, becomes one node with an address, its contract
@@ -51,7 +51,7 @@ where the code already carries a pinned log, an existing test that
 asserts a sequence. Do not invent acceptance criteria from code. A node
 with calls on its label and no block is a finding to report, not a gap
 to fill. The behavior of legacy code is what it does, not what someone
-decided, and the map must not pretend otherwise.
+decided, and the map does not pretend otherwise.
 
 ## What legacy code will throw at the notation
 

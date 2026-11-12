@@ -157,7 +157,7 @@ Product types are short names: `application`, `framework`,
   application, a framework, a bundle, and a test bundle. Everything
   else is the script's to set.
 - **A synchronized folder is named for its directory.** In
-  `group add NAME --filesystem-path DIR`, `NAME` must equal the
+  `group add NAME --filesystem-path DIR`, `NAME` has to equal the
   basename of `DIR`, or the command is refused. A relative `DIR` is
   resolved against the parent group's own directory, and at the top
   level that is the project's folder.

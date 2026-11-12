@@ -247,7 +247,7 @@ only thing that stops a dependency from seeing a feature. A modifier
 file in the app target sees everything the app imports, and a sort
 enum or a parser that lives in a feature gets used there with no
 error. In a package the same line does not compile. The line for what
-must be a package is I/O, not size. A haptics dependency of thirty
+is a package is I/O, not size. A haptics dependency of thirty
 lines is one.
 
 The layer is the one package that lists swift-core-flow, and it
@@ -279,7 +279,7 @@ flat and inline.
   inside.
 - **These modifiers are not views.** They are the points where the root
   sets values into the environment, and they stay in the app forever.
-- **Previews do not touch real storage.** A preview must not set the real
+- **Previews do not touch real storage.** A preview does not set the real
   storage-backed service or write `UserDefaults`. That is root plumbing,
   and it breaks previews with no error. Lean on the default. A specific
   value comes from `@Previewable @State` bound into a defaulted

@@ -1183,7 +1183,10 @@
     AGENTS, and the CoreFlow skill is reworded to what the method
     does: "is not drawn", "does not log", "not a model". Code is
     untouched, `Task<Void, Never>` included. The rule-like "always" is
-    gone too, as in "mermaid id = node name". No fact was dropped. A
+    gone too, as in "mermaid id = node name", and so is "must" where
+    it stated a rule, "a contract change touches both maps", while a
+    "must" that only describes a condition, "when another node must
+    drive it", stands. No fact was dropped. A
     script did the rewording and every changed line was read after it,
     about 180, with a dozen fixed by hand.
   - **F57, a contract's closure is a `@TestAction`.** The owner,

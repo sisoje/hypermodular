@@ -210,7 +210,7 @@ library, when the user submits a title, then the book is saved" is a
 construction, a tap, and a log assertion, with no translation through
 services or architecture.
 
-Anything an acceptance criterion names must therefore enter the feature
+Anything an acceptance criterion names therefore enters the feature
 as a `let`, a `@Binding`, or a closure, or, with `@Shell`, stay private
 `@State` whose writes log. Purely presentational state stays local.
 

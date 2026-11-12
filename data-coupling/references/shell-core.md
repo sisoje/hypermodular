@@ -154,7 +154,7 @@ the compiler. Stored properties follow two rules. Wrappers on the
 mapping whitelist (the table above) are substituted with test
 boundaries. Everything else is copied verbatim. Members written in a
 separate extension are invisible to the macro, so a helper the core
-needs must sit in the type body. `@Shell` requires Swift 6.4 (Xcode
+needs sits in the type body. `@Shell` requires Swift 6.4 (Xcode
 27); earlier compilers make `Core`'s memberwise initializer private.
 
 ```swift
@@ -204,7 +204,7 @@ cannot trigger a wave mid-test. `Core` is internal, ships no bytes in a
 release build, and needs no `#if DEBUG`. Scenarios live in the app
 target like every preview.
 
-The mapped wrappers must be `private` on the host, and the macro
+The mapped wrappers are `private` on the host, and the macro
 diagnoses anything else. They are the view's own source of truth, not
 something a caller supplies. A plain `private` field with no wrapper is
 a compile error, because pure data flow has no room for opaque state.

@@ -137,7 +137,7 @@ struct Injector: ViewModifier {
 - **The function is named `inject` and the dependency's own name**,
   `injectAddressFile()`, `injectBackend(baseURL:)`. A dependency may
   set several related contracts, and it still has one name. What the
-  root must supply is the function's parameters, and each dependency
+  root supplies is the function's parameters, and each dependency
   has its own. A backend that calls a server takes a base URL. One
   that answers from fixtures takes nothing.
 - **The package is not named as the contract's type.** A module and

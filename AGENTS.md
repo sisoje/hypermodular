@@ -64,7 +64,7 @@ its own.
 | `A -->\|cond\| B` | A presence condition: the child exists while the labeled value holds. Arrows on the same deciding value are alternatives, on different values independent. Unlabeled arrows are composition (children coexist). |
 | `Node["Name<br/>· @Query<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: store, scene storage, or focus, which the system owns and the node writes; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder. `· dep.value` reads a let or binding off a dependency and does not log. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and the checker reports a block that does not name it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
 | `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, not `swiftData`). |
-| `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top to bottom in the order the root sets them. Derived services list their ingredients, which must sit above them. |
+| `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top to bottom in the order the root sets them. Derived services list their ingredients, which sit above them. |
 | `A ~~~ B` | Invisible link. Orders the dependency column. |
 | `%% Root: X · Parent: Y (../MAP.md)` | First line of every mermaid block. Self-describing placement. |
 | `%% Whole: X` | The whole app in one diagram, first in `APP-MAP.md`. `mapcheck.py --write` draws it by merging the depth-1 blocks on node names. Not written by hand. A stale one is a checker error. |
@@ -149,7 +149,7 @@ subgraph), no emoji, no status marks.
   evidence crosses its edge gets a `MAP.md` of evidence only.
 - **Contracts are duplicated on purpose** (parent's map and own map,
   identical). A mismatch between copies is an unreviewed design change.
-  A contract change must touch both maps in the same commit.
+  A contract change touches both maps in the same commit.
 
 ## Workflows
 
@@ -195,8 +195,8 @@ subagent), then fix every sentence it misreads. Every wrong answer is
 a sentence to improve, wherever the fault lies, a line the model did
 not find included. A judgment the skill leaves to the core's need is
 not an error. The engine run is `scripts/engine-run-prompt.md`: both
-skills, a one-paragraph brief, an empty directory, and the agent must
-draw, check, declare, and build. Grade it by `mapcheck.py`, `swift
+skills, a one-paragraph brief, an empty directory, and the agent
+draws, checks, declares, and builds. Grade it by `mapcheck.py`, `swift
 build`, and whether the declared arrays are the ones its scenarios
 produce. `scripts/engine-run-prompt-coreflow.md` is the same brief cut
 with `@Shell`, depending on the sibling `../CoreFlow` checkout.
