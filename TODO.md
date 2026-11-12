@@ -1484,6 +1484,31 @@
     determinism as equality between the block and the test array; a
     compiled ground-truth app in reach of the repo. The fourth item,
     depth 1 restated to be true, is done above.
+    The second reader, Codex Astra at high effort, read-only, on the
+    state after those fixes, `a09828c`, the owner: "should we run
+    prompt with astra?". Forty ideas, one lost (fast feedback), four
+    reversed, all rulings, and the same three moves called drift,
+    speed discarded, payload checking discretionary, agreement
+    yielding to practicality, under a rulings log that outranks the
+    skills. Six contradictions, four text and fixed in this commit:
+    "fails on any node built from objects" now names the object that
+    owns state and behavior and admits a model class read as data;
+    the README's "before the next is started" carries the callback
+    exception the skill has; the README's "No protocols, no classes"
+    names the exceptions; `notation.md` no longer says an id that
+    differs from its name fails "with no error", since the checker
+    reports it. Two need a ruling and are open: the CoreFlow skill
+    puts a draft no criterion names in "a furniture view, a form or a
+    row that is no node on the map", handing the value back through a
+    plain closure, while the cut rule says a callback makes a node
+    (TODO, "a callback alone makes a node"); and `loop` when the
+    requirement names no count, "the test then asserts the decision",
+    has no stated assertion shape beside the whole-log equality. Its
+    restore list adds to Opus's: a speed objective for feedback, and
+    one assertion grammar for order and count. It also found the
+    export script wrote one commit line into `commits.txt`, the range
+    was the fifth commit alone; fixed to the first five lines of the
+    log.
   - **F68, every ViewModel converts with no remainder.** The owner,
     2026-11-12, thinking out loud: "basicaly every viewmodel can be
     transformed: rip it off into state and logic, lift both, consume

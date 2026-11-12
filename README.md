@@ -14,7 +14,8 @@ modules meet through one data layer. `xcode-project/` is the project
 file, written by a script with Apple's `xcrun xcodeproj`. Point
 Claude, or any agent that reads a `SKILL.md`, at any one and it knows
 that part of the method. Point it at all three and it writes the app,
-root down, each node proven by its log before the next is started.
+root down, each node proven by its log before the next is started, or
+with the child whose callback its block starts with.
 
 ## The idea
 
@@ -80,7 +81,8 @@ a value is normal data flow. The column is ordered top to bottom in the
 order the root sets them. A derived service lists its ingredients,
 which must sit above it. Every dependency is an environment value: a
 plain struct composed of closures, lets, or bindings. No protocols, no
-classes.
+classes, but for the three protocol cases and the two class cases the
+code skill names.
 
 ```mermaid
 %% Root: App · Dependencies

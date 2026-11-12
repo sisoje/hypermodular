@@ -10,7 +10,7 @@ the two placeholders and hand the rest to a cold agent verbatim.
 i=0; for c in $(git rev-list --reverse HEAD | head -5); do i=$((i+1)); d=<EARLY>/commit-$i-${c:0:7}
   git ls-tree -r --name-only $c | while read f; do mkdir -p "$d/$(dirname "$f")"; git show "$c:$f" > "$d/$f"; done
   git show -s --format='%h %ad%n%s%n%n%b' --date=short $c > $d/COMMIT-MESSAGE.txt; done
-git log --reverse --format='%h %ad %s' --date=short $(git rev-list --reverse HEAD | head -5 | tail -1)^..$(git rev-list --reverse HEAD | head -5 | tail -1) > <EARLY>/commits.txt
+git log --reverse --format='%h %ad %s' --date=short | head -5 > <EARLY>/commits.txt
 ```
 
 Grade the answer by what it calls LOST, REVERSED, and contradictory, and

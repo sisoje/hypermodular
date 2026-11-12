@@ -130,7 +130,9 @@ all three honest.
 The method's reach is set by material, not by framework. It holds
 wherever the unit is a value constructible from literals. SwiftUI made
 the view one, which is why the skill is written in SwiftUI. It fails on
-any node built from objects, however reactive the pipeline around them.
+any node built from objects that own state and the behavior that
+mutates it, a ViewModel, however reactive the pipeline around them. A
+model class read as data is a value to it.
 
 ## Diagram 1: the structure tree
 

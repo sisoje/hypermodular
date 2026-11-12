@@ -9,7 +9,7 @@ reading one.
 **Mermaid id = node name.** Write
 `BookShelf["BookShelf<br/>· onDelete"]`, not a short alias id. The
 name is the join key that merges maps back into one tree. Ids that
-differ from names break the merge with no error. Redundant to type,
+differ from names break the merge, and the checker reports them. Redundant to type,
 free for an AI.
 
 **Node label = name on the first line, then one contract line per
