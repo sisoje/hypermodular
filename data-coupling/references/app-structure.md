@@ -232,7 +232,7 @@ application() {   # a target, its phases, its folder, the main-actor default, th
 }
 
 application AddressApp      # links every dependency: pkg link AddressFile ...
-application TestHost        # links CoreFlow and CoreFlowUITestHost
+application TestHost        # links the host product: pkg link CoreFlowUITestHost ...
 # UITests: a ui-test-bundle that depends on TestHost and links
 # Features and CoreFlowUITesting, without the main-actor default
 # last line: predictable ids, so a second run changes nothing

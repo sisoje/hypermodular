@@ -92,7 +92,6 @@ xcrun xcodeproj pkg link AddressFile --package AddressFile --target AddressApp
 
 # The test host: the features and the host product.
 application TestHost
-xcrun xcodeproj pkg link CoreFlow --package CoreFlow --target TestHost
 xcrun xcodeproj pkg link CoreFlowUITestHost --package CoreFlow --target TestHost
 
 # The UI tests: run against the test host, never with the main-actor default.

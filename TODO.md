@@ -1630,6 +1630,36 @@
     on a model its literals build inside `body`, a new identity each
     wave. The Query article: "`Query` is a source of truth" (F32).
     The networking draft agrees with the layer after this ruling.
+  - **F70, the address form after F69.** The owner, 2026-11-12: "run
+    sonet medium adress form prompt". `scripts/engine-run-prompt-address.md`
+    verbatim, Sonnet at medium effort, an empty directory, six
+    minutes. Every gate green, rerun by hand: `mapcheck.py --sources`
+    3 files, 5 blocks, 2 nodes, 1 cylinder, 0 errors, 0 warnings,
+    0 unverified; the dependency's integration test and four plain
+    tests of the transformer; `generate.sh` twice byte-identical; the
+    app built and three hosted tests green in the iPhone 18 Pro
+    simulator, the valid save's sixteen entries in order, the four
+    required errors sorted, and one own-state array. The shape is the
+    one the earlier runs reached, a `@Shell` node with loose state, a
+    `@Capability` transformer, a core read off the screen, the model
+    assembled on Save. F69 shows in it: `Address` is `Codable` in the
+    layer and the dependency encodes it, with no dictionary. What the
+    run does not show is the generated backend and the shared task,
+    since the form has no server. A brief with one is not written yet.
+    Of its eight notes two were text. `@Shell` rejects an optional
+    `@State` that has no `= nil`, "needs an inline default", and the
+    CoreFlow skill said only "explicit type"; it now names the
+    default. The test host's links disagreed: the module table and
+    the prose said the features and the host product, and the two
+    scripts also linked `CoreFlow`. The run built and tested without
+    that line, and swift-core-flow's own hosted project has no such
+    line, so the scripts lose it, and the CoreFlow skill says the
+    host reaches `CoreFlow` as the app does. One note was wrong, that
+    no skill gives the sorted comparison, which the CoreFlow skill
+    states. The rest were the design's to decide: the core's name,
+    the error a default closure throws, and a failed save that shows
+    nothing because the brief shows nothing. The CoreFlow skill also
+    gained F69's sentence on a value left out of `dependencies`.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
