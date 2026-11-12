@@ -1038,7 +1038,23 @@
     brief names the skill and `App/generate.sh`; xcodegen, its spec,
     and its target template are gone from the reference. The skill is
     linked into `~/.claude/skills` and `~/.agents/skills` beside the
-    other two. Not rerun cold, on the owner's "wait for rerun".
+    other two. Rerun cold on the owner's word, 2026-11-12, Sonnet medium,
+    about twelve minutes, output
+    `~/Desktop/engine-2026-11-12/address-form`: the first cold run to
+    use the xcode-project skill, the two re-exports, and the one-file
+    app. Every gate green and rerun by the grader: checker with
+    sources 0 errors 0 warnings 0 unverified, seven plain tests, two
+    integration tests in the `AddressFile` package, the app build, and
+    five evidence tests in the simulator under the `UITests` scheme.
+    `App/generate.sh` is the skill's script and regenerates the same
+    bytes; no feature file imports the layer or the library; the app
+    is one file calling `injectAddressFile()`; the dependency throws
+    and the screen node decides what a failed save shows; the core is
+    in its own file and the preview chain sits with each view;
+    `@Capability` is on the transformer. Nothing in its list of
+    unclear places called for a new sentence, the first run of the
+    week of which that is true. A second run on Sonnet xhigh died when
+    the Mac slept and was not graded.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
