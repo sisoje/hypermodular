@@ -325,7 +325,7 @@ usage lines. Usage is written on the nodes themselves.
   tree reads, and nothing below it sets any.
 - **Top to bottom is the order the root sets them.** A derived service
   lists its ingredients, which sit above it. A consequence every
-  write carries, a reminder scheduled for each saved plant, is the
+  write carries, a reminder scheduled for each saved record, is the
   root's composition, a derived `dbService` listing `reminderService`
   as its ingredient, not the same call repeated on each node that
   writes. Where nothing is

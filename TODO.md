@@ -1205,7 +1205,7 @@
     a scenario does not hold. A different answer is another scenario,
     since a default cannot read a parameter. `@TestLog` is named as
     the seam under the wrappers. The code skill's test section and
-    `testing.md` say the same. Run cold the next morning, 2026-11-13,
+    `testing.md` say the same. Run cold the same day, 2026-11-12,
     Sonnet xhigh on the short brief, eighteen minutes, output
     `~/Desktop/address-form-clean`: both scenarios declare the
     contract's closure as `@TestAction` and hand it over, the failing
@@ -1229,7 +1229,7 @@
     copy of the run before it went in, one warning without the line
     and none with it, the app building, the seven evidence tests
     passing, and the script still regenerating the same bytes.
-  - **F58, Garden on the short brief.** 2026-11-13, Sonnet medium,
+  - **F58, Garden on the short brief.** 2026-11-12, Sonnet medium,
     twenty-two minutes, output `~/Desktop/garden-clean`, the first
     Garden with no architecture in the prompt and the first in the new
     layout. It produced, from the skills: the maps first with the
@@ -1256,8 +1256,10 @@
     from the `App` struct, showed the write to an always-mounted
     reader and to a reader on a pushed screen after a writer in a
     sheet. The rule stands as written and the workaround is not in
-    the skill. From the run's list, in: the settings type is
-    `AppSettings`, since `Settings` is SwiftUI's own on the Mac; a
+    the skill. From the run's list, in: a layer type takes a name
+    SwiftUI does not have, since `Settings` is SwiftUI's own on the
+    Mac (first written as the run's own name, `AppSettings`, and
+    struck by F59); a
     contract may take a system type the screen hands it and the layer
     imports that framework for the type; a `$settings.city` line is
     `settings.city` handed on in the Swift; a test that drives the
@@ -1265,6 +1267,22 @@
     `Info.plist` key is a build setting. In the CoreFlow skill: a
     subscription's stub is a `@TestAction` whose default returns a
     stream that yields the given events and finishes.
+  - **F59, a skill is general purpose.** The owner, 2026-11-12: "skill
+    need to be general purpose, how is appsettings general?" F58 had
+    written the Garden run's own type name, `AppSettings`, into the
+    layer's list as the settings type. A run's finding goes into a
+    skill as the rule that holds for any app. The run's own names, its
+    targets, and its workarounds stay out. Out: `AppSettings` in the
+    code skill, `--target GardenApp` in the xcode-project skill's
+    `Info.plist` line, and "plant" in the mapping skill's sentence on
+    a derived service. In, as the general fact: a type in the layer
+    takes a name SwiftUI does not have, since a feature file sees the
+    layer and SwiftUI both and a shared name is ambiguous there.
+    Checked with a two-module package. A layer type named `Settings`
+    fails on the Mac build and compiles for the iPhone simulator, and
+    one named `Label` fails for the simulator too. The layer's list
+    now says "the settings" and names no type. `AGENTS.md` carries the
+    rule beside the engine runs.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

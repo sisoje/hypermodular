@@ -208,7 +208,9 @@ brief is given to a person: the skills to read, the app in the
 product's words, the machine's limits, and what to report. They name
 no architecture, no layout, no order of work, and no forbidden
 pattern. All of that is the skills' to teach, and a run that needs it
-in the prompt has found a gap in a skill. The
+in the prompt has found a gap in a skill. What a run finds goes into
+a skill as the rule that holds for any app. The run's own names, its
+targets, and its workarounds stay out. The
 drift review is `scripts/drift-review-prompt.md`: export the first
 five commits, hand the prompt to a fresh model, and read what it calls
 lost, reversed, or contradictory. Run it after a stretch of rulings;
