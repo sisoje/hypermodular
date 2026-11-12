@@ -1174,6 +1174,18 @@
     not. Twenty of its facts were checked against the skills,
     seventeen there word for word, two in other words, one missing,
     that there is no mock object to write, now in the code skill.
+  - **F56, no strong words.** The owner, 2026-11-12: "i prefer not to
+    use strong words like never, and you also got confused, all rules
+    may need to be broken maybe". F40 lets any rule be broken, and the
+    skills said "never" 205 times, so each rule read as an absolute
+    and two of them meeting read as a contradiction to ask about.
+    Every "never" in the prose of the three skills, their references,
+    AGENTS, and the CoreFlow skill is reworded to what the method
+    does: "is not drawn", "does not log", "not a model". Code is
+    untouched, `Task<Void, Never>` included. The rule-like "always" is
+    gone too, as in "mermaid id = node name". No fact was dropped. A
+    script did the rewording and every changed line was read after it,
+    about 180, with a dozen fixed by hand.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

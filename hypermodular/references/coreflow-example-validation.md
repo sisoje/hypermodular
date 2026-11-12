@@ -37,7 +37,7 @@ flowchart LR
 
 One cylinder. `bookStore` is assembled by the `LiveBookStore` modifier
 from `modelContext`, and the skill's rule that how a capability is
-assembled behind its cylinder is implementation detail, never drawn,
+assembled behind its cylinder is implementation detail, not drawn,
 absorbed this cleanly. The `ModelContext` class, the modifier, and the
 `.modelContainer` call all stay off the map, and the value itself
 (`BookStore`, a struct of closures) is exactly the "plain struct
@@ -174,10 +174,10 @@ node's own.
 
 `Dimmer` is a `ViewModifier` with own state only. No materialization,
 no calls. Under the existing rules it is invisible on maps (own state
-never appears; a node earns a label line only by contract), and
+does not appear; a node earns a label line only by contract), and
 `LiveBookStore`, the modifier that sets the store, is already ruled
-invisible. So modifiers never appear on maps unless they carry contract
-lines, which the skill implies but never states. One sentence in
+invisible. So modifiers do not appear on maps unless they carry contract
+lines, which the skill implies but does not state. One sentence in
 Diagram 1 would close it.
 
 ### F5: `@AppStorage`, which the skill and CoreFlow name differently
@@ -224,13 +224,13 @@ transcribed below) and record where the notation creaks.
   comment: `%% Evidence: <Node> · Given: <construction>`.
 - **Arrows into the node are the *when*.** `User->>Node: interaction`
   for user input. `System->>Node: event` for lifecycle, scene phase,
-  deep links. Never a log entry.
+  deep links. Not a log entry.
 - **Arrows out of the node are the *then*.** `Node->>target: payload`
   is one log entry, `(target, payload)`, in order. The array the test
   asserts is exactly the ordered list of out-arrows, nothing else.
 - **Dashed arrows back are supplied data.** `target-->>Node: value` or
   `throws`, the given for whatever follows, drawn only when it explains
-  a later entry. Never a log entry. Solid versus dashed is already the
+  a later entry. Not a log entry. Solid versus dashed is already the
   doctrine's call-is-the-event / return-is-data distinction.
 - **Targets are the node's edge and nothing else:** a contract line (a
   cylinder call, a parent-supplied callback) or one of the node's own
@@ -295,7 +295,7 @@ sequenceDiagram
 
 Array: names `["sortDescending", "delete"]`, values `["true",
 "Anathem"]`. The `@Query` fact sits in the given header. It is supplied
-data, never an arrow.
+data, not an arrow.
 
 ### Dimmer
 
@@ -345,7 +345,7 @@ behavior asserts only"). The test asserts `current 0` and `max ≠ 0`
 after release. The `loop` is the notation for exactly that. The
 requirement names no count, so the block is a shape and the test
 asserts the decision. `dragOffset` itself is `@GestureState`, copied
-verbatim and never logged. It gets no lifeline.
+verbatim and not logged. It gets no lifeline.
 
 ### TrickyDragCard
 
@@ -439,7 +439,7 @@ own state, a binding, external storage. A write to state the system
 owns (focus) logs only when the node performs it, because that is a
 call, not a write. Reads stay unlogged for the reason already given.
 The diagram surfaced this because an in-arrow with no out-arrow demands
-an answer. Prose never asked.
+an answer. Prose did not ask.
 
 ### F8: leaves now have a reason for a file
 
@@ -583,16 +583,16 @@ from the proposal above:
   `%% Evidence: <Node> · Parent: <Parent> (../MAP.md)` and `%% Given: …`
   on the second line. The eight blocks above are updated. An unmounted
   node's parent is `Unmounted (../APP-MAP.md)`.
-- **F14 (from review).** The Workflows never mentioned evidence. Fixed:
+- **F14 (from review).** The Workflows did not mention evidence. Fixed:
   reverse-engineering draws a block only where a pinned log already
-  exists and never invents criteria; new work draws evidence where it
+  exists and does not invent criteria; new work draws evidence where it
   crosses the edge; maintenance lists "changes what a node does at its
   edge" as a trigger.
 - **F15.** The Diagram 2 example had no identity header. Every
   app-level block now has one (`· Coupling`, `· Dependencies`,
   `· Unmounted`). This file's coupling block fixed too.
 - **F16.** A dot meant call, but `· loginState.isLoggedIn` is a read of
-  a let off a struct set at the root, and reads never log. The checker
+  a let off a struct set at the root, and reads do not log. The checker
   demanded evidence from a node that logs nothing. Ruled: parens mark a
   call (`· dbService.updateBook()`), a bare dot reads. Every call line
   in the corpus gained its parens in one commit. Evidence targets keep

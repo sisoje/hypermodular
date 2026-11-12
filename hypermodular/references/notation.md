@@ -6,8 +6,8 @@ reading one.
 
 ## Labels
 
-**Mermaid id = node name, always.** Write
-`BookShelf["BookShelf<br/>· onDelete"]`, never a short alias id. The
+**Mermaid id = node name.** Write
+`BookShelf["BookShelf<br/>· onDelete"]`, not a short alias id. The
 name is the join key that merges maps back into one tree. Ids that
 differ from names break the merge with no error. Redundant to type,
 free for an AI.
@@ -38,7 +38,7 @@ binding, a bare name calls back:
   `· openURL()`, is a call with no dependency and no cylinder, and it
   logs under its own name.
 - `· <dep>.<value>` lines **read** a let or binding off a dependency
-  (`· loginState.isLoggedIn`). Coupling without evidence. Reads never
+  (`· loginState.isLoggedIn`). Coupling without evidence. Reads do not
   log, and a node whose dotted lines are all reads owes no evidence
   block. A decision node is usually this.
 - `· $<path>` lines **write** a binding the node was handed, by its
@@ -63,7 +63,7 @@ everything and calls nothing. Nothing else ever goes in a label.
 ## Structure arrows (Diagram 1)
 
 - **Solid arrow `-->`** is data flow. The parent hands the child its
-  data, bindings, and callbacks. The child never reaches up or
+  data, bindings, and callbacks. The child does not reach up or
   sideways. Cross-feature arrows are forbidden. Features communicate
   through data and capabilities. Navigation across features goes
   through `navService`, and which node answers a route is composed up
@@ -86,12 +86,12 @@ everything and calls nothing. Nothing else ever goes in a label.
   three arrows on one enum are a switch), and the node's contract lines
   name that value (`loginState.isLoggedIn`) or receive it. Arrows on
   different values are independent and may coexist. The label states
-  possibility, never sequence. What happens is the
+  possibility, not sequence. What happens is the
   execution log's business.
 - **Unbuilt nodes are bare leaves.** Mapped, reachable, empty. The map
   runs ahead of the code. A leaf with no insides is finished design.
 - The shell/core split (imperative shell hosting the machinery, pure
-  core taking values and closures) is implementation detail and never
+  core taking values and closures) is implementation detail and not
   drawn.
 
 Leaves get no structure map of their own. We are modeling data flow,
@@ -117,7 +117,7 @@ too.
   names the box, and the `@` line is the claim. How a capability's
   closure is assembled behind its cylinder (root-owned state, a derived
   service, listeners registered up the tree) is implementation detail
-  and never drawn.
+  and not drawn.
 - **A dependency is an environment value: a plain struct composed of
   closures, lets, or bindings.** Pure value, no protocols, no classes,
   no reference-type service objects, the code skill's three protocol
@@ -134,7 +134,7 @@ too.
 - Name the boundary, not the tech: `dbService`, not `swiftData`.
 - Name a closure for what the caller means. A verb is a command
   (`showDetail`, `deleteBook`). A past-tense clause is a notification
-  (`logoutHappened`). Never name it after the reaction.
+  (`logoutHappened`). Do not name it after the reaction.
 - **Setting a value is normal data flow.** One solid arrow `-->` from
   the root into the Dependencies box. App hands values to the
   environment the same way a parent hands values to a child. A second
@@ -149,7 +149,7 @@ too.
   `syncService[("syncService<br/>· dbService<br/>· searchAPI")]`. Its
   ingredients must appear above it in the column. An ingredient below
   is an order violation you can see. The modifiers that set the values
-  are implementation detail and never drawn.
+  are implementation detail and not drawn.
 - `fill:none` on the Dependencies box, the one subgraph. Nodes keep the
   renderer's default. Stack cylinders with invisible `~~~` links.
 
@@ -209,12 +209,12 @@ is not drawn. The map shows edges, and behavior that cannot break a
 contract has nothing to show on it. A silence on a contract line,
 Save tapped and nothing handed on, is an edge event, so that criterion
 is drawn with its `Note`. "Optional" means own state only,
-never "skipped". A node with a call on its label and no evidence block
+not "skipped". A node with a call on its label and no evidence block
 is a finding, like a label mismatch.
 
 - **Two comment lines open the block.** `%% Evidence: <Node> · Parent:
   <Parent> (../MAP.md)` places it, the same parent link every block
-  carries, so an evidence-only `MAP.md` is never an orphan (an unmounted
+  carries, so an evidence-only `MAP.md` is not an orphan (an unmounted
   node's parent is `Unmounted (../APP-MAP.md)`). `%% Given:
   <construction>` states the given: constructor arguments and stubs.
 - **Arrows into the node are the *when***, and there are three kinds.
@@ -253,9 +253,9 @@ is a finding, like a label mismatch.
   test asserts `Optional("Required")` or the model's printed form. The
   two spellings name one value and are no mismatch. Where the requirement names no order, the test sorts those
   entries into one fixed order before comparing, by name and then by
-  value, duplicates kept, and the block shows that order. Never a subsequence.
+  value, duplicates kept, and the block shows that order. Not a subsequence.
 - **Dashed arrows back are supplied data**: `target-->>Node: value` or
-  `throws`, drawn only when it explains a later entry. Never an entry.
+  `throws`, drawn only when it explains a later entry. Not an entry.
   The call is the event. What comes back is data.
 - **Targets are the node's edge and nothing else**: a contract line (a
   capability call, named without its parens, or a callback) or a stored property of the node, meaning own state, a binding it was
@@ -290,7 +290,7 @@ unreviewed behavior change.
 `scripts/mapcheck.py <repo> --write` draws the whole app. It merges
 every structure block on the node names and puts one `flowchart TD`
 first in `APP-MAP.md`, headed `%% Whole: <Root>`, between two HTML
-comments that say it is drawn and never written by hand. It holds
+comments that say it is drawn and not written by hand. It holds
 every node with its full label, every arrow with its condition, the
 `Unmounted` nodes and the `Dependencies` box as subgraphs, and a
 dotted arrow `Node -.-> dep` for each dependency a label names. The
@@ -332,6 +332,6 @@ runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
 with Swift stubs, zero errors, nothing unverified) and
 `fixtures/broken` (the same with fourteen map violations, eight code
 findings, and one habit warning planted, all caught; wrong on
-purpose, never an example). The clean fixture carries its whole-app
+purpose, not an example). The clean fixture carries its whole-app
 diagram, and the test changes one of its maps to see the diagram
 reported stale and then redrawn.

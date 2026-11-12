@@ -115,10 +115,10 @@ ForEach(books, id: \.id) { book in // the key named at the call site
 ```
 
 `id: \.self` is right only for a collection of distinct, immutable
-values that never reorder, such as a fixed set of enum cases.
+values that do not reorder, such as a fixed set of enum cases.
 
 Re-keying a subtree with `.id()` is how you ask for a teardown: a clean
-form after a submit, a fresh editor per selected item. Never use it to
+form after a submit, a fresh editor per selected item. Do not use it to
 force a refresh. If a view is not updating, a dependency is missing,
 and re-keying hides the bug behind a rebuild that also throws away every
 `@State` below it.
@@ -164,7 +164,7 @@ and the next `BookRow` creation reads `true`. The storage lives in the
 slot, which persists across waves as node values do not. So `= false`
 is not an assignment but an initial value, evaluated at every creation
 and used only the first time, when the slot is established. Hence
-`private`: the runtime owns that storage, never a caller. A plain
+`private`: the runtime owns that storage, not a caller. A plain
 `private let` or `var` would be state outside the flow. swift-core-flow
 makes that a compile error in both directions. `private` marks a source
 of truth and nothing else, so a source-of-truth wrapper declared
@@ -198,7 +198,7 @@ Most waves do not reshape. Same structure, new values. The parent
 re-creates the child value either way, and the runtime compares it
 against the retained one and skips the child's `body` when the two
 match. Reshaping, a changed type or a changed `.id()`, is rare. Either
-way the loop closes through storage and re-creation, never through a
+way the loop closes through storage and re-creation, not through a
 backward edge.
 
 Data coupling holds for actions too. The node does not depend on what
@@ -229,7 +229,7 @@ Sometimes a slice has to travel as one value, as a helper's return, a
 list element, or a closure parameter, and then it needs a type. Nominal
 types scale badly here. Three views drawing overlapping slices of a
 five-field model force three named structs, or one struct that
-recouples each view to fields it never reads. Swift's tuples are
+recouples each view to fields it does not read. Swift's tuples are
 structural. Same labels and types mean the same type, so a slice is its
 fields, with no name to mint:
 
@@ -295,7 +295,7 @@ UI-runtime machinery is `@GestureState` (a live gesture's lifecycle),
 `@ScaledMetric` (display metrics). None hold data a caller could
 supply. There is no `BookRow(gesture: .inProgress)` the way there is
 `BookRow(title: "Dune")`. A gesture in progress exists only inside a
-running render pipeline, never as a value in a caller's hand.
+running render pipeline, not as a value in a caller's hand.
 
 What the environment read means for a core is in `shell-core.md`.
 
@@ -306,10 +306,10 @@ works in any struct. Inside a class every one of them does nothing.
 That is the single most common bug in MVVM-in-SwiftUI code, and a
 direct consequence of putting state where it does not belong.
 
-## Unidirectional flow was never missing
+## Unidirectional flow was not missing
 
 The ViewModel and reducer reflex assumes SwiftUI needs an architecture
-bolted on to get one-way data flow. But one-way was never about
+bolted on to get one-way data flow. But one-way was not about
 direction.
 
 - Data flows down into inits.
@@ -333,7 +333,7 @@ boundary event between them.
 ```
 
 Nothing in either node says what `isEmpty` depends on. The transition is
-spread across two modifiers that never mention each other. It emerges
+spread across two modifiers that do not mention each other. It emerges
 from the cascade instead of living in any node. That, not data moving
 up the tree, is the violation.
 
@@ -361,7 +361,7 @@ The fixes, in order of preference:
    hop, and no second `.onChange` listening to what the first wrote.
 
 Review heuristic: two `.onChange` modifiers where the second observes
-state the first writes is always a defect. Collapse them.
+state the first writes is a defect. Collapse them.
 
 ### The view is the reducer
 
@@ -416,7 +416,7 @@ Do not tune by counting `body` runs. Evaluation counts shift with
 SwiftUI internals and with the debugger attached. `body` is cheap by
 design, and running it twice is not a bug. Measure with Instruments'
 SwiftUI template and act on what is slow. The same reasoning is why
-`testing.md` never asserts "body was evaluated N times".
+`testing.md` does not assert "body was evaluated N times".
 
 ## Where the model came from
 

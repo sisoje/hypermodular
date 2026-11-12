@@ -41,14 +41,14 @@ and what they ask of the world, nothing else. A node's whole observable
 behavior is the children it creates and its boundary events, and
 nothing else about it is observable. Diagram 1 draws the children, the
 ones that are nodes, with furniture collapsed. Diagram 4 declares the
-boundary events. Renaming a button never touches the map. Moving a
-decision always does. Structure lives where authority lives, and the
+boundary events. Renaming a button does not touch the map. Moving a
+decision does. Structure lives where authority lives, and the
 map is that structure, written down.
 
 The architecture this produces is hypermodular. One mermaid is one
 module is one boundary. No map knows more than one level, and the whole
 app is reconstructable by merging nodes on their names, so the global
-view is always derivable and never maintained. The checker derives it.
+view is derivable and not maintained. The checker derives it.
 `mapcheck.py --write` draws the whole app as the first diagram of
 `APP-MAP.md`: every node with its contract, every condition, the
 dependencies, and a dotted line from each node to the dependencies its
@@ -84,7 +84,7 @@ writes. When the question is how a node's Swift should look, go there.
    New features are drawn on the map before any code is written. The
    vertical axis is authority, not existence. The parent dictates the
    child's signature and the child satisfies it. A service's signature
-   is dictated by its callers, never by its implementation. A change of
+   is dictated by its callers, not by its implementation. A change of
    mind at the top has one place to land, and everything below that no
    longer fits stops compiling instead of drifting. A feature has an
    address. It is a node, and the map is where to find it.
@@ -99,8 +99,8 @@ writes. When the question is how a node's Swift should look, go there.
    bindings, and closures, nothing else, so it is constructible from
    literals, and anything constructible from literals is testable by
    construction. Declare the evidence before implementing.
-   Implementation means making the declaration hold. Never observe
-   effects behind a boundary, and never simulate behavior; a stub that
+   Implementation means making the declaration hold. Do not observe
+   effects behind a boundary, and do not simulate behavior; a stub that
    returns supplied data simulates nothing. A boundary in a spec is a
    logger, and checking a node is comparing two values.
    Refactor the node and the log cannot change. Only a changed
@@ -123,7 +123,7 @@ Mock depth is the number of layers of internal behavior a test double
 must simulate before the unit under test can be constructed. In an
 object graph it is unbounded, and that is what test-driven development
 died of. Here it is one, permanently. Every artifact describes one
-boundary, its own. A logged boundary never simulates deeper than one
+boundary, its own. A logged boundary does not simulate deeper than one
 step, because a closure's signature is the whole contract and nothing
 is behind it. Dependencies enter the flow only at the root. A map draws
 only one level, a node and its immediate children. This is what keeps
@@ -138,9 +138,9 @@ any node built from objects, however reactive the pipeline around them.
 
 A `flowchart TD`, one level deep. Solid arrows are data flow. The
 parent hands the child its data, bindings, and callbacks. The child
-never reaches up or sideways, and cross-feature arrows are forbidden.
+does not reach up or sideways, and cross-feature arrows are forbidden.
 Navigation across features is a call to `navService` with a route and
-data; the state it writes lives at the root, and the caller never knows
+data; the state it writes lives at the root, and the caller does not know
 which node answers. A node's own sheet or stack is its own state,
 lifted only when another node must drive it. A system event a node
 subscribes to, a notification tap, a deep link, does not by itself
@@ -153,12 +153,12 @@ destination, or when the event must be handled while the stack's owner
 is not mounted. Then the listener sits in a node that is mounted, and
 that node calls `navService`.
 
-- **Mermaid id = node name, always.** The name is the join key that
+- **Mermaid id = node name.** The name is the join key that
   merges maps back into one tree.
 - **Label = name, then one `· ` contract line per line.** Five kinds,
   distinguishable by parser. `· @Source` materializes a value from a
   source that outlives the node (`· @Query`, `· @SceneStorage`). `· dep.func()`
-  calls a capability and logs. `· dep.value` reads one and never logs.
+  calls a capability and logs. `· dep.value` reads one and does not log.
   `· $path` writes a binding the node was handed, from its parent
   (`· $sortByAuthor`) or inside a dependency (`· $settings.city`); the
   write logs, the checker requires a block that writes it, and the
@@ -175,7 +175,7 @@ that node calls `navService`.
   navigation destination, its own boundary call or callback. The map draws
   persisted nodes, the ones the runtime keeps a slot for. A
   transformer, pure flow through a struct of bindings with no slot, is
-  never drawn; it lives inside the node whose state it reads.
+  not drawn; it lives inside the node whose state it reads.
 - **A labeled arrow is a presence condition.** Unlabeled arrows are
   composition, children that always exist together. A label names the
   value that must hold for the child to exist, in the code's own words
@@ -183,7 +183,7 @@ that node calls `navService`.
   deciding value are alternatives
   (`-->|isLoggedIn|`, `-->|!isLoggedIn|`; three arrows on one enum are a
   switch). Arrows on different values are independent and may coexist.
-  Possibility, never sequence.
+  Possibility, not sequence.
 - **Unbuilt nodes are bare leaves.** Mapped, reachable, empty. Finished
   design.
 
@@ -260,7 +260,7 @@ signatures. Field names without elaboration. Services as bare closure
 signatures, a result after the parens, `save(Address) path`. `..>`
 records consumption. Coupling is consumption, not
 visibility. Everything is visible to everyone, and only use creates a
-line. A signature here is dictated by the nodes that consume it, never
+line. A signature here is dictated by the nodes that consume it, not
 by the implementation that will eventually satisfy it. This layer is
 what the method is for. Every node couples to the rest of the app
 through this data alone, the models, the closure signatures, and the
@@ -313,11 +313,11 @@ usage lines. Usage is written on the nodes themselves.
   materialization (`@Query`) gets no cylinder. The root does not set
   it. It is facts arriving, tagged on the node label. The root's own
   `@AppStorage` reaches features through a `settings` cylinder, a
-  struct of bindings; handed through the inits of nodes that never use
+  struct of bindings; handed through the inits of nodes that do not use
   it, the write would land on each of their labels. Nor does a sealed
   action get one, `· dismiss()`; Apple sets it. How
   a capability's closure is assembled behind its cylinder is
-  implementation detail and never drawn.
+  implementation detail and not drawn.
 - **Setting a value is normal data flow.** One arrow from the root into
   the box. A second arrow into the box means a value was set below the
   root. The root is the root of the tree that is running: the app's
@@ -327,7 +327,7 @@ usage lines. Usage is written on the nodes themselves.
   lists its ingredients, which must sit above it. A consequence every
   write must carry, a reminder scheduled for each saved plant, is the
   root's composition, a derived `dbService` listing `reminderService`
-  as its ingredient, never the same call repeated on each node that
+  as its ingredient, not the same call repeated on each node that
   writes. Where nothing is
   derived, the order is still the root's own and constrains nothing. The
   column runs outermost first. In the code the chain reads the other
@@ -369,8 +369,8 @@ source-of-truth mutation logs under the property's name (a binding
 write, an external-storage write, the node's own state write). A
 boundary call logs under the closure's name with its arguments,
 whatever the closure's shape: sync, `async throws`, returning. The call
-is the event. What comes back is supplied data. Reads never log. The
-test for a write is whose source of truth it lands in, never who holds
+is the event. What comes back is supplied data. Reads do not log. The
+test for a write is whose source of truth it lands in, not who holds
 the pen. A text field writing the node's `title` logs every keystroke
 though the system held the pen. The system moving focus logs nothing,
 because focus is the system's.
@@ -406,7 +406,7 @@ where it does not, the test sorts them into one fixed order before
 comparing. A payload is written as the criterion
 names it, a `Book` by its title. The names are what a test asserts
 exactly; a value is asserted as the test's author sees fit. Dashed arrows back are supplied data,
-never entries. A stimulus is `User`, `System`, or a child firing a
+not entries. A stimulus is `User`, `System`, or a child firing a
 callback the parent handed it (`AddItem->>ShoppingList: onAdd eggs`),
 which is the only way an event reaches a parent from inside its own
 tree. A subscription is a call that returns a stream, logged once when
@@ -445,7 +445,7 @@ map first, and the map diff is the design review.
 `references/reverse-engineering.md`. Walk instantiation from the entry
 point, attribute every I/O call to the node that decides it, apply the
 cuts while walking, verify values are set at the root only, write
-depth-1 maps. Never invent evidence. Draw a block only where a pinned
+depth-1 maps. Do not invent evidence. Draw a block only where a pinned
 log already exists. Present the findings. The first map is a free
 architecture review.
 
@@ -454,7 +454,7 @@ changes a contract, adds a capability, or changes what a node does at
 its edge updates the affected maps, structure or evidence, in the same
 commit, and the checker runs. In a mapped repo, read `APP-MAP.md`
 before reading code, and treat rule 2 as the work fence. If map and
-reality disagree, say so and fix one of them. Never work around it
+reality disagree, say so and fix one of them. Do not work around it
 without saying.
 
 ## Style
@@ -478,7 +478,7 @@ The articles' terms, and what the map calls them.
 | data coupling layer (Diagram 2) | the same: the one shared module, free of behavior, the models, closure signatures, and the environment entries that carry them |
 | depth 1 | mock depth, constant at one, extended to the root (values set there only) and to maps (one level) |
 | scenario | the same: a test-host view owning real state and handing down logged boundaries |
-| shell / core | the same, never drawn. The cut itself is the data-coupling skill's job, `../data-coupling/references/shell-core.md` |
+| shell / core | the same, not drawn. The cut itself is the data-coupling skill's job, `../data-coupling/references/shell-core.md` |
 
 ## References
 

@@ -15,14 +15,14 @@ description: >
 
 # xcode-project: the project is the output of a script
 
-An Xcode project is never edited by hand and never produced by a
+An Xcode project is not edited by hand and not produced by a
 third-party generator. A shell script beside it, `generate.sh`, deletes
 the project and writes it again from nothing with `xcrun xcodeproj`,
 the tool that ships with Xcode. The script is the source. The project
 file is its output. Both are committed, so the repository opens in
 Xcode without anything being run first.
 
-Most agents have never seen this tool. Do not guess its commands from
+Most agents have not seen this tool. Do not guess its commands from
 other tools. Everything needed is on this page, and `xcrun xcodeproj
 <subcommand> --help` prints the rest.
 
@@ -30,7 +30,7 @@ other tools. Everything needed is on this page, and `xcrun xcodeproj
 
 `xcrun xcodeproj` has six subcommands: `init`, `setting`, `target`,
 `group`, `config`, and `pkg`. It reads and writes the project file and
-nothing else. It never writes a workspace, a scheme, or the contents of
+nothing else. It does not write a workspace, a scheme, or the contents of
 an `.xcconfig` file.
 
 The project it creates is one JSON file, `Name.xcodeproj/project.xcproj`.
@@ -111,8 +111,8 @@ perl -0pi -e 's/"name": "(\w+)",(\s*)"id": "[0-9A-F]{24}"/"name": "$1",$2"id": "
 
 Read it in five blocks.
 
-1. **Start from nothing.** `rm -rf` and `init`. The script never
-   patches an existing project, so the project can never hold a
+1. **Start from nothing.** `rm -rf` and `init`. The script does
+   not patch an existing project, so the project cannot hold a
    setting the script does not show.
 2. **Project settings.** `setting set KEY VALUE` with no `--target`
    writes to the project, and every target inherits it.
@@ -183,7 +183,7 @@ Product types are short names: `application`, `framework`,
   destination, which builds the application it depends on first. `xcodebuild -list` may leave the
   test bundle's scheme out of its list, and the scheme still runs.
   Pass `-derivedDataPath DerivedData` beside the project, so a build
-  never picks up the products of another checkout.
+  does not pick up the products of another checkout.
 - **The ids are made predictable on purpose.** With the last line, two
   runs of the script give the same bytes, so the committed file changes
   only when the script does. Xcode writes its own ids back when it
@@ -221,7 +221,7 @@ the targets are.
   Tuist. The tool is already installed with Xcode.
 - **Patch a project in place from the script.** It starts with
   `rm -rf` and `init`, every time.
-- **List source files.** A folder is synchronized, never enumerated.
+- **List source files.** A folder is synchronized, not enumerated.
 - **Write a scheme file** for what the target's own scheme already
   does.
 

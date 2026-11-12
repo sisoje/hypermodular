@@ -5,7 +5,7 @@ This repo defines the hypermodular method (Top-Down Development).
 `data-coupling/SKILL.md` for the code. This file is your working
 summary. What wins, in order: a ruling recorded in `TODO.md`, then
 the two skills, then this file, then the owner's articles the skills
-were distilled from. Flag a disagreement, never obey it. Any rule in
+were distilled from. Flag a disagreement, do not obey it. Any rule in
 either skill may be broken whenever breaking it saves time or is the
 more practical thing to do. Practicality outranks the rule. The break
 is said out loud, with the rule and the reason. The skill's
@@ -45,9 +45,9 @@ on a `Task` nobody holds (`scripts/test.sh` runs its fixtures).
 3. **Evidence, not effects.** Declare a node's behavior as data before
    implementing: values in, ordered execution log out. Every
    source-of-truth write and every boundary call, sync or `async
-   throws`, logs. Reads never do. A write logs iff it lands in a source
-   of truth the node owns or was handed, whoever holds the pen. Never a
-   mock object, never observe effects behind a boundary. A boundary in
+   throws`, logs. Reads do not. A write logs iff it lands in a source
+   of truth the node owns or was handed, whoever holds the pen. No mock
+   object is written, and effects behind a boundary are not observed. A boundary in
    a spec is a logger. Checking a node is comparing two values.
 
 ## One law: depth 1, the cure for death by a thousand mocks
@@ -62,15 +62,15 @@ its own.
 |------|---------|
 | `A --> B` | Data flow: parent hands facts, bindings, and callbacks down. Also root to Dependencies box (setting a value is normal data flow). |
 | `A -->\|cond\| B` | A presence condition: the child exists while the labeled value holds. Arrows on the same deciding value are alternatives, on different values independent. Unlabeled arrows are composition (children coexist). |
-| `Node["Name<br/>· @Query<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: store, scene storage, or focus, which the system owns and the node writes; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder. `· dep.value` reads a let or binding off a dependency and never logs. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and the checker reports a block that never names it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
-| `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, never `swiftData`). |
+| `Node["Name<br/>· @Query<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: store, scene storage, or focus, which the system owns and the node writes; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder. `· dep.value` reads a let or binding off a dependency and does not log. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and the checker reports a block that does not name it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
+| `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, not `swiftData`). |
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top to bottom in the order the root sets them. Derived services list their ingredients, which must sit above them. |
 | `A ~~~ B` | Invisible link. Orders the dependency column. |
 | `%% Root: X · Parent: Y (../MAP.md)` | First line of every mermaid block. Self-describing placement. |
-| `%% Whole: X` | The whole app in one diagram, first in `APP-MAP.md`. `mapcheck.py --write` draws it by merging the depth-1 blocks on node names. Never written by hand. A stale one is a checker error. |
+| `%% Whole: X` | The whole app in one diagram, first in `APP-MAP.md`. `mapcheck.py --write` draws it by merging the depth-1 blocks on node names. Not written by hand. A stale one is a checker error. |
 | `%% Evidence: X · Parent: Y (../MAP.md)` + `%% Given: …` + `sequenceDiagram` | Diagram 4, one per acceptance criterion whose log crosses the node's edge. In-arrows are the when (`User`, `System`, or a child's callback), out-arrows the log in order, dashed arrows supplied data, `loop` a count unnamed, `Note` silence. Targets are contract lines or stored properties (own state, materialized sources). Quote mermaid-reserved names (`"title"`). Lives in the node's own `MAP.md` under `## Evidence`. Own-state-only criteria stay arrays in the test. |
 
-Style: mermaid id = node name, always (the name is the merge key). No
+Style: mermaid id = node name (the name is the merge key). No
 colors, no fills (`fill:none` on the Dependencies box, the one
 subgraph), no emoji, no status marks.
 
@@ -79,14 +79,14 @@ subgraph), no emoji, no status marks.
 - **Lift, whatever is being made.** The state goes out of the view to
   the node above that can own it. The logic goes out too, as closures
   the root sets and as rules that run above the view. The two are kept
-  apart always, never one object holding both. A SwiftUI node is not a
+  apart, not one object holding both. A SwiftUI node is not a
   physical view the way a UIKit view is. It only transforms its
   dependencies, so there is nothing to attach a ViewModel to.
 - **One tree per shipped `@main`** in `APP-MAP.md`; a test host is
   none. Names unique across the repo. Built-but-unmounted components go
   under `## Unmounted`.
 - **No cross-feature arrows.** Navigation across features is a call to
-  `navService` with a route and data. The caller never knows which node
+  `navService` with a route and data. The caller does not know which node
   answers. A node's own sheet or stack is its own state, lifted only
   when another node must drive it. A system event the stack's owner
   subscribes to is not a cross-feature call.
@@ -108,7 +108,7 @@ subgraph), no emoji, no status marks.
   time, nothing generic. A screen is cheap and reads like a book.
 - **No invented model in a feature.** A struct or an enum that groups
   facts exists because the data layer already defines it. A feature's
-  state is loose fields, never a load-state enum. Loose fields are
+  state is loose fields, not a load-state enum. Loose fields are
   orthogonal, so they compose.
 - **No `Task` nobody holds.** Work an event starts is a task assigned
   to an `@UnstructuredTask` slot, which cancels on replacement and on
@@ -121,8 +121,8 @@ subgraph), no emoji, no status marks.
   that earns it and a framework delegate, the code skill names. Setting =
   putting a value into the environment at the root. A dependency that
   does I/O is its own package under `Packages/Dependencies/`, however
-  small. It sees the data coupling layer and what it wraps, never a
-  feature, never another dependency, and it exposes one public
+  small. It sees the data coupling layer and what it wraps, not a
+  feature, not another dependency, and it exposes one public
   `inject` view modifier. The layer re-exports swift-core-flow and the
   features re-export the layer, so a feature file imports neither.
   Deriving = building a new value from values already there. No
@@ -137,11 +137,11 @@ subgraph), no emoji, no status marks.
   does not. `dbService` is writes only; a write may return a result, an
   id or an error.
 - **A node is a collapsed subtree.** View furniture (rows, buttons,
-  design-system pieces) never gets a node. The contract is what crosses
+  design-system pieces) does not get a node. The contract is what crosses
   the node's edge. A subtree splits out only when it joins the app
   lifecycle on its own (own outliving state, appearance work,
   navigation destination, own boundary call or callback).
-- **Shell/core split is implementation detail** and is never drawn.
+- **Shell/core split is implementation detail** and is not drawn.
   The cut is by hand or with `@Shell`, judged per view, and
   `data-coupling/references/shell-core.md` says how.
 - **Leaves get no structure map.** A map earns its existence by having
@@ -175,16 +175,16 @@ subgraph), no emoji, no status marks.
 - **Maintenance**: the map is code. Update affected maps (structure or
   evidence) in the same commit as the change, and run `mapcheck.py`
   with `--sources` on the code.
-  Reverse-engineering never invents evidence: draw a block only where a
+  Reverse-engineering does not invent evidence: draw a block only where a
   pinned log already exists. Read `APP-MAP.md` before reading code. If
-  map and code disagree, say so. Never work around it without saying.
+  map and code disagree, say so. Do not work around it without saying.
 
 ## Prose
 
 Every file here is doctrine an agent reads verbatim, so it is written
 plainly. No em dashes. No colon joining two clauses into one sentence.
 No figurative phrasing, no padding. A cleanup keeps every fact. Rewrite
-the sentence, never drop what it said. The clarity test for the code
+the sentence, do not drop what it said. The clarity test for the code
 skill is `data-coupling/scripts/comprehension-prompt.md`, and
 `comprehension-prompt-2.md` covers the binding, networking, and layer
 passages the first does not reach. The mapping skill's test is

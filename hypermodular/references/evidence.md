@@ -12,7 +12,7 @@ and every call with its payload. Two kinds of entry, nothing else.
 
 - **A source-of-truth mutation logs** under the property's name: a
   binding write, an external-storage write, the node's own state write.
-  Evidence is wider than the map contract. Own state never appears on
+  Evidence is wider than the map contract. Own state does not appear on
   a structure map, but its writes are I/O, and I/O logs, so it appears
   as a target in evidence.
 - **A boundary call logs** under the closure's name, with its
@@ -23,7 +23,7 @@ and every call with its payload. Two kinds of entry, nothing else.
   synchronous. The call is the event. What comes back, a value or a thrown
   error, is supplied data, not evidence.
 
-**Reads never log.** A query's answer is data handed in, and getters
+**Reads do not log.** A query's answer is data handed in, and getters
 fire on the render scheduler's timing, not the node's. One
 nondeterministic line poisons an exact-sequence assertion. Binding
 getters, view-builder closures, any helper evaluated during rendering:
@@ -31,7 +31,7 @@ none of it is evidence.
 
 ## Whose source of truth
 
-The test for a write is whose source of truth it lands in, never who
+The test for a write is whose source of truth it lands in, not who
 holds the pen. A write into state the node owns or was handed (own
 state, a binding, external storage) is the node's I/O and logs, even
 when the system performs it on the user's behalf. A text field writing
@@ -92,7 +92,7 @@ The block is the source and the test is written from it.
   own exactly when the node rule makes it one.
 - Unexpected calls are caught twice. A logged boundary called when the
   block did not say so, or twice, appears in the log and fails the
-  equality; the whole log is compared, never a subsequence. A boundary
+  equality; the whole log is compared, not a subsequence. A boundary
   the label does not name has no logger in the scenario, so that call
   is the checker's finding, `mapcheck.py --sources`, a call in the
   Swift with no line on the label.
@@ -144,7 +144,7 @@ not handed, so its parameters are its only channel outward. Instrument
 them all and no effect escapes unlogged. A write re-creates the node.
 The value that wrote dies in the wave it triggers, while an action it
 started runs on, and the writes after its awaits land in the successor's
-storage. So a write's consequence never comes back to the value that
+storage. So a write's consequence does not come back to the value that
 made it. The result arrives as a successor's creation inputs, because
 the network is reactive so the nodes do not have to be.
 
@@ -152,17 +152,17 @@ Refactor the node and the log cannot change. Only a changed requirement
 can. Moving state across the core's edge, into or out of furniture, is
 not a refactor; it changes what the node declares. That is why the log, not the structure, is the contract. It is the
 one artifact coupled to requirements rather than to how the code is
-arranged, so a harmless refactor can never turn it red.
+arranged, so a harmless refactor cannot turn it red.
 
 One integration test per cylinder, at the shell, written once, owns
 each boundary's real implementation. A node's evidence proves only the
-decision to cross the boundary, never what lies behind it.
+decision to cross the boundary, not what lies behind it.
 
 ## Worked material
 
 The eight pinned logs of CoreFlowExample (a text field's double write
 per keystroke, a system focus move that logs nothing, an `async throws`
-call whose thrown error never appears, a gesture left unpinned on
+call whose thrown error does not appear, a gesture left unpinned on
 purpose) are transcribed as evidence blocks in
 `coreflow-example-validation.md`, Part 2. They are the ground truth
 every sentence above was checked against. The example has since left

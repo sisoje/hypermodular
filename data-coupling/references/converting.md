@@ -20,7 +20,7 @@ unit of work is one node of the map.
 
 A node's criteria are agreed with the owner before it is converted, and
 declared as evidence, as the hypermodular skill has it. The code is
-never the source of a criterion. Legacy code shows what it does, not
+not the source of a criterion. Legacy code shows what it does, not
 what someone decided.
 
 ## Two kinds of legacy view
@@ -54,7 +54,7 @@ object.
 
 | In the object | Where it goes |
 |---|---|
-| `@Published var email`, a stored property the screen shows | loose `@State` in the shell, one per fact, handed to the core as a `let` or a `@Binding`. Never a `State` struct |
+| `@Published var email`, a stored property the screen shows | loose `@State` in the shell, one per fact, handed to the core as a `let` or a `@Binding`. Not a `State` struct |
 | `@Published var state: LoadState`, an enum with a case per phase | the facts it fused, `isLoading`, `error`, `books`, each its own `@State` |
 | a computed property over the state, `canSubmit` | a computed value in the core |
 | a method that only writes the state, `reset()` | the write itself, at the control that triggers it |
@@ -82,7 +82,7 @@ The reducer is the view. An `Effect` is an awaited closure, and a
 3. Write the core from the screen. It compiles against nothing.
 4. For each service the object called, add the closure to a contract
    in the layer, with its no-op default. The node that calls it
-   dictates the signature, never the service that exists.
+   dictates the signature, not the service that exists.
 5. Write the shell. Loose state, the contract read from the
    environment, a transformer where a write is judged, a held task
    where an event starts work.
@@ -216,7 +216,7 @@ deleted. The class `API` is as it was.
 
 A service that holds state, a session, a socket, a database handle, a
 token refresher, stays the class it is, behind the contract's closures.
-No node reads the handle. It is converted last, or never. What converts
+No node reads the handle. It is converted last, or not at all. What converts
 is who names it, and after step 6 one file does. Once the service can
 leave the app target, it and its wrapper become a package under
 `Packages/Dependencies/` that exposes one `inject` modifier.

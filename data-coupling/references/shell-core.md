@@ -18,7 +18,7 @@ edges.
 A SwiftUI view with live property wrappers is the shell. `@State`
 installs real storage on render. `@Query` talks to a real
 `ModelContext`. `@AppStorage` reads `UserDefaults`. That I/O is fused
-into the type, so it runs only inside a live render pipeline, never in
+into the type, so it runs only inside a live render pipeline, not in
 isolation. The line SwiftUI offers is I/O versus pure transformation,
 not UI versus logic.
 
@@ -71,13 +71,13 @@ So the rule for a core and the environment:
 | plain `let` and `var` fields, closures | data | already in the core | copied verbatim |
 | `@Binding` | reference | already in the core; passes straight through | copied verbatim; the caller supplies the binding |
 | `@State` | data, owned | stays in the core if only the core needs it; `@Binding` if a criterion names it | `@TestState`: stays private, keeps its default, logs every write |
-| `@SceneStorage` (`@AppStorage` is the root's and never in a feature) | data, external storage | shell keeps it; core takes `@Binding` | `@Binding`. The key disappears, because a twin does not persist |
+| `@SceneStorage` (`@AppStorage` is the root's and not in a feature) | data, external storage | shell keeps it; core takes `@Binding` | `@Binding`. The key disappears, because a twin does not persist |
 | `@Query` | reference, a filtered read | shell keeps it; core takes a plain `let` array | `@QueryResult`. The memberwise init takes the bare array |
 | `@FocusState` | machinery | shell | `@TestFocusState`: a real `FocusState` underneath, programmatic writes log |
 | `@Environment` value, your own `@Entry` | reference | in the core; the scenario sets it with `.environment(...)` | copied verbatim; the scenario sets it with `.environment(...)` |
 | `@Environment(\.dismiss)`, `(\.openURL)` | reference, sealed action | shell reads it and hands the core a closure, because nothing can build one from above | `@TestEnvironment`: the real action runs, every call logs |
 | `@GestureState`, `@Namespace` | machinery | shell | copied verbatim: live when hosted, defaulted otherwise |
-| `@ScaledMetric` | machinery | may stay in the core. It has a default and never blocks construction | copied verbatim |
+| `@ScaledMetric` | machinery | may stay in the core. It has a default and does not block construction | copied verbatim |
 | `@StateObject`, `@ObservedObject` | none | not in this architecture | unmapped on purpose: no value-shaped boundary to substitute |
 
 ## The three extraction rules
@@ -88,7 +88,7 @@ Extracting the core is a mechanical split into two views.
 2. **Data-holding wrappers become boundaries.**
    - `@SceneStorage` becomes `@Binding`. External storage is a
      dependency, and whoever constructs the core supplies it.
-     `@AppStorage` is the root's and never in a feature.
+     `@AppStorage` is the root's and not in a feature.
    - `@Query` becomes a plain `let` array. The fetched result is handed
      in as a value.
    - `@State` that only the core itself needs may stay in the core.
@@ -205,7 +205,7 @@ release build, and needs no `#if DEBUG`. Scenarios live in the app
 target like every preview.
 
 The mapped wrappers must be `private` on the host, and the macro
-diagnoses anything else. They are the view's own source of truth, never
+diagnoses anything else. They are the view's own source of truth, not
 something a caller supplies. A plain `private` field with no wrapper is
 a compile error, because pure data flow has no room for opaque state.
 
@@ -355,7 +355,7 @@ asynchronous is an `async` closure, and the node that calls it owns the
 task. Effects belong in the type signature. A closure
 typed `() async throws -> Void` reads as "async effect that can fail".
 See `async` or `throws` in a signature and you are looking at a
-boundary that belongs behind a contract, never inline in view logic.
+boundary that belongs behind a contract, not inline in view logic.
 Pure logic is synchronous and non-throwing, which is the proof that it
 is pure. `grep async` finds every awaited boundary.
 
@@ -452,7 +452,7 @@ form. The fetch belongs to a value, the sort, so it is `.task(id:)`.
 `.task` binds the work to the view's lifetime, and `.task(id:)`
 restarts it on change, cancelling the stale job at its next suspension
 point. Its id is a value that is `Equatable` by nature, a flag, a
-count, a string, never a model made `Equatable` for it. Both are the
+count, a string, not a model made `Equatable` for it. Both are the
 runtime's events. Appearance starts the work and disappearance cancels
 it, and the node decides neither, so they are kept for work that
 belongs to appearance or to a value that already exists.
@@ -491,7 +491,7 @@ own.
   adds nothing.
 - **Shells and cores cascade.** A core's child may be a shell with a
   core of its own, to any depth. Where a piece of state should sit is
-  never a puzzle to solve for the whole feature. It sits in the node
+  not a puzzle to solve for the whole feature. It sits in the node
   that uses it, and when a scenario or a preview must hand it in, one
   more shell goes above that node. Each node is tested alone as a
   unit, and the composition works because every edge between them is
@@ -551,10 +551,10 @@ own.
   A generated `Core` has no file.
 - A core's preview is a construction of the core with literals,
   written directly in `#Preview`. A view with state or a live wrapper,
-  a shell, is previewed through a scenario and never bare. A bare
+  a shell, is previewed through a scenario and not bare. A bare
   preview of a shell is `@Query` hitting a container, which is an
   integration test.
-  Previews never touch real storage. The environment default serves
+  Previews do not touch real storage. The environment default serves
   them, and a specific value comes from `@Previewable @State` bound into
   a defaulted initializer.
 

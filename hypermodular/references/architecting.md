@@ -19,7 +19,7 @@ point, so offer alternatives, label the decisions, and get the tree
 agreed before anything is built.
 
 The alternative is the one everybody knows. Build from the bottom, and
-you never know when a layer is finished. Nothing above it exists yet to
+you do not know when a layer is finished. Nothing above it exists yet to
 ask it for anything, so its shape is a guess, and the guess is checked
 only when the screen finally runs. Top-down inverts that. Each
 implementation arrives to find its consumer, and its consumer's

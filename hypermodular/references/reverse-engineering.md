@@ -32,7 +32,7 @@ Find every I/O touchpoint (network, storage, environment, timers,
 notifications, launch arguments) and attribute each to the node that
 decides it. That node gets the contract line. The service becomes a
 cylinder, named for the boundary rather than the tech (`dbService`,
-never `swiftData`). Native materialization (`@Query`)
+not `swiftData`). Native materialization (`@Query`)
 becomes an `· @Source` line on the node that holds it, not a cylinder.
 
 Collect shared models and service signatures into the coupling diagram
@@ -48,7 +48,7 @@ before presenting. A map that does not reconstruct is not finished.
 
 **Evidence is not reverse-engineered.** Draw an evidence block only
 where the code already carries a pinned log, an existing test that
-asserts a sequence. Never invent acceptance criteria from code. A node
+asserts a sequence. Do not invent acceptance criteria from code. A node
 with calls on its label and no block is a finding to report, not a gap
 to fill. The behavior of legacy code is what it does, not what someone
 decided, and the map must not pretend otherwise.

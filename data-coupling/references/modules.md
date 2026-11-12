@@ -46,8 +46,8 @@ extension EnvironmentValues {
 // initializer and the entry in a `public extension`.
 ```
 
-`id` is an initializer argument, never generated inside the model and
-never minted inside a node; a new id comes from the store or from a
+`id` is an initializer argument, not generated inside the model and
+not minted inside a node; a new id comes from the store or from a
 contract closure a scenario can fix, so payloads stay deterministic.
 The model conforms to nothing. A `@Model` class carries what SwiftData
 gives it, `PersistentModel` included, and nothing added. Identity is
@@ -55,7 +55,7 @@ the consumer's to name, at
 the call site with `ForEach(books, id: \.id)`, or in the consumer's own
 module with `extension Book: @retroactive Identifiable {}` where an API
 such as `.sheet(item:)` demands the protocol. The mark is the truth:
-the layer never conforms, so no later conformance can collide. Two
+the layer does not conform, so no later conformance can collide. Two
 literals with the same `id` are one row to that `ForEach`, so a fixture
 is a literal and needs no `static let` to hold identity across waves.
 
@@ -88,7 +88,7 @@ one thing, a package of pure data. Data is the abstraction.
 - **Contracts.** The service signatures, as structs of closures (next
   section), each with its `@Entry`. A contract lives in the layer even
   when its implementation lives in some other package. Folders slice by
-  what the closure struct is, never by which package implements it.
+  what the closure struct is, not by which package implements it.
 - **Data, not helpers.** Models, enums, contracts, and the values a
   feature computes and shows live in the layer whoever consumes them;
   that is the package everything reads. A helper type one feature keeps
@@ -98,7 +98,7 @@ one thing, a package of pure data. Data is the abstraction.
   `Sendable`, `Codable`, and `CaseIterable` unless something concrete
   needs them. `ForEach(books, id: \.id)` needs no conformance;
   `Identifiable` is for the APIs that demand it, such as `.sheet(item:)`.
-  Prove necessity by building, never by guessing.
+  Prove necessity by building, not by guessing.
 - **Defaulted initializers, not factories.** Give the initializer default
   parameter values instead of `make…` helpers, so the no-op default
   collapses to `.init()`. Do not add members "just in case".
@@ -142,27 +142,27 @@ fields `@escaping`.
 A contract's members are closures, lets, or bindings. The root's
 `@AppStorage` keys reach features this way, as a `settings` struct of
 bindings built over the root's own properties, so a feature reads or
-writes one value from the environment and never names a key.
+writes one value from the environment and does not name a key.
 
-The consumer dictates the signature, never the implementation that will
+The consumer dictates the signature, not the implementation that will
 satisfy it. The core constructs the model and hands it over (`try await
 save(book)`). The closure is `async` or `throws` because the I/O can
 fail. `async` is the I/O marker. Every contract closure carries its
 effects in its type, and pure logic has none.
 
 The default is the minimal no-op. An environment value's default is
-`.init()` with do-nothing closures, never a `static let live`. The default is what previews and tests get. It already stubs every shape
+`.init()` with do-nothing closures, not a `static let live`. The default is what previews and tests get. It already stubs every shape
 of I/O, and a scenario overrides every closure the node's label names. What the
 default of a closure that must return a value does is of no
 importance. It throws where the closure throws, and where it cannot
 throw it is a `fatalError`. An empty collection will do where the
-result is one. The default is never a reason to change the signature,
+result is one. The default is not a reason to change the signature,
 which the node that calls it dictates, so no result is made optional
-to give the default a `nil` to return. Never a blank value that looks
-real.
+to give the default a `nil` to return. A blank value that looks real
+is not used.
 
 Mark closure types `@Sendable` only when a closure crosses an isolation
-boundary. Under a main-actor default isolation most never do. Do not
+boundary. Under a main-actor default isolation most do not. Do not
 add it to paper over an isolation error.
 
 ### Why this beats protocol plus class
@@ -212,7 +212,7 @@ flowchart BT
 ```
 
 Read the arrows. Every dependency points at data. Features and the
-dependency packages never meet at compile time. A sync engine consumes
+dependency packages do not meet at compile time. A sync engine consumes
 the REST contract as a value read from the environment, not the
 package that implements it. What you will not find: a feature
 importing a dependency, a dependency importing another or importing
@@ -224,7 +224,7 @@ meet only through data, wired by the environment at runtime.
   pure components. SwiftData reads in shells and system bridges
   (`UIViewControllerRepresentable`) are allowed. Ambient I/O (system
   frameworks, files, the network) is not. That goes through a contract.
-- **Model-free presentation** (`CommonUI`) never depends on the data
+- **Model-free presentation** (`CommonUI`) does not depend on the data
   layer. Design-system pieces take values, not models.
 - **A dependency** is a package under `Packages/Dependencies/`, one
   for each boundary that does I/O, however small, and one for each
@@ -247,7 +247,7 @@ only thing that stops a dependency from seeing a feature. A modifier
 file in the app target sees everything the app imports, and a sort
 enum or a parser that lives in a feature gets used there with no
 error. In a package the same line does not compile. The line for what
-must be a package is I/O, never size. A haptics dependency of thirty
+must be a package is I/O, not size. A haptics dependency of thirty
 lines is one.
 
 The layer is the one package that lists swift-core-flow, and it
@@ -279,7 +279,7 @@ flat and inline.
   inside.
 - **These modifiers are not views.** They are the points where the root
   sets values into the environment, and they stay in the app forever.
-- **Previews never touch real storage.** A preview must not set the real
+- **Previews do not touch real storage.** A preview must not set the real
   storage-backed service or write `UserDefaults`. That is root plumbing,
   and it breaks previews with no error. Lean on the default. A specific
   value comes from `@Previewable @State` bound into a defaulted
@@ -287,7 +287,7 @@ flat and inline.
 
 ### No `.live`, `.preview`, `.unimplemented`, and no `+Live` files
 
-Never attach an implementation to a contract type by extension
+Do not attach an implementation to a contract type by extension
 (`extension LibraryService { static func live(baseURL:) }` in a
 `LibraryService+Live.swift`). It makes the implementation look like
 part of the contract, scatters the type across packages, and forces a
@@ -324,7 +324,7 @@ leaks. One accumulator at the app root for everything is the global bus
 this avoids. Name a flow for what the caller means. A verb is a command
 whose listeners are the implementation (`deeplink`). A past-tense
 clause is a notification that a service's verb already happened
-(`logoutHappened`). Never name it after the reaction.
+(`logoutHappened`). Do not name it after the reaction.
 
 | OOP dependency injection | dependency flow |
 |---|---|
@@ -351,7 +351,7 @@ Reject what can be rejected. Parameterize the rest. Let the parameters
 flow. Flow is the SwiftUI-native upgrade over hand-threading that F#
 could not express.
 
-Visibility was never the coupling. Apple exposes everything to every
+Visibility was not the coupling. Apple exposes everything to every
 feature through the environment. Seeing a capability couples nothing.
 Consuming it does. Hiding dependencies mattered in OO because a
 dependency was a stateful reference, and seeing one meant being able to
@@ -385,7 +385,7 @@ smaller record sliced off for a feature is taste, not rescue.
       defaulted initializer and an `@Entry` whose default is `.init()`.
 - [ ] Every `async` and `throws` lives in a contract closure. Pure logic
       has none.
-- [ ] Features and dependencies depend on the data layer and never on
+- [ ] Features and dependencies depend on the data layer and not on
       each other. Presentation depends on nothing.
 - [ ] Every dependency that does I/O is its own package under
       `Packages/Dependencies/`, imports no feature and no other

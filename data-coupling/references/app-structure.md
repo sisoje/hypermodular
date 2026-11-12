@@ -140,7 +140,7 @@ struct Injector: ViewModifier {
   root must supply is the function's parameters, and each dependency
   has its own. A backend that calls a server takes a base URL. One
   that answers from fixtures takes nothing.
-- **The package is never named as the contract's type.** A module and
+- **The package is not named as the contract's type.** A module and
   a type of one name shadow each other. `AddressService` is the
   contract, so the package is `AddressFile`.
 - **Its logic is internal functions** the closures call, here
@@ -149,7 +149,7 @@ struct Injector: ViewModifier {
   ingredients on the `Injector`. Their contracts and entries are in the
   layer, so it imports no other dependency.
 - **A failure is thrown.** Work that can fail makes the closure
-  `throws`. A dependency never catches its own failure to hand back a
+  `throws`. A dependency does not catch its own failure to hand back a
   string or a default in a result's place. What a failure shows is the
   node's logic, and the node cannot decide it once the failure has been
   dressed as a result.
@@ -181,10 +181,10 @@ struct AddressApp: App {
 
 ## The project file
 
-An app is an Xcode project, never a bare package. The project is the
+An app is an Xcode project, not a bare package. The project is the
 output of `App/generate.sh`, a script that deletes it and writes it
 again from nothing with `xcrun xcodeproj`, the tool that ships with
-Xcode. It is never edited by hand and never produced by a third-party
+Xcode. It is not edited by hand and not produced by a third-party
 generator. The xcode-project skill beside this one teaches the tool,
 every command and the facts that bite. Read it before writing the
 script.
@@ -260,7 +260,7 @@ brief or the machine gives.
 - **Evidence tests** are the UI-test bundle, one test class per node,
   one method per evidence block. The bundle's application is the test
   host, whose whole `main.swift` is `HostApp<TestScenario>.main()`.
-  They run in the iPhone simulator, never against a Mac app, and
+  They run in the iPhone simulator, not against a Mac app, and
   nothing scripts the Mac's own interface.
 - **`TestScenario`** is public in `Features`, in its own file, and the
   bundle links `Features` to name its cases.

@@ -141,7 +141,7 @@ values with nothing under it. The test hosts it in a scenario for live
 reach, real `@State`, real input, the environment set, and reads the
 log. A tap calling `onDelete` is `Button`'s contract, Apple's to test.
 What the tap proves here is that the node's log holds `onDelete Dune`.
-The log is the assertion, never the screen.
+The log is the assertion, not the screen.
 
 ## The test host: a UI test here is a unit test
 
@@ -159,13 +159,13 @@ time, designed once.
   same source set as the shipped app, or a small app that `@testable
   import`s the feature module so it can construct internal cores. It
   ships nothing. It links the host product of swift-core-flow if it
-  uses it, and the shipped app never links that product.
+  uses it, and the shipped app does not link that product.
 - **One launch, one scenario, one node.** The host's root renders the scenario named in its launch environment
   and nothing else. swift-core-flow passes the scenario as JSON; a
   `Codable` enum with one case per unit is one way to spell it. No root
   view, no navigation stack, no other screens, no live service. The
   host sets nothing into the environment. The scenario sets the
-  loggers. A test never launches the shipped app.
+  loggers. A test does not launch the shipped app.
 - **The unit is the node.** Whatever is hosted (a row, a screen, a
   feature subtree) is the unit, and the test's reach is that node's
   edge. Inside the edge, taps, focus, gestures, and owned state are
@@ -191,13 +191,13 @@ time, designed once.
   reads the log through the transport, and compares. It links the
   testing product, which imports XCTest, and nothing else does.
 - **It grows one unit at a time.** A new unit is one enum case, one
-  scenario beside its view, and one test. The host never learns the app's
-  structure, so it never changes when the app does.
+  scenario beside its view, and one test. The host does not learn the app's
+  structure, so it does not change when the app does.
 
 Why a host at all: `@State`, focus, gestures, the environment, and
 `TextField`'s two writes per keystroke exist only inside a live render
 pipeline. The host supplies that pipeline and nothing else. "Unit" was
-never about how the test runs. It is about what is constructed, and here one node is
+not about how the test runs. It is about what is constructed, and here one node is
 constructed, from values, with nothing under it.
 
 ## A criterion is a log
@@ -220,7 +220,7 @@ as a `let`, a `@Binding`, or a closure, or, with `@Shell`, stay private
 the component's own timing. That is deterministic, so a test asserts
 the exact sequence with one equality check. Reads fire on the render
 scheduler's timing, so the same property can log zero, one, or several
-times per action, which breaks assertions. Never log from a `get`. A
+times per action, which breaks assertions. Do not log from a `get`. A
 test that needs "was this read?" uses a use-site spy binding instead.
 
 **Whose source of truth, not who holds the pen.** A text field writing
@@ -254,13 +254,13 @@ because a function type has no members to stub. Depth has nowhere to
 descend, and the signature is the whole contract. An OO mock had to
 simulate an object, and an object's behavior reaches down through its
 collaborators. Depth was transitive, ending only at a type with no
-methods left to call. A mock was never a testing technique. It was a
+methods left to call. A mock was not a testing technique. It was a
 coupling repair, converting behavior coupling into data coupling per
 test at the price of simulating everything behind the interface. Here
 the coupling is data before any test exists, and the conversion has
 nothing left to do. What the real `fetch` does with a 304, or `save`
 with a conflict, is a separate question with a separate test, one per
-boundary, at the shell, written once. The feature never asks it again.
+boundary, at the shell, written once. The feature does not ask it again.
 
 **The log names only boundary events.** A log assertion is an
 interaction test, with one difference from the expectation-checking
@@ -268,7 +268,7 @@ style that made mockist suites brittle. Their expectations named
 collaborators, internal conversations a refactor is free to reshuffle.
 The log names only the events the acceptance criterion already names.
 Refactor the core and the log cannot change. Only a changed requirement
-can. Interaction was never the brittleness. Interaction with internals
+can. Interaction was not the brittleness. Interaction with internals
 was.
 
 **The log is exhaustive by construction.** A core captures nothing it
@@ -302,7 +302,7 @@ ordered record, is the point.
 ## With swift-core-flow
 
 The package mechanizes the scenario so that most of it wires itself.
-Everything logs to the installed sink at the write site, never through
+Everything logs to the installed sink at the write site, not through
 a view-layer observer replaying history.
 
 - **`@TestState var count = 0`** is a drop-in `@State` that logs every
@@ -334,7 +334,7 @@ a view-layer observer replaying history.
   with `logNames` and `logValues`, `waitUntil(_:equals:timeout:)`, and
   `tapOrClick()`, `switchOrCheckBox(_:)`, and `pressOrClick(...)`, one
   spelling for every destination. The host app links the host product,
-  never a shipping app. The test bundle links the testing product, which
+  not a shipping app. The test bundle links the testing product, which
   imports XCTest.
 
 ## When the log is the wrong tool
@@ -344,7 +344,7 @@ a view-layer observer replaying history.
   synchronous and non-throwing and needs no host.
 - The requirement names no order. Then the test sorts the
   interchangeable entries into one fixed order before comparing,
-  duplicates kept. It is never a subsequence. The whole log is compared with one equality, so
+  duplicates kept. It is not a subsequence. The whole log is compared with one equality, so
   a call the criterion did not name fails the test, which is the
   point.
 
@@ -358,7 +358,7 @@ a view-layer observer replaying history.
 - **Missing `@MainActor`** on a test that touches a `View`-conforming
   type's members, including a `Core`. Match the isolation of the thing
   under test. Leave the annotation off pure derivations.
-- **`tap()` or `click()`, never both.** Mac Catalyst sends nothing on
+- **`tap()` or `click()`, not both.** Mac Catalyst sends nothing on
   `tap()`. An iPhone simulator rejects `click()`. The package helpers
   choose at compile time.
 - **A sleep in a UI test.** Wait on the log element's label instead.
