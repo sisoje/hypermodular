@@ -25,9 +25,14 @@ mapped subtree), so it renders in every GitHub or GitLab PR, always
 visible and always diffable. The map tree may stand apart from the
 source tree, one directory per node, which is where a leaf's
 evidence-only `MAP.md` sits when the sources are flat. Where the code
-is several packages and an app, the tree stands at the repo root, a
-directory per node named for the node, each child's inside its
-parent's. A `MAP.md`
+is several packages and an app, the maps do not sit beside the code.
+`APP-MAP.md` stays at the repo root and every node's `MAP.md` is under
+one folder there, `Maps/`, a directory per node named for the node,
+each child's inside its parent's. The top node's parent link is then
+`(../../APP-MAP.md)`. Nothing depends on where a map file sits. The
+checker matches a node to its Swift type by name, and one map tree
+spans the app target, the features, and the dependency packages, so
+it has no single place in the code to sit beside. A `MAP.md`
 inside a Swift package's `Sources/` is listed in the target's
 `exclude`.
 

@@ -11,8 +11,9 @@ again per app.
 ```
 AddressForm/
   APP-MAP.md                         the root's three diagrams
-  AddressScreen/MAP.md               one folder per node, named for the node,
-  AddressScreen/AddressForm/MAP.md   each child's inside its parent's
+  Maps/
+    AddressScreen/MAP.md             one folder per node, named for the node,
+    AddressScreen/AddressForm/MAP.md each child's inside its parent's
   Packages/
     DataCoupling/                    the layer: Models/ Values/ Enums/ Services/
     Features/                        the nodes, their cores, transformers, and rules
@@ -29,13 +30,13 @@ AddressForm/
   .gitignore                         xcuserdata/, *.xcworkspace, DerivedData/, .build/
 ```
 
-The root of the repository shows what the app is made of, the maps
-and the packages. The app itself is one thin folder among them, `App/`,
-since it is only the composition root. The Xcode project is written
-into `App/` by the script beside it, and both are committed. The map
-tree stands at the repo
-root, apart from the packages. Every package is a folder under
-`Packages/`, and every dependency is a folder under
+The root of the repository shows what the app is made of, the root
+map, the maps, and the packages. The app itself is one thin folder
+among them, `App/`, since it is only the composition root. The Xcode
+project is written into `App/` by the script beside it, and both are
+committed. The node maps are one folder, `Maps/`, apart from the code,
+and `APP-MAP.md` is the one map file at the root. Every package is a
+folder under `Packages/`, and every dependency is a folder under
 `Packages/Dependencies/`.
 
 ## Who sees whom
@@ -272,7 +273,8 @@ with `xcodebuild -scheme AddressApp`, and the evidence tests run with
       function, and a test target with its integration test.
 - [ ] The app target is one `@main` file in `App/`, with no exports
       file.
-- [ ] The map folders are at the repo root, one per node.
+- [ ] `APP-MAP.md` is at the repo root, and every node's map is under
+      `Maps/`, one folder per node.
 - [ ] The project is written by `App/generate.sh` with `xcrun
       xcodeproj`, both are committed, and the test host and the
       UI-test bundle sit beside the app target.

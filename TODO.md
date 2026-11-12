@@ -1055,6 +1055,22 @@
     unclear places called for a new sentence, the first run of the
     week of which that is true. A second run on Sonnet xhigh died when
     the Mac slept and was not graded.
+  - **F51, the node maps are one folder, `Maps/`.** The owner,
+    2026-11-12, reading the rerun: "but why address screen has its own
+    folder". It had one because two runs on 2026-11-10 guessed a place
+    for a node's `MAP.md` when the features are flat in one package,
+    and the agent wrote the guess down as "the tree stands at the repo
+    root". The agent proposed moving each map beside its code. The
+    owner: "i am not sure if map md files belong near code". They do
+    not: the checker matches a node to its Swift type by name, so the
+    place of the file ties nothing, and one map tree spans the app
+    target, the features, and the dependency packages. So
+    `APP-MAP.md` stays at the repo root, where an agent and the
+    mapping skill look first, and every node's map is under `Maps/`,
+    one folder per node, each child's inside its parent's, the top
+    node's link `(../../APP-MAP.md)`. Checked on the rerun's own maps
+    moved that way: 0 errors, 0 warnings, 0 unverified. In the mapping
+    skill's opening and in `app-structure.md`.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
