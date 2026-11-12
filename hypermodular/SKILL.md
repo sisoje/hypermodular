@@ -48,7 +48,13 @@ map is that structure, written down.
 The architecture this produces is hypermodular. One mermaid is one
 module is one boundary. No map knows more than one level, and the whole
 app is reconstructable by merging nodes on their names, so the global
-view is always derivable and never maintained.
+view is always derivable and never maintained. The checker derives it.
+`mapcheck.py --write` draws the whole app as the first diagram of
+`APP-MAP.md`: every node with its contract, every condition, the
+dependencies, and a dotted line from each node to the dependencies its
+label names. That diagram is the one place the entire app is seen at
+once. Nobody edits it. A map changed after it was drawn makes it
+stale, and the checker says so until `--write` is run again.
 
 This file is the doctrine. The two jobs it serves each have a playbook,
 and the details each needs have a reference:
@@ -180,8 +186,9 @@ One module is one mermaid, chopped at every level. A node carries its
 full contract everywhere it appears, as a child in its parent's map and
 as the root of its own. That is double-entry bookkeeping. Every block
 opens with a `%%` comment declaring its place. `APP-MAP.md` holds the
-root's structure block, the dependencies diagram, and the coupling
-diagram. The root map:
+whole-app diagram the checker draws, then the root's structure block,
+the dependencies diagram, and the coupling diagram, the three written
+by hand. The root map:
 
 ```mermaid
 %% Root: App

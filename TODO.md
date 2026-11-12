@@ -1071,6 +1071,28 @@
     node's link `(../../APP-MAP.md)`. Checked on the rerun's own maps
     moved that way: 0 errors, 0 warnings, 0 unverified. In the mapping
     skill's opening and in `app-structure.md`.
+  - **F52, the whole app in one diagram.** The owner, 2026-11-12:
+    "my goal was to see entire app structure node-like so each node is
+    a mini-feature mini-module, thats why its hyper modular", "i am
+    not sure if we can keep one big md file or separate like you did,
+    or maybe we can keep both variants", and on seeing a sample, "i
+    like having this big md". The skill had promised it in one
+    sentence, "the global view is always derivable and never
+    maintained", and no tool derived it. `mapcheck.py --write` now
+    does. It merges the depth-1 structure blocks on node names and
+    puts one flowchart first in `APP-MAP.md`, headed `%% Whole:`:
+    every node with its label, every condition, the unmounted nodes
+    and the dependencies as subgraphs, and a dotted arrow from a node
+    to each dependency its label names. The per-node maps stay as
+    they are, the modules, each with its contract and its evidence.
+    Without `--write` the checker compares, a stale diagram an error
+    and a missing one a warning; a second write changes nothing. The
+    agent first proposed making `APP-MAP.md` wholly generated and
+    moving the root's diagrams under `Maps/`; the owner did not follow
+    that, and what was built is the smaller thing, one more diagram in
+    the file that already exists. In the mapping skill's opening,
+    `notation.md`, AGENTS, the fixtures with three new test lines, and
+    the four briefs.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

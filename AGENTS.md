@@ -67,6 +67,7 @@ its own.
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top to bottom in the order the root sets them. Derived services list their ingredients, which must sit above them. |
 | `A ~~~ B` | Invisible link. Orders the dependency column. |
 | `%% Root: X · Parent: Y (../MAP.md)` | First line of every mermaid block. Self-describing placement. |
+| `%% Whole: X` | The whole app in one diagram, first in `APP-MAP.md`. `mapcheck.py --write` draws it by merging the depth-1 blocks on node names. Never written by hand. A stale one is a checker error. |
 | `%% Evidence: X · Parent: Y (../MAP.md)` + `%% Given: …` + `sequenceDiagram` | Diagram 4, one per acceptance criterion whose log crosses the node's edge. In-arrows are the when (`User`, `System`, or a child's callback), out-arrows the log in order, dashed arrows supplied data, `loop` a count unnamed, `Note` silence. Targets are contract lines or stored properties (own state, materialized sources). Quote mermaid-reserved names (`"title"`). Lives in the node's own `MAP.md` under `## Evidence`. Own-state-only criteria stay arrays in the test. |
 
 Style: mermaid id = node name, always (the name is the merge key). No

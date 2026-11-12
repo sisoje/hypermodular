@@ -25,6 +25,12 @@ SaveButton/MAP.md: SaveButton: dashed arrow must return to the node, got 'onSave
 WANT
 diff /tmp/mapcheck-want.txt /tmp/mapcheck-got.txt && echo "all planted violations caught, nothing extra" || { echo "FAIL: violations differ"; exit 1; }
 python3 mapcheck.py fixtures/broken | grep -q "^WARNING .*in-arrow from .Parent." && echo "parent in-arrow warns, as intended" || { echo "FAIL: Parent in-arrow should warn"; exit 1; }
+# the whole-app diagram: the clean fixture carries it, a changed map makes it stale, and --write redraws it
+rm -rf /tmp/mapcheck-whole && cp -R fixtures/clean /tmp/mapcheck-whole
+sed -i '' 's/|isAdding|/|isAddingBook|/' /tmp/mapcheck-whole/ReadingListScreen/MAP.md
+python3 mapcheck.py /tmp/mapcheck-whole | grep -q "^ERROR .*the whole-app diagram is stale" && echo "a changed map makes the whole-app diagram stale" || { echo "FAIL: stale whole-app diagram not reported"; exit 1; }
+python3 mapcheck.py /tmp/mapcheck-whole --write | tail -1 | grep -q " 0 errors" && python3 mapcheck.py /tmp/mapcheck-whole | tail -1 | grep -q " 0 errors" && echo "--write redraws it" || { echo "FAIL: --write did not redraw the whole-app diagram"; exit 1; }
+python3 mapcheck.py fixtures/broken | grep -q "^WARNING .*no whole-app diagram" && echo "a missing whole-app diagram warns" || { echo "FAIL: a missing whole-app diagram should warn"; exit 1; }
 # the code-side half: the clean Swift stubs verify every bare target; the broken ones plant one of each code finding
 echo "clean + sources:" && python3 mapcheck.py fixtures/clean --sources fixtures/clean/Sources | tail -1 | grep -q " 0 errors, 0 warnings, 0 unverified" || { echo "FAIL: clean sources should verify everything"; exit 1; }
 echo "broken + sources:" && python3 mapcheck.py fixtures/broken --sources fixtures/broken/Sources | grep -E '^(ERROR|WARNING) +(code:|SaveButton/MAP.md: SaveButton: evidence target|ReadingListScreen/MAP.md: ReadingListScreen: arrow label)' | sed -E 's/^(ERROR|WARNING) +//' | sort > /tmp/mapcheck-code-got.txt || true

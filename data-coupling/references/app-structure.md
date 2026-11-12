@@ -10,7 +10,7 @@ again per app.
 
 ```
 AddressForm/
-  APP-MAP.md                         the root's three diagrams
+  APP-MAP.md                         the whole app, drawn by the checker, then the root's three diagrams
   Maps/
     AddressScreen/MAP.md             one folder per node, named for the node,
     AddressScreen/AddressForm/MAP.md each child's inside its parent's

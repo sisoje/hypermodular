@@ -287,6 +287,17 @@ unreviewed behavior change.
 
 ## The checker
 
+`scripts/mapcheck.py <repo> --write` draws the whole app. It merges
+every structure block on the node names and puts one `flowchart TD`
+first in `APP-MAP.md`, headed `%% Whole: <Root>`, between two HTML
+comments that say it is drawn and never written by hand. It holds
+every node with its full label, every arrow with its condition, the
+`Unmounted` nodes and the `Dependencies` box as subgraphs, and a
+dotted arrow `Node -.-> dep` for each dependency a label names. The
+blocks it is merged from stay depth 1. Without `--write` the checker
+compares what is there with what it would draw. A stale diagram is an
+error and a missing one a warning. A second `--write` changes nothing.
+
 `scripts/mapcheck.py <repo>` runs the reconstruction check and
 everything else the maps alone can verify: id = name, the `·` grammar,
 label double-entry, every call, read, and dotted `$` line naming a
@@ -321,4 +332,6 @@ runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
 with Swift stubs, zero errors, nothing unverified) and
 `fixtures/broken` (the same with fourteen map violations, eight code
 findings, and one habit warning planted, all caught; wrong on
-purpose, never an example).
+purpose, never an example). The clean fixture carries its whole-app
+diagram, and the test changes one of its maps to see the diagram
+reported stale and then redrawn.

@@ -24,6 +24,12 @@ verified from the maps alone:
                 an in-arrow is User, System, or a child firing a
                 callback its own label carries
   order         the Dependencies column is the order the root sets values (~~~)
+  whole         the first diagram of APP-MAP.md is the whole app, merged
+                from the depth-1 blocks on their node names: every node
+                with its contract, every condition, the dependencies, and
+                a dotted line from a node to each dependency its label
+                names. --write draws it. Without --write it is compared,
+                and a stale one is an error, a missing one a warning
 
 With --sources DIR [DIR ...], the code-side half. Each mapped node is
 matched to the Swift type of its name and its label is derived from
@@ -40,7 +46,7 @@ the type's body, then compared both ways:
                 warning: a Task nobody holds (F37), which is a Task
                 expression not assigned, returned, or awaited
 
-Usage: mapcheck.py [repo-root] [--sources DIR ...]   (exit 1 on any error)
+Usage: mapcheck.py [repo-root] [--write] [--sources DIR ...]   (exit 1 on any error)
 """
 import re, sys, os
 from pathlib import Path
@@ -57,7 +63,7 @@ def warn(f, m): warnings.append(f"{f}: {m}")
 
 # ---------------------------------------------------------------- parsing
 BLOCK = re.compile(r"```mermaid\n(.*?)```", re.S)
-HEAD = re.compile(r"^%% (Root|Evidence): (\w+)(?: · (?:Parent: (\w+) \(([^)]+)\)|(Dependencies|Unmounted|Coupling)))?\s*$")
+HEAD = re.compile(r"^%% (Root|Evidence|Whole): (\w+)(?: · (?:Parent: (\w+) \(([^)]+)\)|(Dependencies|Unmounted|Coupling)))?\s*$")
 LABELED = re.compile(r'(\w+)\["([^"]*)"\]')
 CYL = re.compile(r'(\w+)\[\("?([^")\]]*)"?\)\]')
 ARROW = re.compile(r'^\s*(\w+)(?:\["[^"]*"\])?\s*-->(?:\|([^|]*)\|)?\s*(\w+)')
@@ -80,6 +86,7 @@ child_stimuli = []
 class Node:
     def __init__(self, name): self.name = name; self.labels = {}; self.evidence = []; self.conditions = []
 nodes, files_seen, blocks = {}, {}, []
+whole_found = []   # the generated whole-app block as it stands in APP-MAP.md
 
 def node(name): return nodes.setdefault(name, Node(name))
 
@@ -92,6 +99,7 @@ def parse_file(path, root):
         h = HEAD.match(lines[0])
         if not h: err(rel, f"block has no identity header: {lines[0]!r}"); continue
         kindb, name, parent, ppath, special = h.groups()
+        if kindb == "Whole": whole_found.append(m.group(1).rstrip("\n")); continue
         b = dict(file=rel, kind=kindb, name=name, parent=parent, ppath=ppath,
                  special=special, body=lines[1:], dir=path.parent)
         blocks.append(b); files_seen[rel].append(b)
@@ -313,8 +321,72 @@ def check_code(dirs, cyls, treeroots):
         if "@AppStorage" in f["materializes"] and not ("@main" in t.attrs or "App" in t.kinds): warn("code", f"{t.name} ({Path(t.file).name}): @AppStorage below the root (F32)")
     return len(types)
 
+# ---------------------------------------------------------------- the whole app
+WHOLE_OPEN = "<!-- whole-app: drawn by mapcheck.py --write from the maps below and under Maps/, never by hand -->"
+WHOLE_CLOSE = "<!-- /whole-app -->"
+
+def whole_map():
+    """The whole app as one flowchart, merged from the depth-1 blocks on their node names."""
+    labels, children, roots, unmounted, cyl_lines, cyl_names = {}, {}, [], [], [], []
+    for b in blocks:
+        if b["kind"] != "Root": continue
+        if b["special"] == "Dependencies":
+            for ln in b["body"]:
+                for cid, raw in CYL.findall(ln):
+                    if cid not in cyl_names: cyl_names.append(cid); cyl_lines.append(ln.strip())
+            continue
+        if b["special"] == "Coupling": continue
+        for ln in b["body"]:
+            for mid, raw in LABELED.findall(ln):
+                if len(raw) > len(labels.get(mid, "")): labels[mid] = raw
+                if b["special"] == "Unmounted" and mid not in unmounted: unmounted.append(mid)
+            a = ARROW.match(ln)
+            if a and not b["special"]:
+                src, cond, dst = a.groups()
+                if (cond, dst) not in children.setdefault(src, []): children[src].append((cond, dst))
+        if not b["special"] and b["parent"] is None and b["name"] not in roots: roots.append(b["name"])
+    def decl(n): return f'{n}["{labels[n]}"]' if n in labels else n
+    order, edges = [], []
+    def walk(n):
+        if n in order: return
+        order.append(n)
+        for cond, dst in children.get(n, []):
+            edges.append(f"    {n} -->{'|' + cond.strip() + '|' if cond else ''} {dst}")
+            walk(dst)
+    for r in roots: walk(r)
+    out = [f"%% Whole: {roots[0] if roots else 'App'}", "flowchart TD"]
+    out += [f"    {decl(n)}" for n in order] + edges
+    boxes = []
+    if unmounted:
+        out += ["    subgraph Unmounted"] + [f"        {decl(n)}" for n in unmounted] + ["    end"]; boxes.append("Unmounted")
+    if cyl_names:
+        out += ["    subgraph Dependencies", "        direction TB"] + [f"        {ln}" for ln in cyl_lines] + ["    end"]; boxes.append("Dependencies")
+    for n in order + unmounted:
+        named = []
+        for line in labels.get(n, "").split("<br/>")[1:]:
+            k, body = kind(line.strip())
+            dep = body.split(".")[0]
+            if k in ("call", "read", "binding") and "." in body and dep in cyl_names and dep not in named: named.append(dep)
+        out += [f"    {n} -.-> {d}" for d in sorted(named, key=cyl_names.index)]
+    if boxes: out += ["    classDef plain fill:none", f"    class {','.join(boxes)} plain"]
+    return "\n".join(out)
+
+def write_whole(app, text):
+    """Puts the whole-app diagram first in APP-MAP.md, after its title, replacing the one that is there."""
+    src = app.read_text()
+    section = f"{WHOLE_OPEN}\n```mermaid\n{text}\n```\n{WHOLE_CLOSE}"
+    if WHOLE_OPEN in src and WHOLE_CLOSE in src:
+        a, b = src.index(WHOLE_OPEN), src.index(WHOLE_CLOSE) + len(WHOLE_CLOSE)
+        src = src[:a] + section + src[b:]
+    else:
+        lines = src.split("\n")
+        at = 1 if lines and lines[0].startswith("# ") else 0
+        lines[at:at] = ["", section] if at else [section, ""]
+        src = "\n".join(lines)
+    app.write_text(src)
+
 # ---------------------------------------------------------------- checks
-def main(root, sources=()):
+def main(root, sources=(), write=False):
     root = Path(root).resolve()
     app = root / "APP-MAP.md"
     if not app.exists(): print(f"no APP-MAP.md under {root}"); return 2
@@ -388,6 +460,12 @@ def main(root, sources=()):
     treeroots = {b["name"] for b in blocks if b["kind"] == "Root" and not b["special"] and b["parent"] is None}
     ntypes = check_code(sources, cyls, treeroots) if sources else None
 
+    # the whole app, derived and never maintained
+    text = whole_map()
+    if write: write_whole(app, text)
+    elif not whole_found: warn("APP-MAP.md", "no whole-app diagram: run mapcheck.py with --write to draw it")
+    elif whole_found[0] != text: err("APP-MAP.md", "the whole-app diagram is stale: run mapcheck.py with --write to redraw it")
+
     for e in errors: print("ERROR   ", e)
     for w in warnings: print("WARNING ", w)
     for u in dict.fromkeys(unverified): print("UNVERIF ", u)
@@ -401,4 +479,6 @@ if __name__ == "__main__":
     sources = []
     if "--sources" in args:
         i = args.index("--sources"); sources = args[i + 1:]; args = args[:i]
-    sys.exit(main(args[0] if args else ".", sources))
+    write = "--write" in args
+    args = [a for a in args if a != "--write"]
+    sys.exit(main(args[0] if args else ".", sources, write))
