@@ -155,7 +155,9 @@ struct Injector: ViewModifier {
   that answers from fixtures takes nothing.
 - **The package is not named as the contract's type.** A module and
   a type of one name shadow each other. `AddressService` is the
-  contract, so the package is `AddressFile`.
+  contract, so the package is `AddressFile`. Nor is it named as the
+  framework it wraps. A package `Photos` that imports `Photos` names
+  itself, so it is `PhotoLibrary`.
 - **Its logic is internal functions** the closures call, here
   `write(_:to:)`, each taking its inputs as parameters.
 - **A derived dependency** declares `@Environment` reads of its
@@ -280,6 +282,9 @@ brief or the machine gives.
   bundle links `Features` to name its cases.
 - **A test that drives the system photo picker** needs a photo in the
   simulator's library first, `xcrun simctl addmedia booted <file>`.
+  Its photo cells are `app.images` with the identifier
+  `PXGGridLayout-Info`. The first of `app.images` is the picker's own
+  icon, not a photo.
 
 ## Where a file goes
 

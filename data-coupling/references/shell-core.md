@@ -472,9 +472,14 @@ user has left it is held by the node above, the list. Held in the
 detail, going back within the few seconds would cancel the delete. The assignment is a write the node makes at a
 moment the node chooses, so the node controls the work and a test
 reads it. A second delete replaces the first save, and the new one
-carries the whole list. Use a capture list in the task closure.
+carries the whole list. A second delete while one waits for its undo
+first commits the waiting one, since replacing its task would cancel
+it and undo it unasked. Use a capture list in the task closure.
 Capturing the view keeps the storage alive and defeats the teardown
-cancel. A child that starts the work receives the slot as a
+cancel. Capture the contract, `[photoService]`, and call
+`photoService.load(item)` inside it, not the closure,
+`[load = photoService.load]`, which reads as a read of the contract
+and not as the call the label names. A child that starts the work receives the slot as a
 `Binding<Task<Void, Never>?>`, `$save`, and its write cancels and logs
 the same way.
 

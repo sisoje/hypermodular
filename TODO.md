@@ -1408,6 +1408,40 @@
     skill's `Models/` bullet says what a brief keeps on the device is
     SwiftData unless the brief says otherwise, and `AGENTS.md` says
     which technical words a brief may carry.
+  - **F66, Garden on the flow-file layout.** 2026-11-12, Sonnet
+    medium, twenty minutes, output `~/Desktop/garden-flows`, the
+    brief as F65 left it, the first run after F59 to F65. From the
+    skills alone it produced the layout as ruled: `APP-MAP.md` with
+    the drawn whole-app diagram, `Maps/PlantList/MAP.md` the one
+    structure map, sixteen flow files, one evidence block each,
+    `PlantDetail` and `AddPlantForm` as leaves with five and four flow
+    files and no `MAP.md`, seven scenarios each in a file of its own
+    and the `#Preview` lines in the three view files, the settings
+    type `GardenSettings`, the undo window held in the list, five
+    dependency packages. Every gate rerun by the grader: the checker
+    with sources at 0 errors 0 warnings 0 unverified, nineteen package
+    tests across six packages, the script regenerating the same
+    bytes, the app build with no warning, fifteen evidence tests in the simulator, 0 failures in 86 seconds. From its
+    report, into the skills: a layer type takes a name SwiftUI,
+    Foundation, and the standard library do not have, `Calendar` and
+    `Clock` beside `Label` and `Settings`; a package is not named as
+    the framework it wraps, `Photos`; a single value the root
+    supplies, the date, is a contract of one `let`; the log is not a
+    reason to change a signature from the model to its id; a second
+    delete while one waits for its undo first commits the waiting
+    one; a task captures the contract and calls it, not the closure,
+    which reads as a read; a call made on appearance is in every
+    block of the node after `System->>Node: appears`; the photo
+    picker's cells are `app.images` with `PXGGridLayout-Info`; in the
+    CoreFlow skill, `switchOrCheckBox(_:)` is on the app and returns
+    the element. Into both briefs: nobody answers during the run, so
+    where a skill says to agree with the owner the agent decides and
+    reports. Reported and left: the date is built once at the root
+    and is stale past midnight, as in F58; a reminder already overdue
+    fires in five seconds, which the brief does not cover; the real
+    photo load and the real notification delivery are untested, since
+    a `PhotosPickerItem` cannot be built in a test and a notification
+    needs an app bundle.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

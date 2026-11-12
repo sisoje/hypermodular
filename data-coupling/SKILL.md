@@ -473,7 +473,9 @@ closure is a `@TestAction`, a contract's closure included, and the
 log is two arrays, names and values. The
 names are the contract, asserted whole and in order. A value is
 asserted as the test's author sees fit, an optional unwrapped, a model
-by its title, a class by one field. The evidence block is the same
+by its title, a class by one field. The log is not a reason to change
+a signature, so a contract takes the model the node has, not its id
+because the id reads better. The evidence block is the same
 either way.
 
 - **Mocking is construction.** A boundary is a value, so the mock is a
@@ -647,19 +649,22 @@ test. Data is the abstraction.
   `references/modules.md` shows both parts in code.
 - **A contract is a struct of closures, lets, or bindings** with a
   defaulted initializer, and its `@Entry` default is the minimal no-op,
-  `.init()`. The `@Entry` belongs to the layer, beside the contract it
+  `.init()`. A single value the root supplies, the date, is a contract
+  of one `let`, so the label reads `clock.today`. The `@Entry` belongs to the layer, beside the contract it
   defaults. An environment value is data flow: set at the root,
   replaced by a scenario, read by a core. The nodes that consume it dictate its signature, not the
   implementation that will satisfy it. No protocols, no classes, no
   reference-type service objects. A protocol wins only for Objective-C
   interop, a plugin API external callers must implement, or a
   ten-method API with shared default behavior.
-- **A type in the layer takes a name SwiftUI does not have.** A feature
-  file sees the layer and SwiftUI both, and a name the two share is
-  ambiguous where the file writes it as a type, `private var settings:
-  Settings`, and does not compile. `Label` is such a name. `Settings`
-  is one on the Mac, where the packages also build to run the plain
-  tests. A node's own name is not at risk, since a node is constructed,
+- **A type in the layer takes a name SwiftUI, Foundation, and the
+  standard library do not have.** A feature file sees the layer and
+  all three, and a name shared with one of them is ambiguous where the
+  file writes it as a type, `private var settings: Settings`, and does
+  not compile. `Label` and `Settings` are SwiftUI's, the second on the
+  Mac, where the packages also build to run the plain tests.
+  `Calendar` is Foundation's and `Clock` is the standard library's. A
+  node's own name is not at risk, since a node is constructed,
   `Settings()`, and a call resolves by its arguments.
 - **Networking is not a concept of the app.** The backend enters as a
   struct of async closures, one per operation, and the signature is the
@@ -704,7 +709,9 @@ test. Data is the abstraction.
   named `inject` and the dependency's own name, `injectBackend(baseURL:)`,
   `injectHaptics()`, over an internal modifier that builds the live
   value and sets it. The package is not named as the contract's
-  type, since a module and a type of one name shadow each other. What the root supplies is that function's
+  type, since a module and a type of one name shadow each other, nor
+  as the framework it wraps, `Photos`, since its import would then
+  name itself. What the root supplies is that function's
   parameters. The one integration test of the boundary lives in the
   package's own test target. The tree, the manifests, and the project
   file are in `references/app-structure.md`.

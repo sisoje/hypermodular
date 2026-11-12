@@ -2,6 +2,6 @@ You are building a small iPhone app with the hypermodular method. The method is 
 
 The app. An address form. The user fills in a street, a city, a postal code, and a country, and taps Save. Every field is validated: street, city, and country are required, the postal code is three to ten letters or digits with no spaces. A field that fails shows its error under it, and Save does nothing while any field fails. On Save the address is written as JSON to a file in the temporary directory, and the file's path is shown under the form. Nothing else.
 
-The machine. Whatever runs, runs in the iPhone 18 Pro simulator. Never drive the Mac's own interface: no System Events, no AppleScript, no accessibility scripting of a Mac app, nothing that takes the mouse or the keyboard.
+The machine. Whatever runs, runs in the iPhone 18 Pro simulator. Never drive the Mac's own interface: no System Events, no AppleScript, no accessibility scripting of a Mac app, nothing that takes the mouse or the keyboard. Nobody is available to answer during the run. Where a skill says to agree something with the owner, decide, and report the decision.
 
 When it is done, report: what you built and where it is; every check the skills ask for, with its exact command and its result; every rule of a skill you broke on purpose, with the reason; and every place a skill was unclear, fell short of the app, or made you guess, with file and line.
