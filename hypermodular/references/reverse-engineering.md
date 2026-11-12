@@ -35,6 +35,17 @@ cylinder, named for the boundary rather than the tech (`dbService`,
 not `swiftData`). Native materialization (`@Query`)
 becomes an `· @Source` line on the node that holds it, not a cylinder.
 
+A ViewModel, a store, or a presenter found on the walk is the node's
+contract in object form, and it is read as one. It holds state and the
+behavior that mutates it and nothing else, so each stored property is
+own state or a binding the node was handed, each method that calls a
+service is a `· dep.func()` line and the service a cylinder, each
+method that writes shared state is a `· $path` line, and each closure
+the parent gave it is a `· name` line. The object itself gets no node
+and no cylinder, and the view it drove and the object are one node.
+`data-coupling/references/converting.md` takes it apart the same way
+when the code's turn comes.
+
 Collect shared models and service signatures into the coupling diagram
 as you go. Then verify values are set at the root only. Every place a
 service enters the environment below the root is a finding, not

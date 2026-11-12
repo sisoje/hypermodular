@@ -1499,7 +1499,14 @@
     and capabilities below (F60), they meet in the binding, and
     nothing is left over that needs an object. The code skill's rule
     paragraph, `converting.md`'s table introduction, and the
-    `AGENTS.md` lift rule say so.
+    `AGENTS.md` lift rule say so. The owner, next: "and also about
+    reverse engineering it can help". It does. An object found on the
+    walk is the node's contract in object form and is read as one,
+    its properties the node's state or handed bindings, its service
+    calls the `· dep.func()` lines, its writes to shared state the
+    `· $path` lines, its parent-given closures the `· name` lines.
+    The object gets no node and no cylinder. `reverse-engineering.md`
+    says so under the walk.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
