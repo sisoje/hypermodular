@@ -76,10 +76,14 @@ subgraph), no emoji, no status marks.
 
 ## Hard rules
 
-- **Lift, whatever is being made.** The state goes out of the view to
-  the node above that can own it. The logic goes out too, as closures
-  the root sets and as rules that run above the view. The two are kept
-  apart, not one object holding both. A SwiftUI node is not a
+- **Lift, whatever is being made, and keep the state apart from the
+  behavior that mutates it.** State drives a node, and the driver is
+  kept apart from it. The state goes out of the view to the node above
+  that can own it, as open data. The mutating behavior goes out too,
+  as closures the root sets, operating on bindings, or where it must
+  hold a reference on an `@Observable` class it mutates, and as rules
+  that run above the view. The two are kept apart, not one object
+  holding both. "Logic" is not the word. A SwiftUI node is not a
   physical view the way a UIKit view is. It only transforms its
   dependencies, so there is nothing to attach a ViewModel to.
 - **One tree per shipped `@main`** in `APP-MAP.md`; a test host is

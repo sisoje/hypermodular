@@ -21,12 +21,17 @@ description: >
 
 # data-coupling: writing the node
 
-**Whatever you are making, lift.** Lift the state out of the view, to
-the node above that can own it. Lift the logic out of the view too, as
-closures the root sets and as rules that run above the view. Keep the
-two apart, the state plain data, the logic functions over it, not one
-object holding both. Do this first, before anything else in
-this skill, for every view you write.
+**Whatever you are making, lift, and keep the state apart from the
+behavior that mutates it.** State drives a SwiftUI node, and the
+driver is kept apart from it. Lift the state out of the view, to the
+node above that can own it, as open data. Lift the mutating behavior
+out of the view too, as closures the root sets and as rules that run
+above the view. Keep the two apart, the state plain data, the behavior
+closures over it, not one object holding both. Mutating behavior is
+simple. It operates on bindings, and where it must hold a reference,
+on an `@Observable` class it mutates. The word is not "logic", which
+names nothing precise. Do this first, before anything else in this
+skill, for every view you write.
 
 A SwiftUI `View` is not a view. It is a node in a network, a plain
 value carrying everything its subtree will show and do. Data enters a
@@ -63,22 +68,26 @@ file).
 
 ## The rule
 
-**Decouple state from behavior.** Not UI from logic. There is no UI in
-a node to separate. A `View` holds data, closures, and a transformation
+**Decouple state from the behavior that mutates it.** Not UI from
+logic. There is no UI in a node to separate, and "logic" names nothing
+precise. A `View` holds data, closures, and a transformation
 from inputs to children; the runtime owns the pixels. That is why MVVM
 is wrong here, precisely. A UIKit view exists. It is an object that
-stays, so state and logic were put in an object beside it. A SwiftUI
+stays, so state and behavior were put in an object beside it. A SwiftUI
 node does not exist that way. All it does is transform its
 dependencies, and what the runtime does with the result, diffing,
 managing, rendering, is not the node's concern. With no object that
 stays there is nothing to attach a ViewModel to. So the state is
-lifted, the logic is lifted too, and the two are kept apart. A
-ViewModel does the opposite. It takes logic out of a node that is
-already only logic, and adds an object to hold it with the state. The cut that matters runs between data and the closures that
-act on it. State is open, plain data that drives the view. Behavior is
-closures the app sets into the flow at the root. A rule the feature
+lifted, the mutating behavior is lifted too, and the two are kept
+apart. A ViewModel does the opposite. It takes behavior out of a node
+that is already only a transformation of its inputs, and adds an
+object to hold it with the state. The cut that matters runs between
+data and the closures that act on it. State is open, plain data that
+drives the node. Behavior is closures the app sets into the flow at
+the root, and it operates on bindings, or where it must hold a
+reference, on an `@Observable` class it mutates. A rule the feature
 owns, a validation, is a pure function of its state and stays with it.
-The UI is pure and data-driven, and the main app is where behavior
+The node is pure and data-driven, and the main app is where behavior
 enters.
 
 That is the opposite of the OOP doctrine. Kay's object retained,
@@ -746,8 +755,9 @@ Practicality outranks the rule. The one who breaks it says which rule
 and why, where it is broken.
 
 - **A ViewModel, or any `@Observable` or `ObservableObject` owning a
-  screen's state and actions.** A node is already pure logic. Pulling
-  logic out of it separates logic from logic and adds an object.
+  screen's state and actions.** A node is already a transformation of
+  its inputs to children. Pulling that out of it moves a
+  transformation into an object and adds the object.
   `@StateObject` and `@ObservedObject` have no value-shaped boundary to
   substitute, which is why swift-core-flow leaves them unmapped.
   Renaming it a store, client, or manager and handing it in as a

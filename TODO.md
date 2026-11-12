@@ -1338,6 +1338,28 @@
     moved under `Maps/` with their links, the test's paths followed,
     and `architecting.md`, `reverse-engineering.md`, and the two long
     briefs say the same.
+  - **F62, state apart from the behavior that mutates it.** The owner,
+    2026-11-12: "separation of state and mutating behaviour is the key
+    - is it clear from skills? so not separating ui from logic as
+    there is no fucking ui in swiftui its wrong mental model to think
+    about ui in swiftui... an 'logic' is fuzzy word... so separating
+    state from muatating behaviour is the key... and its simlle
+    basically operating on bindings and if you must then observable
+    class reference mutating", and "because state driver the swiftui
+    nodes... and we separate the driver from it". It was half clear.
+    The rule section said "Decouple state from behavior. Not UI from
+    logic", but the opening paragraph, the `AGENTS.md` lift rule, and
+    both ViewModel do-nots named the lifted thing "logic", fourteen
+    times in the code skill, "separates logic from logic" among them,
+    and the mechanism was stated only under the binding bullet. Now
+    the opening paragraph, the rule, the two do-nots, and `AGENTS.md`
+    say it in the owner's words: the state is kept apart from the
+    behavior that mutates it, state drives a node and the driver is
+    kept apart from it, mutating behavior operates on bindings or,
+    where it must hold a reference, on an `@Observable` class it
+    mutates, and "logic" names nothing precise. "Pure logic" for a
+    calculation with no effects stays in the references, where it
+    means a pure function.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

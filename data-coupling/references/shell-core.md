@@ -564,9 +564,11 @@ own.
 
 ## Why this is not a ViewModel
 
-A ViewModel cut separates "UI" from "logic". But a node is already pure
-logic, a transformation from inputs to children. Pulling logic out of
-it separates logic from logic and adds an object to hold it.
+A ViewModel cut separates "UI" from "logic". But there is no UI in a
+node, and a node is already a transformation from inputs to children.
+Pulling that out of it moves a transformation into an object and adds
+the object to hold it. The cut that matters is state from the behavior
+that mutates it.
 
 The shell/core cut runs between I/O and pure, and only data crosses.
 The core has nowhere to hide state or behavior outside its declared
