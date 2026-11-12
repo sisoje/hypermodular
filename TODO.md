@@ -1392,6 +1392,22 @@
     shows the previews of the file that is open. The code skill and
     its glossary, `shell-core.md`, `testing.md`, `app-structure.md`,
     and the CoreFlow skill say the same.
+  - **F65, a brief carries no technical hint; the skills carry the
+    defaults.** The owner, 2026-11-12, asked of the Garden brief "is
+    the prompt human sounding - free of tech hints?" and ruled "all
+    tech hints ideally should be in skills". The Garden brief had
+    four: "a form in a sheet", "the fetch fails", "a weather web
+    service", and "Plants persist in SwiftData". The first three are
+    now "opens a form over the list", "when it cannot be reached", and
+    "an online weather service", each with its home in a skill, the
+    sheet as the node's own state, a service on the net as a contract
+    of async closures, a failure thrown. The fourth stays, the owner
+    the same hour: "swiftdata is ok to mention dude?". A technology
+    the product is committed to may be named in a brief, and the
+    address brief keeps its JSON file and the path it shows. The code
+    skill's `Models/` bullet says what a brief keeps on the device is
+    SwiftData unless the brief says otherwise, and `AGENTS.md` says
+    which technical words a brief may carry.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

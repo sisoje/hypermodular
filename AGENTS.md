@@ -215,7 +215,13 @@ a brief that tempts a validator object. Those two are written as a
 brief is given to a person: the skills to read, the app in the
 product's words, the machine's limits, and what to report. They name
 no architecture, no layout, no order of work, and no forbidden
-pattern. All of that is the skills' to teach, and a run that needs it
+pattern. A technology the product is committed to may be named, as
+Garden names SwiftData for its plants and the address form a JSON
+file for its address. How it is used is the skills', as is every
+default behind a product word, a contract of async closures for a
+service on the net, a thrown failure for what cannot be reached,
+SwiftData for what is kept on the device when the brief names no
+store. All of that is the skills' to teach, and a run that needs it
 in the prompt has found a gap in a skill. What a run finds goes into
 a skill as the rule that holds for any app. The run's own names, its
 targets, and its workarounds stay out. The

@@ -601,7 +601,10 @@ What it holds, by folder:
 
 - `Models/`. The app's records, SwiftData `@Model` classes or structs,
   stored `var` properties with defaults and a public initializer, so
-  `.init()` is the empty one.
+  `.init()` is the empty one. What a brief says is kept on the device
+  is SwiftData unless the brief says otherwise, `@Model` records read
+  where they are shown by `@Query` and written through the store
+  contract.
 - `Values/`. What a feature computes and shows: a balance, a debt, a
   scan result. Plain structs of stored properties. They live here even
   when one screen is the only reader, because they are data of the
