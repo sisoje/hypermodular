@@ -139,8 +139,11 @@ source of most broken SwiftUI mental models.
 
 - `View`, `ViewModifier`, `App`, and `Scene` are the same entity: values
   that are nodes in the graph, each carrying the dependencies needed to
-  compute its `body`. `body` is a transformation, input data in and
-  child nodes out, computed on demand and discarded.
+  compute its `body`. `body` is the node's capability, the one thing
+  the node can do. It is a transformation, input data in and child
+  nodes out, computed on demand and discarded. The runtime is what
+  uses it. The runtime calls `body` when an input changes, and nothing
+  else does.
 - **The struct has no lifecycle.** The runtime retains the network, the
   identity slots holding lifetime metadata and any `@State`, and not the
   nodes. Node values are created and discarded each wave. Identity is
@@ -155,12 +158,19 @@ source of most broken SwiftUI mental models.
   `init`, not `body`, not a closure the root builds. A value is created
   every wave and creating it causes nothing. Work hangs on lifecycle,
   `.task`, or on an event, a task the node holds.
-- **Two kinds of node.** A view is a persisted node: the runtime keeps
-  its identity slot and its state across waves, and the value is
-  re-created each wave over that slot. A transformer is a transformative
-  node: pure flow through it, references in, bindings and labels out,
-  created in the wave and gone with it, no slot. State lives in the
-  first kind, rules in the second. A transformer has no state, so its
+- **Two kinds of node.** A view is a persisted node, and it is the
+  runtime's. The runtime keeps its identity slot and its state across
+  waves, re-creates the value each wave over that slot, and calls its
+  capability, `body`. A transformer is a transformative node, and it is
+  ours. The runtime does not know it and keeps no slot for it. It is
+  pure flow, references in, bindings and labels out, created in the
+  wave and gone with it. Its capability is not fixed by a protocol the
+  way `body` is. It is what its consumer needs, the intercepted
+  bindings, the labels, a `judge()`, and the consumer is our own code,
+  a view's `body`. That is what swift-core-flow's `@Capability` is for.
+  It declares a transformer's capability as one tuple, `capability`,
+  which is to a transformer what `body` is to a view. State lives in
+  the first kind, rules in the second. A transformer has no state, so its
   methods make no object, and its plain test is data in and data out,
   like any calculation; the node's log stays the test of the node.
 - **Dependencies are recorded by access.** A wrapper read during `body`
@@ -816,6 +826,7 @@ The articles' terms. Use them. They make discussion precise in a way
 | network | the identity, position, and attached storage the runtime retains across waves |
 | flow | data moving during a wave, down into inits or up through preference accumulation; every flow terminates in node creation or a source of truth |
 | transformation | `body`, input data in, child nodes created |
+| capability | what a node does with its inputs. A view's is `body`, fixed by the protocol and used by the runtime. A transformer's is its own, declared with `@Capability` and used by a view |
 | wave | one pass of re-creation; the runtime re-runs the transformations whose inputs changed, and no others |
 | source of truth | storage some node owns (`@State`, `@AppStorage`, `@SceneStorage`); changing one triggers the next wave |
 | self-loop | `@State`, an edge to the node's own next creation, not to another node |

@@ -1093,6 +1093,21 @@
     the file that already exists. In the mapping skill's opening,
     `notation.md`, AGENTS, the fixtures with three new test lines, and
     the four briefs.
+  - **F53, `body` is a view's capability, and a transformer's is its
+    own.** The owner, 2026-11-12, asked whether the skills say clearly
+    that "swiftui view is a node where body is its capability and
+    runtime uses it", and that "transformer nodes are ours, they are
+    not persisted in the graph, but they may have custom capability,
+    thats why we use macro". They did not. The code skill called
+    `body` a transformation and never a capability, said a transformer
+    has no slot and never that it is ours, and named `@Capability`
+    with no reason for it. The two bullets of "Model" now say it: a
+    view is the runtime's node, its capability is `body`, the runtime
+    is its one user; a transformer is our node, unknown to the runtime,
+    its capability is what its consumer needs, and `@Capability`
+    declares that as one tuple, to a transformer what `body` is to a
+    view. One vocabulary row, and one sentence in the CoreFlow skill's
+    "Transformers".
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
