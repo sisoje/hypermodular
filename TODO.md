@@ -1282,7 +1282,14 @@
     fails on the Mac build and compiles for the iPhone simulator, and
     one named `Label` fails for the simulator too. The layer's list
     now says "the settings" and names no type. `AGENTS.md` carries the
-    rule beside the engine runs.
+    rule beside the engine runs. Rechecked the same day on the owner's
+    request: the ambiguity is in a type position, `var settings:
+    Settings`. A node named `Settings` compiles in its own module and
+    from the app file on the Mac, since `Settings()` resolves by its
+    arguments, so the rule stays scoped to the layer and says so. The
+    recheck also found `README.md` still saying two skills, now three,
+    and put the settings bullet of the layer's list in `Services/`,
+    where a contract with its `@Entry` goes.
   - **F60, every dependency has two parts.** The owner, 2026-11-12,
     thinking out loud: "each dependency has two parts - how its
     constructed (the app know that and what input dependencies to

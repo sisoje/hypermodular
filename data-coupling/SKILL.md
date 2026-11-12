@@ -605,8 +605,8 @@ What it holds, by folder:
   `@Entry` no-op default. The backend's operations are closures here
   too, taking and returning the app's models; its wire types stay in
   the backend package, which is the only thing that reads them.
-- The settings. The root's `@AppStorage` keys as one struct of
-  bindings, so no feature names a key.
+- The settings, a contract in `Services/`. The root's `@AppStorage`
+  keys as one struct of bindings, so no feature names a key.
 
 What it does not hold: a method, a computed property, an `import` of an
 I/O framework taken for its behavior, a conformance nothing needs, or a screen's helper that
@@ -644,9 +644,11 @@ test. Data is the abstraction.
   ten-method API with shared default behavior.
 - **A type in the layer takes a name SwiftUI does not have.** A feature
   file sees the layer and SwiftUI both, and a name the two share is
-  ambiguous there and does not compile. `Label` is such a name.
-  `Settings` is one on the Mac, where the packages also build to run
-  the plain tests.
+  ambiguous where the file writes it as a type, `private var settings:
+  Settings`, and does not compile. `Label` is such a name. `Settings`
+  is one on the Mac, where the packages also build to run the plain
+  tests. A node's own name is not at risk, since a node is constructed,
+  `Settings()`, and a call resolves by its arguments.
 - **Networking is not a concept of the app.** The backend enters as a
   struct of async closures, one per operation, and the signature is the
   whole contract. Above the root nothing names a session, a request, a

@@ -6,14 +6,15 @@ One map, one module, one boundary. An architecture method where the app
 is modeled as small Mermaid maps that live in the repo, guide AI agents,
 and cannot rot, because the global view is derived, not maintained.
 
-This repo is a top-down app-making engine for agents, in two skills.
+This repo is a top-down app-making engine for agents, in three skills.
 `hypermodular/` is the maps: draw the app, develop top-down, declare
 evidence. `data-coupling/` is the code: how a SwiftUI node is written,
 cut into shell and core, tested by its execution log, and how an app's
-modules meet through one data layer. Point Claude, or any agent that
-reads a `SKILL.md`, at either and it knows the method. Point it at both
-and it writes the app, root down, each node proven by its log before
-the next is started.
+modules meet through one data layer. `xcode-project/` is the project
+file, written by a script with Apple's `xcrun xcodeproj`. Point
+Claude, or any agent that reads a `SKILL.md`, at any one and it knows
+that part of the method. Point it at all three and it writes the app,
+root down, each node proven by its log before the next is started.
 
 ## The idea
 
