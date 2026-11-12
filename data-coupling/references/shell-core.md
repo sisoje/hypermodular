@@ -269,9 +269,11 @@ struct AddressFields {
     }
 
     func judge() -> Bool {
-        streetError = Self.required(street)
-        cityError = Self.required(city)
-        return streetError == nil && cityError == nil
+        let streetJudged = Self.required(street)
+        if streetJudged != streetError { streetError = streetJudged }
+        let cityJudged = Self.required(city)
+        if cityJudged != cityError { cityError = cityJudged }
+        return streetJudged == nil && cityJudged == nil
     }
 
     static func required(_ text: String) -> String? {

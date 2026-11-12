@@ -1140,8 +1140,40 @@
     a boundary. The gate commands the briefs carried are the skills'
     own, and one that was only in the brief, the derived data path,
     went into the xcode-project skill. AGENTS says what a brief holds.
-    The two one-package miniature briefs are as they were. Not run
-    yet on the short briefs.
+    The two one-package miniature briefs are as they were. Run the
+    same day on the short address brief, Sonnet medium, six minutes,
+    output `~/Desktop/engine-2026-11-12/address-form-short`. With no
+    architecture in the prompt it produced, from the skills: the maps
+    first with the whole-app diagram, `Maps/`, the layer re-exporting
+    the library and the features re-exporting the layer, the save as
+    the `AddressFile` package with `injectAddressFile()`, the one-file
+    app, `App/generate.sh`, a hand-written `AddressFormCore` in its
+    own file, the `AddressFields` transformer with `@Capability`, nine
+    loose `@State`s, no `Task`, the preview chain in the view's file.
+    Every check green and rerun by the grader: three plain tests, one
+    integration test, the app build, three evidence tests in the
+    simulator, the checker at 0 errors 0 warnings 0 unverified. It
+    drew one node where the long brief's runs drew two, the form's
+    state and the save in `AddressScreen`, the rest furniture. It
+    swallowed a failed save with `try?`, and its contract's default
+    returns an empty string where `modules.md` asks it to throw. The
+    owner asked whether everything the long prompt carried is now in
+    a skill. Four things were not, and are now: the checker's command
+    for an app, `--sources Packages App`; `--write` in the new-app
+    steps; the build and test commands with their destination; and
+    what to do when the notation cannot draw something, which is to
+    build it plainly and report the gap. Found by the grader's rerun:
+    a derived data folder under `App/` was read as source, 2059 types
+    and 18 warnings, so the checker now skips `.build`, `DerivedData`,
+    and `SourcePackages`. From the run's list: the worked example's
+    `judge()` writes an error only when it changes, like its field
+    setters; the example's swift-core-flow path is marked as wherever
+    the checkout is; the CoreFlow skill says `waitUntil` takes any key
+    path and how a block that ends in silence is asserted. The owner
+    also asked why `AGENTS.md` should be hidden from a run. It should
+    not. Twenty of its facts were checked against the skills,
+    seventeen there word for word, two in other words, one missing,
+    that there is no mock object to write, now in the code skill.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

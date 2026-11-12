@@ -466,7 +466,8 @@ by its title, a class by one field. The evidence block is the same
 either way.
 
 - **Mocking is construction.** A boundary is a value, so the mock is a
-  value, one wrapper deep. A logging binding records the name and the
+  value, one wrapper deep. There is no mock object and no mock class to
+  write, and no protocol kept so that one could be. A logging binding records the name and the
   new value before storing. A logging closure records its payload and
   forwards nowhere. A contract's no-op default already stubs all three
   shapes, and a scenario overrides every closure the node's label names. A scenario

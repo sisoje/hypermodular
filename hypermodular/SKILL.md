@@ -112,6 +112,11 @@ breaking it saves time or is the more practical thing to do.
 Practicality outranks the rule. The one who breaks it says which rule
 and why, where it is broken.
 
+Where an app asks for something the notation cannot draw, or no rule
+covers, the notation is not extended on the spot. The thing is built
+the plainest way that fits the rules that do apply, and the gap is
+reported, with the place in the skill that fell short.
+
 ## One law: depth 1, the cure for death by a thousand mocks
 
 Mock depth is the number of layers of internal behavior a test double

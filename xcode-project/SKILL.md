@@ -65,7 +65,8 @@ xcrun xcodeproj setting set SWIFT_VERSION 6.0
 xcrun xcodeproj setting set CODE_SIGNING_ALLOWED NO
 xcrun xcodeproj setting set PRODUCT_BUNDLE_IDENTIFIER 'dev.addressform.$(TARGET_NAME)'
 
-# The packages, each a path relative to this folder.
+# The packages, each a path relative to this folder. The last is the
+# swift-core-flow checkout, wherever it is on this machine. An absolute path works.
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
 xcrun xcodeproj pkg add-local ../Packages/Features
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
@@ -176,9 +177,10 @@ Product types are short names: `application`, `framework`,
   and needs `set-multi`.
 - **No scheme is written.** Xcode creates one scheme per target the
   first time the project is read. Build with the target's name,
-  `xcodebuild -scheme AddressApp build`. Run UI tests with the test
-  bundle's name, `xcodebuild test -scheme UITests`, which builds the
-  application it depends on first. `xcodebuild -list` may leave the
+  `xcodebuild -scheme AddressApp -destination 'platform=iOS
+  Simulator,name=iPhone 18 Pro' build`. Run UI tests with the test
+  bundle's name, `xcodebuild test -scheme UITests` and the same
+  destination, which builds the application it depends on first. `xcodebuild -list` may leave the
   test bundle's scheme out of its list, and the scheme still runs.
   Pass `-derivedDataPath DerivedData` beside the project, so a build
   never picks up the products of another checkout.

@@ -176,6 +176,7 @@ BINDING = re.compile(r"^\s*@Binding\s+(?:(?:private|fileprivate|internal|public)
 MATERIALIZERS = [("@Query", "@Query"), ("QueryView(", "@Query"), ("@SceneStorage", "@SceneStorage"),
                  ("@FocusState", "@FocusState"), ("@AppStorage", "@AppStorage"), ("ProcessInfo", "@ProcessInfo")]
 
+SKIPPED_DIRS = {".build", "DerivedData", "SourcePackages"}   # build output is never the app's source
 TASK = re.compile(r"\bTask\s*(?:\.detached\s*)?[({]")
 
 class SwiftType:
@@ -206,7 +207,7 @@ def read_swift(dirs):
     types = {}
     for d in dirs:
         for p in sorted(Path(d).rglob("*.swift")):
-            if any(part.startswith(".") or part == ".build" for part in p.parts): continue
+            if any(part.startswith(".") or part in SKIPPED_DIRS for part in p.parts): continue
             text = strip_comments(p.read_text())
             for m in TYPE.finditer(text):
                 attrs, kw, name, conf = m.groups()
@@ -252,7 +253,7 @@ def check_habits(dirs):
     """A rule of the code skill that no map can show. A warning, since a rule may be broken on purpose."""
     for d in dirs:
         for p in sorted(Path(d).rglob("*.swift")):
-            if any(part.startswith(".") or part == ".build" for part in p.parts): continue
+            if any(part.startswith(".") or part in SKIPPED_DIRS for part in p.parts): continue
             lines = strip_comments(p.read_text()).splitlines()
             for i, ln in enumerate(lines):
                 m = TASK.search(ln)

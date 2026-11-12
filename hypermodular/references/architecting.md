@@ -41,7 +41,9 @@ holds.
    and no block is not ready to build.
 3. **Run the checker.** `scripts/mapcheck.py` on the repo, `--sources`
    once code exists: zero errors,
-   and every warning understood. The map is now the work fence.
+   and every warning understood. Add `--write` whenever a map changed,
+   so `APP-MAP.md` opens with the whole app drawn from the maps. The
+   map is now the work fence.
 4. **Build root-down.** The code is laid out as the data-coupling
    skill's `references/app-structure.md` gives it, the layer, the
    features, one package per dependency, the app under `App/`.

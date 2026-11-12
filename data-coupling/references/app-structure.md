@@ -203,7 +203,7 @@ xcrun xcodeproj init AddressForm.xcodeproj
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
 xcrun xcodeproj pkg add-local ../Packages/Features
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
-xcrun xcodeproj pkg add-local ../../CoreFlow
+xcrun xcodeproj pkg add-local ../../CoreFlow   # the path of the swift-core-flow checkout, wherever it is
 
 application() {   # a target, its phases, its folder, the main-actor default, the features
     xcrun xcodeproj target add "$1" --product-type application
@@ -230,12 +230,25 @@ links the features and the testing product. The folders are
 synchronized with disk, so a new file needs no change to the script. A
 new dependency is one `pkg add-local` and one `pkg link`.
 
-No scheme is written. Xcode creates one per target. The app builds
-with `xcodebuild -scheme AddressApp`, and the evidence tests run with
-`xcodebuild test -scheme UITests`, which builds the test host first.
+No scheme is written. Xcode creates one per target. From `App/`, the
+app builds and the evidence tests run with these two commands, the
+second building the test host first.
+
+```sh
+xcodebuild -scheme AddressApp -destination 'platform=iOS Simulator,name=iPhone 18 Pro' -derivedDataPath DerivedData build
+xcodebuild test -scheme UITests -destination 'platform=iOS Simulator,name=iPhone 18 Pro' -derivedDataPath DerivedData
+```
+
+The destination names a simulator that is installed, whichever the
+brief or the machine gives.
 
 ## The test side
 
+- **The checker** runs from the repo root over every source folder,
+  `python3 <mapping skill>/scripts/mapcheck.py . --sources Packages App`,
+  and passes at zero errors and nothing unverified. `--write` is added
+  after a map changes, to redraw the whole-app diagram. It skips build
+  folders, `.build`, `DerivedData`, `SourcePackages`.
 - **Plain tests** of pure calculations and transformers are in
   `Features/Tests/`, run with `swift test`. No view runtime. The
   package builds for the Mac to run them, so a modifier that exists
