@@ -116,7 +116,9 @@ subgraph), no emoji, no status marks.
   and for a value that already exists. Creation is not lifecycle, so
   a closure the root sets starts no `Task` either.
 - **Dependencies are environment values**: plain structs composed of
-  closures, lets, or bindings. No protocols, no classes, no reference
+  closures, lets, or bindings. Every dependency has two parts. How it
+  is constructed is the app's knowledge, the inputs the root supplies.
+  How it is used is the contract, and that is all a feature sees. No protocols, no classes, no reference
   types, with the three protocol cases and the two class cases, data
   that earns it and a framework delegate, the code skill names. Setting =
   putting a value into the environment at the root. A dependency that

@@ -1283,6 +1283,28 @@
     one named `Label` fails for the simulator too. The layer's list
     now says "the settings" and names no type. `AGENTS.md` carries the
     rule beside the engine runs.
+  - **F60, every dependency has two parts.** The owner, 2026-11-12,
+    thinking out loud: "each dependency has two parts - how its
+    constructed (the app know that and what input dependencies to
+    provide plus datalayer is free to use)... the second part is how
+    its used, so for example we inject all the appstorage properties
+    at app level, then we just use bindings in the feature, we
+    probably inject set of bindings like a struct in environment
+    entry.... similar networking, we may need token bindinga to
+    construct it but feature will se a struct of closures... every
+    dependency on earth follows same principles that is dependency
+    inversion from bob". Construction is the app's knowledge, what the
+    dependency is built from and the inputs the root supplies, and the
+    code that builds it may use the layer. Usage is all a feature
+    sees, the contract read from its environment entry. The settings
+    and the backend are the two examples, and no dependency is a
+    special case. The code skill had the parts in separate places, the
+    four keys, the dependency package, the `inject` parameters, and
+    dependency inversion in the layer's first paragraph. It now states
+    them as one rule, first in the layer's list of rules, and
+    `AGENTS.md` has it under the dependencies rule. The owner said
+    "probably" of the struct of bindings, so the settings stay as the
+    skill already had them.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
