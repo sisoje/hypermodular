@@ -173,8 +173,8 @@ time, designed once.
   crossing into an effect. Nothing is behind the boundaries, so no side
   effect exists beyond them.
 - **The granularity is the shell/core cut.** One scenario per core.
-  The preview chain, the scenario and its `#Preview`, lives in one
-  file with the view that is there. A core exists wherever the I/O
+  A scenario is a file of its own beside its view, and the `#Preview`
+  that shows it is in the view's file. A core exists wherever the I/O
   is. A screen with one
   shell is one unit. A component with its own boundaries is its own
   unit, testable alone. The scenario holds the mock state, pre-filled

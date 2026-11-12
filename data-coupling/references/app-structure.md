@@ -285,8 +285,9 @@ brief or the machine gives.
 
 - A node is one file named for the node. A hand-written core is a file
   of its own, and so is a transformer.
-- The preview chain lives in one file with the view that is there, the
-  scenario that stages it and the `#Preview` that shows the scenario.
+- A scenario is a file of its own, named for the scenario, in the
+  node's folder beside the view. The `#Preview` lines that show the
+  scenarios are in the view's file.
 - A generated `Core` has no file.
 - A contract is one file in the layer's `Services/`, with its `@Entry`.
 - A dependency is one package, and a small one is one source file.

@@ -550,9 +550,9 @@ own.
   construct it directly. The shell and the core are two types in two
   files, `BookList.swift` and `BookListCore.swift`, and the transformer
   is a third. Most types get a file of their own, named for the type.
-  The preview chain lives in one file with the view that is there, the
-  scenario that stages it and the `#Preview` that shows the scenario.
-  A generated `Core` has no file.
+  A scenario is a file of its own, named for the scenario, beside the
+  view it stages, and the `#Preview` that shows it is in the view's
+  file. A generated `Core` has no file.
 - A core's preview is a construction of the core with literals,
   written directly in `#Preview`. A view with state or a live wrapper,
   a shell, is previewed through a scenario and not bare. A bare

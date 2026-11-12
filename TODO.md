@@ -1377,6 +1377,21 @@
     skill, `notation.md`, `architecting.md`, `AGENTS.md`, and the two
     long briefs say the same. A user journey across several nodes
     gets no hand-written file, by the depth-1 law.
+  - **F64, a scenario is a file of its own, the previews stay with the
+    view.** The owner, 2026-11-12: "i am just not sure where to put
+    scenario structs and previews... because i preferd one type per
+    file but apple mesed me up because core macro can not be used
+    without scenario... and so we need main view + scenarios +
+    previews and maybe its not nice in one file?", then "ok". F46 had
+    the preview chain, the scenario and its `#Preview`, in one file
+    with the view. Now a scenario is a file of its own, named for the
+    scenario, beside the view it stages, since it is a test fixture
+    and the view is the product, and the generated `Core` is a nested
+    type any file of the module constructs. The `#Preview` lines stay
+    in the view's file, each naming a scenario, since Xcode's canvas
+    shows the previews of the file that is open. The code skill and
+    its glossary, `shell-core.md`, `testing.md`, `app-structure.md`,
+    and the CoreFlow skill say the same.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
