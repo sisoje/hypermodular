@@ -1304,7 +1304,19 @@
     them as one rule, first in the layer's list of rules, and
     `AGENTS.md` has it under the dependencies rule. The owner said
     "probably" of the struct of bindings, so the settings stay as the
-    skill already had them.
+    skill already had them. The owner, the same hour: "so yes you can
+    give example of appstorage.. but also maybe mention networking?"
+    and "how its used - its called capabilities". The second part is
+    named so in the rule. `modules.md` has the example, the book
+    app's `@AppStorage` key in three pieces, the capabilities in the
+    layer, the construction at the root, the use in a feature, and
+    the backend beside it in a paragraph, `injectBackend(baseURL:
+    token:)` and a struct of closures. The example's struct is
+    `BookSettings`, the example app's own name, and the mapping
+    skill's coupling diagram takes the same name in place of
+    `Settings`, which F59 found does not compile on the Mac. The
+    shape was read from the owner's expenses app, a layer struct of
+    bindings set by one modifier that owns every key.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

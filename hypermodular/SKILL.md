@@ -280,13 +280,13 @@ classDiagram
     class NavService {
         showDetail(bookId)
     }
-    class Settings {
+    class BookSettings {
         sortByAuthor
     }
 
     BookShelf ..> Book
     Library ..> DbService
-    Library ..> Settings
+    Library ..> BookSettings
     Search ..> NavService
 ```
 

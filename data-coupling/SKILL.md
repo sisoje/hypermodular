@@ -624,13 +624,15 @@ test. Data is the abstraction.
 - **Every dependency has two parts, how it is constructed and how it
   is used.** Construction is the app's knowledge. The root knows what
   the dependency is built from and supplies those inputs, and the code
-  that builds it may use anything in the layer. Usage is all a feature
-  sees, the contract, read from its environment entry. The settings
-  are constructed from the root's `@AppStorage` properties and used as
-  a struct of bindings. A backend may need a binding to the token to
-  be constructed, and it is used as a struct of closures. No
-  dependency is a special case. Each one follows this same principle,
-  Robert Martin's dependency inversion.
+  that builds it may use anything in the layer. How it is used is its
+  capabilities, the contract's members, and they are all a feature
+  sees, read from the contract's environment entry. The settings are
+  constructed from the root's `@AppStorage` properties, and their
+  capabilities are a struct of bindings. A backend may need a binding
+  to the token to be constructed, and its capabilities are a struct of
+  closures. No dependency is a special case. Each one follows this
+  same principle, Robert Martin's dependency inversion.
+  `references/modules.md` shows both parts in code.
 - **A contract is a struct of closures, lets, or bindings** with a
   defaulted initializer, and its `@Entry` default is the minimal no-op,
   `.init()`. The `@Entry` belongs to the layer, beside the contract it

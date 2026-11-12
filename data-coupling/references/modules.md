@@ -144,6 +144,48 @@ A contract's members are closures, lets, or bindings. The root's
 bindings built over the root's own properties, so a feature reads or
 writes one value from the environment and does not name a key.
 
+Every dependency has two parts, how it is constructed and how it is
+used. How it is constructed is the app's knowledge, what the
+dependency is built from and which inputs the root supplies. How it is
+used is its capabilities, the contract's members, and they are all a
+feature sees. The root's `@AppStorage` properties show both parts.
+
+```swift
+// The capabilities, in the layer. One binding per key.
+struct BookSettings {
+    var sortByAuthor: Binding<Bool> = .constant(false)
+}
+
+extension EnvironmentValues {
+    @Entry var settings = BookSettings()
+}
+
+// How it is constructed, at the root. The app owns the key.
+@main
+struct BookApp: App {
+    @AppStorage("sortByAuthor") private var sortByAuthor = false
+
+    var body: some Scene {
+        WindowGroup {
+            Library()
+                .environment(\.settings, BookSettings(sortByAuthor: $sortByAuthor))
+        }
+    }
+}
+
+// How it is used, in a feature. A binding, and no key.
+@Environment(\.settings) private var settings: BookSettings
+// in its body:
+Toggle("By author", isOn: settings.sortByAuthor)
+```
+
+A backend has the same two parts. It may need the token to be
+constructed, so the root hands its `inject` function a binding to it,
+`injectBackend(baseURL: url, token: $token)`. Its capabilities are a
+struct of closures, and a feature calls one and sees no token. Every
+dependency follows this one principle, Robert Martin's dependency
+inversion.
+
 The consumer dictates the signature, not the implementation that will
 satisfy it. The core constructs the model and hands it over (`try await
 save(book)`). The closure is `async` or `throws` because the I/O can
