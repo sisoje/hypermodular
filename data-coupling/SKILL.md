@@ -21,6 +21,13 @@ description: >
 
 # data-coupling: writing the node
 
+**Whatever you are making, lift.** Lift the state out of the view, to
+the node above that can own it. Lift the logic out of the view too, as
+closures the root sets and as rules that run above the view. Keep the
+two apart always, the state plain data, the logic functions over it,
+never one object holding both. Do this first, before anything else in
+this skill, for every view you write.
+
 A SwiftUI `View` is not a view. It is a node in a network, a plain
 value carrying everything its subtree will show and do. Data enters a
 node at one moment, its creation, through the initializer or the
@@ -58,9 +65,16 @@ file).
 
 **Decouple state from behavior.** Not UI from logic. There is no UI in
 a node to separate. A `View` holds data, closures, and a transformation
-from inputs to children; the runtime owns the pixels. A ViewModel takes
-logic out of a node that is already only logic, and adds an object to
-hold it. The cut that matters runs between data and the closures that
+from inputs to children; the runtime owns the pixels. That is why MVVM
+is wrong here, precisely. A UIKit view exists. It is an object that
+stays, so state and logic were put in an object beside it. A SwiftUI
+node does not exist that way. All it does is transform its
+dependencies, and what the runtime does with the result, diffing,
+managing, rendering, is not the node's concern. With no object that
+stays there is nothing to attach a ViewModel to. So the state is
+lifted, the logic is lifted too, and the two are kept apart. A
+ViewModel does the opposite. It takes logic out of a node that is
+already only logic, and adds an object to hold it with the state. The cut that matters runs between data and the closures that
 act on it. State is open, plain data that drives the view. Behavior is
 closures the app sets into the flow at the root. A rule the feature
 owns, a validation, is a pure function of its state and stays with it.

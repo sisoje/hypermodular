@@ -1108,6 +1108,22 @@
     declares that as one tuple, to a transformer what `body` is to a
     view. One vocabulary row, and one sentence in the CoreFlow skill's
     "Transformers".
+  - **F54, lift, and why MVVM is wrong, precisely.** The owner,
+    2026-11-12: "to be very precise why MVVM is bad because view /
+    node generally does not exist physically, so all he does is also
+    transforming dependencies, but is diffed managed and rendered by
+    runtime, who cares, but the point is unlike uikit physical views
+    we lift state and we lift logic also, and we keep them separate
+    always", and "agent needs to know immediately whatever he is
+    making to do that to lift". The code skill said to lift in its
+    second section and gave MVVM's fault as "separates logic from
+    logic". Now the first paragraph of the skill is the instruction,
+    lift the state, lift the logic, keep the two apart, before
+    anything else and for every view. The rule's paragraph gives the
+    reason as the owner states it: a UIKit view is an object that
+    stays, so an object was put beside it; a SwiftUI node only
+    transforms its dependencies and nothing stays to attach a
+    ViewModel to. The first hard rule in AGENTS says the same.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

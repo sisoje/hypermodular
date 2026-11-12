@@ -76,6 +76,12 @@ subgraph), no emoji, no status marks.
 
 ## Hard rules
 
+- **Lift, whatever is being made.** The state goes out of the view to
+  the node above that can own it. The logic goes out too, as closures
+  the root sets and as rules that run above the view. The two are kept
+  apart always, never one object holding both. A SwiftUI node is not a
+  physical view the way a UIKit view is. It only transforms its
+  dependencies, so there is nothing to attach a ViewModel to.
 - **One tree per shipped `@main`** in `APP-MAP.md`; a test host is
   none. Names unique across the repo. Built-but-unmounted components go
   under `## Unmounted`.
