@@ -301,7 +301,7 @@ tab, the others with the script above.
 | `.onChange(of: id) { model = Model(id: $1) }` added to one of the above | follows one wave late | removed together with the seed |
 | `.id(id)` on the child | follows by teardown, and the child's own `@State` is lost | removed together with the seed. `.id()` is for a teardown that is wanted |
 | `_books = Query(filter: …)` in a child's `init` | follows the input, and a query is built at every creation | `QueryView` with `dependencies:` (`shell-core.md`) |
-| `.task { await load() }` or `.onAppear { Task { await load() } }` on a node an action mounts | the load runs again each time the view on screen reappears, after a pop and after a change of tab. The second form is also a `Task` nobody holds | the action that mounts the node starts the load, as a task the node that handles the action holds (`shell-core.md`, "Who owns the load") |
+| `.task { await load() }` or `.onAppear { Task { await load() } }` on a node an action mounts | the load runs again each time the view on screen reappears, when a screen pushed over it is popped and when the user comes back from another tab. The second form is also a `Task` nobody holds | the action that mounts the node starts the load, as a task the node that handles the action holds (`shell-core.md`, "Who owns the load") |
 
 The second row is what Apple's migration note for SDK 27 gives for the
 compile error the `@State` macro raises on a state assigned in `init`.
@@ -607,26 +607,29 @@ SwiftUI template and act on what is slow. The same reasoning is why
 
 ## The rules under their older names
 
-SwiftUI is pure data flow. What it adds to a dataflow network is that
-any node may introduce a source of truth, `@State`, so new data enters
+SwiftUI is pure data flow. Nothing but values couples its nodes. A
+boundary event, a write or a call, is not flow, and it comes back into
+the flow only through a source of truth ("Boundary events", above).
+What SwiftUI adds to a dataflow network is that any view may introduce
+a source of truth, `@State` or a storage wrapper, so new data enters
 the flow at that node and not only from above. The API's words are
-object words all the same, `View`, `onAppear`, `task`, lifecycle, and
-each rule in this skill first has to un-say a word that carries the
-UIKit model. The literature below does not have those words. When a
-rule here looks arbitrary, read it under its older name.
+still object words, `View`, `onAppear`, `task`, lifecycle, and each
+rule in this skill first has to un-say a word that carries the UIKit
+model. The literature below does not have those words. When a rule
+here looks arbitrary, read it under its older name.
 
 | The rule here | Its older name | Source |
 |---|---|---|
 | A node is a transformation, coupled to the others only by the values that flow | a process in a dataflow network | Kahn 1974; Wadge and Ashcroft 1985; Morrison |
 | Data coupling, the loosest coupling that works | data coupling | Yourdon and Constantine 1979 |
-| The map, a node, an arrow, a cylinder, and what is outside the app | a data flow diagram, a process, a data flow, a data store, and a source or sink outside the system | DeMarco 1978 |
+| The map, a node, an arrow, a dependency's cylinder, and what is outside the app | a data flow diagram, a process, a data flow, a data store, and a source or sink outside the system | DeMarco 1978 |
 | Hide the how, not the state | information hiding | Parnas 1972 |
-| A source of truth is the only stored state. What can be derived is derived, and a seed is a stored copy | essential state against accidental state | Moseley and Marks 2006 |
+| A source of truth is state. What can be computed from it is computed, and a seed is a stored copy of it | essential state against accidental state | Moseley and Marks 2006 |
 | A wave re-runs the transformations whose inputs changed, and no others | change propagation | Acar 2005 |
-| What is built from an input follows the input and is kept while the input does not change. A Memo | a build that is correct and minimal, a task run again only when an input it depends on has changed | Mokhov, Mitchell, and Peyton Jones 2018 |
-| State drives the node, and a write or a call is the event | a behavior, a value over time, against an event, a discrete occurrence | Elliott and Hudak 1997 |
+| What is built from an input follows the input and is kept while the input does not change. A Memo | a build that is correct and minimal, a step run again only when an input it depends on has changed | Mokhov, Mitchell, and Peyton Jones 2018 |
+| State drives the node, and a write or a call is the event | a "behavior", that literature's word for a value over time, against an "event", a discrete occurrence. Its behavior is this skill's state, not this skill's closures | Elliott and Hudak 1997 |
 | The network is reactive, so the nodes do not have to be | a reactive system against a transformational one | Harel and Pnueli 1985 |
-| The action that puts a node in the graph does the node's work, not `.task` on appearance | an output on the transition, not on the state, a Mealy machine against a Moore machine. In a statechart an event triggers the transition | Mealy 1955; Moore 1956; Harel 1987 |
+| The action that puts a node in the graph starts the node's work, not `.task` on appearance | an output on the transition, a Mealy machine, not on the state, a Moore machine. In a statechart an event triggers the transition | Mealy 1955; Moore 1956; Harel 1987 |
 | The core is pure, and the I/O is at the edge | values as the boundary, a functional core in an imperative shell | Bernhardt 2012; Wlaschin |
 
 ## Where the model came from

@@ -431,17 +431,20 @@ struct Library: View {
 
 `BookDetail` has no `.task`. A `.task` on it would hang the load on
 the view on screen, and that view appears again when a screen pushed
-over it is popped or another tab is left, so the load would run again
-each time. Here the load runs once for each tap, a second tap replaces
-it, and what is loaded is state the list holds and decides.
+over it is popped or the user comes back from another tab, so the
+load would run again each time. Here the load runs once for each tap,
+a second tap replaces it, and what is loaded is state the list holds
+and decides. The example keeps one fact, the reviews, `nil` while
+they load. A screen that shows a spinner or an error holds those as
+two more fields, written by the same task.
 
-A node that no action mounts has only the runtime's event. The first
-screen at launch is the case, and the two examples below are that
-screen. There the loading flow (spinner on, fetch, spinner off, error
-or data) is a rule the core can own. Whether it does, or a shell above
-it does, is a choice per feature, not a default. Once the core owns
-the load, the `let`s it produces turn writable, and the sequence
-becomes feature logic, a method the `.task` calls:
+A node that no action mounts has only the runtime's event, `.task`.
+The first screen at launch is the case. There the loading flow
+(spinner on, fetch, spinner off, error or data) is a rule the core can
+own. Whether it does, or a shell above it does, is a choice per
+feature, not a default. Once the core owns the load, the `let`s it
+produces become bindings, and the sequence becomes a rule of the
+feature, a method the `.task` calls:
 
 ```swift
 struct LoadingShelf: View {
@@ -466,46 +469,60 @@ struct LoadingShelf: View {
 }
 ```
 
-The shell that terminates those boundaries keys the fetch on the toggle
-and persists the delete as a source-of-truth write:
+The `.task` there hangs on the shelf itself, which fits a shelf with
+nothing pushed over it. Inside a stack or under a tab it would run
+again each time the shelf reappears, so the launch load hangs on the
+node above the stack. The shell below is that node. It starts the
+first fetch, starts the refetch on the toggle's write, and persists
+the delete as a source-of-truth write:
 
 ```swift
 struct BookShelfShell: View {
     @Environment(\.library) private var library
     @Binding var sortByAuthor: Bool
     @State private var books: [Book]?
+    @UnstructuredTask private var fetch: Task<Void, Never>?
     @UnstructuredTask private var save: Task<Void, Never>?
 
     var body: some View {
-        BookShelf(
-            books: books ?? [],
-            sortByAuthor: $sortByAuthor,
-            onDelete: { book in
-                let kept = (books ?? []).filter { $0.id != book.id }
-                books = kept
-                save = Task { [library] in try? await library.save(kept) }
-            })
-        .task(id: sortByAuthor) { books = try? await library.fetch(sortByAuthor) }
+        NavigationStack {
+            BookShelf(
+                books: books ?? [],
+                sortByAuthor: Binding(
+                    get: { sortByAuthor },
+                    set: { byAuthor in
+                        sortByAuthor = byAuthor   // the write is the action
+                        fetch = Task { [library, $books] in
+                            $books.wrappedValue =
+                                try? await library.fetch(byAuthor)
+                        }
+                    }),
+                onDelete: { book in
+                    let kept = (books ?? []).filter { $0.id != book.id }
+                    books = kept
+                    save = Task { [library] in try? await library.save(kept) }
+                })
+        }
+        .task { books = try? await library.fetch(sortByAuthor) }
     }
 }
 ```
 
 No node starts a `Task` it does not hold, and the trigger decides the
 form. The shelf is the first screen at launch. No action mounted it,
-so its first fetch has only the runtime's event to start it.
-`.task(id:)` carries that fetch and, keyed on the sort, the refetch
-with it, cancelling the stale job at its next suspension point. Its id
-is a value that is `Equatable` by nature, a flag, a count, a string,
-not a model made `Equatable` for it. Both `.task` forms are the
-runtime's events, hung on the view on screen. Appearance starts the
-work, disappearance cancels it, and a reappearance starts it again
-with the id unchanged, after a pushed screen is popped or another tab
-is left. The node decides none of that. So the form is for a node no
-action mounts, and a fetch that is not to run again when the shelf
-reappears is held by a node that does not leave, the root. Where an
-action mounts the node, the action starts the fetch, as above. Where
-the app writes the value, the setter of the binding starts the
-refetch.
+so its first fetch has only the runtime's event, `.task`, which the
+runtime holds and cancels. The `.task` hangs on the shell, above the
+`NavigationStack`. That node does not leave, so the fetch does not run
+again when a screen pushed inside the stack is popped. Hung on the
+shelf inside the stack, it would. The refetch has an action, the
+toggle's write. The shell hands the core a binding whose setter stores
+the sort and assigns the fetch to a slot, so a second toggle replaces
+the first fetch. `.task(id: sortByAuthor)` would refetch on the change
+too, and it would refetch again at every reappearance with the sort
+unchanged. It is what is left for a value that changes with no write
+of the app's behind it, a value the system supplies. Its id is then a
+value that is `Equatable` by nature, a flag, a count, a string, not a
+model made `Equatable` for it.
 
 The save is started by an event, a delete, so the shell assigns it. A
 job the user starts with a tap, a save or a download, is

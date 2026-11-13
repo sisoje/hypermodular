@@ -189,31 +189,33 @@ source of most broken SwiftUI mental models.
   and appearance, disappearance, and `.task` are what the runtime does
   as a result. So nothing that creates a value starts work, not an
   `init` and not `body`, and a closure the root builds starts no `Task`
-  of its own when it is called. A value is created every wave and
-  creating it causes nothing. Work is started by the action that
-  causes it, as a task the node holds. The view on screen has a
-  lifecycle too, and it is not the app's. `.task`, `.task(id:)`,
-  `.onAppear`, and `.onChange` hang work on it. The view on screen
-  appears again when a pushed screen is popped or another tab is
-  left, and the work runs again. So when the action that put a node
-  in the graph can be determined, a tap that presents or pushes it,
-  what the node needs is done in that action and nowhere else, by the
-  node that handles the action. What is loaded and what is loading is
-  state the app holds and decides. It is not left to the lifecycle of
-  the view on screen. A lifecycle modifier is what is left when there
-  is no action, the first screen at launch. Creation builds nothing
-  that has a lifetime either. A class instance has one. It is made
-  once and it stays, and the struct is made every wave, so a view's
-  `init` that builds a model object builds one every wave. A `Query`
-  built there is built again the same way. What has a lifetime is
-  built in one of four places, by the handler of an event, by the
-  root, as the initial value of a private `@State`, which the runtime
-  evaluates once when the slot is established, or as a Memo's build,
-  which runs once for each value of its dependencies. The `@State`
-  macro defers the initial value of a private `@State`, which avoids
-  an allocation at every creation. It does not make creation the start
-  of a lifetime. A value that needs an initializer argument cannot be
-  written as that initial value, and it is not the node's state.
+  that nobody holds when it is called. A value is created every wave
+  and creating it causes nothing. Creating a value builds nothing that
+  has a lifetime either. A class instance has one. It is made once and
+  it stays, and the struct is made every wave, so a view's `init` that
+  builds a model object builds one every wave. A `Query` built there
+  is built again the same way. What has a lifetime is built in one of
+  four places. The handler of an event builds it. The root builds it.
+  The runtime builds it, once, as the initial value of a private
+  `@State`, when the slot is established. A Memo builds it, at its
+  first `body` and again when a dependency changes. The `@State` macro
+  defers the initial value of a private `@State`, which avoids an
+  allocation at every creation. It does not make creation the start of
+  a lifetime, and state that takes its first value from an argument of
+  the view's `init` belongs to the node that supplies the argument.
+  Work is started by the action that causes it, as a task the node
+  holds. The view on screen is the one thing here with a lifecycle. It
+  appears and it goes, and that lifecycle is the runtime's and not the
+  app's. `.task`, `.task(id:)`, and `.onAppear` hang work on its
+  appearance. The view on screen appears again when a screen pushed
+  over it is popped or the user comes back from another tab, and that
+  work runs again. So when the action that put a node in the graph can
+  be determined, a tap that presents or pushes it, what the node needs
+  is done in that action and nowhere else, by the node that handles
+  the action. What is loaded and what is loading is state a node holds
+  and decides. It is not left to the lifecycle of the view on screen.
+  When no action put the node there, as for the first screen at
+  launch, `.task` is what is left.
 - **Two kinds of node.** A view is a persisted node, and it is the
   runtime's. The runtime keeps its identity slot and its state across
   waves, re-creates the value each wave over that slot, and calls its
@@ -462,20 +464,24 @@ a tap, is assigned to an `@UnstructuredTask` slot under the library, a
 slot that logs like state and whose entry the block declares. The
 assignment is a write the node makes at a moment the node chooses, so
 the node controls the work and a test reads it. `.task` and
-`.task(id:)` are the runtime's events, hung on the view on screen.
-Appearance starts the work, disappearance cancels it, a reappearance
-starts it again, and the node decides none of the three. So they are
-not the default. Work a node needs when it is mounted is started by
+`.task(id:)` are the runtime's events, hung on the view on screen,
+and the runtime holds the task and cancels it. Appearance starts the
+work, disappearance cancels it, a reappearance starts it again, and
+the node decides none of the three. So they are not where a node's
+work is started. Work a node needs when it is mounted is started by
 the action that mounts it, in the node that handles the action, as a
 task that node holds, and the result is state that node owns and
 hands down. A refetch when a value changes is started by the write of
-the value, in the setter of the binding its owner hands down. `.task`
-is what is left when no action can be determined, the first screen at
-launch, and `.task(id:)` when a value changes with no write of the
-app's behind it, a value the system supplies. A subscription sits in
-a node whose lifetime covers every moment its events must be handled,
-and it starts in that node's `.task`, not where the contract's value
-is built. The root is the usual such node, and launch is no action.
+the value. The owner of the value hands down a binding whose setter
+stores the value and assigns the fetch to a slot the owner holds.
+`.task` is what is left when no action mounted the node, the first
+screen at launch, and it hangs on the node above the stack and the
+tabs, which does not leave. `.task(id:)` is what is left when a value
+changes with no write of the app's behind it, a value the system
+supplies. A subscription sits in a node whose lifetime covers every
+moment its events must be handled, and it starts in that node's
+`.task`, not where the contract's value is built. The root is the
+usual such node, and launch is not an action.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a
@@ -921,10 +927,10 @@ and why, where it is broken.
   it. The map
   skill's `mapcheck.py --sources` warns on a `Task` that is not
   assigned.
-- **A lifecycle modifier for work an action starts.** `.task`,
-  `.task(id:)`, `.onAppear`, and `.onChange` hang work on the
-  lifecycle of the view on screen. That view appears again when a
-  pushed screen is popped or another tab is left, and the work runs
+- **A lifecycle modifier starting work an action causes.** `.task`,
+  `.task(id:)`, and `.onAppear` hang work on the appearance of the
+  view on screen. That view appears again when a screen pushed over it
+  is popped or the user comes back from another tab, and the work runs
   again, a `.task(id:)` whose id did not change included. When the
   action that put the node in the graph can be determined, the work is
   done there and nowhere else. The node that handles the action
@@ -932,9 +938,11 @@ and why, where it is broken.
   what failed are state that node owns and hands down. The node that
   is mounted receives them as `let`s and has no `.task`. A counter or
   a flag stored only so that `.task(id:)` fires is state invented to
-  reach the runtime's event. `.task` is what is left when there is no
-  action, the first screen at launch, and a subscription the root
-  holds for the life of the app. The worked form is in
+  reach the runtime's event. `.task` is what is left in two cases, the
+  first screen at launch, which no action mounts, and a subscription
+  the root holds for the life of the app. It hangs on a node that does
+  not leave, the one above the stack and the tabs. The method names no
+  use for `.onAppear`. The worked forms are in
   `references/shell-core.md`, "Who owns the load".
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
@@ -1029,10 +1037,10 @@ The articles' terms. Use them. They make discussion precise in a way
 ## References
 
 Each rule of this skill has an older name in the dataflow literature,
-a process, a data store, essential state, a behavior and an event, an
-action on the transition. `references/data-flow.md`, "The rules under
-their older names", has them in one table with their sources. Read a
-rule under that name when it looks arbitrary.
+a process, a data store, essential state, a value over time and an
+event, an output on the transition. `references/data-flow.md`, "The
+rules under their older names", has them in one table with their
+sources. Read a rule under that name when it looks arbitrary.
 
 - Lazar Otasevic, [SwiftUI Data Flow Masterclass](https://medium.com/@redhotbits/swiftui-data-flow-masterclass-099f0768f776)
 - Lazar Otasevic, [TDD Is Dead. Long Live TDD.](https://medium.com/@redhotbits/tdd-is-dead-long-live-tdd-f85b4b9eacbd)

@@ -1904,12 +1904,27 @@
     the write of the value, in the setter of the binding its owner
     hands down, which the `.onChange` ladder already said. F69's
     "who owns the load is a choice per feature" now holds only for a
-    node no action mounts. The two older examples in that section, a
-    shelf that loads on `.task` and on `.task(id: sortByAuthor)`, are
-    kept as that node, the first screen at launch, and the text
-    beside them says the fetch runs again when the shelf reappears
-    and that a fetch which is not to do so is held by the root. Their
-    code was not rewritten.
+    node no action mounts. The two older examples in that section
+    were first kept as that node with a sentence beside them, and a
+    third cold reader, the same day, called that the worst pull in
+    the text, since the one refetch shown in code was
+    `.task(id: sortByAuthor)` and the rule beside it sends a refetch
+    to the setter. `BookShelfShell` is rewritten. It holds the
+    `NavigationStack`, its `.task` hangs above the stack, and the
+    refetch is assigned by the setter of the binding it hands the
+    core. Measured for it, a `.task` on the `NavigationStack` itself
+    and one on the `TabView` itself each ran once across a push and a
+    pop and across a change of tab, and the rewritten shell
+    type-checks with swiftc. That reader answered nine of nine as
+    the text intends and put the launch load on the node above the
+    tabs unprompted. What else its 40 notes changed. `.onChange` is
+    out of the sentences about reappearance, where it does not run
+    again. The lifecycle bullet says creation first and the screen's
+    lifecycle second. The do-not says the method names no use for
+    `.onAppear`. "Another tab is left" is "the user comes back from
+    another tab". Not resolved, a subscription in a node that a tap
+    mounts, which the subscription sentence sends to that node's
+    `.task` and F77 to the action.
   - **F78, the rules under their older names.** The owner,
     2026-11-13: "dude why is this so hard to define all these rules?
     boundaries, effects,,, is there some book from data-flow
@@ -1939,7 +1954,15 @@
     four parts of a data flow diagram in today's common words and
     not as DeMarco's own, and it cites Harel's statecharts only for
     an event that triggers a transition. The pairing of each rule
-    with its older name is the agent's reading of those sources.
+    with its older name is the agent's reading of those sources. The
+    third cold reader found two of the older words turned against the
+    skill's own, "behavior", which there is a value over time and
+    here is closures, and a build's "task". The table now says a
+    step, and says whose behavior it means. It also found "pure data
+    flow" beside "Neither is data flow" in the section on boundary
+    events, and the opening now says what pure means, that nothing
+    but values couples the nodes, and that a boundary event comes
+    back into the flow only through a source of truth.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
