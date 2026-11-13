@@ -241,9 +241,14 @@ is a finding, like a label mismatch.
   is the node's own out-arrow, `Node->>name: value`, the other way one
   event has two edges. A
   parent handing down a new value is not a stimulus. It is a new given,
-  so start a second block. (The alternative reading, that an
-  `.onChange(of:)` reaction makes it a genuine when, is open.
-  `Parent->>Node` warns rather than errors until it is ruled.)
+  so start a second block. A node that answers the new value by
+  writing its own state, an `.onChange(of:)` that fills a seeded copy
+  again, has no when in it either. That write is a repair, and the
+  code skill's `data-flow.md`, "A value built from an input", says
+  what replaces it. (Still open is the terminal reaction, a boundary
+  call a node makes on `.onChange(of:)` of a value it does not own.
+  Whether that makes the new value a genuine when is not ruled, and
+  `Parent->>Node` warns rather than errors until it is.)
 - **Arrows out of the node are the *then***. `Node->>target: payload`
   is one entry, `(target, payload)`, in order. The names the test
   asserts are exactly the ordered list of out-arrows, nothing else, and

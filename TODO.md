@@ -41,6 +41,9 @@
     re-created; "the network is reactive so the nodes don't have to
     be"), or an `.onChange(of: input)` reaction makes it a genuine
     *when*. `mapcheck.py` warns on it, never errors, until ruled.
+    Half settled by F74. A reaction that writes the node's own state
+    from the new value is the repair of a seeded copy and no when.
+    Open is the terminal reaction alone.
   - **Flowchart reserved words.** `end` and the like as node ids,
     untested.
 
@@ -1765,6 +1768,19 @@
     Memo's build ran twice for two inputs, since the second run of
     that `body` did not build again, so the loop needs every run to
     repeat the write.
+  - **F74, `Parent->>Node`, the half the critique settles.** The item
+    near the top of this file had two readings and waited for real
+    material, a parent handing down a new value mid-scenario. The
+    critique is that material for one of them. A node that answers
+    the new value by writing its own state is repairing a seeded copy
+    (F72), so the reaction is no when and no block is declared for
+    it. `notation.md` says so. The other half the critique does not
+    reach. A terminal reaction, `.onChange(of: selection) {
+    haptics.play() }` on a selection the parent owns, makes a
+    boundary call that logs, and the block has no stimulus to name
+    for it but `Parent->>Node`. That stays open, and the checker
+    still warns. The proposal to the owner had said the critique
+    settles the whole item. It settles this half.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
