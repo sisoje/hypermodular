@@ -840,7 +840,10 @@ and why, where it is broken.
   of the binding it hands down.
 - **State seeded from an input.** Seeded means given its first value
   at creation, `_doubler = State(wrappedValue: Doubler(seed: seed))`
-  in an `init`, or the same build made lazy. The `init` runs at every
+  in an `init`, the same build made lazy, or the same write in
+  `.onAppear`. A `Query` built in a child's `init` is the same mistake
+  from the other side. It follows the input and is built at every
+  creation, and `QueryView` replaces it. The `init` runs at every
   creation and builds each time, the slot keeps the first, and the
   node shows what was built from the first input from then on. The
   input is the parent's, so the kept copy is a second source of truth.
@@ -858,8 +861,9 @@ and why, where it is broken.
   by the input when the instance is to be kept. Handing the child a
   binding to the input replaces neither way. A binding shares a value
   and does not rebuild what was built from it. The two ways, the
-  Memo's limits, and the measurement are in `references/data-flow.md`,
-  "A value built from an input".
+  Memo's limits, the measurement, and a table of the common forms
+  with what replaces each are in `references/data-flow.md`, "A value
+  built from an input".
 - **A `Task` nobody holds.** `Button("Save") { Task { try await save() } }`
   starts work that nothing cancels. It outlives the node, a second tap
   runs a second copy beside the first, and its writes land in a node
@@ -873,6 +877,8 @@ and why, where it is broken.
   alive and defeats the cancel on removal. A call whose result the
   node does not await is a different thing. It is one closure call, it
   logs, and nobody starts a `Task` for it, the root's closure included.
+  `.onAppear { Task { await load() } }` is the same `Task`. Work that
+  belongs to appearance is `.task`, which the runtime cancels.
   A `Task { }` nobody holds inside a closure the root sets is lifecycle hidden in
   creation, the object habit of a service that runs itself. A task a
   dependency shares between its callers, a token refresh that

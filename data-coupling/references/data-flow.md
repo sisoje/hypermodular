@@ -264,6 +264,29 @@ with Point-Free's `@LazyState`. A count of builds pins what SwiftUI
 does. An app's test does not count builds. It reads the log
 (`testing.md`).
 
+### The common forms, and what replaces each
+
+The same mistake is written many ways. Every row but the last was
+measured with the script above.
+
+| The form | What it does | What replaces it |
+|---|---|---|
+| `_model = State(wrappedValue: Model(id: id))` in an `init` | a build at every creation, the first kept | the event builds it in the parent, or a Memo in the child |
+| `self.model = Model(id: id)` in an `init`, the declaration left without an initial value | the same, 3 built and the first shown | the same |
+| the build made lazy, a wrapper whose initial value is a closure | one build, the first kept | the same |
+| `.onAppear { model = Model(id: id) }` over an optional `@State` | `body` runs first with nothing to show, and then the first is kept | the same, and the optional goes |
+| `.onChange(of: id) { model = Model(id: $1) }` added to one of the above | follows one wave late | it goes with the seed |
+| `.id(id)` on the child | follows by teardown, and the child's own `@State` is lost | it goes with the seed. `.id()` is for a teardown that is wanted |
+| `_books = Query(filter: …)` in a child's `init` | follows the input, and a query is built at every creation | `QueryView` with `dependencies:` (`shell-core.md`) |
+| `.onAppear { Task { await load() } }` | a `Task` nobody holds, started by appearance and cancelled by nothing | `.task`, which the runtime cancels when the node goes |
+
+The second row is the fix Apple's SDK 27 note gives for the compile
+error the `@State` macro raises on a state assigned in `init`. Drop the
+initial value at the declaration and keep the assignment. That patches
+the error and keeps the seed. The cause is one step earlier. State that
+takes its first value from an initializer argument is not the node's
+state.
+
 ## Anatomy of a node
 
 Every line in a node is flow in, a self-loop, or flow out.

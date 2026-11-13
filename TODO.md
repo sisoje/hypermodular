@@ -1803,6 +1803,31 @@
     for it but `Parent->>Node`. That stays open, and the checker
     still warns. The proposal to the owner had said the critique
     settles the whole item. It settles this half.
+  - **F75, the common forms beside what replaces each.** The owner,
+    2026-11-13: "we maybe need to list common antipatterns and porper
+    solutions like init-query and onappear hacks... did we?" The
+    do-not list in `SKILL.md` is that list for the method, and seeded
+    state had entered it under F72. The query built in an `init` was
+    prose in `shell-core.md` only, and `.onAppear` did not occur in
+    either skill. `data-flow.md` now ends its section with a table,
+    eight forms, what each does, and what replaces it, and the do-not
+    names the `.onAppear` seed, the query built in an `init`, and
+    `.onAppear { Task { } }`. The owner again: "apple already
+    released ways how to patch code for ios27 when they added state
+    macro... but they only propose workarrounds not root cause and
+    proper solutions". Apple's note on the macro answers "variable
+    used before being initialized" with "Drop the initial value
+    expression at `@State` decleration, only assign it in the init."
+    That spelling is the table's second row. Measured with the F72
+    script on the same simulator. `self.model = Model(input: input)`
+    in an `init` with no initial value at the declaration showed
+    input 1 and 3 built, the same as `State(wrappedValue:)`.
+    `.onAppear { model = Model(input: input) }` over an optional ran
+    `body` with the pairs 1/nil, 1/1, 1/1, 2/1 and built 1.
+    `Query(filter:sort:)` built in a child's `init` over a seeded
+    in-memory container showed the items for the new input, was
+    constructed 3 times, and left the child's own counter at 1. The
+    last row, the `Task` in `.onAppear`, is F37 and was not measured.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
