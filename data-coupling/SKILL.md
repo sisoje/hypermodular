@@ -251,8 +251,9 @@ source of most broken SwiftUI mental models.
 Every MV\*\* pattern the community reached for was solving a problem the
 wrong mental model created. The view is the reducer. Each state
 transition lives in the node that owns the storage, next to the UI that
-triggers it. Mechanics, identity in collections, feedback cascades and
-their fixes are in `references/data-flow.md`.
+triggers it. Mechanics, identity in collections, a value built from an
+input, feedback cascades and their fixes are in
+`references/data-flow.md`.
 
 ## Lift: the feature as a stateless tree
 
@@ -832,6 +833,21 @@ and why, where it is broken.
   a value the node does not own, a scroll, a haptic, dismissing a
   sheet. An effect on a write to state the node owns rides the setter
   of the binding it hands down.
+- **State seeded from an input.** `_doubler = State(wrappedValue:
+  Doubler(seed: seed))` in an `init`, or the same build made lazy. The
+  input is the parent's, so the kept copy is a second source of truth,
+  and the node shows the first value from then on. Laziness removes the
+  wasted builds and keeps the stale value. `.id(seed)`, and an
+  `.onChange(of: seed)` that writes the copy again, are repairs that
+  leave the data flow to the runtime. A value built from an input
+  follows the input and is kept otherwise. The event that mounts the
+  node, or the one that changes the input, builds it above and hands
+  it down. Where the child is to build it, the child derives it, as a
+  computed property, or with `MemoView` keyed by the input when the
+  instance is to be kept. A binding shares a value. It does not rebuild
+  what was built from it. The two ways, the Memo's limits, and the
+  measurement are in `references/data-flow.md`, "A value built from an
+  input".
 - **A `Task` nobody holds.** `Button("Save") { Task { try await save() } }`
   starts work that nothing cancels. It outlives the node, a second tap
   runs a second copy beside the first, and its writes land in a node

@@ -1696,6 +1696,59 @@
     while `SortDescriptor(\.street)` does not; a `loop` block has no
     test shape (F67); and whether a node may swallow a thrown failure
     the brief does not mention.
+  - **F72, a value built from an input.** The owner, 2026-11-13: "see
+    my critique of pointfree and propose if you find anynew rules from
+    my repo", the repo being
+    [LazyStateAntipattern](https://github.com/sisoje/LazyStateAntipattern),
+    and after the proposals, "ok do whats best". The critique takes a
+    child that builds a model from its parent's value and holds it
+    three ways, `@State` built in an `init`, Point-Free's
+    `@LazyState`, and a Memo keyed by the input, one UI test each.
+    The skill had the trap and `MemoView` in one paragraph of
+    `data-flow.md`. That paragraph is now a section, "A value built
+    from an input", with what the critique says beyond it. The two
+    requirements, follows the input and kept otherwise. A seed made
+    lazy removes the waste and keeps the staleness. The repairs by
+    name, `.id()`, `.onChange(of:)`, `.task(id:)`. The first way out,
+    which the skill did not have, that the event which mounts the node
+    or changes the input builds the value above and hands it down. The
+    second, derived in the child, a computed property or a Memo. The
+    Memo's two limits, that a changed dependency replaces the whole
+    value and that a value left out of `dependencies:` is not
+    followed. And that a binding shares a value and does not rebuild
+    what was built from it. A do-not in `SKILL.md` and a hard rule in
+    `AGENTS.md` carry the short form, and step 3 of the `.onChange`
+    ladder says a reaction that writes own state from an input is not
+    terminal. `.task(id:)` is still the event for a load, whose
+    result is new data and not the input again. Two sentences are the
+    agent's and not the owner's. That the first way is the default,
+    which follows from the lift and from the README's "needs no
+    machinery". And the editor example, a field filled by the tap
+    that presents the editor, which applies the ruling recorded under
+    F34, that a given which would seed own state says the state is
+    not the node's. The proposal had said that failing either
+    requirement makes a second source of truth. Only failing the
+    first does, and the section says so.
+    Measured before it went in, with a scratch app of the agent's
+    own, ten UI tests green on the iPhone 18 Pro simulator, iOS 27.2,
+    Xcode 27.2 (27B52), Swift 6.4.2. The script is one unrelated
+    write in the parent and then one write of the input, which ends
+    at 2. `@State` built in an `init` showed input 1 and 3 models
+    built. A hand-written lazy box in `@State` showed 1 and 1.
+    `.id(input)` over the first showed 2 and 3, and a counter in the
+    child's own `@State` went back to 0. The parent's event showed 2
+    and 2. A Memo showed 2 and 2 and the child's counter kept its 1.
+    `.onChange(of: input)` ran `body` with the pairs 1/1, 2/1, 2/2,
+    input beside model. `.task(id: input)` ran 1/1, 1/1, 2/1, 2/2 and
+    built a second model for the first input at appearance. The
+    critique's own three tests were not run here. The permission
+    layer refused to build a clone that fetches a third-party
+    package, so the `@LazyState` row stands on the critique's README
+    and its CI, and the lazy row measured here is the hand-written
+    box. swift-core-flow's README already had the left-out
+    dependency, and its hosted scenario already pins the replaced
+    instance, `taps 0` after the seed changes. Its README and its
+    skill row gained the sentence the same day.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

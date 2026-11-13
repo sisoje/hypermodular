@@ -2,9 +2,9 @@
 
 The runtime model everything else in the skill rests on. Read it when a
 question is about how SwiftUI recomputes: identity, re-render
-frequency, "why did my `@State` reset", "why isn't this updating", or
-when someone argues SwiftUI needs an architecture bolted on to get
-unidirectional data flow.
+frequency, "why did my `@State` reset", "why isn't this updating", a
+value a node builds from an input, or when someone argues SwiftUI needs
+an architecture bolted on to get unidirectional data flow.
 
 Source: the masterclass, with the mechanics Apple states in *Demystify
 SwiftUI* (WWDC21).
@@ -126,15 +126,100 @@ and re-keying hides the bug behind a rebuild that also throws away every
 When a row's `@State` resets at random or sticks to the wrong item, the
 answer is almost always identity.
 
-The same trap has a value-shaped form. `@State` built in an `init`
-(`_doubler = State(wrappedValue: Doubler(seed: seed))`) keeps the first
-`seed` forever, and the usual repair, `.id(seed)`, destroys the
-subtree's state with it. swift-core-flow's `MemoView(Doubler(seed:
-seed), dependencies: [seed]) { doubler in … }` builds the value from the
-current inputs and rebuilds it only when the listed dependencies change.
-It is React's `useMemo` as a view, and the same instance survives
-unrelated re-renders. `QueryView` is the same over a `Query`
-(`shell-core.md`).
+The same trap has a value-shaped form, `@State` seeded from an input,
+with `.id(seed)` as its usual repair. The next section has it.
+
+## A value built from an input
+
+A node is handed a value and shows something built from it, a model
+made from an id, an editor's field filled from the item being edited.
+Two requirements hold together.
+
+1. **It follows the input.** When the parent hands a new value, the
+   node shows what is built from the new one.
+2. **It is kept otherwise.** A wave that does not change the input
+   builds nothing and keeps the same instance.
+
+A design that fails the first has a second source of truth, a copy that
+stopped following. One that fails the second builds on every wave and
+throws the instance away each time.
+
+`@State` built in an `init` (`_doubler = State(wrappedValue:
+Doubler(seed: seed))`) fails both. The `init` runs at every creation
+and builds a `Doubler` each time. The slot keeps the first one, and the
+node shows the first `seed` from then on. The input is the parent's, so
+the kept copy is the second source of truth.
+
+A seed made lazy removes the waste and keeps the staleness. A lazy
+initial value, an autoclosure or a wrapper that defers the build,
+builds once, and what it builds is still made from the first input.
+
+The usual repairs leave the data flow to the runtime.
+
+- `.id(seed)` follows the input by tearing the subtree down, and every
+  `@State` below goes with it.
+- `.onChange(of: seed)` writes the copy again one wave late. `body`
+  runs once with the new input beside the old value, and then again.
+- `.task(id: seed)` does the same, and also builds a second value for
+  the first input when the node appears.
+
+`.task(id:)` is still the runtime's event for work keyed by a value, a
+load whose result is new data. It is a repair when what it writes is
+the input again, or something built from the input with no boundary
+call.
+
+There are two ways to keep one source of truth, and the first is the
+default.
+
+- **Up. The event builds it.** An `init` runs at every creation. A slot
+  is established once, and for a node mounted later what establishes it
+  is a write, the flag that presents a sheet, the selection that mounts
+  a detail. That write, or the one that changes the input, builds the
+  value in the node that owns the input, and the child receives it as a
+  `let` or a binding. This is the lift, and it needs no machinery.
+  ```swift
+  Button("Edit") {
+      title = book.title      // the tap that mounts the editor fills it
+      isEditing = true
+  }
+  .sheet(isPresented: $isEditing) { EditBook(title: $title) }
+  ```
+- **Down. The dependencies derive it.** The parent hands only the
+  value, and the child builds from it. A value that is cheap and has no
+  identity is a computed property, built each wave, and there is
+  nothing to keep. One that is to be kept is swift-core-flow's
+  `MemoView(Doubler(seed: seed), dependencies: [seed]) { doubler in … }`.
+  It builds the value from the current inputs, keeps the same instance
+  across unrelated waves, and rebuilds it only when a listed dependency
+  changes. It is React's `useMemo` as a view. It has two limits. A
+  changed dependency replaces the whole value, so state that is to
+  survive a change of the input does not belong in it. That state is
+  the node's own `@State`, which the Memo leaves alone. And an input
+  the build reads and `dependencies:` leaves out is a change the value
+  does not follow. `QueryView` is the same over a `Query`
+  (`shell-core.md`).
+
+A binding serves when the kept thing is the value itself, the field an
+editor writes. It does not serve when the kept thing is built from the
+value. A binding shares a value. It does not rebuild what was built
+from it.
+
+The same script against each way, one unrelated write in the parent and
+then one write of the input, which ends at 2:
+
+| The child's value is held by | It shows the value built from | Values built |
+|---|---|---|
+| `@State` built in an `init` | 1, stale | 3 |
+| a lazy initial value | 1, stale | 1 |
+| the first, under `.id(input)` | 2, and the child's own `@State` is reset | 3 |
+| the parent's event, handed down | 2 | 2 |
+| a Memo keyed by the input | 2, and the child's own `@State` is kept | 2 |
+
+[LazyStateAntipattern](https://github.com/sisoje/LazyStateAntipattern)
+measures the first row, the second with Point-Free's `@LazyState`, and
+the last, one UI test per row. Such a count pins what SwiftUI does. It
+is not the shape of an app's test, which reads the log and counts no
+builds (`testing.md`).
 
 ## Anatomy of a node
 
@@ -365,7 +450,10 @@ The fixes, in order of preference:
    cannot tell what changed or why.
 3. **Only then `.onChange`**, for a single, terminal reaction to a value
    you do not own: scroll-to, haptic, analytics, dismissing a sheet. One
-   hop, and no second `.onChange` listening to what the first wrote.
+   hop, and no second `.onChange` listening to what the first wrote. A
+   reaction that writes the node's own state from an input it was
+   handed is not terminal. It is the repair of a seeded copy ("A value
+   built from an input", above).
 
 Review heuristic: two `.onChange` modifiers where the second observes
 state the first writes is a defect. Collapse them.
