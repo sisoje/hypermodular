@@ -216,7 +216,11 @@ with `@Shell`, depending on the sibling `../CoreFlow` checkout.
 `scripts/engine-run-prompt-garden.md` is a brief the method did not
 shape, in the product's words, for finding what the rules cannot
 express. `scripts/engine-run-prompt-address.md` is a validated form,
-a brief that tempts a validator object. Those two are written as a
+a brief that tempts a validator object.
+`scripts/engine-run-prompt-addresses.md` is the smallest app with a
+store, a list of addresses kept in SwiftData, added from a form over
+the list, deleted by a swipe, and sorted in an order the user can
+reverse. Those three are written as a
 brief is given to a person: the skills to read, the app in the
 product's words, the machine's limits, and what to report. They name
 no architecture, no layout, no order of work, and no forbidden
