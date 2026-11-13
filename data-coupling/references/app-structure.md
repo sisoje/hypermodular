@@ -169,7 +169,16 @@ struct Injector: ViewModifier {
   node's logic, and the node cannot decide it once the failure has been
   dressed as a result.
 - **Its test target holds the one integration test of the boundary.**
-  The real file is written, the real request is made, once.
+  The real file is written, the real request is made, once. It proves
+  the dependency's own code, what it encodes, builds, and hands to the
+  framework. What the framework does with it afterwards is Apple's and
+  is not tested. A dependency over SwiftData is tested against an
+  in-memory container, and its test does not close a store on disk and
+  open it again. Whether its insert did its job, the row fetched back
+  from that container, is the dependency's own code and is tested,
+  even where that code is one line. The test reads the context
+  directly, `context.fetch(FetchDescriptor<Address>())`, not through
+  `@Query`, so it is a plain test with no view.
 
 ## The app target
 

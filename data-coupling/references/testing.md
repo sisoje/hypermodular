@@ -367,3 +367,8 @@ a view-layer observer replaying history.
   `tap()`. An iPhone simulator rejects `click()`. The package helpers
   choose at compile time.
 - **A sleep in a UI test.** Wait on the log element's label instead.
+- **Testing the framework.** A test that closes a SwiftData store and
+  opens it again to find the row, or that waits for the context to
+  save on its own, proves Apple's code. The app's tests prove the
+  app's use of it, the query it asks for and the writes it makes,
+  against an in-memory container.

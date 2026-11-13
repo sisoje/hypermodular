@@ -519,6 +519,21 @@ either way.
   shell with a seeded in-memory container, the one integration test per
   cylinder; the hosted scenario still proves the core reacts to the sort
   state.
+- **A test proves what the app wrote, not what Apple's framework
+  promises.** That a saved model is on disk after the app is closed and
+  opened again, that the context saves on its own, and that `@Query`
+  fetches again after a write are SwiftData's behavior, behind the
+  boundary, and no test is written for them. A criterion the framework
+  meets on its own, an address still in the list after a relaunch, is
+  met by choosing the store and has no test. The app's use of the
+  framework is the app's and is tested. The sort a query asks for is
+  the node's choice, so the seeded in-memory container proves it. A
+  dependency over SwiftData is tested in memory too. Its test proves
+  that its insert and its delete did their job, the row fetched back
+  after the one and gone after the other, however short that code is.
+  The test reads the context directly, with a fetch, not through
+  `@Query`, so it needs no view and no host. It does not open a store
+  on disk.
 - **A UI test here is a unit test, the unit being one core.** A second,
   test-only `@main` renders one scenario named at launch and nothing
   else of the app. One scenario per core, its givens as parameters, and

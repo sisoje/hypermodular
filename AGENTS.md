@@ -47,7 +47,8 @@ on a `Task` nobody holds (`scripts/test.sh` runs its fixtures).
    source-of-truth write and every boundary call, sync or `async
    throws`, logs. Reads do not. A write logs iff it lands in a source
    of truth the node owns or was handed, whoever holds the pen. No mock
-   object is written, and effects behind a boundary are not observed. A boundary in
+   object is written, and effects behind a boundary are not observed. What Apple's framework
+   promises is not tested, only the app's use of it. A boundary in
    a spec is a logger. Checking a node is comparing two values.
 
 ## One law: depth 1, the cure for death by a thousand mocks

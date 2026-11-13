@@ -1660,6 +1660,42 @@
     the error a default closure throws, and a failed save that shows
     nothing because the brief shows nothing. The CoreFlow skill also
     gained F69's sentence on a value left out of `dependencies`.
+  - **F71, the address list, and what a test does not prove.**
+    `scripts/engine-run-prompt-addresses.md` verbatim on 2026-11-13,
+    Sonnet at medium effort (16 minutes, 219k tokens) and Opus at high
+    effort (13 minutes, 256k tokens), each in an empty directory.
+    Both green on every gate, rerun by hand: `mapcheck.py --sources`
+    6 files, 8 blocks, 3 nodes, 1 cylinder, 0 errors, 0 warnings,
+    0 unverified; the plain test of the Save rule and the dependency's
+    integration test; `generate.sh` twice byte-identical; the app
+    built and eight hosted tests green in the iPhone 18 Pro simulator.
+    Both drew the same map, the root, the list, and the form under
+    `isAdding`, with one cylinder, each screen a `@Shell` node over a
+    hand-written core, the query a static expression proven against a
+    seeded in-memory container. Opus tested its dependency against a
+    store on disk, closed and opened again, and called `save()` in
+    both writes. Sonnet tested in memory and left saving to the
+    context. The owner, the same day: "integration shell test with
+    swiftdata is best inmemory", and "maybe clear rule - dont test
+    fucking apple". Ruled: a test proves what the app wrote, not what
+    Apple's framework promises. The dependency's own test stays, one
+    line of code or not, the owner again: "we are testing not apple -
+    but we test if insert did its job - thats fine", and "we can check
+    by reading directly - not trough query", so that test fetches from
+    the context and has no view. The sentence is in
+    `data-coupling/SKILL.md`, `references/app-structure.md`,
+    `references/testing.md`, and `AGENTS.md`. Open from the two runs,
+    not ruled: a `@Model` logs as its type name, so neither delete
+    test can tell which row was handed on, and Sonnet reshaped `add`
+    into two strings for the log's sake; a text field also writes
+    twice on focus and twice when focus leaves it; the two runs
+    opened the container in different places, Sonnet inside `inject`
+    and Opus in the app file; `Query(sort: \Book.title, order:)` in
+    `shell-core.md` sorts case-sensitively, measured with swiftc on
+    the generic key-path descriptor, `["Birch", "Cedar", "alder"]`,
+    while `SortDescriptor(\.street)` does not; a `loop` block has no
+    test shape (F67); and whether a node may swallow a thrown failure
+    the brief does not mention.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
