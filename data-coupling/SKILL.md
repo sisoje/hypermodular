@@ -188,19 +188,22 @@ source of most broken SwiftUI mental models.
   system is reactive. State changes, the graph recomputes its values,
   and appearance, disappearance, and `.task` are what the runtime does
   as a result. So nothing that creates a value starts work, not an
-  `init`, not `body`, not a closure the root builds. A value is created
-  every wave and creating it causes nothing. Work hangs on lifecycle,
-  `.task`, or on an event, a task the node holds. Creation builds
-  nothing that has a lifetime either. A class instance has one. It is
-  made once and it stays, and the struct is made every wave, so a
-  view's `init` that builds a model object builds one every wave. A
-  `Query` built there is built again the same way. What has a lifetime
-  is built by an event, by the root, as the initial value of a private
-  `@State`, which the runtime evaluates once, or as a Memo's build,
-  which runs once for each value of its dependencies. The `@State`
-  macro defers that initial value, which saves an allocation at every
-  creation. It does not make creation the start of a lifetime, and a
-  value that needs an initializer argument is not an initial value.
+  `init` and not `body`, and a closure the root builds starts no `Task`
+  of its own when it is called. A value is created every wave and
+  creating it causes nothing. Work hangs on lifecycle, `.task`, or on
+  an event, a task the node holds. Creation builds nothing that has a
+  lifetime either. A class instance has one. It is made once and it
+  stays, and the struct is made every wave, so a view's `init` that
+  builds a model object builds one every wave. A `Query` built there
+  is built again the same way. What has a lifetime is built in one of
+  four places, by the handler of an event, by the root, as the initial
+  value of a private `@State`, which the runtime evaluates once when
+  the slot is established, or as a Memo's build, which runs once for
+  each value of its dependencies. The `@State` macro defers the
+  initial value of a private `@State`, which avoids an allocation at
+  every creation. It does not make creation the start of a lifetime. A
+  value that needs an initializer argument cannot be written as that
+  initial value, and it is not the node's state.
 - **Two kinds of node.** A view is a persisted node, and it is the
   runtime's. The runtime keeps its identity slot and its state across
   waves, re-creates the value each wave over that slot, and calls its
@@ -848,34 +851,35 @@ and why, where it is broken.
   a value the node does not own, a scroll, a haptic, dismissing a
   sheet. An effect on a write to state the node owns rides the setter
   of the binding it hands down.
-- **State seeded from an input.** Seeded means given its first value
-  at creation, `_doubler = State(wrappedValue: Doubler(seed: seed))`
-  in an `init`, the same build made lazy, or the same write in
-  `.onAppear`. A `Query` built in a child's `init` is the same mistake
-  from the other side. It follows the input and is built at every
-  creation, and `QueryView` replaces it. The `init` runs at every
-  creation and builds each time, the slot keeps the first, and the
-  node shows what was built from the first input from then on. The
-  input is the parent's, so the kept copy is a second source of truth.
-  Laziness removes the wasted builds and keeps the stale value.
-  `.id(seed)`, and an `.onChange(of: seed)` that writes the copy
-  again, are repairs. They keep the copy and have the runtime bring it
-  back in step, and the method uses neither for this. What is built
-  from an input follows the input and is kept while the input does not
-  change. The handler of the event that mounts the node, or of the one
-  that changes the input, builds it in the parent, and the parent
-  hands it down. State an event writes is not seeded. The tap that
-  opens an editor writes the field's first value into state the
-  presenter owns. What a node is to hold when it first appears is
-  written by the action that puts it in the graph, not by anything the
-  node does on appearing. Where the built thing is the child's own detail, the
-  child derives it, as a computed property, or with `MemoView` keyed
-  by the input when the instance is to be kept. Handing the child a
-  binding to the input replaces neither way. A binding shares a value
-  and does not rebuild what was built from it. The two ways, the
-  Memo's limits, the measurement, and a table of the common forms
-  with what replaces each are in `references/data-flow.md`, "A value
-  built from an input".
+- **State seeded from an input.** Seeded means given a first value
+  that is taken from an input, at creation, `_doubler =
+  State(wrappedValue: Doubler(seed: seed))` in an `init`, or the same
+  build made lazy, or on appearance, the same write in `.onAppear`.
+  The `init` runs at every creation and builds each time, the slot
+  keeps the first, and the node shows what was built from the first
+  input from then on. The input is the parent's, so the kept copy is a
+  second source of truth. Laziness removes the wasted builds and keeps
+  the stale value. `.id(seed)`, and an `.onChange(of: seed)` that
+  writes the copy again, are repairs. They keep the copy and have the
+  runtime bring it back in step, and neither is used here for this.
+  The requirement is that what is built from an input follows the
+  input and is kept while the input does not change. The handler of
+  the event that mounts the node, or of the one that changes the
+  input, builds it in the parent, and the parent hands it down. State
+  that an event writes is not seeded. The tap that opens an editor
+  writes the field's first value into state the presenter owns. What a
+  node is to hold when it first appears is written by the action that
+  puts it in the graph, not by anything the node does on appearing.
+  Where the built thing is the child's own detail, the child derives
+  it, as a computed property, or with `MemoView` keyed by the input
+  when the instance is to be kept. A binding to the input is not a
+  third way. A binding shares a value and does not rebuild what was
+  built from it. A `Query` built in a child's `init` is the same
+  mistake with the other requirement failed. It follows the input and
+  is built again at every creation, and `QueryView` replaces it. The
+  two ways, the Memo's limits, the measurement, and a table of the
+  common forms with what replaces each are in
+  `references/data-flow.md`, "A value built from an input".
 - **A `Task` nobody holds.** `Button("Save") { Task { try await save() } }`
   starts work that nothing cancels. It outlives the node, a second tap
   runs a second copy beside the first, and its writes land in a node

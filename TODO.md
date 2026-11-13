@@ -1859,6 +1859,19 @@
     Where it meets F37, the text keeps F37. A load that belongs to
     appearance is still `.task`, and what moves to the action is what
     the node is to hold when it first appears.
+    Read cold a second time by a fresh agent given `SKILL.md`,
+    `data-flow.md`, `converting.md`, and `shell-core.md`, nine
+    questions and a design task on F72 to F76. Nine of nine as
+    intended, and the design kept its timer in a `MemoView` keyed by
+    the id. It listed 41 sentences read twice, reworded the same
+    day. Two of them were wrong and not only unclear. "The view on
+    screen appears once and goes once" was unmeasured and false, and
+    the cause paragraph had put the `.onAppear`, `.onChange`, and
+    `.id()` rows under creation, where they are the screen's
+    lifecycle asked to make up for it. Both readers found the same
+    pull and it is not resolved here. A draft no criterion names
+    lives below the core (F25), and a draft that starts from an item
+    is written by the tap above the form, which is F67's open item.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
