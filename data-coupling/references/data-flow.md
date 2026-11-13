@@ -52,6 +52,23 @@ declaration.
   during `body` registers its storage against that slot. An
   `@Observable` object registers each property read on its own, and
   untouched properties create no edge.
+- **A read of anything else registers nothing.** A static, a global, a
+  property of a class that is not `@Observable`. The node shows what
+  its last `body` read. When a wave re-creates the node with inputs
+  that compare equal, `body` is skipped and the read is not made
+  again. A row that read a plain static count went on showing 1 after
+  three models had been built, while its parent, whose `body` had run
+  again, showed 3. What a node shows reaches it as a dependency, a
+  `let`, a binding, an environment value, or its own state.
+- **A read registers the `body` that is running, whatever code makes
+  it.** An `init` that `body` calls and that reads an observed property
+  registers that `body`. If the same code then writes the property,
+  `count += 1`, the write invalidates the `body` that made it. From the
+  second run on, each run invalidates the next, and it does not stop
+  while each run repeats the write. So nothing a `body` runs writes an
+  observed property it also reads. A value cached during `body` is
+  written to a plain class kept in `@State`, which registers nothing.
+  That is how swift-core-flow's `MemoView` keeps its value.
 - **A write to registered storage invalidates every slot that depends on
   it.** The runtime re-runs those transformations and no others.
 

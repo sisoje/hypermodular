@@ -209,7 +209,12 @@ source of most broken SwiftUI mental models.
 - **Dependencies are recorded by access.** A wrapper read during `body`
   registers its storage against that slot. A write to registered
   storage invalidates the slots that depend on it, and the runtime
-  re-runs those transformations and no others.
+  re-runs those transformations and no others. A read of a static, a
+  global, or a property of a plain class registers nothing, so the
+  node does not follow it. A read registers the `body` that is
+  running, an `init` it calls included, so nothing a `body` runs
+  writes an observed property it also reads. Each run would
+  invalidate the next.
 - **A boundary event re-enters the flow only if it changes a source of
   truth**, storage some node reads. A binding write whose setter chain
   ends in storage changes one, and the next wave follows. A

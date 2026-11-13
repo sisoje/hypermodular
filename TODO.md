@@ -1749,6 +1749,22 @@
     dependency, and its hosted scenario already pins the replaced
     instance, `taps 0` after the seed changes. Its README and its
     skill row gained the sentence the same day.
+  - **F73, what a read in `body` registers.** From the same repo, two
+    comments in its `Model.swift`, each measured with the F72 scratch
+    app before it entered the execution scheme in `data-flow.md` and
+    the dependencies bullet in `SKILL.md`. A static read in `body` is
+    no dependency. A row whose one input was the kept model showed a
+    plain static count of 1 while three models had been built, and
+    its parent, whose `body` had run again, showed 3. An observed
+    property read and then written by code a `body` runs, `count += 1`
+    in an `init`, registers that `body` against what it writes. At
+    launch the count was 1. After one unrelated tap the `init` had
+    run to 300, the cap set for the measurement, each run
+    invalidating the next. The same count written with no observed
+    read grew by one per creation. The same read and write inside a
+    Memo's build ran twice for two inputs, since the second run of
+    that `body` did not build again, so the loop needs every run to
+    repeat the write.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
