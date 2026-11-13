@@ -194,8 +194,8 @@ seed, an autoclosure or a wrapper that defers the build, builds once,
 and what it builds is still made from the first input.
 
 The usual repairs keep the copy and have the runtime bring it back in
-step afterwards. None of them removes the second source of truth, and
-the method uses none of them for this.
+step afterwards. None of them removes the copy, and the method uses
+none of them for this.
 
 - `.id(seed)` follows the input by tearing the subtree down, and every
   `@State` below goes with it.
@@ -616,21 +616,24 @@ the flow at that node and not only from above. The API's words are
 still object words, `View`, `onAppear`, `task`, lifecycle, and each
 rule in this skill first has to un-say a word that carries the UIKit
 model. The literature below does not have those words. When a rule
-here looks arbitrary, read it under its older name.
+here looks arbitrary, read it under its older name. Each pairing is
+where the idea comes from. It is not a claim that the source states
+the rule, and where the method goes further than the source, the row
+says so.
 
 | The rule here | Its older name | Source |
 |---|---|---|
-| A node is a transformation, coupled to the others only by the values that flow | a process in a dataflow network | Kahn 1974; Wadge and Ashcroft 1985; Morrison |
+| A node is a transformation, coupled to the others only by the values that flow | a process in a dataflow network, coupled only by streams of values. A Kahn process may keep state of its own and runs on. A node value keeps none and is made again each wave | Kahn 1974; Wadge and Ashcroft 1985; Morrison |
 | Data coupling, the loosest coupling that works | data coupling | Yourdon and Constantine 1979 |
-| The map, a node, an arrow, a dependency's cylinder, and what is outside the app | a data flow diagram, a process, a data flow, a data store, and a source or sink outside the system | DeMarco 1978 |
-| Hide the how, not the state | information hiding | Parnas 1972 |
-| A source of truth is state. What can be computed from it is computed, and a seed is a stored copy of it | essential state against accidental state | Moseley and Marks 2006 |
-| A wave re-runs the transformations whose inputs changed, and no others | change propagation | Acar 2005 |
-| What is built from an input follows the input and is kept while the input does not change. A Memo | a build that is correct and minimal, a step run again only when an input it depends on has changed | Mokhov, Mitchell, and Peyton Jones 2018 |
+| The map, a node, an arrow, and the dependencies at the app's edge | a data flow diagram, a process, a data flow, and the terminators, the sources and sinks outside the system. Its data store is the one dependency that is the store | DeMarco 1978 |
+| Hide a design decision, how a thing is represented or done. Do not hide the state | information hiding. Parnas hides the decision that may change. Leaving the state open is this method's reading | Parnas 1972 |
+| What can be computed from a source of truth is computed and not stored. A seed is a stored copy | accidental state, state that could be derived, against essential state | Moseley and Marks 2006 |
+| A wave re-runs the transformations whose inputs changed | change propagation, the mechanism in general. It says nothing of SwiftUI's own scheduling | Acar 2005 |
+| What is built from an input follows the input and is kept while the input does not change. A Memo | a build that is correct and minimal, a step run again only when an input it depends on has changed. Keeping the same instance is this method's addition | Mokhov, Mitchell, and Peyton Jones 2018 |
 | State drives the node, and a write or a call is the event | a "behavior", that literature's word for a value over time, against an "event", a discrete occurrence. Its behavior is this skill's state, not this skill's closures | Elliott and Hudak 1997 |
-| The network is reactive, so the nodes do not have to be | a reactive system against a transformational one | Harel and Pnueli 1985 |
-| The action that puts a node in the graph starts the node's work, not `.task` on appearance | an output on the transition, a Mealy machine, not on the state, a Moore machine. In a statechart an event triggers the transition | Mealy 1955; Moore 1956; Harel 1987 |
-| The core is pure, and the I/O is at the edge | values as the boundary, a functional core in an imperative shell | Bernhardt 2012; Wlaschin |
+| The network is reactive, so the nodes do not have to be | the distinction between a reactive system and a transformational one. The sentence about the nodes is this method's | Harel and Pnueli 1985 |
+| The action that puts a node in the graph starts the node's work, not `.task` on appearance | the two places an effect can hang, on the transition, as in a Mealy machine, or on entering the state, as in a Moore machine and a statechart's entry action. The sources name both and prefer neither. The choice of the transition is this method's | Mealy 1955; Moore 1956; Harel 1987 |
+| The core decides and calls what it was handed, and the I/O is implemented at the edge | dependency parameterization, behavior handed in as a function, and values as the boundary where data alone crosses. The core here is not pure, since it calls the closures | Wlaschin; Bernhardt 2012 |
 
 ## Where the model came from
 

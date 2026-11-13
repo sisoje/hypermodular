@@ -1963,6 +1963,19 @@
     events, and the opening now says what pure means, that nothing
     but values couples the nodes, and that a boundary event comes
     back into the flow only through a source of truth.
+    Codex Astra at high effort then judged the table row by row, the
+    owner: "can you ask astra and lets discuss after answer?". Two
+    rows correct, six loose, three wrong as equivalences. A
+    dependency that reaches outside the app is a terminator in a data
+    flow diagram and not a data store. Mealy, Moore, and Harel name
+    both places an effect can hang and prefer neither, so the choice
+    of the transition is the method's and not theirs. And the core
+    here calls closures it was handed, so it is not Bernhardt's pure
+    core. The three rows are rewritten, each loose row says where the
+    method goes further than its source, and the lead says a pairing
+    is a lineage and not an equivalence. Astra also found that "none
+    of the repairs removes the second source of truth" did not fit
+    `.id()`, which does follow, and the sentence now says the copy.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
