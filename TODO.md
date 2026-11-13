@@ -1910,6 +1910,36 @@
     beside them says the fetch runs again when the shelf reappears
     and that a fetch which is not to do so is held by the root. Their
     code was not rewritten.
+  - **F78, the rules under their older names.** The owner,
+    2026-11-13: "dude why is this so hard to define all these rules?
+    boundaries, effects,,, is there some book from data-flow
+    programming from 1970 or later that explains this? we can not
+    continue with this OOP garbage in our heads". The answer given
+    named three reasons and a list of sources, and its third reason
+    was wrong, that SwiftUI is not pure data flow. The owner:
+    "SwiftUI is not pure dataflow. - this is fucking wrong, swiftui
+    is absolute pure fucking data flow, it just offers you free
+    introduction of "source of truth" so a new data comes out of
+    nowhere!? so can you help agents by noting your references
+    somehow?" And of the first reason: "this is awesome", quoting
+    "each rule first has to un-say a word that carries the UIKit
+    model". `data-flow.md` now has a section before its source list,
+    "The rules under their older names". It opens with the owner's
+    sentence on pure data flow and with the un-say sentence, and it
+    is one table of eleven rules, each beside its older name and its
+    source, a process in a dataflow network, a data flow diagram,
+    information hiding, essential against accidental state, change
+    propagation, a correct and minimal build, a behavior against an
+    event, a reactive against a transformational system, an output on
+    the transition against one on the state, and values as the
+    boundary. `SKILL.md` points at it from its references. Every
+    citation was checked against the web the same day, author,
+    title, venue, and year. Two details were left general because
+    the check did not reach the primary text. The table names the
+    four parts of a data flow diagram in today's common words and
+    not as DeMarco's own, and it cites Harel's statecharts only for
+    an event that triggers a transition. The pairing of each rule
+    with its older name is the agent's reading of those sources.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

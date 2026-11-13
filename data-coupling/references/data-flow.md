@@ -605,10 +605,53 @@ design, and running it twice is not a bug. Measure with Instruments'
 SwiftUI template and act on what is slow. The same reasoning is why
 `testing.md` does not assert "body was evaluated N times".
 
+## The rules under their older names
+
+SwiftUI is pure data flow. What it adds to a dataflow network is that
+any node may introduce a source of truth, `@State`, so new data enters
+the flow at that node and not only from above. The API's words are
+object words all the same, `View`, `onAppear`, `task`, lifecycle, and
+each rule in this skill first has to un-say a word that carries the
+UIKit model. The literature below does not have those words. When a
+rule here looks arbitrary, read it under its older name.
+
+| The rule here | Its older name | Source |
+|---|---|---|
+| A node is a transformation, coupled to the others only by the values that flow | a process in a dataflow network | Kahn 1974; Wadge and Ashcroft 1985; Morrison |
+| Data coupling, the loosest coupling that works | data coupling | Yourdon and Constantine 1979 |
+| The map, a node, an arrow, a cylinder, and what is outside the app | a data flow diagram, a process, a data flow, a data store, and a source or sink outside the system | DeMarco 1978 |
+| Hide the how, not the state | information hiding | Parnas 1972 |
+| A source of truth is the only stored state. What can be derived is derived, and a seed is a stored copy | essential state against accidental state | Moseley and Marks 2006 |
+| A wave re-runs the transformations whose inputs changed, and no others | change propagation | Acar 2005 |
+| What is built from an input follows the input and is kept while the input does not change. A Memo | a build that is correct and minimal, a task run again only when an input it depends on has changed | Mokhov, Mitchell, and Peyton Jones 2018 |
+| State drives the node, and a write or a call is the event | a behavior, a value over time, against an event, a discrete occurrence | Elliott and Hudak 1997 |
+| The network is reactive, so the nodes do not have to be | a reactive system against a transformational one | Harel and Pnueli 1985 |
+| The action that puts a node in the graph does the node's work, not `.task` on appearance | an output on the transition, not on the state, a Mealy machine against a Moore machine. In a statechart an event triggers the transition | Mealy 1955; Moore 1956; Harel 1987 |
+| The core is pure, and the I/O is at the edge | values as the boundary, a functional core in an imperative shell | Bernhardt 2012; Wlaschin |
+
 ## Where the model came from
 
+- Gilles Kahn, "The Semantics of a Simple Language for Parallel
+  Programming" (IFIP Congress 74, 1974), processes that communicate
+  only through streams of values
+- William Wadge & Edward Ashcroft, *Lucid, the Dataflow Programming
+  Language* (Academic Press, 1985)
 - J. Paul Morrison, [Flow-Based Programming](https://jpaulmorrison.com/fbp/) (2nd ed. 2010)
+- Tom DeMarco, *Structured Analysis and System Specification* (Yourdon
+  Press, 1978), the data flow diagram
 - Edward Yourdon & Larry Constantine, *Structured Design* (1979), the coupling taxonomy
+- David Parnas, [On the Criteria To Be Used in Decomposing Systems into Modules](https://doi.org/10.1145/361598.361623)
+  (CACM, 1972)
+- George Mealy, "A Method for Synthesizing Sequential Circuits" (Bell
+  System Technical Journal, 1955); Edward Moore, "Gedanken-experiments
+  on Sequential Machines" (Automata Studies, 1956)
+- David Harel & Amir Pnueli, [On the Development of Reactive Systems](https://doi.org/10.1007/978-3-642-82453-1_17)
+  (1985); David Harel, [Statecharts: A Visual Formalism for Complex Systems](https://doi.org/10.1016/0167-6423(87)90035-9)
+  (Science of Computer Programming, 1987)
+- Conal Elliott & Paul Hudak, [Functional Reactive Animation](http://conal.net/papers/icfp97/) (ICFP 1997)
+- Andrey Mokhov, Neil Mitchell & Simon Peyton Jones, [Build Systems à la Carte](https://www.microsoft.com/en-us/research/publication/build-systems-la-carte/)
+  (ICFP 2018)
+- Gary Bernhardt, [Boundaries](https://www.destroyallsoftware.com/talks/boundaries) (2012)
 - Ian Cooper, [Hustle and Flow](https://www.youtube.com/watch?v=p0bKMuBdpL8) (NDC Porto 2022);
   [Succeeding at Reactive Architecture](https://www.youtube.com/watch?v=YyWKczrfxW4) (NDC London 2023)
 - Ben Moseley & Peter Marks, [Out of the Tar Pit](https://curtclifton.net/papers/MoseleyMarks06a.pdf) (2006)

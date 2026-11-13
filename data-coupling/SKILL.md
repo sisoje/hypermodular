@@ -1028,6 +1028,12 @@ The articles' terms. Use them. They make discussion precise in a way
 
 ## References
 
+Each rule of this skill has an older name in the dataflow literature,
+a process, a data store, essential state, a behavior and an event, an
+action on the transition. `references/data-flow.md`, "The rules under
+their older names", has them in one table with their sources. Read a
+rule under that name when it looks arbitrary.
+
 - Lazar Otasevic, [SwiftUI Data Flow Masterclass](https://medium.com/@redhotbits/swiftui-data-flow-masterclass-099f0768f776)
 - Lazar Otasevic, [TDD Is Dead. Long Live TDD.](https://medium.com/@redhotbits/tdd-is-dead-long-live-tdd-f85b4b9eacbd)
 - Lazar Otasevic, [TDD: Death by a Thousand Mocks](https://medium.com/@redhotbits/tdd-death-by-a-thousand-mocks-26adb60cbe43),
