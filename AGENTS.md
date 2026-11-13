@@ -120,8 +120,12 @@ subgraph), no emoji, no status marks.
   orthogonal, so they compose.
 - **No `Task` nobody holds.** Work an event starts is a task assigned
   to an `@UnstructuredTask` slot, which cancels on replacement and on
-  node removal. `.task` is the runtime's event, kept for appearance
-  and for a value that already exists. Creation is not lifecycle, so
+  node removal. `.task` is the runtime's event, hung on the view on
+  screen, and it runs again when that view reappears. Where the action
+  that put a node in the graph can be determined, the work the node
+  needs is started in that action and nowhere else, and `.task` is
+  what is left when there is none, the first screen at launch.
+  Creation is not lifecycle, so
   a closure the root sets starts no `Task` nobody holds either. A task
   a dependency shares between its callers, a token refresh, is held
   in a slot the root owns.

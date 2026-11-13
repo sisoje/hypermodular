@@ -1872,6 +1872,44 @@
     pull and it is not resolved here. A draft no criterion names
     lives below the core (F25), and a draft that starts from an item
     is written by the tap above the form, which is F67's open item.
+  - **F77, the action that mounts a node does its work, not the
+    lifecycle of the view on screen.** The owner, 2026-11-13: "dude
+    view modifiers are abusing physical-view lifecycle and are
+    hacks... if we can determing what triggered struct to popup into
+    graoh then we need to ro action there only... task will refire on
+    reappear - we need to do state handling our own not let the
+    physica-view do that for us its lame". This reverses the half of
+    F37 that kept `.task` "for appearance and for a value that
+    already exists". Measured first, on the same simulator. A screen
+    under a `NavigationStack` with a `.task`, an `.onAppear`, and a
+    `.task(id:)` over a constant ran each of them once at launch and
+    a second time after a push and a pop. Under a `TabView` the
+    `.task` and the `.onAppear` ran a second time after the other tab
+    was selected and left. A count written by the tap that pushed a
+    detail stayed at 1 after a deeper push and a pop. Written as fact
+    in the lifecycle bullet and the task paragraph of `SKILL.md`, in
+    the do-not that was "`.task` for work an event starts" and is now
+    "A lifecycle modifier for work an action starts", in the task
+    hard rule of `AGENTS.md`, in three places in `data-flow.md`, the
+    first way's bullet, the last row of the table of forms, and step
+    2 of the `.onChange` ladder, and in two rows of `converting.md`.
+    `shell-core.md`, "Who owns the load", opens with the worked form,
+    a list whose tap assigns the load to a slot it holds and hands
+    the detail a `let`, type-checked with swiftc in Swift 6 mode with
+    a plain `@State` in place of the slot. `.task` is what is left
+    when no action can be determined, the first screen at launch and
+    a subscription the root holds. What the owner did not say and the
+    text now does. `.task(id:)` is treated the same, since it is a
+    view modifier and measured the same, so a refetch is started by
+    the write of the value, in the setter of the binding its owner
+    hands down, which the `.onChange` ladder already said. F69's
+    "who owns the load is a choice per feature" now holds only for a
+    node no action mounts. The two older examples in that section, a
+    shelf that loads on `.task` and on `.task(id: sortByAuthor)`, are
+    kept as that node, the first screen at launch, and the text
+    beside them says the fetch runs again when the shelf reappears
+    and that a fetch which is not to do so is held by the root. Their
+    code was not rewritten.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

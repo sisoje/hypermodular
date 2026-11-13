@@ -62,10 +62,10 @@ skill's rule.
 | a computed property over the state, `canSubmit` | a computed value in the core |
 | a method that only writes the state, `reset()` | the write itself, at the control that triggers it |
 | a method that judges input, `validateEmail()` | a transformer between the shell's state and the core's binding, the rule a pure function |
-| a method that calls a service, `submit()` | a call to a contract's closure, awaited in a task the node holds or in `.task` |
+| a method that calls a service, `submit()` | a call to a contract's closure, awaited in a task the node holds, started by the action that causes it. `.task` only where no action can be determined |
 | a service handed to `init`, a protocol and its class | a contract in the layer, a struct of closures with an `@Entry` no-op, its live value set at the root |
 | `Service.shared`, a container's `resolve()` | the same contract. The root is the one place that names the singleton or the container |
-| work started in `init`, `init() { load() }` | `.task` on the node. Creation starts nothing |
+| work started in `init`, `init() { load() }` | the action that mounts the node starts it, as a task the node that handles the action holds. `.task` on the node where no action mounts it, the first screen at launch. Creation starts nothing |
 | the object itself built in the view's `init` from a value the parent hands in, `_vm = StateObject(wrappedValue: BookViewModel(id: id))` | Nothing is built at creation. Left as it is, `StateObject` defers its argument, so the object is built once and keeps the first `id`. `id` is an input of the node, and the object's state and behavior go where the other rows send them. What the object computed from `id` with no service call is built by the parent's event or derived in the child (`data-flow.md`, "A value built from an input"). What it loaded for `id` is a call to a contract, started as the row above this one says |
 | a Combine `sink`, an `AnyCancellable`, `[weak self]` | `.task` over the stream a contract's closure returns, or a task the node holds. The runtime cancels it, so there is nothing to store and nothing to weaken |
 | a coordinator or a router the object calls | a call to the navigation contract with a route and data. A sheet or a stack only this node drives is the node's own `@State` |

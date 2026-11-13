@@ -398,11 +398,50 @@ the query's own.
 
 ## Who owns the load
 
-Even the loading flow (spinner on, fetch, spinner off, error or data)
-is a rule the core can own. Whether it does, or a shell above it does,
-is a choice per feature, not a default. Once the core owns the load,
-the `let`s it produces turn writable, and the sequence becomes feature
-logic, a method the `.task` calls:
+The action that puts a node in the graph starts the node's load, and
+the node that handles the action owns it. A tap opens a book's
+reviews. The list handles the tap, so the list assigns the task and
+holds what it loads, and the detail receives a `let`:
+
+```swift
+struct Library: View {
+    @Environment(\.reviewService) private var reviewService
+    let books: [Book]
+    @State private var opened: Book?
+    @State private var reviews: [Review]?
+    @UnstructuredTask private var load: Task<Void, Never>?
+
+    var body: some View {
+        List(books, id: \.id) { book in
+            Button(book.title) {
+                opened = book           // this action mounts the detail
+                reviews = nil
+                load = Task { [reviewService, $reviews] in
+                    $reviews.wrappedValue =
+                        try? await reviewService.fetch(book.id)
+                }
+            }
+        }
+        .sheet(item: $opened) { book in
+            BookDetail(title: book.title, reviews: reviews)
+        }
+    }
+}
+```
+
+`BookDetail` has no `.task`. A `.task` on it would hang the load on
+the view on screen, and that view appears again when a screen pushed
+over it is popped or another tab is left, so the load would run again
+each time. Here the load runs once for each tap, a second tap replaces
+it, and what is loaded is state the list holds and decides.
+
+A node that no action mounts has only the runtime's event. The first
+screen at launch is the case, and the two examples below are that
+screen. There the loading flow (spinner on, fetch, spinner off, error
+or data) is a rule the core can own. Whether it does, or a shell above
+it does, is a choice per feature, not a default. Once the core owns
+the load, the `let`s it produces turn writable, and the sequence
+becomes feature logic, a method the `.task` calls:
 
 ```swift
 struct LoadingShelf: View {
@@ -452,14 +491,21 @@ struct BookShelfShell: View {
 ```
 
 No node starts a `Task` it does not hold, and the trigger decides the
-form. The fetch belongs to a value, the sort, so it is `.task(id:)`.
-`.task` binds the work to the view's lifetime, and `.task(id:)`
-restarts it on change, cancelling the stale job at its next suspension
-point. Its id is a value that is `Equatable` by nature, a flag, a
-count, a string, not a model made `Equatable` for it. Both are the
-runtime's events. Appearance starts the work and disappearance cancels
-it, and the node decides neither, so they are kept for work that
-belongs to appearance or to a value that already exists.
+form. The shelf is the first screen at launch. No action mounted it,
+so its first fetch has only the runtime's event to start it.
+`.task(id:)` carries that fetch and, keyed on the sort, the refetch
+with it, cancelling the stale job at its next suspension point. Its id
+is a value that is `Equatable` by nature, a flag, a count, a string,
+not a model made `Equatable` for it. Both `.task` forms are the
+runtime's events, hung on the view on screen. Appearance starts the
+work, disappearance cancels it, and a reappearance starts it again
+with the id unchanged, after a pushed screen is popped or another tab
+is left. The node decides none of that. So the form is for a node no
+action mounts, and a fetch that is not to run again when the shelf
+reappears is held by a node that does not leave, the root. Where an
+action mounts the node, the action starts the fetch, as above. Where
+the app writes the value, the setter of the binding starts the
+refetch.
 
 The save is started by an event, a delete, so the shell assigns it. A
 job the user starts with a tap, a save or a download, is

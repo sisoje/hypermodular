@@ -205,10 +205,11 @@ the method uses none of them for this.
   the seed still in the `init` it builds a second value for the first
   input.
 
-`.task(id:)` is still the runtime's event for work keyed by a value, a
-load whose result is new data. It is a repair when what it writes into
-the node's state is a copy of the input, or something built from the
-input with no boundary call.
+A `.task(id:)` that makes a boundary call is not this mistake. A
+load's result is new data and not the input again. It is this repair
+when what it writes into the node's state is a copy of the input, or
+something built from the input with no boundary call. Where a load is
+started is another rule (`shell-core.md`, "Who owns the load").
 
 There are two ways to keep one source of truth. The choice between
 them is by who knows how to build the thing, and the first is the
@@ -226,9 +227,9 @@ default.
   value of that `@State` in the parent. This is the lift, and it needs
   no machinery. So where to run something when a node first appears is
   not a question about the node. It runs in the action that puts the
-  node in the graph. A load that belongs to appearance is still
-  `.task`. What moves to the action is what the node is to hold when
-  it first appears.
+  node in the graph. A load is included. The action starts it, as a
+  task the node that handles the action holds (`shell-core.md`, "Who
+  owns the load").
   ```swift
   Button("Edit") {
       title = book.title      // the tap that mounts the editor fills it
@@ -286,9 +287,10 @@ goes, and the struct is created every wave. In the rows that build in
 an `init`, the struct's creation is given a job that belongs to a
 lifetime. A class instance and a query are made once and kept, and a
 view's `init` runs every wave. In the rows with `.onAppear`,
-`.onChange`, and `.id()`, the lifecycle of the view on screen is asked
-to make up for that. Every row but the last was measured with the
-script above.
+`.onChange`, `.id()`, and `.task`, the lifecycle of the view on screen
+is asked to make up for that, or to start the app's work. Every row
+was measured, the last with a push and a pop and with a change of
+tab, the others with the script above.
 
 | The form | What it does | What replaces it |
 |---|---|---|
@@ -299,7 +301,7 @@ script above.
 | `.onChange(of: id) { model = Model(id: $1) }` added to one of the above | follows one wave late | removed together with the seed |
 | `.id(id)` on the child | follows by teardown, and the child's own `@State` is lost | removed together with the seed. `.id()` is for a teardown that is wanted |
 | `_books = Query(filter: …)` in a child's `init` | follows the input, and a query is built at every creation | `QueryView` with `dependencies:` (`shell-core.md`) |
-| `.onAppear { Task { await load() } }` | a `Task` nobody holds, started by appearance and cancelled by nothing | `.task`, which the runtime cancels when the node goes |
+| `.task { await load() }` or `.onAppear { Task { await load() } }` on a node an action mounts | the load runs again each time the view on screen reappears, after a pop and after a change of tab. The second form is also a `Task` nobody holds | the action that mounts the node starts the load, as a task the node that handles the action holds (`shell-core.md`, "Who owns the load") |
 
 The second row is what Apple's migration note for SDK 27 gives for the
 compile error the `@State` macro raises on a state assigned in `init`.
@@ -531,8 +533,9 @@ The fixes, in order of preference:
    is a projection of the token, not a route to keep in sync. The nil
    write is the logout.
 2. **Do the whole transition in one boundary event.** If the work is
-   async, one `.task(id: query)` writes every affected piece of state
-   once. Not a chain of handlers each writing one field. When the write
+   async, one task writes every affected piece of state once, started
+   by the write and held by the node. Not a chain of handlers each
+   writing one field. When the write
    arrives through a binding the owner hands down, the owner's setter is
    that event. Build the `Binding` by hand and let the effect ride the
    write. `.onChange` on state the node owns is one render late and
