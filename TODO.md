@@ -1847,6 +1847,18 @@
     has a row for the object built in a view's `init`, the legacy
     form, measured the same way, a `StateObject(wrappedValue:)` over
     a class built from the input showed input 1 and 1 built.
+    Two more messages the same hour. "yes people conflating
+    view-struct with a real view, and confuse real-view lifecycle
+    events with struct lifecycle". The lifecycle bullet had the first
+    half, "taking the one for the other is the object habit". The
+    cause paragraph over F75's table now says both halves. And, of
+    the critique's "create it on the event": "never ask where to
+    execute code on first appear - execute it on that action that
+    cause the struct to appear on the graph!" That is F72's first
+    way, and its bullet and the do-not now say it in those terms.
+    Where it meets F37, the text keeps F37. A load that belongs to
+    appearance is still `.task`, and what moves to the action is what
+    the node is to hold when it first appears.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

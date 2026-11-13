@@ -866,7 +866,9 @@ and why, where it is broken.
   that changes the input, builds it in the parent, and the parent
   hands it down. State an event writes is not seeded. The tap that
   opens an editor writes the field's first value into state the
-  presenter owns. Where the built thing is the child's own detail, the
+  presenter owns. What a node is to hold when it first appears is
+  written by the action that puts it in the graph, not by anything the
+  node does on appearing. Where the built thing is the child's own detail, the
   child derives it, as a computed property, or with `MemoView` keyed
   by the input when the instance is to be kept. Handing the child a
   binding to the input replaces neither way. A binding shares a value

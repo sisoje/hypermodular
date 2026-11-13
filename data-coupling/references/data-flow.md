@@ -215,7 +215,11 @@ by who may know how the thing is built. The first is the default.
   mounts the child. The child receives it as a `let` when it only reads
   it and as a binding when it writes it. A node present from launch
   has its first value as the initial value of that `@State`. This is
-  the lift, and it needs no machinery.
+  the lift, and it needs no machinery. So where to run something when
+  a node first appears is not a question about the node. It runs in
+  the action that puts the node in the graph. A load that belongs to
+  appearance is still `.task`. What moves to the action is what the
+  node is to hold when it first appears.
   ```swift
   Button("Edit") {
       title = book.title      // the tap that mounts the editor fills it
@@ -266,11 +270,14 @@ does. An app's test does not count builds. It reads the log
 
 ### The common forms, and what replaces each
 
-The same mistake is written many ways, and it has one cause. A
-struct's creation is given a job that belongs to a lifetime. A class
-instance and a query have a lifetime, made once and kept, and a view's
-`init` runs every wave. Every row but the last was measured with the
-script above.
+The same mistake is written many ways, and it has one cause. The view
+struct is taken for the view on screen, and the struct's creation for
+one of that view's lifecycle events. The view on screen appears once
+and goes once. The struct is created every wave. So a struct's
+creation is given a job that belongs to a lifetime. A class instance
+and a query have a lifetime, made once and kept, and a view's `init`
+runs every wave. Every row but the last was measured with the script
+above.
 
 | The form | What it does | What replaces it |
 |---|---|---|
