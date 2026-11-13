@@ -211,10 +211,10 @@ source of most broken SwiftUI mental models.
   storage invalidates the slots that depend on it, and the runtime
   re-runs those transformations and no others. A read of a static, a
   global, or a property of a plain class registers nothing, so the
-  node does not follow it. A read registers the `body` that is
-  running, an `init` it calls included, so nothing a `body` runs
-  writes an observed property it also reads. Each run would
-  invalidate the next.
+  node does not follow it. A read of an observed property registers
+  the `body` that is running, an `init` it calls included, so nothing
+  a `body` runs writes an observed property it also reads. From its
+  second run on, each run would invalidate the next.
 - **A boundary event re-enters the flow only if it changes a source of
   truth**, storage some node reads. A binding write whose setter chain
   ends in storage changes one, and the next wave follows. A
@@ -838,21 +838,28 @@ and why, where it is broken.
   a value the node does not own, a scroll, a haptic, dismissing a
   sheet. An effect on a write to state the node owns rides the setter
   of the binding it hands down.
-- **State seeded from an input.** `_doubler = State(wrappedValue:
-  Doubler(seed: seed))` in an `init`, or the same build made lazy. The
-  input is the parent's, so the kept copy is a second source of truth,
-  and the node shows the first value from then on. Laziness removes the
-  wasted builds and keeps the stale value. `.id(seed)`, and an
-  `.onChange(of: seed)` that writes the copy again, are repairs that
-  leave the data flow to the runtime. A value built from an input
-  follows the input and is kept otherwise. The event that mounts the
-  node, or the one that changes the input, builds it above and hands
-  it down. Where the child is to build it, the child derives it, as a
-  computed property, or with `MemoView` keyed by the input when the
-  instance is to be kept. A binding shares a value. It does not rebuild
-  what was built from it. The two ways, the Memo's limits, and the
-  measurement are in `references/data-flow.md`, "A value built from an
-  input".
+- **State seeded from an input.** Seeded means given its first value
+  at creation, `_doubler = State(wrappedValue: Doubler(seed: seed))`
+  in an `init`, or the same build made lazy. The `init` runs at every
+  creation and builds each time, the slot keeps the first, and the
+  node shows what was built from the first input from then on. The
+  input is the parent's, so the kept copy is a second source of truth.
+  Laziness removes the wasted builds and keeps the stale value.
+  `.id(seed)`, and an `.onChange(of: seed)` that writes the copy
+  again, are repairs. They keep the copy and have the runtime bring it
+  back in step, and the method uses neither for this. What is built
+  from an input follows the input and is kept while the input does not
+  change. The handler of the event that mounts the node, or of the one
+  that changes the input, builds it in the parent, and the parent
+  hands it down. State an event writes is not seeded. The tap that
+  opens an editor writes the field's first value into state the
+  presenter owns. Where the built thing is the child's own detail, the
+  child derives it, as a computed property, or with `MemoView` keyed
+  by the input when the instance is to be kept. Handing the child a
+  binding to the input replaces neither way. A binding shares a value
+  and does not rebuild what was built from it. The two ways, the
+  Memo's limits, and the measurement are in `references/data-flow.md`,
+  "A value built from an input".
 - **A `Task` nobody holds.** `Button("Save") { Task { try await save() } }`
   starts work that nothing cancels. It outlives the node, a second tap
   runs a second copy beside the first, and its writes land in a node

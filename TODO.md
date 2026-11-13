@@ -1752,6 +1752,28 @@
     dependency, and its hosted scenario already pins the replaced
     instance, `taps 0` after the seed changes. Its README and its
     skill row gained the sentence the same day.
+    Read cold the same day by a fresh agent given `SKILL.md`,
+    `data-flow.md`, and `notation.md`, ten questions and one design
+    task. All ten answers and the design, a title written by the Edit
+    tap into the list's own state and handed to the editor as a
+    binding, were the intended ones. It listed 32 sentences it had
+    read twice, and each was reworded. What the rewording added. The
+    second requirement counts only for a thing that holds state or
+    costs something, so a computed property is no breach of it. Who
+    may know how the thing is built decides between the two ways, the
+    parent or the child, which is the README's "the child stays dumb"
+    and "the parent stays dumb". The value is built into `@State` of
+    the node that mounts the child, not of whoever owns the input's
+    own source of truth. `MemoView`'s first argument is an
+    autoclosure. A binding to the input is not a third way. In F73's
+    bullets, a run's registration is in place only when the run ends,
+    which is why the first run does not loop, measured with swiftc on
+    Swift 6.4.2, `withObservationTracking` around `count += 1` three
+    times, the change handler fired 0, 1, and 2 times. One pull it
+    found is not resolved here. `SKILL.md` allows an `.onChange` that
+    makes a terminal call, and `notation.md` asks a block of every
+    node with a call on its label, so that node owes a block whose
+    when F74 leaves open.
   - **F73, what a read in `body` registers.** From the same repo, two
     comments in its `Model.swift`, each measured with the F72 scratch
     app before it entered the execution scheme in `data-flow.md` and

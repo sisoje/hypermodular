@@ -54,21 +54,31 @@ declaration.
   untouched properties create no edge.
 - **A read of anything else registers nothing.** A static, a global, a
   property of a class that is not `@Observable`. The node shows what
-  its last `body` read. When a wave re-creates the node with inputs
-  that compare equal, `body` is skipped and the read is not made
-  again. A row that read a plain static count went on showing 1 after
-  three models had been built, while its parent, whose `body` had run
-  again, showed 3. What a node shows reaches it as a dependency, a
-  `let`, a binding, an environment value, or its own state.
-- **A read registers the `body` that is running, whatever code makes
-  it.** An `init` that `body` calls and that reads an observed property
-  registers that `body`. If the same code then writes the property,
-  `count += 1`, the write invalidates the `body` that made it. From the
-  second run on, each run invalidates the next, and it does not stop
-  while each run repeats the write. So nothing a `body` runs writes an
-  observed property it also reads. A value cached during `body` is
-  written to a plain class kept in `@State`, which registers nothing.
-  That is how swift-core-flow's `MemoView` keeps its value.
+  its last `body` read, and it follows a later value only by accident,
+  when something else runs its `body` again. A wave that re-creates the
+  node with equal inputs, the same class instance among them, skips
+  `body`, and the read is not made again. Measured with a static count
+  of models built, a row whose one input was the same model instance
+  went on showing 1 after three had been built. Its parent showed 3,
+  only because its `body` had run again for another reason. So what a
+  node shows is handed to it, as a `let`, a binding, an environment
+  value, or its own state.
+- **A read of an observed property registers the `body` that is
+  running, whatever code makes the read.** An `init` that `body` calls
+  is that code as much as `body` itself. If the same code also writes
+  the property, as `count += 1` does, the `body` is registered against
+  what it writes. The first run does not loop, since a run's
+  registration is in place only when the run ends. Any later run,
+  whatever causes it, writes while the previous run's registration
+  stands, so it invalidates the `body`, and the run that follows does
+  the same. It does not stop while each run repeats the write. So
+  nothing a `body` runs writes an observed property it also reads. A
+  write with no read does not loop, and it is still not made there,
+  since creating a value causes nothing. A value cached during `body`
+  goes into a plain class that the node keeps in `@State`. Writing a
+  plain class invalidates nothing, and the cache is read by the same
+  `body` that fills it, so nothing has to follow it. That is how
+  swift-core-flow's `MemoView` keeps its value.
 - **A write to registered storage invalidates every slot that depends on
   it.** The runtime re-runs those transformations and no others.
 
@@ -148,52 +158,64 @@ with `.id(seed)` as its usual repair. The next section has it.
 
 ## A value built from an input
 
-A node is handed a value and shows something built from it, a model
-made from an id, an editor's field filled from the item being edited.
+A node is handed an input and shows something that starts from it. It
+is built from the input, a model made from an id, or it is a copy the
+user then edits, an editor's field that starts as the item's title.
 Two requirements hold together.
 
-1. **It follows the input.** When the parent hands a new value, the
+1. **It follows the input.** When the parent hands a new input, the
    node shows what is built from the new one.
-2. **It is kept otherwise.** A wave that does not change the input
-   builds nothing and keeps the same instance.
+2. **It is kept while the input does not change.** A wave that leaves
+   the input alone builds nothing and keeps the same instance.
 
 A design that fails the first has a second source of truth, a copy that
 stopped following. One that fails the second builds on every wave and
-throws the instance away each time.
+throws away what it built. The second counts when the built thing
+holds state of its own or costs something to build. A cheap value that
+holds nothing is a computed property, built each wave, and only the
+first requirement applies to it.
 
 `@State` built in an `init` (`_doubler = State(wrappedValue:
 Doubler(seed: seed))`) fails both. The `init` runs at every creation
-and builds a `Doubler` each time. The slot keeps the first one, and the
-node shows the first `seed` from then on. The input is the parent's, so
-the kept copy is the second source of truth.
+and builds a `Doubler` each time. The slot keeps the first one and
+every later one is thrown away, so the node shows what was built from
+the first `seed` from then on. The input is the parent's, so the kept
+`Doubler` is the second source of truth.
 
 A seed made lazy removes the waste and keeps the staleness. A lazy
 initial value, an autoclosure or a wrapper that defers the build,
 builds once, and what it builds is still made from the first input.
 
-The usual repairs leave the data flow to the runtime.
+The usual repairs keep the copy and have the runtime bring it back in
+step afterwards. None of them removes the second source of truth, and
+the method uses none of them for this.
 
 - `.id(seed)` follows the input by tearing the subtree down, and every
   `@State` below goes with it.
 - `.onChange(of: seed)` writes the copy again one wave late. `body`
-  runs once with the new input beside the old value, and then again.
-- `.task(id: seed)` does the same, and also builds a second value for
-  the first input when the node appears.
+  runs once with the new input beside the old copy, and then again.
+- `.task(id: seed)` does the same. It also runs at appearance, so with
+  the seed still in the `init` it builds a second value for the first
+  input.
 
 `.task(id:)` is still the runtime's event for work keyed by a value, a
 load whose result is new data. It is a repair when what it writes is
 the input again, or something built from the input with no boundary
 call.
 
-There are two ways to keep one source of truth, and the first is the
-default.
+There are two ways to keep one source of truth. Which one is decided
+by who may know how the thing is built. The first is the default.
 
-- **Up. The event builds it.** An `init` runs at every creation. A slot
-  is established once, and for a node mounted later what establishes it
-  is a write, the flag that presents a sheet, the selection that mounts
-  a detail. That write, or the one that changes the input, builds the
-  value in the node that owns the input, and the child receives it as a
-  `let` or a binding. This is the lift, and it needs no machinery.
+- **Up. The event builds it.** The parent knows what is built. An
+  `init` runs at every creation, and a slot is established once. For a
+  node that is mounted after launch, what establishes the slot is a
+  write, the flag that presents a sheet, the selection that mounts a
+  detail. The handler that makes that write, or the one that changes
+  the input, also builds the value, into `@State` of the node that
+  mounts the child. The child receives it as a `let` when it only reads
+  it and as a binding when it writes it. A node present from launch
+  has its first value as the initial value of that `@State`. This is
+  the lift, and it needs no machinery.
   ```swift
   Button("Edit") {
       title = book.title      // the tap that mounts the editor fills it
@@ -201,42 +223,46 @@ default.
   }
   .sheet(isPresented: $isEditing) { EditBook(title: $title) }
   ```
-- **Down. The dependencies derive it.** The parent hands only the
-  value, and the child builds from it. A value that is cheap and has no
-  identity is a computed property, built each wave, and there is
-  nothing to keep. One that is to be kept is swift-core-flow's
-  `MemoView(Doubler(seed: seed), dependencies: [seed]) { doubler in … }`.
-  It builds the value from the current inputs, keeps the same instance
-  across unrelated waves, and rebuilds it only when a listed dependency
+  A draft that starts from an item is this case. Its first value is
+  written by the tap, above the form. A draft that starts empty needs
+  no seed and stays where it is edited.
+- **Down. The child derives it.** The built thing is the child's own
+  detail, a type the parent has no reason to name. The parent hands
+  only the input and the child builds from it. A cheap value that
+  holds nothing is a computed property. One that is to be kept is
+  swift-core-flow's `MemoView(Doubler(seed: seed), dependencies:
+  [seed]) { doubler in … }`. The first argument is deferred, an
+  autoclosure, and runs only when a listed dependency has changed. So
+  the value is built from the current input, the same instance is
+  kept across unrelated waves, and a new one is built when the input
   changes. It is React's `useMemo` as a view. It has two limits. A
   changed dependency replaces the whole value, so state that is to
   survive a change of the input does not belong in it. That state is
-  the node's own `@State`, which the Memo leaves alone. And an input
-  the build reads and `dependencies:` leaves out is a change the value
-  does not follow. `QueryView` is the same over a `Query`
-  (`shell-core.md`).
+  `@State` of the view that hosts the `MemoView`, which the Memo
+  leaves alone. And a change to an input the build reads and
+  `dependencies:` leaves out is not followed. `QueryView` is the same
+  over a `Query` (`shell-core.md`).
 
-A binding serves when the kept thing is the value itself, the field an
-editor writes. It does not serve when the kept thing is built from the
-value. A binding shares a value. It does not rebuild what was built
-from it.
+Handing the child a binding to the input is not a third way. A binding
+shares a value. It does not rebuild what was built from it.
 
-The same script against each way, one unrelated write in the parent and
-then one write of the input, which ends at 2:
+Each way below was measured as a UI test. The input starts at 1. The
+script is one unrelated write in the parent and then one write of the
+input, to 2.
 
 | The child's value is held by | It shows the value built from | Values built |
 |---|---|---|
 | `@State` built in an `init` | 1, stale | 3 |
 | a lazy initial value | 1, stale | 1 |
-| the first, under `.id(input)` | 2, and the child's own `@State` is reset | 3 |
+| `@State` built in an `init`, under `.id(input)` | 2, and the child's own `@State` is reset | 3 |
 | the parent's event, handed down | 2 | 2 |
 | a Memo keyed by the input | 2, and the child's own `@State` is kept | 2 |
 
 [LazyStateAntipattern](https://github.com/sisoje/LazyStateAntipattern)
-measures the first row, the second with Point-Free's `@LazyState`, and
-the last, one UI test per row. Such a count pins what SwiftUI does. It
-is not the shape of an app's test, which reads the log and counts no
-builds (`testing.md`).
+is the public form of the first, second, and last rows, the second
+with Point-Free's `@LazyState`. A count of builds pins what SwiftUI
+does. An app's test does not count builds. It reads the log
+(`testing.md`).
 
 ## Anatomy of a node
 

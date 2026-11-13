@@ -125,13 +125,15 @@ subgraph), no emoji, no status marks.
   a closure the root sets starts no `Task` nobody holds either. A task
   a dependency shares between its callers, a token refresh, is held
   in a slot the root owns.
-- **No state seeded from an input.** A value built from an input
-  follows the input and is kept otherwise. The event that mounts the
-  node, or the one that changes the input, builds it above and hands
-  it down. Or the child derives it, as a computed property, or with a
-  Memo keyed by the input when the instance is to be kept. A seed made
-  lazy is still a seed, built once from the first input. `.id()` and
-  `.onChange` on the input are repairs.
+- **No state seeded from an input.** What is built from an input
+  follows the input and is kept while the input does not change. The
+  handler of the event that mounts the node, or of the one that
+  changes the input, builds it in the parent, and the parent hands it
+  down. Where the built thing is the child's own detail, the child
+  derives it, as a computed property, or with a Memo keyed by the
+  input when the instance is to be kept. A seed made lazy is still a
+  seed, built once from the first input. `.id()` and `.onChange` on
+  the input are repairs.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. Every dependency has two parts. How it
   is constructed is the app's knowledge, the inputs the root supplies.
