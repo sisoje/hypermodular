@@ -266,8 +266,11 @@ does. An app's test does not count builds. It reads the log
 
 ### The common forms, and what replaces each
 
-The same mistake is written many ways. Every row but the last was
-measured with the script above.
+The same mistake is written many ways, and it has one cause. A
+struct's creation is given a job that belongs to a lifetime. A class
+instance and a query have a lifetime, made once and kept, and a view's
+`init` runs every wave. Every row but the last was measured with the
+script above.
 
 | The form | What it does | What replaces it |
 |---|---|---|
@@ -316,7 +319,9 @@ slot, which persists across waves as node values do not. So `= false`
 is not an assignment but an initial value, used once, when the slot is
 established. On a `private` `@State` the expression is not evaluated at
 creation. On one that is not private it is evaluated at every creation
-and used only the first time. Hence
+and used only the first time. The deferral saves the build at every
+creation, a heap allocation each wave when the value is a class. It
+does not make creation a place to start a lifetime. Hence
 `private`: the runtime owns that storage, not a caller. A plain
 `private let` or `var` would be state outside the flow. swift-core-flow
 makes that a compile error in both directions. `private` marks a source

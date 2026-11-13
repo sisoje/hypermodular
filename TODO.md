@@ -1828,6 +1828,25 @@
     in-memory container showed the items for the new input, was
     constructed 3 times, and left the child's own counter at 1. The
     last row, the `Task` in `.onAppear`, is F37 and was not measured.
+  - **F76, a struct's creation is not a lifetime.** The owner,
+    2026-11-13, three messages while F75 was written:
+    "struct-creation is absoulytely a nono for class init lifecycle",
+    "query init or viewmodel init inside struct init are absolute
+    idiotic", and "imo apple introduced macro to be lazy not because
+    of lifecycle hacks, but simply because heap alloc is expensive".
+    This is the cause the forms of F75 share, and the skill had it
+    for work, "nothing that creates a value starts work", and not for
+    construction. The lifecycle bullet in `SKILL.md` now says that
+    creation builds nothing that has a lifetime, a class instance or
+    a query, and that what has one is built by an event, by the root,
+    as a private `@State`'s initial value, or as a Memo's build. The macro's deferral is written as the owner reads
+    it, a saving of the allocation at every creation and no licence
+    for a lifetime started at creation, in that bullet and beside the
+    measured sentence in `data-flow.md`. The table of forms names the
+    one cause, `AGENTS.md` carries a sentence, and `converting.md`
+    has a row for the object built in a view's `init`, the legacy
+    form, measured the same way, a `StateObject(wrappedValue:)` over
+    a class built from the input showed input 1 and 1 built.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

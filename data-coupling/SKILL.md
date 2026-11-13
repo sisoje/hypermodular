@@ -190,7 +190,17 @@ source of most broken SwiftUI mental models.
   as a result. So nothing that creates a value starts work, not an
   `init`, not `body`, not a closure the root builds. A value is created
   every wave and creating it causes nothing. Work hangs on lifecycle,
-  `.task`, or on an event, a task the node holds.
+  `.task`, or on an event, a task the node holds. Creation builds
+  nothing that has a lifetime either. A class instance has one. It is
+  made once and it stays, and the struct is made every wave, so a
+  view's `init` that builds a model object builds one every wave. A
+  `Query` built there is built again the same way. What has a lifetime
+  is built by an event, by the root, as the initial value of a private
+  `@State`, which the runtime evaluates once, or as a Memo's build,
+  which runs once for each value of its dependencies. The `@State`
+  macro defers that initial value, which saves an allocation at every
+  creation. It does not make creation the start of a lifetime, and a
+  value that needs an initializer argument is not an initial value.
 - **Two kinds of node.** A view is a persisted node, and it is the
   runtime's. The runtime keeps its identity slot and its state across
   waves, re-creates the value each wave over that slot, and calls its

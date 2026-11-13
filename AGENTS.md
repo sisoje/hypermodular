@@ -133,7 +133,8 @@ subgraph), no emoji, no status marks.
   derives it, as a computed property, or with a Memo keyed by the
   input when the instance is to be kept. A seed made lazy is still a
   seed, built once from the first input. `.id()` and `.onChange` on
-  the input are repairs.
+  the input are repairs. A struct's creation is not a lifetime, so a
+  view's `init` builds no class instance and no query.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. Every dependency has two parts. How it
   is constructed is the app's knowledge, the inputs the root supplies.
