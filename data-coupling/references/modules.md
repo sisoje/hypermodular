@@ -420,23 +420,46 @@ In a package the declaration is `@FlowUp public var`, in an extension
 that is not itself marked `public`.
 
 Where the system delivers through a delegate and not through a
-modifier, a tap on a notification, the delegate only forwards into
-the flow as well, and three more things hold, each measured.
+modifier, a tap on a notification, no flow carries it. The `App` is a
+node with its own `@State`, and it is there from the first moment, so
+the tap is a write to the `App`'s state and the screens below receive
+that state as data.
 
-- **The delegate is assigned at launch, before the first `body`.** A
-  delegate made in a modifier's `@State` is assigned when that `body`
-  first runs, which is after the app has finished launching. The tap
-  that launched the app then does not reach it, and a later tap may
-  not either.
-- **A tap that launches the app arrives before any view exists to
-  listen.** The delegate hears it and the flow has no listener yet.
-  Waiting for a view to exist and then pushing the event at it is the
-  lifecycle habit again. The tap is a mutation. The handler that
-  hears it writes the app's state, and the tree is a projection of
-  that state whenever it comes to exist.
+```swift
+@main
+struct GardenApp: App {
+    @State private var tappedReminder: String?
+    @State private var reminders = ReminderDelegate()   // kept by the App
+
+    var body: some Scene {
+        reminders.onTap = { tappedReminder = $0 }   // it only writes
+        return WindowGroup {
+            PlantList(tappedReminder: $tappedReminder)
+        }
+    }
+}
+```
+
+Three things hold, each measured.
+
+- **The delegate is kept in the `App` node's own `@State`.** There it
+  is assigned in time, and a tap that launches the app reaches it.
+  Made in the `@State` of a modifier inside the window, it is assigned
+  too late. The tap that launched the app does not reach it, and a
+  later tap may not either.
+- **The tap arrives as data, not as an event.** A tap that launched
+  the app was shown by the first screen from the `App`'s state, with
+  no flow, no listener, and no lifecycle modifier. Pushed into a flow
+  it found no listener, since no screen existed yet. What the tap
+  opens is then state the `App` owns, since something other than the
+  list drives it, and the list's own tap writes the same state.
 - **The delegate's methods are the completion-handler forms, finished
   on the main thread.** The `async` forms, declared `nonisolated`,
   finished off the main thread and the app crashed inside UIKit.
+
+The delegate's class is declared by the dependency that wraps the
+framework, and the `App` keeps the instance. The closure is assigned
+in the `App`'s `body`, a write to a plain class that is not observed.
 
 A link needs none of this. `.onOpenURL` is SwiftUI's own, and a link
 that launches the app reached a listener in the first screen.

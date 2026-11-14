@@ -2403,6 +2403,34 @@
     label line for a flow a node listens to, which F85 had left
     without one as the agent's default, and an app whose spec the
     skills did not write, which is the standing "Next" below.
+  - **F91, there is no view to be outside of.** The agent had asked
+    where a handler lives for an event that comes when "no view
+    exists yet". The owner, 2026-11-14: "how can sometghin exists
+    before the app ?", and "you reminded me of an idiot colleague
+    question "what if you are not in a view" well you are never in a
+    view because there is none, but you are probably always under app
+    which is swiftui runtime". `data-flow.md` already said that `App`
+    and `Scene` are nodes with their own `@State` and that there is
+    no layer above the network, and it now says the consequence. An
+    event that comes before any screen is a write to the `App`'s own
+    state, and the screens are a projection of it. Measured with the
+    scratch app, a tap on a notification that launched the app, four
+    of four. The `App` held the tapped reminder as its `@State`, the
+    delegate was a private `@State` of the `App` handed a closure in
+    the `App`'s `body` that writes that state, and the first screen
+    showed the tap from the value it was handed, with no flow, no
+    listener, and no lifecycle modifier. `modules.md` gives that form
+    with its code in place of F89's sentences, and the do-not and the
+    class bullet say the delegate is kept by the `App`. Astra's
+    sketch for the same question put the state at the app level too.
+    Also measured, the order at launch, `App.init`, then the
+    application delegate's `didFinishLaunching`, then the `App`'s
+    first `body`, then the content's. So a closure assigned in the
+    `App`'s `body` is in place for a notification's tap and is not
+    yet in place for `didFinishLaunching`, where a load counted 0.
+    Not decided, what starts a first screen's load at launch in place
+    of the `.task` the skill still gives it, since before the `App`'s
+    first `body` its `@State` cannot be written.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

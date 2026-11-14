@@ -77,9 +77,11 @@ declaration.
   the same. The runs go on for as long as each one repeats the write.
   So code that a `body` runs is written to make no write to an
   observed property it also reads. A write with no read does not loop.
-  It is not made there either, since creation is to cause nothing. The
-  one thing kept across runs of `body` is a Memo's value. It goes into
-  a plain class that the node keeps in `@State`. Writing a plain class
+  It is not made there either, since creation is to cause nothing. Two
+  things are written during `body`, each to a plain class that is not
+  observed, a Memo's value and the closure the `App` hands a framework
+  delegate. A Memo's value goes into a plain class that the node keeps
+  in `@State`. Writing a plain class
   invalidates nothing, and the value is read by the same `body` that
   stored it, so nothing has to follow it. That is how swift-core-flow's
   `MemoView` works.
@@ -89,7 +91,12 @@ declaration.
 The network is rooted at `@main`. `App` and `Scene` are nodes too, with
 a `body` transformation and their own `@State`, invalidated the same
 way. There is no layer above the network. App-wide state is state in
-the root node, flowing down like any other.
+the root node, flowing down like any other. So no code is ever outside
+a view and waiting for one. There are no views, only nodes, and
+everything is under the `App`, which is a node in the runtime from the
+first moment. An event that comes before any screen exists, a tap on a
+notification that launches the app, is a write to the `App`'s own
+state, and the screens are a projection of it.
 
 ```mermaid
 flowchart LR
