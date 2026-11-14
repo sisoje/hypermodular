@@ -1962,6 +1962,22 @@
     events, and the opening now says what pure means, that nothing
     but values couples the nodes, and that a boundary event comes
     back into the flow only through a source of truth.
+    What the table is for, the owner, 2026-11-14, after the agent had
+    called its hedged rows a weakness and proposed keeping only the
+    five solid ones: "as penrose said the key of understanding is
+    knwing "WHY" rules are true, not knowin just "THAT" they are
+    true... maybe my rules are wrong or misinterpreted, thats why wee
+    need references you recognized so if anyone wants to know WHY
+    rules is the way it is he can read the reference for more
+    details". The table stays whole. Its lead now says it is for the
+    why, that a rule here may be wrong or misread, and that a row
+    which says the method goes further than its source marks the
+    method's own claim, the first place to doubt. `SKILL.md` points
+    at it in the same terms. No sentence of Penrose's is quoted in
+    the skill, since a search found his argument and no such
+    sentence. The nearest is that a reasoner has to see that each
+    rule is valid and not only follow it, in *Shadows of the Mind*
+    (1994).
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A

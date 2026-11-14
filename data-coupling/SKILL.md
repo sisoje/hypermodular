@@ -1091,7 +1091,9 @@ Each rule of this skill has an older name in the dataflow literature,
 a process, a data store, essential state, a value over time and an
 event, an output on the transition. `references/data-flow.md`, "The
 rules under their older names", has them in one table with their
-sources. Read a rule under that name when it looks arbitrary.
+sources. Knowing that a rule holds is not understanding it. For why a
+rule is the way it is, or to check whether it is right, read the
+source its row names.
 
 - Lazar Otasevic, [SwiftUI Data Flow Masterclass](https://medium.com/@redhotbits/swiftui-data-flow-masterclass-099f0768f776)
 - Lazar Otasevic, [TDD Is Dead. Long Live TDD.](https://medium.com/@redhotbits/tdd-is-dead-long-live-tdd-f85b4b9eacbd)

@@ -622,11 +622,17 @@ a source of truth, `@State` or a storage wrapper, so new data enters
 the flow at that node and not only from above. The API's words are
 still object words, `View`, `onAppear`, `task`, lifecycle, and each
 rule in this skill first has to un-say a word that carries the UIKit
-model. The literature below does not have those words. When a rule
-here looks arbitrary, read it under its older name. Each pairing is
-where the idea comes from. It is not a claim that the source states
-the rule, and where the method goes further than the source, the row
-says so.
+model. The literature below does not have those words.
+
+This table is for the why. Knowing that a rule holds is not
+understanding it, and a rule followed without its reason is applied
+wrongly at the first case it did not foresee. A rule here may also be
+wrong, or a misreading of its source. So each row names where the
+reasoning is, and a reader who wants to know why a rule is the way it
+is, or who doubts it, reads the source. Each pairing is where the idea
+comes from. It is not a claim that the source states the rule. Where a
+row says the method goes further than its source, that part is the
+method's own claim, and it is the first place to doubt.
 
 | The rule here | Its older name | Source |
 |---|---|---|
