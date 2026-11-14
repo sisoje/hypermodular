@@ -2115,6 +2115,41 @@
     package is what the run did on its own, so that default stands.
     A notification tap that launches the app is a measurement the
     agent owes and no sentence of a skill claims.
+  - **F89, a notification tap, measured, and the form F87 wrote is
+    wrong.** F87 took the Garden run's form into `modules.md`, a
+    delegate made in the `@State` of the dependency's root modifier
+    and handed the flow's closure in `body`, without measuring it.
+    Measured on 2026-11-14 with the scratch app, a local notification
+    scheduled, its banner tapped through SpringBoard, the screen
+    read. With the delegate made that way, the tap that launched the
+    app did not reach the delegate, twice of twice, and a tap with
+    the app in the background reached it once of twice. Apple's
+    documentation says the delegate is assigned before the app
+    finishes launching. With the delegate made in the `App`'s `init`
+    and the delegate's methods as Garden wrote them, `nonisolated`
+    and `async`, the delegate heard the tap and the app crashed,
+    SIGABRT on the cooperative pool inside
+    `-[UIApplication _performBlockAfterCATransactionCommitSynchronizes:]`
+    called from the method's bridged completion. With the
+    completion-handler forms finished on the main thread there was no
+    crash, the delegate heard the tap, and the listening view got
+    nothing, since the tap came before the forwarder had the flow's
+    closure. With the delegate keeping such a tap and the root's
+    `.task` handing it over, the listener got it, once of once. The
+    owner, 2026-11-14: "you can ask astra for asistance on some
+    questions like that". Astra at high effort, given the code and
+    the first two results, agreed on all three layers, named
+    `@UIApplicationDelegateAdaptor` and `didFinishLaunching` as the
+    place to assign, and said no ordering guarantees a listener is
+    registered by the first `body` or by a `.task`, so that the
+    handover needs the collector to say when a listener exists, an
+    addition to swift-core-flow. One correction of Astra's is not
+    taken. It said a `@State` initial value runs when the modifier is
+    constructed. F69 measured that a private one does not, on this
+    SDK. `modules.md`, the do-not, and the class bullet now state the
+    three measured facts and no longer the losing form. Not decided,
+    how the kept tap is handed over. Garden as built loses a tap that
+    launches it.
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A

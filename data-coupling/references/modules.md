@@ -420,11 +420,24 @@ In a package the declaration is `@FlowUp public var`, in an extension
 that is not itself marked `public`.
 
 Where the system delivers through a delegate and not through a
-modifier, a tap on a notification, the form is the same. The
-dependency that owns the delegate reads the flow in its `inject`
-modifier and hands the delegate the flow's closure, and the delegate
-only forwards. The root applies that `inject` modifier inside the
-collector.
+modifier, a tap on a notification, the delegate only forwards into
+the flow as well, and three more things hold, each measured.
+
+- **The delegate is assigned at launch, before the first `body`.** A
+  delegate made in a modifier's `@State` is assigned when that `body`
+  first runs, which is after the app has finished launching. The tap
+  that launched the app then does not reach it, and a later tap may
+  not either.
+- **A tap that launches the app arrives before any view exists to
+  listen.** The delegate hears it and the flow has no listener yet.
+  So the tap is kept, by the code that owns the delegate, and handed
+  to the flow once the listener is there.
+- **The delegate's methods are the completion-handler forms, finished
+  on the main thread.** The `async` forms, declared `nonisolated`,
+  finished off the main thread and the app crashed inside UIKit.
+
+A link needs none of this. `.onOpenURL` is SwiftUI's own, and a link
+that launches the app reached a listener in the first screen.
 
 What the app does about the event is a core, a node below that listens
 with `.onFlow(\.deeplink) { url in … }` and writes or calls in the

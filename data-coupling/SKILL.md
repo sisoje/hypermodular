@@ -793,7 +793,10 @@ test. Data is the abstraction.
   the feature layer. A class as data only when it earns it, for a lifecycle a struct
   cannot own, for `@Bindable` decomposition, or for per-element
   observation, and even then it stays pure data. A delegate a framework
-  requires is a class too, private to the root modifier that owns it. `deinit` is the one
+  requires is a class too, private to the root modifier that owns it.
+  One the system calls at launch, a notification's, is assigned at
+  launch, before the first `body`, since a modifier's `@State` is made
+  too late (`references/modules.md`). `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
 - **A dependency is a package under `Dependencies/`.** Every
@@ -1010,14 +1013,15 @@ and why, where it is broken.
   the same collector and a control below it that calls the flow. A link
   that launches the app reaches the listener too. Where the system
   delivers through a delegate and not a modifier, a tap on a
-  notification, the case is the same. The dependency that owns the
-  delegate hands it the flow's closure, and the delegate only forwards.
-  The handling is then a core with a scenario and a log, and the one
-  forwarding line is all that stays untested, since that Apple's
-  modifier fires is the framework's promise. The system's value as a
-  fact, a cover shown while the scene is inactive, is still data a node
-  reads. The form with its code, the scenario included, is in
-  `references/modules.md`.
+  notification, the delegate only forwards into the flow as well. Two
+  things are added, and `references/modules.md` gives them. The
+  delegate is assigned at launch, before the first `body`, and a tap
+  that launches the app is kept until a listener exists. The handling
+  is then a core with a scenario and a log, and the one forwarding line
+  is all that stays untested, since that Apple's modifier fires is the
+  framework's promise. The system's value as a fact, a cover shown
+  while the scene is inactive, is still data a node reads. The form
+  with its code, the scenario included, is in `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
 - **Designing for the what-if.** "What if someone forgets to set the
