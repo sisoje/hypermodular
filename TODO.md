@@ -2344,6 +2344,45 @@
     the handler lives that an event with no view to receive it
     writes through, at launch and on such a tap, and what replaces
     the `.task` the skill still gives a first screen.
+  - **F90, the drift review after F72 to F89.** `scripts/drift-review-prompt.md`
+    on 2026-11-14, a fresh agent against the first five commits, as
+    `AGENTS.md` asks after a stretch of rulings. Of 64 early ideas it
+    counted 27 kept, 19 transformed, 9 weakened, 7 reversed, and 2
+    lost. Its verdict. The structural bet is kept almost word for
+    word, depth-1 maps, the label as contract, double entry, the
+    merge on names, values set at the root, behavior declared as a
+    log, and the two things the first commits only imagined, the
+    check and the derived whole, exist as code. The map notation
+    matured, each change from a named finding. The rest it calls
+    drift and not maturing. Authority moved from the skill to this
+    file, which reverses itself. Every rule became a default that may
+    be broken. The map diff has no human reviewer in an engine run.
+    The oracle went from one equality over name and payload to names
+    in order with values at the author's discretion. And of 159
+    commits 131 landed on five November days, with rules added "from
+    single cold runs and one-line messages", so that the live
+    contradictions it could cite grew from about seven to thirty-two,
+    most of them in the newest rulings. Fixed from it, each an
+    oversight of this stretch. F84 to F89 had been filed inside F78
+    and before F79, and the entries are in order again. Two counts of
+    planted findings were stale after F85. The example of a call on
+    appearance was a subscription to notification taps, which F81
+    and F89 make a flow. "The one sanctioned upward path" now says
+    between a child and its parent. Not acted on, since each is a
+    ruling it disagrees with and not an oversight: the order of
+    authority, that any rule may be broken (F40), names over values
+    (F88), `@AppStorage` at the root (F32), who fired it. Its restore
+    list, for the owner. One source of truth, with standing rulings
+    folded into the skills and this file as history. The payload
+    back in the equality. An engine run that stops after the maps or
+    marks them unreviewed. A label line for a flow a node listens
+    to. The three rules and depth 1 exempt from "may be broken".
+    "Fast", as a stated time budget for the evidence loop. An app
+    with ground truth the skills did not write. The no-change guard
+    declared in a block's `Given` and not global. And the test for
+    what belongs in `SKILL.md`, moved to a reference and not cut. It
+    also noted that Diagram 2, which the map skill calls what the
+    method is for, is the one diagram the checker does not read.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

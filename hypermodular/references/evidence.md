@@ -116,7 +116,9 @@ The callback is where the two edges meet. In the child's block it is an out-arro
 same call is the stimulus, `AddItem->>ShoppingList: onAdd eggs`, and
 what the parent does about it is that block's evidence. One event, two
 edges again, and the direction flips because the callback is the one
-sanctioned upward path in the tree.
+sanctioned upward path between a child and its parent. A flow's event
+comes to a listener from outside its own tree, as a `System`
+stimulus.
 
 ## What an execution log is not
 

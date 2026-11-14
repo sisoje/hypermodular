@@ -233,7 +233,7 @@ is a finding, like a label mismatch.
   listening node from outside its own tree, so in the listener's
   block it is a `System` stimulus, whoever emitted it, and listening
   adds no line to the label. A call the node makes on
-  appearance, a `.task` over `reminderService.taps()`, is in every
+  appearance, the first load of the screen at launch, is in every
   block of that node after `System->>Node: appears`, since the
   scenario mounts the node each time and the whole log is compared. `Child->>Node: callback payload`
   for a child firing a callback the node handed it
@@ -362,8 +362,8 @@ and takes the same `· @Query` line. The reading is textual, the
 code is written by the method, so its forms are few. `scripts/test.sh`
 runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
 with Swift stubs, zero errors, nothing unverified) and
-`fixtures/broken` (the same with fourteen map violations, eight code
-findings, and one habit warning planted, all caught; wrong on
+`fixtures/broken` (the same with fourteen map violations, ten code
+findings, and three habit warnings planted, all caught; wrong on
 purpose, not an example). The clean fixture carries its whole-app
 diagram, and the test changes one of its maps to see the diagram
 reported stale and then redrawn.

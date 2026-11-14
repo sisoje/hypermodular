@@ -22,9 +22,10 @@ evidence target; the broken ones plant a call with no label line, an
 `@AppStorage` below the root, a label line with no code behind it, an
 evidence target that is no stored property, and a view on no map that
 reads a cylinder, and a presence-condition arrow whose label names
-nothing the node holds; with the two planted stale labels that is
-eight code errors and one warning. One more warning is planted for a
-habit no map can show, a `Task` nobody holds.
+nothing the node holds, and a flow called with no label line; with
+the two planted stale labels that is nine code errors and one
+warning. Three more warnings are planted for habits no map can show,
+a `Task` nobody holds and two lifecycle modifiers in a view.
 
 `sh scripts/test.sh` asserts the clean fixture has zero errors and the
 broken one reports exactly the planted list, nothing more, with and
