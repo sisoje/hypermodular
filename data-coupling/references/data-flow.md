@@ -538,8 +538,10 @@ The fixes, in order of preference:
    writing one field. When the write
    arrives through a binding the owner hands down, the owner's setter is
    that event. Build the `Binding` by hand and let the effect ride the
-   write. `.onChange` on state the node owns is one render late and
-   cannot tell what changed or why.
+   write. The app does not observe its own changes through the UI
+   runtime. It knows who mutates what, and it intercepts the write
+   where it is made. `.onChange` on a value the app writes is one
+   render late and cannot tell who wrote it or why.
 3. **Only then `.onChange`**, for a single, terminal reaction to a value
    the app's code does not control, one the system supplies, the scene
    phase. A value the app writes has an action behind it, and a

@@ -2008,6 +2008,20 @@
     owner when it is written in more than one place. Not changed,
     "the first way is the default" in F72, which Astra called
     unsupported and the owner has not spoken to.
+  - **F80, the app does not observe its own changes through the UI
+    runtime.** The owner, 2026-11-14, after F79: "same thing with
+    onchange... you dont observe your changes trought ui-runtime, you
+    need to intercept and controll them like a normal person, and not
+    like an idiot that doesnt know who mutates what". F79 had already
+    carried the rule to `.onChange` as its own consequence, and this
+    is the owner saying it, with the reason, that the app knows who
+    mutates what. The do-not that was "A chain of `.onChange`
+    modifiers" is now "`.onChange` on a value the app writes", with
+    the chain as its worst form. Step 2 of the ladder in
+    `data-flow.md` and the task hard rule in `AGENTS.md` carry the
+    sentence. Measured under F72 and still the fact behind "a wave
+    late", a `body` ran with the new input beside the old value
+    before the `.onChange` write landed.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

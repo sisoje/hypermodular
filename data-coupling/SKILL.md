@@ -876,15 +876,19 @@ and why, where it is broken.
   environment value, not a closure the node calls, so a scenario can
   fix it. A delay the node awaits is an async effect, a closure the
   scenario stubs to return at once or not at all.
-- **A chain of `.onChange` modifiers** where the second observes what
-  the first wrote. One keystroke, three waves, and the transition lives
-  in no node. Derive instead of store. Do the whole transition in one
+- **`.onChange` on a value the app writes.** The app does not observe
+  its own changes through the UI runtime. It knows who mutates what,
+  so it intercepts the write where it is made, in the handler, or in
+  the setter of the binding the value's owner hands down, and the
+  reaction rides that write, a haptic when the selection changes, a
+  sheet dismissed when a save returns. `.onChange` learns of the
+  change a wave late and cannot tell who wrote it or why. A chain of
+  them, where the second observes what the first wrote, is the worst
+  form. One keystroke, three waves, and the transition lives in no
+  node. Derive instead of store. Do the whole transition in one
   boundary event. `.onChange` is what is left for a single terminal
   reaction to a value the app's code does not control, the scene
-  phase. A value the app writes has an action behind it, and the
-  reaction rides that write, in its handler or in the setter of the
-  binding its owner hands down, a haptic when the selection changes, a
-  sheet dismissed when a save returns.
+  phase.
 - **State seeded from an input.** Seeded means given a first value
   that is taken from an input, at creation, `_doubler =
   State(wrappedValue: Doubler(seed: seed))` in an `init`, or the same

@@ -126,7 +126,8 @@ subgraph), no emoji, no status marks.
   needs is started in that action and nowhere else, and `.task` is
   what is left when there is none, the first screen at launch.
   `.task(id:)` and `.onChange` are used only on a value the app's code
-  does not control.
+  does not control. The app does not observe its own changes through
+  the UI runtime. It intercepts the write where it is made.
   Creation is not lifecycle, so
   a closure the root sets starts no `Task` nobody holds either. A task
   a dependency shares between its callers, a token refresh, is held
