@@ -2394,8 +2394,14 @@
     knows how to read it.
 
 - **Open, the owner's decisions.** The skill folder name
-  `data-coupling` stays (2026-11-09). Whether the public
-  `swiftui-mv-architecture` repo points here or stays as it is; its
+  `data-coupling` stays (2026-11-09). The public
+  `swiftui-mv-architecture` repo is deprecated, the owner,
+  2026-11-14: "we need to deprecate swiftui-mv-architecture and stop
+  reling on it". Its README, its skill's description, and its
+  changelog say so and point here, committed in that repo and not
+  pushed. Nothing in these skills relied on it. The one pointer left
+  was in swift-core-flow's `AGENTS.md`, which now names the
+  `data-coupling` skill. Its
   installed skill symlink was moved to `~/.claude/skills/.trash/` on
   2026-11-05, and out of `~/.agents/skills` the same way on
   2026-11-10, and `~/.claude/skills/data-coupling` links here. Pushing
