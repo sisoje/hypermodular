@@ -247,7 +247,11 @@ store, a list of addresses kept in SwiftData, added from a form over
 the list, deleted by a swipe, and sorted in an order the user can
 reverse. Those three are written as a
 brief is given to a person: the skills to read, the app in the
-product's words, the machine's limits, and what to report. They name
+product's words, the machine's limits, and what to report. The
+language is that of a manager who knows the tech stack he wants. The
+architecture is up to the rules and the agent. A prompt that tests
+whether a rule is recognized is written the same way, and it asks no
+question that gives the design away. They name
 no architecture, no layout, no order of work, and no forbidden
 pattern. A technology the product is committed to may be named, as
 Garden names SwiftData for its plants and the address form a JSON

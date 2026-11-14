@@ -2064,6 +2064,17 @@
     closure run, names the modifiers, and gives the four steps. The
     scenario bullet keeps a pointer, and `modules.md` and `AGENTS.md`
     open with the same test.
+  - **F82, a brief is in a manager's technical language.** The agent
+    tested F81 on a fresh reader with a prompt that named forbidden
+    patterns and whose follow-up questions gave the design away, one
+    of them saying outright that a UI test cannot make Safari open a
+    link. The owner, 2026-11-14: "so prompt need to be in a mostly
+    manager technical language hat knows what tech stack he wants,
+    but architecture is up to the rules and agent". This is F65 said
+    of every prompt that tests a rule, not only of the engine briefs.
+    `AGENTS.md` carries the sentence. The test was run again with a
+    brief of that kind, the product, two requirements in the
+    product's words, the stack, and what to hand back.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
