@@ -471,7 +471,7 @@ struct RemindersInjector: ViewModifier {
     @ReminderTaps private var reminderTaps
 
     func body(content: Content) -> some View {
-        content.transformEnvironment(\.self) { _ in }
+        content.background { Color.clear }
     }
 }
 
@@ -497,7 +497,7 @@ listens with `.onFlow` and writes or calls there. Its scenario applies
 the same collector and a button below it calls the flow. There is no
 state on the way, no binding, and no `.onChange`.
 
-Six things hold, each measured.
+Seven things hold, each measured.
 
 - **The closure is handed over in `update()`, each time it runs.**
   The flow's closure changes when a listener registers, so the
@@ -507,13 +507,20 @@ Six things hold, each measured.
 - **A view modifier whose `body` returns `content` untouched does not
   run.** In that modifier `body` was not called, `update()` did not
   run, and the `@State` was not made, so the delegate did not exist
-  and nothing was heard. `Group { content }` and
-  `content.modifier(EmptyModifier())` did not run either. With
-  `content.transformEnvironment(\.self) { _ in }` or
-  `content.opacity(1)` it ran. So the injector applies the first,
-  which changes nothing, and a modifier that already sets a contract
+  and nothing was heard. `Group { content }`,
+  `content.modifier(EmptyModifier())`, and
+  `content.background { EmptyView() }` did not run either. With
+  `content.background { Color.clear }` it ran, and so it did with
+  `content.transformEnvironment(\.self) { _ in }` and
+  `content.opacity(1)`. So the injector applies the clear background,
+  which shows nothing, and a modifier that already sets a contract
   needs no such line. A view that holds its content and returns it
   also ran as it stands.
+- **The collector stays outside the injector.** With
+  `.collectFlow` applied inside the same modifier, the modifier ran
+  and the delegate got the tap, and no listener heard it. A modifier
+  reads the flow from above itself, and a collector serves what is
+  below it.
 - **A tap with the app running or in the background reaches the
   listener.** Delegate, closure, flow, listener, in that order.
 - **A tap that launches the app is not delivered in this form.** The

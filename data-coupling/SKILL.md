@@ -1049,8 +1049,9 @@ and why, where it is broken.
   flow. The dependency's `inject` modifier declares that property. A
   view modifier whose `body` returns `content` untouched does not
   run, so where the modifier sets nothing it applies one line that
-  changes nothing, `content.transformEnvironment(\.self) { _ in }`.
-  A tap
+  shows nothing, `content.background { Color.clear }`. The collector
+  stays outside the modifier, at the root, since a modifier reads the
+  flow from above itself. A tap
   that launches the app comes before the first screen and is not
   delivered in this form. An app that has to open on it keeps the
   response as data in a dynamic property the `App` declares, read in

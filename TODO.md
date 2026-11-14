@@ -2613,6 +2613,16 @@
     `@State`; `content.transformEnvironment(\.self) { _ in }` did, and
     with it a tap from the background went delegate, closure, flow,
     listener. The modifier's `body` is that line.
+    The owner called that line a hack and asked for `.collectFlow`
+    inside the modifier. Probed: the modifier ran, the delegate got
+    the tap and called its closure, and no listener heard it, since
+    the modifier reads the flow from above its own collector. He
+    then asked for `.background { Color.clear }` or
+    `.background { EmptyView() }`. Probed: with the clear color the
+    modifier ran and a tap from the background reached the listener;
+    with the empty view it did not run. The modifier's `body` is
+    `content.background { Color.clear }`, and the collector stays at
+    the root.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
