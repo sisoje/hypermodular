@@ -482,22 +482,23 @@ owner of the value hands down a binding whose setter stores the value
 and assigns the fetch to a slot the owner holds. `.task` is what is
 left when no action mounted the node, the first screen at launch, and
 it hangs on the node above the stack and the tabs, which does not
-leave. `.task(id:)` is used only when its id is a value the app's code
-does not control, one the system supplies, and then in the one modifier
-at the root that forwards the change into a flow, not in a feature. A
-value the app writes has an action behind it, the write. The app knows
-the value changed at the moment it writes it, so it has no use for the
-UI runtime to notice the change and drive what follows. A subscription
-sits in a node whose lifetime covers every moment its events must be
-handled, not where the contract's value is built. One that lasts for
-the life of the app is the root's and starts in its `.task`, since
-launch is not an action. One that a mounted node needs is started by
-the action that mounts the node and assigned to a slot the node that
-handles the action holds. Whatever ends the need for it clears the
-slot. A dismissal does, and it is caught in the binding that presents
-the node, since a dismissal the runtime makes is a write through that
-binding. An event the node hears does too, the app leaving the
-foreground.
+leave. A first screen that reads its list with `@Query` has nothing to
+load and carries none. `.task(id:)` is used only when its id is a value
+the app's code does not control, one the system supplies, and then in
+the one modifier at the root that forwards the change into a flow, not
+in a feature. A value the app writes has an action behind it, the
+write. The app knows the value changed at the moment it writes it, so
+it has no use for the UI runtime to notice the change and drive what
+follows. A subscription sits in a node whose lifetime covers every
+moment its events must be handled, not where the contract's value is
+built. One that lasts for the life of the app is the root's and starts
+in its `.task`, since launch is not an action. One that a mounted node
+needs is started by the action that mounts the node and assigned to a
+slot the node that handles the action holds. Whatever ends the need for
+it clears the slot. A dismissal does, and it is caught in the binding
+that presents the node, since a dismissal the runtime makes is a write
+through that binding. An event the node hears does too, the app leaving
+the foreground.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a
@@ -604,15 +605,18 @@ either way.
   scenario is owed to the shell's generated `Core`, the one the
   evidence blocks are proven on, and it drives the hand-written core
   through it. The hand-written core gets a scenario of its own only
-  when a block is declared on it. A core can
-  also be previewed directly, constructed with literals. A view that
-  owns state or reads a live wrapper, a shell, is previewed only
-  through a scenario. A given that
-  would have to set the node's own state says the truth is above the
-  node: it arrives as a binding, and the state is not the node's. A
-  scenario is cheap, so a different given is another scenario, or
-  another parameter on the same one, the scenario's own `@TestState`
-  set to that value and handed down. The host is the swift-core-flow skill's.
+  when a block is declared on it. A core can also be previewed
+  directly, constructed with literals. A view that owns state or reads
+  a live wrapper, a shell, is previewed only through a scenario. A
+  given that would have to set the node's own state says the truth is
+  above the node: it arrives as a binding, and the state is not the
+  node's. State that the node's own action writes is not such a given.
+  The scenario reaches it by driving that action, a tap that opens the
+  screen before the event under test, and the driven prefix is part of
+  the log. A scenario is cheap, so a different given is another
+  scenario, or another parameter on the same one, the scenario's own
+  `@TestState` set to that value and handed down. The host is the
+  swift-core-flow skill's.
 - **Effects log, getters don't.** Writes and calls fire once per event.
   Reads fire on the render scheduler's timing. Do not log from a `get`.
   Under `@Shell` every private `@State` of the core logs, so a draft no
@@ -887,7 +891,10 @@ and why, where it is broken.
   ancestor owns and hands down, a `let` or an environment value, not a
   closure the node calls, so a scenario can fix it. A delay the node
   awaits is an async effect, a closure the scenario stubs to return at
-  once or not at all.
+  once or not at all. A repeating tick is a stream that a contract's
+  closure returns. Its default finishes at once, and a scenario feeds
+  it with a control. It is not a delay awaited in a loop, which spins
+  on a no-op default.
 - **`.onChange` on a value the app writes.** The app does not observe
   its own changes through the UI runtime. It knows who mutates what,
   so it intercepts the write where it is made, in the handler, or in
@@ -931,28 +938,29 @@ and why, where it is broken.
   two ways, the Memo's limits, the measurement, and a table of the
   common forms with what replaces each are in
   `references/data-flow.md`, "A value built from an input".
-- **A `Task` nobody holds.** `Button("Save") { Task { try await save() } }`
-  starts work that nothing cancels. It outlives the node, a second tap
-  runs a second copy beside the first, and its writes land in a node
-  that may be gone. An unstructured task is assigned, to an
+- **A `Task` nobody holds.** `Button("Save") { Task { try await save()
+  } }` starts work that nothing cancels. It outlives the node, a second
+  tap runs a second copy beside the first, and its writes land in a
+  node that may be gone. An unstructured task is assigned, to an
   `@UnstructuredTask` slot of swift-core-flow or to a
   `Binding<Task<Success, Failure>?>` a parent backs with one. The slot
-  cancels the previous task when a new one is assigned and the live
-  one when the node is removed, writing `nil` cancels on demand, and
-  each assignment logs. The task closure takes a capture list,
-  `Task { [save] in ... }`, since capturing the view keeps the storage
-  alive and defeats the cancel on removal. A call whose result the
-  node does not await is a different thing. It is one closure call, it
-  logs, and nobody starts a `Task` for it, the root's closure included.
+  cancels the previous task when a new one is assigned and the live one
+  when the node is removed, writing `nil` cancels on demand, and each
+  assignment logs. The task closure takes a capture list, `Task {
+  [save] in ... }`, since capturing the view keeps the storage alive
+  and defeats the cancel on removal. State the task writes is captured
+  as its binding and written through it, `Task { [library, $books] in
+  $books.wrappedValue = … }`. A call whose result the node does not
+  await is a different thing. It is one closure call, it logs, and
+  nobody starts a `Task` for it, the root's closure included.
   `.onAppear { Task { await load() } }` is the same `Task`, and it
-  hangs the load on appearance besides, the entry below.
-  A `Task { }` nobody holds inside a closure the root sets is lifecycle hidden in
+  hangs the load on appearance besides, the entry below. A `Task { }`
+  nobody holds inside a closure the root sets is lifecycle hidden in
   creation, the object habit of a service that runs itself. A task a
   dependency shares between its callers, a token refresh that
-  concurrent calls join, is held like any other. It is assigned
-  through a binding to a slot the root owns, and the root can cancel
-  it. The map
-  skill's `mapcheck.py --sources` warns on a `Task` that is not
+  concurrent calls join, is held like any other. It is assigned through
+  a binding to a slot the root owns, and the root can cancel it. The
+  map skill's `mapcheck.py --sources` warns on a `Task` that is not
   assigned.
 - **A lifecycle modifier starting work an action causes.** `.task`,
   `.task(id:)`, and `.onAppear` hang work on the appearance of the
@@ -990,17 +998,21 @@ and why, where it is broken.
   into it. A node that carries such a modifier is a shell with handling
   inside it, and the app would be watching the system through the UI
   runtime in every node that cares. So make the core with a flow, in
-  four steps. Declare the flow, `@FlowUp var deeplink: (URL) -> Void`.
-  Keep the system's own modifier inside one `ViewModifier` at the root,
-  where its closure does one thing, `.onOpenURL { deeplink($0) }`.
-  Write the handling as a node that listens, `.onFlow(\.deeplink) { url
-  in … }`, the node that owns the state the handling writes. Give its
-  scenario a control that calls the flow. The handling is then a core
-  with a scenario and a log, and the one forwarding line is all that
-  stays untested, since that Apple's modifier fires is the framework's
-  promise. The system's value as a fact, a cover shown while the scene
-  is inactive, is still data a node reads. The form with its code, the
-  scenario included, is in `references/modules.md`.
+  five steps. Declare the flow in the layer, in an `EnvironmentValues`
+  extension where the `@Entry` values are, `@FlowUp var deeplink: (URL)
+  -> Void`. Collect it at the root, `.collectFlow(\.deeplink)`. Keep
+  the system's own modifier inside one `ViewModifier` at the root,
+  applied before the collector so that it sits inside it, where its
+  closure does one thing, `.onOpenURL { deeplink($0) }`. Write the
+  handling as a node that listens, `.onFlow(\.deeplink) { url in … }`,
+  the node that owns the state the handling writes. Give its scenario
+  the same collector and a control below it that calls the flow. A link
+  that launches the app reaches the listener too. The handling is then
+  a core with a scenario and a log, and the one forwarding line is all
+  that stays untested, since that Apple's modifier fires is the
+  framework's promise. The system's value as a fact, a cover shown
+  while the scene is inactive, is still data a node reads. The form
+  with its code, the scenario included, is in `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
 - **Designing for the what-if.** "What if someone forgets to set the

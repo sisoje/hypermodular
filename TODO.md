@@ -2024,8 +2024,28 @@
     view on screen, and the principle by name. Its design task is a
     brief as F82 asks, a recipes app, a link, and a timer that stops
     in the background, with no word of architecture. The two older
-    prompts and their baselines are untouched. Not yet run on any
-    model.
+    prompts and their baselines are untouched. Run the same day on
+    Sonnet at medium effort, which read `SKILL.md` alone and no
+    reference. Ten of ten. Its design had the shape, a node above the
+    stack that holds the load and the timer, a screen made of `let`s,
+    listeners with `.onFlow`, a scenario that sends the events, and no
+    lifecycle modifier in a feature. It had one error. It declared
+    the two flows inside the root modifier and applied no collector,
+    since the do-not gave four steps and said neither where a flow is
+    declared nor that it is collected. The do-not gives five steps
+    now. Four more sentences came from its list. A task writes state
+    through a binding it captured. A repeating tick is a stream whose
+    default finishes, not a delay awaited in a loop, which spins on a
+    no-op default, and the F82 run had tripped on the same. A first
+    screen that reads its list with `@Query` carries no `.task`. And
+    state that a node's own action writes is reached in a scenario by
+    driving that action, with the driven prefix in the log, which
+    three readers had asked about. Measured for F79's sentence that a
+    dismissal is a write through the binding that presents the node,
+    which had gone in unmeasured, on the iPhone 18 Pro Max simulator.
+    A pop by the back button wrote an empty path through the setter
+    of the `NavigationStack`'s path binding, and a sheet swiped down
+    wrote `false` through the setter of its `isPresented` binding.
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A
