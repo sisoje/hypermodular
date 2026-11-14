@@ -435,16 +435,10 @@ extension EnvironmentValues {
 
 // The dependency's package, the one place that sees UserNotifications.
 
-// The whole response, in a box, since the framework's type is not
-// `Sendable` and a stream carries only what is.
-public struct ReminderTap: @unchecked Sendable {
-    let response: UNNotificationResponse
-}
-
 // The delegate. It yields into the stream and keeps no value.
 public final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
-    public let taps: AsyncStream<ReminderTap>
-    private let continuation: AsyncStream<ReminderTap>.Continuation
+    public let taps: AsyncStream<UNNotificationResponse>
+    private let continuation: AsyncStream<UNNotificationResponse>.Continuation
 
     public override init() {
         (taps, continuation) = AsyncStream.makeStream()
@@ -457,34 +451,35 @@ public final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate 
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        continuation.yield(ReminderTap(response: response))
+        nonisolated(unsafe) let response = response
+        continuation.yield(response)
         completionHandler()
     }
 }
 
 // Behavior only. The closure the task calls, replaced on every pass.
 final class ReminderEmitter {
-    var emit: (ReminderTap) -> Void = { _ in }
+    var emit: (UNNotificationResponse) -> Void = { _ in }
 }
 
 // The injector. Its task runs for as long as the app does.
 struct RemindersInjector: ViewModifier {
-    let taps: AsyncStream<ReminderTap>
+    let taps: AsyncStream<UNNotificationResponse>
     @Environment(\.reminderTapped) private var reminderTapped
     @State private var emitter = ReminderEmitter()
 
     func body(content: Content) -> some View {
-        emitter.emit = { reminderTapped($0.response.notification.request.identifier) }
+        emitter.emit = { reminderTapped($0.notification.request.identifier) }
         return content.task {
-            for await tap in taps {
-                emitter.emit(tap)
+            for await response in taps {
+                emitter.emit(response)
             }
         }
     }
 }
 
 public extension View {
-    func injectReminders(_ taps: AsyncStream<ReminderTap>) -> some View {
+    func injectReminders(_ taps: AsyncStream<UNNotificationResponse>) -> some View {
         modifier(RemindersInjector(taps: taps))
     }
 }
@@ -560,8 +555,12 @@ Eight things hold, each measured.
   The `async` forms, declared `nonisolated`, finished off the main
   thread and the app crashed inside UIKit.
 
-No information is lost. The stream carries the whole response, and
-narrowing to what the listeners use is done in the emitter's closure.
+No information is lost. The stream carries the whole response, as the
+system handed it over, with no type of the app's around it. The
+response is not `Sendable`, and the compiler refuses to yield it as it
+stands, so the callback marks it `nonisolated(unsafe)` first. Both
+ends of the stream are on the main actor. Narrowing to what the
+listeners use is done in the emitter's closure.
 The framework's type stays in the package, and the `App` holds the
 delegate and its stream without naming it. A `UNNotificationResponse`
 has no initializer the app may call, so a flow that carried it could

@@ -2676,6 +2676,13 @@
     the window, which did not deliver the launch tap, is replaced.
     Not measured: every listener going away and coming back, and a
     tap on a banner with the app in the foreground.
+    The owner, of the box: "some struct looks excessive, you can pass
+    UNNotificationResponse complete because we do not use state nor
+    binding now". The box is gone. The stream carries the response
+    itself, marked `nonisolated(unsafe)` in the callback before it is
+    yielded, which compiles under Swift 6 with the main actor as the
+    default isolation. That spelling was compiled and not run again,
+    the run was with the box.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
