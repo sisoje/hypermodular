@@ -1007,12 +1007,16 @@ and why, where it is broken.
   handling as a node that listens, `.onFlow(\.deeplink) { url in … }`,
   the node that owns the state the handling writes. Give its scenario
   the same collector and a control below it that calls the flow. A link
-  that launches the app reaches the listener too. The handling is then
-  a core with a scenario and a log, and the one forwarding line is all
-  that stays untested, since that Apple's modifier fires is the
-  framework's promise. The system's value as a fact, a cover shown
-  while the scene is inactive, is still data a node reads. The form
-  with its code, the scenario included, is in `references/modules.md`.
+  that launches the app reaches the listener too. Where the system
+  delivers through a delegate and not a modifier, a tap on a
+  notification, the case is the same. The dependency that owns the
+  delegate hands it the flow's closure, and the delegate only forwards.
+  The handling is then a core with a scenario and a log, and the one
+  forwarding line is all that stays untested, since that Apple's
+  modifier fires is the framework's promise. The system's value as a
+  fact, a cover shown while the scene is inactive, is still data a node
+  reads. The form with its code, the scenario included, is in
+  `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
 - **Designing for the what-if.** "What if someone forgets to set the

@@ -416,6 +416,15 @@ That modifier hears the outside world, so it is a dependency like any
 other. It is its own package under `Packages/Dependencies/`, the root
 applies it through the package's one `inject` modifier, and the flows
 it forwards into are declared in the layer beside the `@Entry` values.
+In a package the declaration is `@FlowUp public var`, in an extension
+that is not itself marked `public`.
+
+Where the system delivers through a delegate and not through a
+modifier, a tap on a notification, the form is the same. The
+dependency that owns the delegate reads the flow in its `inject`
+modifier and hands the delegate the flow's closure, and the delegate
+only forwards. The root applies that `inject` modifier inside the
+collector.
 
 What the app does about the event is a core, a node below that listens
 with `.onFlow(\.deeplink) { url in … }` and writes or calls in the

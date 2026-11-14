@@ -2046,6 +2046,54 @@
     A pop by the back button wrote an empty path through the setter
     of the `NavigationStack`'s path binding, and a sheet swiped down
     wrote `false` through the setter of its `isPresented` binding.
+  - **F87, Garden on the rules of F72 to F86.** The first whole app
+    built since F71, `scripts/engine-run-prompt-garden.md` verbatim on
+    2026-11-14, Opus at high effort, an empty directory, 37 minutes
+    and 375k tokens. Every gate green, rerun by hand.
+    `mapcheck.py --sources` 16 files, 18 blocks, 5 nodes, 6
+    cylinders, 55 Swift types, 0 errors, 0 warnings, 0 unverified,
+    with F85's warning active. `swift test` in the features and the
+    five dependencies, 6, 3, 2, 2, 1, and 2. `generate.sh` twice, the
+    same project. Eighteen hosted tests green in the iPhone 18 Pro
+    simulator. What the new rules produced. No `.task`, `.task(id:)`,
+    `.onChange`, `.onAppear`, or `.onOpenURL` in the app, no seeded
+    state, and three `Task` expressions, each assigned to a slot with
+    its bindings captured. A tap and a notification tap open a plant
+    through one function of the list, which starts the weather load
+    in a slot the list holds and hands the detail `let`s (F77). The
+    notification tap is a flow, declared in the layer, collected at
+    the root and in the scenario, forwarded by the Reminders
+    dependency, and heard by the list with `.onFlow`, and its block
+    opens `System->>PlantList: reminderTapped fern` (F81, F85). The
+    sort is a `QueryView` keyed on its flag. The list holds seven
+    `@State` and two slots, which is F77's cost and is readable at
+    this size.
+    Four findings became sentences. The system's event came through
+    a delegate and not a modifier, which F81's form did not show, so
+    `modules.md` and the do-not say the dependency hands the delegate
+    the flow's closure and the delegate only forwards. A flow
+    declared in a package is `@FlowUp public var` in an extension not
+    itself marked `public`, the form the run compiled. Five
+    dependencies each named their modifier `Injector` as the example
+    in `app-structure.md` did, and the checker reads a type by its
+    name and merged them, so the example names it for its package.
+    The CoreFlow skill carries the package form too.
+    Open from the run, not ruled. A `@Model` logs as its type name,
+    so no test can tell which plant a delete was handed, the third
+    run to say so after the two of F71. Diagram 2 has no form for a
+    flow, and the run drew it as a class marked `<<flow>>`. Today's
+    date as a `let` from the root is stale past midnight, as F58
+    noted. Under `@Shell` the resets an opening writes are in every
+    block of the list, which makes them long, and undo took three
+    scenarios that differ in one stub. A plant inserted just before
+    the test killed the app was lost, SwiftData's own saving, which
+    no sentence warns a test about. A stepper is one element in
+    XCUITest on iOS 27, so the run tapped its plus by coordinate.
+    That a notification tap which launches the app reaches the
+    listener was not measured. Rules the run broke and said so, a
+    `static let` for `@Model` fixtures, since a row needs the same
+    instance across waves, and a write to the delegate's forwarder
+    during `body`, to a plain class.
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A

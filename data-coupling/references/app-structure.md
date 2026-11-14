@@ -134,11 +134,11 @@ import SwiftUI
 public extension View {
     /// Sets `addressService`. The address is written as JSON to a file.
     func injectAddressFile() -> some View {
-        modifier(Injector())
+        modifier(AddressFileInjector())
     }
 }
 
-struct Injector: ViewModifier {
+struct AddressFileInjector: ViewModifier {
     func body(content: Content) -> some View {
         content.environment(\.addressService, AddressService(save: { address in
             try write(address, to: FileManager.default.temporaryDirectory)
@@ -160,8 +160,11 @@ struct Injector: ViewModifier {
   itself, so it is `PhotoLibrary`.
 - **Its logic is internal functions** the closures call, here
   `write(_:to:)`, each taking its inputs as parameters.
+- **The modifier's type is named for its package**,
+  `AddressFileInjector`. The map checker reads a type by its name, so
+  two types of one name in two packages read as one.
 - **A derived dependency** declares `@Environment` reads of its
-  ingredients on the `Injector`. Their contracts and entries are in the
+  ingredients on that modifier. Their contracts and entries are in the
   layer, so it imports no other dependency.
 - **A failure is thrown.** Work that can fail makes the closure
   `throws`. A dependency does not catch its own failure to hand back a
