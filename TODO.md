@@ -2054,8 +2054,11 @@
     active, inactive, background, inactive, active, the first of
     them from launch. That a control calling a flow reaches the
     listeners was already pinned by the library's own
-    `FlowUpUITests`. The modifier's `.onOpenURL` line compiled and
-    was not fired. The owner, after the first wording: "the rule need
+    `FlowUpUITests`. The modifier's `.onOpenURL` line was fired last,
+    with the scheme registered and the system opening
+    `flowmeasure://book/42`. The listener showed the link with the
+    app running and again from a cold launch.
+    The owner, after the first wording: "the rule need
     to be clear so that agent can recognize if dealing with external
     system data in modifier-  he needs a flowup to make testable
     core". The rule is now a do-not of its own in `SKILL.md`, "A
@@ -2077,6 +2080,32 @@
     dependency package like any other with the flows declared in the
     layer, and that the listener sits in the node that owns the state
     the handling writes.
+    The run by F82's brief came back last, the product, the two
+    requirements, and the stack, with no word of architecture. It
+    recognized the case. Two flows declared in the layer, one
+    `SystemEvents` modifier at the root with a forwarding line for
+    `.onOpenURL` and one for the scene phase, the handling in the
+    library's node with `.onFlow`, a scenario with controls below its
+    own accumulators, and no `.task`, `.task(id:)`, or `.onAppear` in
+    a feature. It also took F79 unprompted, a slot cleared in the
+    setter of the binding that presents the reader. It named the two
+    forwarding lines as what is left untested, and a link on a cold
+    launch as a risk the skill is silent on, which was then measured
+    and holds. Seven of its 23 sentences were the new text's and are
+    reworded. "Every write that ends the interval" had no interval and
+    left out an event. "Below the accumulators" meant deeper in the
+    tree and earlier in the chain. "The same `EnvironmentValues`
+    extension" named none. The sentence against a root accumulator
+    read as a ban on the two the rule asks for. And the naming rule
+    had no place for `scenePhaseChanged`.
+    The owner, told that a scenario can set the scene phase: "yes the
+    system can set scene phase but anyway... what if it could not? i
+    mean ok dont be specific frame it in general?" The do-not, the
+    paragraph in `modules.md`, and the hard rule now state the rule
+    first and in general, the source of the event or the data being
+    outside the app, with the three modifiers as examples and not the
+    list, and say that whether a test could fake the source does not
+    enter into it.
   - **F82, a brief is in a manager's technical language.** The agent
     tested F81 on a fresh reader with a prompt that named forbidden
     patterns and whose follow-up questions gave the design away, one

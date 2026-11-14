@@ -489,10 +489,12 @@ sits in a node whose lifetime covers every moment its events must be
 handled, not where the contract's value is built. One that lasts for
 the life of the app is the root's and starts in its `.task`, since
 launch is not an action. One that a mounted node needs is started by
-the action that mounts the node, assigned to a slot the node that
-handles the action holds, and every write that ends the interval clears
-the slot. The binding that presents the node is where that write is
-caught, since a dismissal the runtime makes is a write through it.
+the action that mounts the node and assigned to a slot the node that
+handles the action holds. Whatever ends the need for it clears the
+slot. A dismissal does, and it is caught in the binding that presents
+the node, since a dismissal the runtime makes is a write through that
+binding. An event the node hears does too, the app leaving the
+foreground.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a
@@ -967,29 +969,32 @@ and why, where it is broken.
   used only when its id is a value the app's code does not control.
   The method names no use for `.onAppear`. The worked forms are in
   `references/shell-core.md`, "Who owns the load".
-- **A modifier fed by the external system, inside a feature.** This
-  is the shell and core cut again, for the system's own modifiers.
-  Recognize it by where the modifier's event or data comes from. A
-  `Button`'s closure runs on a tap in the app, and a write of the
-  app's own state comes from the app's code. The closure of
-  `.onOpenURL` or of `.onContinueUserActivity` runs on something
-  outside the app, and so does an `.onChange` or a `.task(id:)` over a
-  value the system sets, the scene phase. A node that carries one is a
-  shell with handling inside it, and the app would be watching the
-  system through the UI runtime in every node that cares. Whenever a
-  modifier's event or data comes from outside the app, make the core
-  with a flow, in four steps. Declare the flow,
-  `@FlowUp var deeplink: (URL) -> Void`. Keep the system's modifier in
-  one modifier at the root, where its closure does one thing,
-  `.onOpenURL { deeplink($0) }`. Write the handling as a node that
-  listens, `.onFlow(\.deeplink) { url in … }`, the node that owns the
-  state the handling writes. Give its scenario a control that calls
-  the flow. The handling is then a core with a scenario and a log, and
-  the one forwarding line is all that stays untested, since that
-  Apple's modifier fires is the framework's promise. The system's
-  value as a fact, a cover shown while the scene is inactive, is still
-  data a node reads. The form with its code, the scenario included, is
-  in `references/modules.md`.
+- **A modifier fed by the external system, inside a feature.** This is
+  the shell and core cut again, for whatever reaches the app from
+  outside it. The rule is general. When the event or the data behind a
+  modifier comes from outside the app, the app hears it in one place,
+  at the root, and hands it to the features as a flow. Recognize the
+  case by the source and by nothing else. A `Button`'s closure runs on
+  a tap in the app, and a write of the app's own state comes from the
+  app's code. A link another app opens, an activity the system hands
+  over, a value the system sets and changes, each has its source
+  outside. `.onOpenURL`, `.onContinueUserActivity`, and an `.onChange`
+  or a `.task(id:)` over the scene phase are examples and not the list.
+  Whether a test could fake the source some other way does not enter
+  into it. A node that carries such a modifier is a shell with handling
+  inside it, and the app would be watching the system through the UI
+  runtime in every node that cares. So make the core with a flow, in
+  four steps. Declare the flow, `@FlowUp var deeplink: (URL) -> Void`.
+  Keep the system's own modifier inside one `ViewModifier` at the root,
+  where its closure does one thing, `.onOpenURL { deeplink($0) }`.
+  Write the handling as a node that listens, `.onFlow(\.deeplink) { url
+  in … }`, the node that owns the state the handling writes. Give its
+  scenario a control that calls the flow. The handling is then a core
+  with a scenario and a log, and the one forwarding line is all that
+  stays untested, since that Apple's modifier fires is the framework's
+  promise. The system's value as a fact, a cover shown while the scene
+  is inactive, is still data a node reads. The form with its code, the
+  scenario included, is in `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
 - **Designing for the what-if.** "What if someone forgets to set the

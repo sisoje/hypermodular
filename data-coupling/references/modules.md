@@ -359,25 +359,31 @@ set a value into the flow.
 
 `@Entry` drops a value straight down. For events that must travel up,
 such as a deeplink any node may emit and the mounted nodes handle,
-`@FlowUp var deeplink: (URL) -> Void` in the same `EnvironmentValues`
-extension declares a typed flow. `.collectFlow(\.deeplink)` goes on the
-accumulator at the top of the subtree, `.onFlow(\.deeplink) { … }` on
-each listener, and `@Environment(\.deeplink)` hands any node below a
-real closure that calls every registered listener. It is scoped to the
-subtree under its accumulator. Unmounting unregisters, and nothing
-leaks. One accumulator at the app root for everything is the global bus
-this avoids. Name a flow for what the caller means. A verb is a command
-whose listeners are the implementation (`deeplink`). A past-tense
-clause is a notification that a service's verb already happened
-(`logoutHappened`). Do not name it after the reaction.
+`@FlowUp var deeplink: (URL) -> Void` in an `EnvironmentValues`
+extension in the layer, where the `@Entry` values are, declares a typed
+flow. `.collectFlow(\.deeplink)` goes on the accumulator at the top of
+the subtree, `.onFlow(\.deeplink) { … }` on each listener, and
+`@Environment(\.deeplink)` hands any node below a real closure that
+calls every registered listener. It is scoped to the subtree under its
+accumulator. Unmounting unregisters, and nothing leaks. One accumulator
+at the app root that every event of the app goes through is the global
+bus this avoids. Name a flow for what the caller means. A verb is a
+command whose listeners are the implementation (`deeplink`). A
+past-tense clause is a notification that something already happened, a
+service's verb (`logoutHappened`) or a change the system made
+(`scenePhaseChanged`). Do not name it after the reaction.
 
-A system event reaches the features the same way. Recognize the case
-by where a modifier's event or data comes from. `.onOpenURL`,
-`.onContinueUserActivity`, and a change of the scene phase come from
-outside the app, so the node that carries such a modifier is a shell,
-and its handling waits on the system. A flow makes the testable core.
-The system's modifier is kept to one line in one place, a modifier at
-the root, below the accumulators, and it only forwards:
+What reaches the app from outside it reaches the features the same
+way, and the rule is general. When the event or the data behind a
+modifier comes from outside the app, the node that carries the modifier
+is a shell, and its handling waits on the system. Recognize the case by
+the source and by nothing else. `.onOpenURL`, `.onContinueUserActivity`,
+and a change of the scene phase are three such sources, and any other
+is treated the same, whether or not a test could fake it some other
+way. A flow makes the testable core. The system's own modifier is kept
+to one line in one place, inside a `ViewModifier` at the root, and it
+only forwards. That modifier is applied before the accumulators in the
+chain, so it sits inside them and can call the flows:
 
 ```swift
 extension EnvironmentValues {
@@ -440,9 +446,11 @@ private struct SystemControls: View {       // stands in for the system
 
 The UI test taps `link`, and the log is what `Library` wrote and
 called. So the handling is tested and the forwarding line is not. A
-listener hears the event for as long as its node is in the graph,
-covered by a pushed screen or sitting in an unselected tab included,
-and unmounting unregisters it. The scene phase as a fact, a cover shown
+listener hears the event for as long as its node is in the graph. That
+includes a node covered by a pushed screen and one in an unselected
+tab. Unmounting unregisters it. A link that launches the app reaches a
+listener in the first screen too, measured from a cold launch. The
+scene phase as a fact, a cover shown
 while the app is inactive, is data a node reads. Only the answer to the
 change goes through the flow. The accumulators at the root are for
 these few events that are the system's and app-wide, not for
