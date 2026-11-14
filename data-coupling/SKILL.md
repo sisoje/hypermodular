@@ -1043,11 +1043,13 @@ and why, where it is broken.
   the same collector and a control below it that calls the flow. A link
   that launches the app reaches the listener too. Where the system
   delivers through a delegate and not a modifier, a tap on a
-  notification, the same form holds. The delegate holds no state. The
-  dependency's `inject` modifier keeps it in a private `@State` and
-  hands it a closure in `body`, and the closure calls the flow. A
-  modifier whose `body` returns `content` untouched does not run, so
-  the modifier applies something, the dependency's contract. A tap
+  notification, the same form holds. The delegate holds no state. A
+  dynamic property in the dependency keeps it in a private `@State`
+  and hands it a closure in `update()`, and the closure calls the
+  flow. The dependency's `inject` wraps the content in a view that
+  declares that property and returns the content unchanged. It is a
+  view because a view modifier whose `body` returns `content`
+  untouched does not run. A tap
   that launches the app comes before the first screen and is not
   delivered in this form. An app that has to open on it keeps the
   response as data in a dynamic property the `App` declares, read in

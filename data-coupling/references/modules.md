@@ -426,8 +426,7 @@ calls. It holds no state. It is handed a closure and calls it, and the
 closure is the flow's.
 
 ```swift
-// The layer. The flow, beside the contract whose closures schedule
-// and cancel.
+// The layer. The flow.
 extension EnvironmentValues {
     @FlowUp var reminderTapped: (String) -> Void
 }
@@ -453,19 +452,30 @@ final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
     }
 }
 
-struct RemindersInjector: ViewModifier {
+// A dynamic property. The delegate, and the flow's closure handed to it.
+struct ReminderTaps: DynamicProperty {
     @State private var delegate = ReminderDelegate()
     @Environment(\.reminderTapped) private var reminderTapped
 
-    func body(content: Content) -> some View {
+    func update() {
         delegate.onResponse = { reminderTapped($0.notification.request.identifier) }
-        return content
-            .environment(\.reminderService, ReminderService(schedule: schedule))
+    }
+}
+
+// The injector is a view that wraps its content and changes nothing.
+struct RemindersInjector<Content: View>: View {
+    private var taps = ReminderTaps()
+    let content: Content
+
+    init(content: Content) { self.content = content }
+
+    var body: some View {
+        content
     }
 }
 
 public extension View {
-    func injectReminders() -> some View { modifier(RemindersInjector()) }
+    func injectReminders() -> some View { RemindersInjector(content: self) }
 }
 
 // The root. The modifier sits inside the collector.
@@ -481,28 +491,29 @@ WindowGroup {
 
 The event flows one way. The system calls the delegate. The delegate
 calls its closure with the whole response. The closure, made in the
-modifier, calls the flow with what the listeners use. A feature
+dynamic property, calls the flow with what the listeners use. A feature
 listens with `.onFlow` and writes or calls there. Its scenario applies
 the same collector and a button below it calls the flow. There is no
 state on the way, no binding, and no `.onChange`.
 
 Six things hold, each measured.
 
-- **The closure is handed over in the modifier's `body`, each time it
-  runs.** The flow's closure changes when a listener registers, so the
-  hand-over is repeated on purpose. It ran nine times before a tap,
-  and the tap reached the listener through the closure handed over
-  last. A dynamic property in the modifier, with the hand-over in its
-  `update()`, behaved the same.
-- **A modifier whose `body` returns `content` untouched does not run.**
-  Its `body` was not called and its `@State` was not made, so the
-  delegate did not exist and nothing was heard. A modifier that only
-  forwards applies something to `content`. This one sets the contract
-  whose closures schedule and cancel.
+- **The closure is handed over in `update()`, each time it runs.**
+  The flow's closure changes when a listener registers, so the
+  hand-over is repeated on purpose. It ran ten times before a tap, and
+  the tap reached the listener through the closure handed over last.
+  The hand-over as a line in a `body` behaved the same.
+- **The injector is a view, since a view modifier whose `body` returns
+  `content` untouched does not run.** In that modifier `body` was not
+  called, `update()` did not run, and the `@State` was not made, so
+  the delegate did not exist and nothing was heard. With any modifier
+  applied to `content` it ran. A view that holds its content and
+  returns it ran as it stands, so the injector changes nothing and
+  needs nothing to set.
 - **A tap with the app running or in the background reaches the
   listener.** Delegate, closure, flow, listener, in that order.
 - **A tap that launches the app is not delivered in this form.** The
-  modifier's `@State` is made with the first screen, and the system
+  delegate is made when the window's content is, and the system
   delivers that tap before then, after the `App`'s first `body`. An
   app that has to open on that tap keeps it as data at the root
   instead. Measured, both parts as two private `@State` of a dynamic
@@ -512,7 +523,7 @@ Six things hold, each measured.
   modifier. Read inside the window's closure it was not shown.
 - **No information is lost.** The delegate hands its closure the whole
   response. Narrowing to what the listeners use is done in the
-  modifier's closure, where the whole response is at hand. The
+  dynamic property's closure, where the whole response is at hand. The
   framework's type stays in the package. A `UNNotificationResponse`
   has no initializer the app may call, so a flow that carried it could
   not be called by a scenario.

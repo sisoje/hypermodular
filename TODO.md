@@ -2595,6 +2595,14 @@
     the text says it. F94's form, the dynamic property the `App`
     declares, stays in `modules.md` as what an app does when it has
     to open on that tap.
+    The same night the owner asked why the injector could not hold
+    the dynamic property and return its content unchanged, and of the
+    contract the agent had made it set, "wtf is this". That contract
+    was invented to make the modifier run and is removed. Probed: a
+    view that holds its content, declares the dynamic property, and
+    returns the content ran as it stands, `update()` ten times before
+    a tap, the tap from the background heard. So the injector is that
+    view, behind the same `injectReminders()`.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
