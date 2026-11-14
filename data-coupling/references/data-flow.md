@@ -94,10 +94,10 @@ way. There is no layer above the network. App-wide state is state in
 the root node, flowing down like any other. So no code is ever outside
 a view and waiting for one. There are no views, only nodes, and
 everything is under the `App`, which is a node in the runtime from the
-first moment. The `App` is also the one struct that is made once per
-launch. Its `init` ran once in every measured launch. So its creation
-is a lifetime, the app's, which no view's creation is, and the app's
-lifecycle is handled there. An event that comes before any screen
+first moment. The `App` struct is still a value that describes that
+node, like any view struct, and its creation is not a lifetime. What
+lives as long as the app is the root node's state, which the runtime
+establishes once. An event that comes before any screen
 exists, a tap on a notification that launches the app, is a write to
 state the `App` keeps, and the screens are a projection of it.
 

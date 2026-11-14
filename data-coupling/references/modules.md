@@ -438,52 +438,55 @@ extension EnvironmentValues {
 }
 
 // How it is constructed, in the dependency's package, the one place
-// that sees UserNotifications. The delegate keeps the whole response.
-@Observable
-public final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
-    var response: UNNotificationResponse?
+// that sees UserNotifications.
 
-    public override init() {
+// Behavior only. The delegate holds a binding and writes through it.
+final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
+    var response: Binding<UNNotificationResponse?> = .constant(nil)
+
+    override init() {
         super.init()
         UNUserNotificationCenter.current().delegate = self
     }
 
-    public func userNotificationCenter(
+    func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        self.response = response
+        self.response.wrappedValue = response
         completionHandler()
     }
 }
 
-struct RemindersInjector: ViewModifier {
-    let delegate: ReminderDelegate
+// The package's one public declaration, a dynamic property the `App`
+// declares. The state and the behavior are two things in it.
+@propertyWrapper
+public struct Reminders: DynamicProperty {
+    @State private var response: UNNotificationResponse?   // the state, whole
+    @State private var delegate = ReminderDelegate()       // the behavior
 
-    func body(content: Content) -> some View {
-        content.environment(\.reminderService, ReminderService(
-            tappedReminder: delegate.response?.notification.request.identifier
-        ))
+    public init() {}
+
+    public func update() {
+        delegate.response = $response
+    }
+
+    public var wrappedValue: ReminderService {
+        ReminderService(tappedReminder: response?.notification.request.identifier)
     }
 }
 
-public extension View {
-    func injectReminders(_ delegate: ReminderDelegate) -> some View {
-        modifier(RemindersInjector(delegate: delegate))
-    }
-}
-
-// The root keeps the delegate and applies the modifier.
+// The root declares it and sets the contract with the scene's modifier.
 @main
 struct GardenApp: App {
-    @State private var reminderDelegate = ReminderDelegate()
+    @Reminders private var reminderService
 
     var body: some Scene {
         WindowGroup {
             PlantList()
-                .injectReminders(reminderDelegate)
         }
+        .environment(\.reminderService, reminderService)
     }
 }
 
@@ -494,64 +497,70 @@ reminderService.tappedReminder
 ```
 
 The data flows one way. The system calls the delegate. The delegate
-stores the response. The modifier reads it and sets the contract's
-value into the environment. A feature reads the fact, and its screen
+writes the response through its binding into the state. The dynamic
+property projects the contract's value from that state, and the root
+sets it into the environment. A feature reads the fact, and its screen
 is computed again when the fact changes. A scenario sets the same
 entry from its own state, `ReminderService(tappedReminder: tapped)`,
 and a button in it writes that state. What a screen builds from the
 fact, the plant it opens, is a value built from an input
 (`data-flow.md`).
 
-Six things hold, each measured.
+Eight things hold, each measured.
 
-- **The delegate is a private `@State` of the `App`, handed to the
-  modifier.** The runtime made it before the `App`'s first `body`,
-  also where that `body` did not read it, and a tap that launched the
-  app reached it. As a plain `let` of the `App` it is made with the
-  `App`, and the tap reached it too. Made in the `@State` of a
-  modifier inside the window, it is assigned too late. The tap that
-  launched the app does not reach it, and a later tap may not either.
-  So the package has a second public declaration, the delegate's
-  class with its `init`, and the `App` keeps the instance without
-  reading it.
+- **The state and the delegate are two private `@State` of one
+  dynamic property that the `App` declares.** The state is plain data.
+  The delegate holds no state, only the binding it writes through. The
+  runtime made both before the first `update()`, `update()` ran before
+  the `App`'s first `body`, and the delegate's callback for a tap that
+  launched the app came after that `body` and before the first screen.
+- **The binding is handed over in `update()`.** That is the first
+  place the state exists. `update()` ran again with each wave of the
+  `App` and assigned the binding again, which changed nothing. A
+  variant that handed it over once delivered later taps the same, so
+  the first binding stays good.
+- **The value is read in the `App`'s `body`, by the scene's own
+  `.environment` modifier.** Read there, a tap that launched the app
+  was shown by the first screen. Read inside the window's closure it
+  was not shown. That write comes after the `App`'s `body` and before
+  the closure has run, so nothing had read the state yet and nothing
+  was computed again, and the closure got the value from before the
+  write. A tap with the app in the background was shown either way.
+- **A view modifier inside the window is too late.** A delegate made
+  there, or handed its binding there, did not deliver the tap that
+  launched the app. So this dependency's public declaration is the
+  dynamic property and not an `inject` view modifier.
 - **The response is kept whole.** No information is lost where a value
-  enters the app. The delegate stores the response the system handed
-  it, not one field of it. The contract carries what features use,
-  since the nodes that consume a contract dictate its members, and the
-  modifier builds each member from the response. When a feature needs
-  the action the user chose or the time of delivery, the contract gets
-  a member and the modifier fills it from the response it already has.
+  enters the app. The state holds the response the system handed over,
+  not one field of it. The contract carries what features use, since
+  the nodes that consume a contract dictate its members, and each
+  member is projected from the response. When a feature needs the
+  action the user chose or the time of delivery, the contract gets a
+  member, projected from the response already held.
 - **The framework's type stays in the package.** UserNotifications
   appears in one package. A `UNNotificationResponse` has no
   initializer the app may call, so a contract that carried it could
   not be set by a scenario.
-- **A feature reads a fact.** It is handed no binding. A binding is
-  for a value the receiver writes, and no feature writes what the
-  system reported. For a tap that launched the app the response was
-  stored before the first screen's `body`, and the first screen
-  showed it from the environment, with no flow, no listener, no
-  closure, and no lifecycle modifier. A later tap replaced the
-  response, the entry was set again, and the screen that read it was
-  computed again.
-- **A flow does not carry it.** Forwarded from the root's modifier
-  into a `@FlowUp` flow, by `.task(id:)` and by `.onChange` over the
-  stored response, a tap with the app in the background reached the
-  listener and the tap that launched the app did not. The forward ran
-  with the closure of the first `body`, when no listener had
-  registered.
+- **A feature reads a fact, and no flow carries it.** No feature is
+  handed a binding, since none writes what the system reported.
+  Forwarded into a `@FlowUp` flow from a root modifier, by
+  `.task(id:)` and by `.onChange`, a tap with the app in the
+  background reached the listener and the tap that launched the app
+  did not, since the forward ran before a listener had registered.
 - **The methods are the completion-handler forms, left on the main
   actor.** The system called them on the main thread in every run, so
-  each stores the response and calls the handler, with no hop and no
+  each writes the response and calls the handler, with no hop and no
   `Task`. The `async` forms, declared `nonisolated`, finished off the
   main thread and the app crashed inside UIKit.
 
-The `App`'s `init` builds, and it does not write `@State`. The `App`
-is made once per launch, so its `init` may build what lives as long as
-the app. A closure made there that wrote the `App`'s `@State` wrote
-nothing, for the tap that launched the app and for a later one. A
-closure made there that wrote an `@Observable` object the `App` keeps
-as a `let` wrote it both times, and so did a closure assigned in the
-`App`'s `body` that wrote the `@State`.
+The `App` struct is a value like any view struct, and its `init` is
+creation, not a lifetime. It builds no class instance and hands over
+no binding. A closure made in the `App`'s `init` that wrote the
+`App`'s `@State` wrote nothing, for the tap that launched the app and
+for a later one. What lives as long as the app is the initial value of
+a private `@State`, of the `App` or of a dynamic property it declares,
+and the runtime builds it once, when the root node's slot is
+established.
 
 A link needs none of this. `.onOpenURL` is SwiftUI's own, and a link
 that launches the app reached a listener in the first screen.

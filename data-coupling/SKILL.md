@@ -196,11 +196,12 @@ source of most broken SwiftUI mental models.
   every wave, so a view's `init` that builds a model object builds one
   every wave. A `Query` built there is built again the same way. What
   has a lifetime is built in one of four places. The handler of an
-  event builds it. The root builds it. The `App` is the one struct
-  made once per launch, so its `init` and its stored properties are
-  where the root builds what lives as long as the app. The runtime
-  builds it, once, as the initial value of a private `@State`, when
-  the slot is established. A Memo builds it, at its first `body` and again when a
+  event builds it. The root builds it. The runtime builds it, once, as
+  the initial value of a private `@State`, when the slot is
+  established. The `App` struct is a value like any view struct. Its
+  `init` is creation too, and what lives as long as the app is the
+  initial value of a private `@State` of the `App` or of a dynamic
+  property it declares. A Memo builds it, at its first `body` and again when a
   dependency changes. The `@State` macro defers the initial value of a
   private `@State`, which avoids an allocation at every creation. It
   does not make creation the start of a lifetime, and state that takes
@@ -220,9 +221,8 @@ source of most broken SwiftUI mental models.
   decides. It is not left to the lifecycle of the view on screen. When
   no action put the node there, as for the first screen at launch, the
   work is the app's own start, and it is started at the app level. The
-  `App` is the root and it is made once per launch, so the lifecycle
-  there is the app's own. The easiest means is used, a `.task` on the
-  node above the stack and the tabs. Nothing above that node removes
+  easiest means is used there, a `.task` on the node above the stack
+  and the tabs. Nothing above that node removes
   it and puts it back, so its `.task` runs once. The forms are in the
   cut section below and in the do-not "A lifecycle modifier starting
   work an action causes".
@@ -496,8 +496,7 @@ owner of the value hands down a binding whose setter stores the value
 and assigns the fetch to a slot the owner holds. `.task` is what is
 left when no action mounted the node, the first screen at launch, and
 it hangs on the node above the stack and the tabs, which does not
-leave. That is the app level. The `App` is made once per launch, so
-its lifecycle is the app's own, and the rule against the lifecycle of
+leave. That is the app level, and the rule against the lifecycle of
 the view on screen is about views that appear again. A first screen
 that reads its list with `@Query` has nothing to load and carries
 none. `.task(id:)` is used only when its id is a value
@@ -821,12 +820,12 @@ test. Data is the abstraction.
   cannot own, for `@Bindable` decomposition, or for per-element
   observation, and even then it stays pure data. A delegate a framework
   requires is a class too, private to the root modifier that owns it.
-  One the system calls at launch, a notification's, is kept in the
-  `App` node's own `@State`, since a modifier's `@State` inside the
-  window is made too late. Where its callback has a value for the app,
-  the class is `@Observable` and keeps that value whole, and nothing
-  else. The dependency's modifier reads it and builds the contract
-  from it, and no feature sees the class
+  It holds no state. Where its callback has a value for the app, it
+  holds a binding to state kept beside it and writes the whole value
+  through it, so the state and the behavior stay two things. One the
+  system calls at launch, a notification's, is a private `@State` of
+  a dynamic property the `App` declares, since a modifier's `@State`
+  inside the window is made too late, and no feature sees the class
   (`references/modules.md`). `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
@@ -1048,10 +1047,14 @@ and why, where it is broken.
   delivers through a delegate and not a modifier, a tap on a
   notification, no flow carries it. It is a dependency like any
   other, in its two parts. Its capabilities are a contract in the
-  layer, and a feature reads a fact from it. Its construction is the
-  package's `inject` modifier, which builds the contract's value from
-  a delegate that keeps the system's whole response. The `App` keeps
-  that delegate in its own `@State` and hands it to the modifier. The
+  layer, and a feature reads a fact from it. Its construction is a
+  dynamic property the package exposes and the `App` declares. In it
+  the system's whole response is a private `@State`, the delegate is
+  another and holds only a binding to the first, handed over in
+  `update()`, and the contract's value is projected from the state.
+  The root sets that value with the scene's own `.environment`
+  modifier, since a read inside the window's closure does not show a
+  tap that launched the app. The
   `App` is a
   node and is there from the first moment, so a tap that launches the
   app is a write of state like any other, and nothing waits for a

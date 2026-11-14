@@ -2527,6 +2527,46 @@
     package, for the modifier to project from. The delegate's class
     is the package's second public declaration, since the instance
     is made in time only as the `App`'s own stored property.
+  - **F94, the delegate holds a binding, the state is beside it, and
+    the `App`'s `init` is creation.** F93's form had the delegate
+    hold the response. The owner, 2026-11-14 and 15: "you broke the
+    basic rule - you coupled state and behavior - never do that,
+    there is no reason to do that", "ReminderDelegate needs to hold
+    Binding to the state thats it", and of the agent's forms that
+    built the delegate as a `let` of the `App` or wired it in the
+    `App`'s `init`, "you are conflating the ap struct with the real
+    objet and messing with init lifecycle". So F92's sentences that
+    the `App` is "the one struct made once per launch" and that its
+    `init` and stored properties may build what lives as long as the
+    app are withdrawn from the skill, `AGENTS.md`, and `data-flow.md`.
+    The agent had read "keep in ming that app has init" as permission.
+    F92's other half stands, the launch load keeps its `.task` at the
+    app level. Of a dynamic property the agent sketched, the owner:
+    "can you probe that dynamic property it looks ugly and suspicios,
+    you are reassigning the binding is that ok?", then, on moving the
+    state out of it, "keep state in dynproperty". Probed with the
+    scratch app, each with a tap that launched the app and a tap with
+    the app in the background. The dynamic property's two `@State`
+    were made before its first `update()`, `update()` ran before the
+    `App`'s first `body`, and the delegate's callback came after that
+    `body` and before the first screen. `update()` ran two times by
+    the first screen and three after the second tap, assigning the
+    binding each time. A variant that assigned it once delivered the
+    later tap too. With the value read inside the window's closure
+    the tap that launched the app was not shown, in the dynamic
+    property and with a plain `@State` of the `App` alike, and the
+    tap from the background was. With the value read in the `App`'s
+    `body`, by a `let` before the `WindowGroup` or by the scene's own
+    `.environment` modifier, both were shown. Read in a child through
+    a binding, both were shown and the `App`'s `body` did not run
+    again. A binding handed over by a view modifier inside the window
+    did not deliver the tap that launched the app. `modules.md` gives
+    the form: the state and the delegate as two private `@State` of
+    a dynamic property the package exposes, the hand-over in
+    `update()`, the contract projected from the state, the root
+    setting it with the scene's modifier. The package's public
+    declaration is then the dynamic property and not an `inject`
+    view modifier, the one departure, since the modifier is too late.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
