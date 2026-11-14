@@ -2383,6 +2383,26 @@
     what belongs in `SKILL.md`, moved to a reference and not cut. It
     also noted that Diagram 2, which the map skill calls what the
     method is for, is the one diagram the checker does not read.
+    The owner, of the review: "i have no time to read ask astra to
+    read". Astra at high effort read it against the standing rulings,
+    listed for it as settled. Of the 32 contradictions it found 18
+    ruled, 4 already fixed, and 10 to fix. Five of the ten are
+    wording that follows from a ruling and are fixed. "One scenario
+    per core" is now a core with its scenarios, a stub that answers
+    differently being another one. The query's proof is no longer
+    called the integration test of a cylinder it does not have. The
+    README says a label carries the outbound contract. In the
+    swift-core-flow skill a value assertion no longer names a model's
+    title (F88), and `dismiss` in the log proves the node asked, not
+    that the sheet closed (F71). Three of the ten are F67's open
+    items and are left, the by-hand cut and own-state writes, the
+    `loop` assertion, and furniture with a callback. Two are the
+    owner's slogans and are left, "cannot rot" and "nothing depends
+    on where a map sits". Of the restore list it said no to six,
+    since each reopens a ruling, already to one, and do to two, a
+    label line for a flow a node listens to, which F85 had left
+    without one as the agent's default, and an app whose spec the
+    skills did not write, which is the standing "Next" below.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

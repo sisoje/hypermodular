@@ -54,7 +54,8 @@ flow beside it, and the app's coupling and dependencies in
 
 **1. Structure tree.** What is it made of? Solid arrows are data flow.
 The parent hands the child facts, bindings, and callbacks. A node's
-label carries its whole contract, one `·`-bulleted line per capability.
+label carries its whole outbound contract, one `·`-bulleted line per
+capability.
 `· @Query` materializes a native source of truth, `· dbService.deleteBook()`
 calls. The name stays the first line, whatever the renderer does.
 

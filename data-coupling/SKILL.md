@@ -580,9 +580,9 @@ The evidence block is the same either way.
   gets a plain test with literals; so does a transformer of bindings,
   driven by bindings over local variables. A sort or a filter the store can
   perform is the query's job, in the shell's `QueryView`, proven at the
-  shell with a seeded in-memory container, the one integration test per
-  cylinder; the hosted scenario still proves the core reacts to the sort
-  state.
+  shell with a seeded in-memory container, an integration test of the
+  query the node wrote; the hosted scenario still proves the core
+  reacts to the sort state.
 - **A test proves what the app wrote, not what Apple's framework
   promises.** That a saved model is on disk after the app is closed and
   opened again, that the context saves on its own, and that `@Query`
@@ -600,8 +600,9 @@ The evidence block is the same either way.
   on disk.
 - **A UI test here is a unit test, the unit being one core.** A second,
   test-only `@main` renders one scenario named at launch and nothing
-  else of the app. One scenario per core, its givens as parameters, and
-  the same scenario is the preview and the launch target. Where a
+  else of the app. A core has its scenarios. Supplied data is a
+  parameter of one, a stub that answers differently is another
+  scenario, and a scenario is also the preview and the launch target. Where a
   hand-written core sits under a shell that carries `@Shell`, the
   scenario is owed to the shell's generated `Core`, the one the
   evidence blocks are proven on, and it drives the hand-written core

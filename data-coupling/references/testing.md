@@ -172,7 +172,8 @@ time, designed once.
   real. At the edge, every boundary event enters the log instead of
   crossing into an effect. Nothing is behind the boundaries, so no side
   effect exists beyond them.
-- **The granularity is the shell/core cut.** One scenario per core.
+- **The granularity is the shell/core cut.** A core has its
+  scenarios, and no scenario spans two cores.
   A scenario is a file of its own beside its view, and the `#Preview`
   that shows it is in the view's file. A core exists wherever the I/O
   is. A screen with one
