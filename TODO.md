@@ -2648,6 +2648,34 @@
     four. The owner: "this is hell". None of it is in the skill. The
     form is the simple injector, and the text says it does not
     deliver a tap that launches the app.
+  - **F96, the delegate on the `App` feeds a stream, and a task that
+    runs forever emits on the flow.** The owner, 2026-11-15: "we need
+    just that version and to mode delegate on top of app, and pass
+    stream down to wmiter via task that runs forvere", after "if we
+    can kindow suspend delegate from emiting until someone unsuspend
+    it?" and "combination of AsyncStream and flowup?". The agent had
+    told him a check for listeners was needed, and he, "you are
+    wrong, "only if the flow has listeners" is wrong worry". He was
+    right. Measured with the scratch app: the delegate as a private
+    `@State` of the `App` yielding into an `AsyncStream`, the stream
+    passed to the injector, a plain `.task` there reading it and
+    calling a closure that `body` hands over on every pass. A tap
+    that launched the app was heard by the listener, two of two, and
+    a tap from the background, two of two. The order at launch was
+    the delegate's callback, the modifier's `body`, the task
+    starting, one more `body`, the task emitting, the listener
+    called. The agent's own wrong prediction came from the run where
+    the same hand-over was driven by `.task(id:)` over state and no
+    stream, which emitted three passes before the listener
+    registered. With the stream the read is a suspension and the
+    emission came one pass later, after the listener. This is a
+    measured order and not a documented one. `modules.md` gives the
+    form and its eight facts. `UNNotificationResponse` is not
+    `Sendable`, the compiler refused to yield it, so it rides in a
+    box the package declares. F95's injector with the delegate inside
+    the window, which did not deliver the launch tap, is replaced.
+    Not measured: every listener going away and coming back, and a
+    tap on a banner with the app in the foreground.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

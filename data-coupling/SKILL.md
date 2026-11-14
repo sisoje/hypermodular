@@ -820,11 +820,12 @@ test. Data is the abstraction.
   cannot own, for `@Bindable` decomposition, or for per-element
   observation, and even then it stays pure data. A delegate a framework
   requires is a class too, private to the root modifier that owns it.
-  It holds no state. It is handed a closure and calls it with the
-  whole value the system gave, and the closure is a flow's. Where
-  there is state to write, it holds a binding to state kept beside
-  it, so the state and the behavior stay two things. No feature sees
-  the class (`references/modules.md`). `deinit` is the one
+  It holds no state. It yields the whole value the system gave into
+  a stream it offers, or calls a closure it was handed. Where there
+  is state to write, it holds a binding to state kept beside it, so
+  the state and the behavior stay two things. One the system calls at
+  launch, a notification's, is a private `@State` of the `App`. No
+  feature sees the class (`references/modules.md`). `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
 - **A dependency is a package under `Dependencies/`.** Every
@@ -1043,19 +1044,16 @@ and why, where it is broken.
   the same collector and a control below it that calls the flow. A link
   that launches the app reaches the listener too. Where the system
   delivers through a delegate and not a modifier, a tap on a
-  notification, the same form holds. The delegate holds no state. The
-  dependency's `inject` modifier keeps it in a private `@State` and
-  hands it a closure in `body`, and the closure calls the flow. A
-  view modifier whose `body` returns `content` untouched does not
-  run, so where the modifier sets nothing it applies one line that
-  shows nothing, `content.background { Color.clear }`. The collector
-  is applied at the root, after that modifier, and not inside the
-  modifier's `body`, since a modifier reads the flow from above
-  itself. A tap
-  that launches the app comes before the first screen and is not
-  delivered in this form. An app that has to open on it keeps the
-  response as data in a dynamic property the `App` declares, read in
-  the `App`'s `body` (`references/modules.md`). The
+  notification, the same form holds, with one piece more. The
+  delegate is a private `@State` of the `App`, the one place where it
+  exists in time for a tap that launches the app. It keeps no value.
+  It yields the system's whole response into an `AsyncStream`, where
+  the tap waits until it is read. The `App` passes the stream to the
+  dependency's `inject` modifier, whose `.task` reads it for as long
+  as the app runs and calls a closure that `body` hands over on every
+  pass, and that closure calls the flow. So a tap that launches the
+  app reaches the listener too. The collector is applied at the root,
+  after that modifier (`references/modules.md`). The
   `App` is a
   node and is there from the first moment, so a tap that launches the
   app is a write of state like any other, and nothing waits for a

@@ -420,10 +420,12 @@ In a package the declaration is `@FlowUp public var`, in an extension
 that is not itself marked `public`.
 
 Where the system delivers through a delegate and not through a
-modifier, a tap on a notification, the same form holds. A delegate is
-the framework's older form, an object the app registers and the system
-calls. It holds no state. It is handed a closure and calls it, and the
-closure is the flow's.
+modifier, a tap on a notification, the same form holds, with one piece
+more. A delegate is the framework's older form, an object the app
+registers and the system calls. It is kept by the `App`, since that is
+the one place where it exists in time for a tap that launches the app.
+It yields what the system hands it into a stream, and a task in the
+dependency's modifier reads the stream and emits on the flow.
 
 ```swift
 // The layer. The flow.
@@ -433,46 +435,72 @@ extension EnvironmentValues {
 
 // The dependency's package, the one place that sees UserNotifications.
 
-// Behavior only. The delegate calls the closure it was handed.
-final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
-    var onResponse: (UNNotificationResponse) -> Void = { _ in }
+// The whole response, in a box, since the framework's type is not
+// `Sendable` and a stream carries only what is.
+public struct ReminderTap: @unchecked Sendable {
+    let response: UNNotificationResponse
+}
 
-    override init() {
+// The delegate. It yields into the stream and keeps no value.
+public final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
+    public let taps: AsyncStream<ReminderTap>
+    private let continuation: AsyncStream<ReminderTap>.Continuation
+
+    public override init() {
+        (taps, continuation) = AsyncStream.makeStream()
         super.init()
         UNUserNotificationCenter.current().delegate = self
     }
 
-    func userNotificationCenter(
+    public func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        onResponse(response)
+        continuation.yield(ReminderTap(response: response))
         completionHandler()
     }
 }
 
-// The injector. It keeps the delegate and hands it the flow's closure.
-// The clear background is there so that the modifier runs.
+// Behavior only. The closure the task calls, replaced on every pass.
+final class ReminderEmitter {
+    var emit: (ReminderTap) -> Void = { _ in }
+}
+
+// The injector. Its task runs for as long as the app does.
 struct RemindersInjector: ViewModifier {
-    @State private var delegate = ReminderDelegate()
+    let taps: AsyncStream<ReminderTap>
     @Environment(\.reminderTapped) private var reminderTapped
+    @State private var emitter = ReminderEmitter()
 
     func body(content: Content) -> some View {
-        delegate.onResponse = { reminderTapped($0.notification.request.identifier) }
-        return content.background { Color.clear }
+        emitter.emit = { reminderTapped($0.response.notification.request.identifier) }
+        return content.task {
+            for await tap in taps {
+                emitter.emit(tap)
+            }
+        }
     }
 }
 
 public extension View {
-    func injectReminders() -> some View { modifier(RemindersInjector()) }
+    func injectReminders(_ taps: AsyncStream<ReminderTap>) -> some View {
+        modifier(RemindersInjector(taps: taps))
+    }
 }
 
-// The root. The modifier sits inside the collector.
-WindowGroup {
-    PlantList()
-        .injectReminders()
-        .collectFlow(\.reminderTapped)
+// The root. The `App` keeps the delegate and passes its stream down.
+@main
+struct GardenApp: App {
+    @State private var reminderDelegate = ReminderDelegate()
+
+    var body: some Scene {
+        WindowGroup {
+            PlantList()
+                .injectReminders(reminderDelegate.taps)
+                .collectFlow(\.reminderTapped)
+        }
+    }
 }
 
 // A feature. It listens, and writes its own state.
@@ -480,66 +508,71 @@ WindowGroup {
 ```
 
 The event flows one way. The system calls the delegate. The delegate
-calls its closure with the whole response. The closure, made in the
-modifier, calls the flow with what the listeners use. A feature
-listens with `.onFlow` and writes or calls there. Its scenario applies
-the same collector and a button below it calls the flow. There is no
-state on the way, no binding, and no `.onChange`.
+yields the whole response into the stream, where it waits until it is
+read. The modifier's task reads it and calls the emitter's closure,
+which calls the flow with what the listeners use. A feature listens
+with `.onFlow` and writes or calls there. Its scenario applies the same
+collector and a button below it calls the flow. There is no state on
+the way, no binding, and no `.onChange`.
 
 Eight things hold, each measured.
 
+- **A tap that launches the app reaches the listener, and so does a
+  tap with the app in the background.** Two of two each. At launch the
+  order was the delegate's callback, the modifier's first `body`, the
+  task starting, one more `body`, the task emitting, the listener
+  called.
+- **The delegate is a private `@State` of the `App`.** The runtime
+  made it before the `App`'s first `body`, and the system's callback
+  for a tap that launched the app came after that `body` and before
+  the first screen. A delegate made in a view modifier inside the
+  window is made with the first screen, and that tap was not delivered
+  to it.
+- **The stream keeps the tap until someone reads it.** That is what
+  carries a tap across the time between the system's callback and the
+  first listener. The delegate stores no value of its own.
 - **The closure is handed over in the modifier's `body`, each time it
-  runs.** The flow's closure changes when a listener registers, so the
-  hand-over is repeated on purpose. It ran nine times before a tap,
-  and the tap reached the listener through the closure handed over
-  last. No dynamic property is needed. One that holds the delegate and
-  hands the closure over in its `update()` behaved the same.
-- **A view modifier whose `body` returns `content` untouched does not
-  run.** In that modifier `body` was not called, `update()` did not
-  run, and the `@State` was not made, so the delegate did not exist
-  and nothing was heard. `Group { content }`,
-  `content.modifier(EmptyModifier())`, and
-  `content.background { EmptyView() }` did not run either. With
-  `content.background { Color.clear }` it ran, and so it did with
-  `content.transformEnvironment(\.self) { _ in }` and
-  `content.opacity(1)`. So the injector applies the clear background,
-  which shows nothing, and a modifier that already sets a contract
-  needs no such line. A view that holds its content and returns it
-  also ran as it stands.
+  runs.** The flow's closure changes when a listener registers, and
+  the task calls the one handed over last. A task that read the flow's
+  closure once and kept it emitted to nobody, from a cold launch and
+  from the background alike, four of four. No check for listeners is
+  needed. One was tried, a `.task(id:)` that starts only when the flow
+  has a listener, and it was heard too.
+- **Without the stream the first tap is lost.** The response kept as
+  state at the `App` and forwarded by `.task(id:)`, by `.onChange`, or
+  through the closure handed over last was emitted before the listener
+  had registered. The stream's read is a suspension, and by the time
+  it returned the listener was there.
 - **The collector is applied at the root, after the modifier, and not
   inside the modifier's `body`.** With `.collectFlow` applied inside
   the same modifier's `body`, the modifier ran and the delegate got
   the tap, and no listener heard it. A modifier reads the flow from
   above itself, and a collector serves what is below it.
-- **A task that reads the closure once does not replace the
-  hand-over.** With the delegate feeding an `AsyncStream` and a plain
-  `.task` in the modifier reading it and calling the flow, no tap was
-  heard, from the background or from a cold launch, since the task
-  kept the closure of its first pass. The hand-over in `body` gives
-  the delegate the current closure on every pass and needs no check
-  for listeners.
-- **A tap with the app running or in the background reaches the
-  listener.** Delegate, closure, flow, listener, in that order.
-- **A tap that launches the app is not delivered in this form.** The
-  delegate is made when the window's content is, and the system
-  delivers that tap before then, after the `App`'s first `body`. An
-  app that has to open on that tap keeps it as data at the root
-  instead. Measured, both parts as two private `@State` of a dynamic
-  property the `App` declares, the whole response and a delegate
-  holding a binding to it, handed over in `update()`. The value is
-  then read in the `App`'s `body` by the scene's own `.environment`
-  modifier. Read inside the window's closure it was not shown.
-- **No information is lost.** The delegate hands its closure the whole
-  response. Narrowing to what the listeners use is done in the
-  modifier's closure, where the whole response is at hand. The
-  framework's type stays in the package. A `UNNotificationResponse`
-  has no initializer the app may call, so a flow that carried it could
-  not be called by a scenario.
+- **A view modifier whose `body` returns `content` untouched does not
+  run.** Its `body` was not called and its `@State` was not made.
+  `Group { content }`, `content.modifier(EmptyModifier())`, and
+  `content.background { EmptyView() }` did not run either.
+  `content.background { Color.clear }` did. This modifier applies its
+  task and runs.
 - **The methods are the completion-handler forms, left on the main
   actor.** The system called them on the main thread in every run, so
-  each calls the closure and then the handler, with no hop and no
-  `Task`. The `async` forms, declared `nonisolated`, finished off the
-  main thread and the app crashed inside UIKit.
+  each yields and then calls the handler, with no hop and no `Task`.
+  The `async` forms, declared `nonisolated`, finished off the main
+  thread and the app crashed inside UIKit.
+
+No information is lost. The stream carries the whole response, and
+narrowing to what the listeners use is done in the emitter's closure.
+The framework's type stays in the package, and the `App` holds the
+delegate and its stream without naming it. A `UNNotificationResponse`
+has no initializer the app may call, so a flow that carried it could
+not be called by a scenario.
+
+The same tap as a value was measured too, for an app that wants no
+flow. The whole response and a delegate holding a binding to it are
+two private `@State` of a dynamic property the `App` declares, the
+binding handed over in `update()`. The value is read in the `App`'s
+`body` by the scene's own `.environment` modifier. Read inside the
+window's closure, a tap that launched the app was not shown.
 
 The `App` struct is a value like any view struct, and its `init` is
 creation, not a lifetime. It builds no class instance and hands over

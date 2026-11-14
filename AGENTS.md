@@ -160,8 +160,9 @@ subgraph), no emoji, no status marks.
   the input are repairs. A struct's creation is not a lifetime, so a
   view's `init` builds no class instance and no query. The `App`
   struct is a value like any view struct, and its `init` is creation
-  too. A framework delegate holds no state. It calls a closure it was
-  handed, a flow's.
+  too. A framework delegate holds no state. It yields what the system
+  hands it into a stream, and a task in the dependency's modifier
+  emits it on a flow.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. Every dependency has two parts. How it
   is constructed is the app's knowledge, the inputs the root supplies.
