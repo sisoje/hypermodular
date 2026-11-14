@@ -464,15 +464,19 @@ struct RemindersInjector: ViewModifier {
     }
 }
 
+// The package's one public declaration. It applies the modifier and
+// then the collector, so the modifier sits inside the collector.
 public extension View {
-    func injectReminders() -> some View { modifier(RemindersInjector()) }
+    func injectReminders() -> some View {
+        modifier(RemindersInjector())
+            .collectFlow(\.reminderTapped)
+    }
 }
 
-// The root. The modifier sits inside the collector.
+// The root.
 WindowGroup {
     PlantList()
         .injectReminders()
-        .collectFlow(\.reminderTapped)
 }
 
 // A feature. It listens, and writes its own state.
@@ -506,11 +510,14 @@ Seven things hold, each measured.
   which shows nothing, and a modifier that already sets a contract
   needs no such line. A view that holds its content and returns it
   also ran as it stands.
-- **The collector stays outside the injector.** With
-  `.collectFlow` applied inside the same modifier, the modifier ran
-  and the delegate got the tap, and no listener heard it. A modifier
-  reads the flow from above itself, and a collector serves what is
-  below it.
+- **The collector is applied after the modifier, in the package's
+  `inject` function, and not inside the modifier's `body`.** With
+  `.collectFlow` applied inside the same modifier's `body`, the
+  modifier ran and the delegate got the tap, and no listener heard
+  it. A modifier reads the flow from above itself, and a collector
+  serves what is below it. The function applies the same two in the
+  order the root applied them when the tap was heard, so the root
+  writes one call.
 - **A tap with the app running or in the background reaches the
   listener.** Delegate, closure, flow, listener, in that order.
 - **A tap that launches the app is not delivered in this form.** The

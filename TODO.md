@@ -2627,6 +2627,11 @@
     needed. The hand-over as a line in the modifier's `body`, with
     the clear background, ran and delivered the tap from the
     background the same way, and that is the form in the text.
+    Then, "maybe we need to encapsulate .injectReminders()
+    .collectFlow(\.reminderTapped) in injector dependency". Done. The
+    package's `inject` function applies the modifier and then the
+    collector, the same two in the same order as measured, and the
+    root writes one call.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
