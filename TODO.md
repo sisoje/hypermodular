@@ -2022,6 +2022,40 @@
     sentence. Measured under F72 and still the fact behind "a wave
     late", a `body` ran with the new input beside the old value
     before the `.onChange` write landed.
+  - **F81, the system is heard in one place and handled by a core.**
+    The owner, 2026-11-14: "but even for the scene phase, whichever
+    view uses that it is the shell we need to be carefull of how to
+    test it. we may decide to use flowup and make a core that habdles
+    scene change? so our sc enario test can simulate scene change",
+    then "similar is with onopenurl - we can not tes really
+    onopenurl, but we can make a core with flowup and test core by
+    making own modifier and shell will just redirect onurl to the
+    defined flowup?", and "itsthe same underlying problem, the shell
+    modifier that relies on external system, wee need to extract the
+    core so we can test core, only leave onopenurl at one place up in
+    the app hierarchy and scene change also up". Written as one rule.
+    A modifier only the system fires is a shell no test can drive, so
+    it is one line in a modifier at the root that forwards the event
+    into a `@FlowUp` flow, the handling is a core that listens with
+    `.onFlow`, and its scenario emits the flow with a control. In the
+    scenario bullet and the `.onChange` do-not of `SKILL.md`, with
+    the form and its code in `modules.md` beside the paragraph that
+    already taught `@FlowUp`, in step 3 of the ladder, in
+    `notation.md` where a `System` stimulus is named, and as a hard
+    rule in `AGENTS.md`. Two limits are the agent's and not the
+    owner's. The scene phase as a fact is still data a node reads,
+    and the root's accumulators are for the few events that are the
+    system's and app-wide. Measured with swift-core-flow from the
+    local checkout in the scratch app, iOS 27.2 simulator. A listener
+    in a stack's first screen heard an event emitted from a screen
+    pushed over it, and one in the first tab heard an event emitted
+    from the second. With the root modifier in place and no control,
+    pressing Home and coming back left the listener's own log at
+    active, inactive, background, inactive, active, the first of
+    them from launch. That a control calling a flow reaches the
+    listeners was already pinned by the library's own
+    `FlowUpUITests`. The modifier's `.onOpenURL` line compiled and
+    was not fired.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

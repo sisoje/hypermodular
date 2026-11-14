@@ -225,7 +225,9 @@ is a finding, like a label mismatch.
   by several entries. Typed text is one arrow, `User->>AddressForm:
   type 123 in postal code`, and one out-arrow for every write it
   causes, a keystroke at a time. `System->>Node: event` for
-  lifecycle, scene phase, deep links. A call the node makes on
+  lifecycle, scene phase, deep links. A scenario produces a scene
+  phase change or a deep link by calling the flow that the root's
+  modifier forwards the system's event into. A call the node makes on
   appearance, a `.task` over `reminderService.taps()`, is in every
   block of that node after `System->>Node: appears`, since the
   scenario mounts the node each time and the whole log is compared. `Child->>Node: callback payload`

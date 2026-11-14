@@ -132,6 +132,11 @@ subgraph), no emoji, no status marks.
   a closure the root sets starts no `Task` nobody holds either. A task
   a dependency shares between its callers, a token refresh, is held
   in a slot the root owns.
+- **The system is heard in one place.** A modifier only the system
+  fires, `.onOpenURL`, `.onChange(of: scenePhase)`, is a shell no test
+  can drive. It is one line in a modifier at the root that forwards
+  the event into a `@FlowUp` flow. The handling is a core that listens
+  with `.onFlow`, and its scenario emits the flow.
 - **No state seeded from an input.** What is built from an input
   follows the input and is kept while the input does not change. The
   handler of the event that mounts the node, or of the one that

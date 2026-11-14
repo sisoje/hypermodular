@@ -371,6 +371,51 @@ whose listeners are the implementation (`deeplink`). A past-tense
 clause is a notification that a service's verb already happened
 (`logoutHappened`). Do not name it after the reaction.
 
+A system event reaches the features the same way. `.onOpenURL` and a
+change of the scene phase are fired by the system alone, so the
+modifier that hears one is a shell no scenario can drive. It is kept to
+one line in one place, a modifier at the root, below the accumulators,
+and it only forwards:
+
+```swift
+extension EnvironmentValues {
+    @FlowUp var deeplink: (URL) -> Void
+    @FlowUp var scenePhaseChanged: (ScenePhase) -> Void
+}
+
+// the root's, and the only place the system is heard
+struct SystemEvents: ViewModifier {
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.scenePhaseChanged) private var scenePhaseChanged
+    @Environment(\.deeplink) private var deeplink
+
+    func body(content: Content) -> some View {
+        content
+            .onOpenURL { deeplink($0) }
+            .onChange(of: scenePhase) { _, phase in
+                scenePhaseChanged(phase)
+            }
+    }
+}
+
+Landing()
+    .modifier(SystemEvents())
+    .collectFlow(\.deeplink)
+    .collectFlow(\.scenePhaseChanged)
+```
+
+What the app does about the event is a core, a node below that listens
+with `.onFlow(\.scenePhaseChanged) { phase in … }` and writes or calls
+in the closure. Its scenario stands in for the system with a control
+that calls the flow, so the handling is tested and the forwarding line
+is not. A listener hears the event for as long as its node is in the
+graph, covered by a pushed screen or sitting in an unselected tab
+included, and unmounting unregisters it. The scene phase as a fact, a
+cover shown while the app is inactive, is data a node reads. Only the
+answer to the change goes through the flow. The accumulators at the
+root are for these few events that are the system's and app-wide, not
+for everything.
+
 | OOP dependency injection | dependency flow |
 |---|---|
 | assemble the graph before runtime | values flow at runtime, continuously |

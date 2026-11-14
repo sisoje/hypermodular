@@ -542,9 +542,11 @@ The fixes, in order of preference:
    runtime. It knows who mutates what, and it intercepts the write
    where it is made. `.onChange` on a value the app writes is one
    render late and cannot tell who wrote it or why.
-3. **Only then `.onChange`**, for a single, terminal reaction to a value
-   the app's code does not control, one the system supplies, the scene
-   phase. A value the app writes has an action behind it, and a
+3. **Only then `.onChange`**, for a value the app's code does not
+   control, one the system supplies, the scene phase. It sits in one
+   modifier at the root that forwards the change into a flow, and the
+   features handle the flow (`modules.md`). A value the app writes has
+   an action behind it, and a
    scroll-to, a haptic, an analytics call, or the dismissal of a sheet
    rides that write, as step 2 says. One hop, and no second
    `.onChange` listening to what the first wrote. A

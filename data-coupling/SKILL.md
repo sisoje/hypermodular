@@ -557,7 +557,18 @@ either way.
   real `@State`, hands the core logged bindings and closures, sets its
   contracts with `.environment(...)`, and is driven with real input in
   a UI test. A `System` stimulus is the scenario's to produce, a
-  control that feeds the stream or flips the value the system would. The real runtime runs: identity, environment, `@State`,
+  control that feeds the stream or flips the value the system would. A
+  modifier that only the system fires, `.onOpenURL`,
+  `.onChange(of: scenePhase)`, is a shell that no test can drive. So
+  it is one line in one place, a modifier at the root, and all it does
+  is forward the event into a flow declared with `@FlowUp`. What the
+  app does about the event is a core below, a node that listens with
+  `.onFlow`, and its scenario emits the flow with a control. The
+  handling is tested and the one forwarding line is not, since that
+  Apple's modifier fires is the framework's promise. No feature
+  carries `.onOpenURL`, and none answers `@Environment(\.scenePhase)`
+  with `.onChange`. The form is in `references/modules.md`. The real
+  runtime runs: identity, environment, `@State`,
   `.task`. Whether an action is a method or an inline call does not
   matter; the input fires it. Constructing a core in a unit bundle and
   calling a method sees only the `@Entry` defaults, because
@@ -886,9 +897,10 @@ and why, where it is broken.
   them, where the second observes what the first wrote, is the worst
   form. One keystroke, three waves, and the transition lives in no
   node. Derive instead of store. Do the whole transition in one
-  boundary event. `.onChange` is what is left for a single terminal
-  reaction to a value the app's code does not control, the scene
-  phase.
+  boundary event. `.onChange` is what is left for a value the app's
+  code does not control, the scene phase, and it sits in one modifier
+  at the root that forwards the change into a flow. Features handle
+  the flow.
 - **State seeded from an input.** Seeded means given a first value
   that is taken from an input, at creation, `_doubler =
   State(wrappedValue: Doubler(seed: seed))` in an `init`, or the same
