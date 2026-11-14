@@ -2428,6 +2428,8 @@
     first `body`, then the content's. So a closure assigned in the
     `App`'s `body` is in place for a notification's tap and is not
     yet in place for `didFinishLaunching`, where a load counted 0.
+    The `App`'s `init` ran once in each run, and its `body` once at
+    launch and once more after its state was written.
     Not decided, what starts a first screen's load at launch in place
     of the `.task` the skill still gives it, since before the `App`'s
     first `body` its `@State` cannot be written.
