@@ -167,6 +167,7 @@ that node calls `navService`.
   `dep` named on a label is a cylinder in Diagram 3. Apple's sealed
   actions are calls with no dependency, `· dismiss()`, `· openURL()`:
   Apple sets them, so no cylinder, and they log under their own name.
+  A flow the node calls, `· deeplink()`, is written the same way.
   The lines are the node's entire outbound relationship with the world.
   A name-only label receives everything and calls nothing.
 - **A node is a collapsed subtree.** Rows, buttons, and design-system

@@ -45,6 +45,9 @@ code: FocusField: label '· @FocusState' but FocusField.swift has no FocusState
 code: AddBookField: AddBookField.swift calls bookStore.upsert() with no line on the label
 code: BookList: @AppStorage below the root in BookList.swift (F32: the root owns the keys, a feature receives a binding)
 code: Furniture (Furniture.swift): on no map, reads dependency bookStore
-code: SaveButton.swift: a Task nobody holds, 'Task {' (F37: assign it to a slot the node holds, or use .task)
+code: SaveButton.swift: a Task nobody holds, 'Task {' (F37: assign it to a slot the node holds)
+code: SaveButton: SaveButton.swift calls deeplink() with no line on the label
+code: Furniture.swift: a lifecycle modifier in a view, '.onAppear { }' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)
+code: Furniture.swift: a lifecycle modifier in a view, '.task(id: 1) { }' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)
 WANT
 diff /tmp/mapcheck-code-want.txt /tmp/mapcheck-code-got.txt && echo "all planted code findings caught, nothing extra" || { echo "FAIL: code findings differ"; exit 1; }

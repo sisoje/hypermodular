@@ -36,7 +36,9 @@ binding, a bare name calls back:
   (`· dbService.deleteBook()`). The parens are the mark. A call is an
   event, and it logs. A sealed action Apple sets, `· dismiss()`,
   `· openURL()`, is a call with no dependency and no cylinder, and it
-  logs under its own name.
+  logs under its own name. A flow the node calls, `· deeplink()`, is
+  written the same way, a call with no cylinder, and the checker
+  reports a flow called in the Swift with no such line.
 - `· <dep>.<value>` lines **read** a let or binding off a dependency
   (`· loginState.isLoggedIn`). Coupling without evidence. Reads do not
   log, and a node whose dotted lines are all reads owes no evidence
@@ -227,7 +229,10 @@ is a finding, like a label mismatch.
   causes, a keystroke at a time. `System->>Node: event` for
   lifecycle, scene phase, deep links. A scenario produces a scene
   phase change or a deep link by calling the flow that the root's
-  modifier forwards the system's event into. A call the node makes on
+  modifier forwards the system's event into. A flow's event reaches a
+  listening node from outside its own tree, so in the listener's
+  block it is a `System` stimulus, whoever emitted it, and listening
+  adds no line to the label. A call the node makes on
   appearance, a `.task` over `reminderService.taps()`, is in every
   block of that node after `System->>Node: appears`, since the
   scenario mounts the node each time and the whole log is compared. `Child->>Node: callback payload`

@@ -1998,6 +1998,23 @@
     that the forwarding modifier of F81 is a dependency package. Not
     consolidated, the action rule's several statements, since each
     carries a fact the others lack.
+  - **F85, the checker knows a flow and a lifecycle modifier.** From
+    the same list. The map skill had no word for `@FlowUp`. By F27,
+    which put Apple's sealed actions on the label as calls with no
+    cylinder, a flow a node calls is written the same way,
+    `· deeplink()`, and `mapcheck.py --sources` now derives it from
+    an environment closure called by name and reports one with no
+    line. A flow's event is a `System` stimulus in the listener's
+    block, whoever emitted it, and listening adds no line. Both are
+    the agent's defaults from F27 and from the three stimulus kinds,
+    not the owner's words. The habits check gained a second warning
+    beside the unheld `Task`, a lifecycle modifier in a view,
+    `.task(id:)`, `.onChange`, `.onAppear`, `.onOpenURL`, or
+    `.onContinueUserActivity` in a file that declares no
+    `ViewModifier`, so the root's forwarding modifier and a plain
+    `.task` pass. The unheld `Task` warning no longer ends "or use
+    .task". Three findings planted in the broken fixture and asserted
+    by `test.sh`, the clean fixture still at zero.
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A

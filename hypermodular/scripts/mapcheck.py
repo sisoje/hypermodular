@@ -44,7 +44,11 @@ the type's body, then compared both ways:
                 (F32); a View on no map that reads a cylinder (warning)
   habits        a rule of the code skill no map can show, as a
                 warning: a Task nobody holds (F37), which is a Task
-                expression not assigned, returned, or awaited
+                expression not assigned, returned, or awaited; and a
+                lifecycle modifier in a view (F77 to F81), which is
+                .task(id:), .onChange, .onAppear, .onOpenURL, or
+                .onContinueUserActivity in a file that declares no
+                ViewModifier. A plain .task is not reported
 
 Usage: mapcheck.py [repo-root] [--write] [--sources DIR ...]   (exit 1 on any error)
 """
@@ -180,6 +184,7 @@ MATERIALIZERS = [("@Query", "@Query"), ("QueryView(", "@Query"), ("@SceneStorage
 
 SKIPPED_DIRS = {".build", "DerivedData", "SourcePackages"}   # build output is never the app's source
 TASK = re.compile(r"\bTask\s*(?:\.detached\s*)?[({]")
+LIFECYCLE = re.compile(r"\.(?:task\s*\(\s*id\s*:|onChange\s*\(|onAppear\b|onOpenURL\b|onContinueUserActivity\b)")
 
 class SwiftType:
     def __init__(self, name, file):
@@ -229,6 +234,8 @@ def facts(t):
         if key in SEALED:
             if re.search(rf"\b{prop}\s*\(", body): f["calls"].add(f"{key}()")
             continue
+        if re.search(rf"(?<![.\w]){prop}\s*\(", body):   # an environment closure called by name, a flow
+            f["calls"].add(f"{key}()")
         for m in re.finditer(rf"\b{prop}\.(\w+)", body):
             if re.match(r"\s*\(", body[m.end():]): f["calls"].add(f"{key}.{m.group(1)}()")
             else: f["reads"].add(f"{key}.{m.group(1)}")
@@ -256,7 +263,12 @@ def check_habits(dirs):
     for d in dirs:
         for p in sorted(Path(d).rglob("*.swift")):
             if any(part.startswith(".") or part in SKIPPED_DIRS for part in p.parts): continue
-            lines = strip_comments(p.read_text()).splitlines()
+            text = strip_comments(p.read_text())
+            lines = text.splitlines()
+            if not re.search(r":\s*ViewModifier\b", text):   # the root's forwarding modifier is the one place for them
+                for ln in lines:
+                    lm = LIFECYCLE.search(ln)
+                    if lm: warn("code", f"{p.name}: a lifecycle modifier in a view, '{ln.strip()[:48]}' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)")
             for i, ln in enumerate(lines):
                 m = TASK.search(ln)
                 if not m: continue
@@ -266,7 +278,7 @@ def check_habits(dirs):
                     before = before if before.endswith("=") else ""
                 discarded = re.search(r"(?:^|[\s({,;])_\s*=$", before)
                 held = (before.endswith("=") and not discarded) or re.search(r"\b(?:return|await)$", before)
-                if not held: warn("code", f"{p.name}: a Task nobody holds, '{ln.strip()[:48]}' (F37: assign it to a slot the node holds, or use .task)")
+                if not held: warn("code", f"{p.name}: a Task nobody holds, '{ln.strip()[:48]}' (F37: assign it to a slot the node holds)")
 
 def check_code(dirs, cyls, treeroots):
     types = read_swift(dirs)

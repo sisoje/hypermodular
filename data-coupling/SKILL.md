@@ -970,7 +970,10 @@ and why, where it is broken.
   the root holds for the life of the app. It hangs on a node that does
   not leave, the one above the stack and the tabs. `.task(id:)` is
   used only when its id is a value the app's code does not control.
-  The method names no use for `.onAppear`. The worked forms are in
+  The method names no use for `.onAppear`. The map skill's
+  `mapcheck.py --sources` warns on `.task(id:)`, `.onChange`,
+  `.onAppear`, and `.onOpenURL` in a view, and leaves a plain `.task`
+  and the root's forwarding modifier alone. The worked forms are in
   `references/shell-core.md`, "Who owns the load".
 - **A modifier fed by the external system, inside a feature.** This is
   the shell and core cut again, for whatever reaches the app from

@@ -32,7 +32,8 @@ authority on how the code looks. There is no build step. The
 deliverable is the doctrine. The one piece of code is
 `hypermodular/scripts/mapcheck.py`, the registry check, the maps alone
 and with `--sources` the maps against the Swift, where it also warns
-on a `Task` nobody holds (`scripts/test.sh` runs its fixtures).
+on a `Task` nobody holds and on a lifecycle modifier in a view
+(`scripts/test.sh` runs its fixtures).
 
 ## The three rules (follow them in any mapped repo)
 
@@ -63,7 +64,7 @@ its own.
 |------|---------|
 | `A --> B` | Data flow: parent hands facts, bindings, and callbacks down. Also root to Dependencies box (setting a value is normal data flow). |
 | `A -->\|cond\| B` | A presence condition: the child exists while the labeled value holds. Arrows on the same deciding value are alternatives, on different values independent. Unlabeled arrows are composition (children coexist). |
-| `Node["Name<br/>· @Query<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: store, scene storage, or focus, which the system owns and the node writes; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder. `· dep.value` reads a let or binding off a dependency and does not log. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and the checker reports a block that does not name it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
+| `Node["Name<br/>· @Query<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: store, scene storage, or focus, which the system owns and the node writes; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder, and so is a flow the node calls, `· deeplink()`. `· dep.value` reads a let or binding off a dependency and does not log. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and the checker reports a block that does not name it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
 | `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, not `swiftData`). |
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top to bottom in the order the root sets them. Derived services list their ingredients, which sit above them. |
 | `A ~~~ B` | Invisible link. Orders the dependency column. |
