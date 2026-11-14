@@ -2567,6 +2567,34 @@
     setting it with the scene's modifier. The package's public
     declaration is then the dynamic property and not an `inject`
     view modifier, the one departure, since the modifier is too late.
+  - **F95, the delegate is handed a closure, and the closure is the
+    flow's.** The owner, 2026-11-15, on F94's form: "this looks to be
+    more natural with flowup", "make some view modifier or something
+    dude dont put dyn prop in app no nneed", "you dont need state or
+    binding in dyn prop, you need a closure that you need to call
+    from the flow", "and dont use onchange", and "this modifier maybe
+    not need to modify nothing, remove this service dud we use flow".
+    `modules.md` now gives that form. The delegate holds no state and
+    calls a closure. The dependency's `inject` view modifier keeps it
+    in a private `@State` and hands it the closure in `body`, and the
+    closure calls a `@FlowUp` flow with what the listeners use. A
+    feature listens with `.onFlow`. The contract with a fact in it is
+    gone. Probed with the scratch app. A modifier whose `body`
+    returned `content` untouched did not run at all, its `body` was
+    not called and its `@State` was not made, twice with a log and
+    once with a print to the console, so "modify nothing" is not
+    literal and the modifier sets the dependency's contract. With the
+    `body` running, the hand-over ran nine times before a tap, since
+    the flow's closure changes as listeners register, and a tap with
+    the app in the background went delegate, closure, flow, listener,
+    in the plain modifier and in a dynamic property inside it alike.
+    A tap that launched the app was not delivered, in both, since the
+    delegate was made after the first screen's `body`. The same was
+    measured with state and `.onChange` in the modifier, two of two.
+    The agent told the owner three times before the form went in and
+    the text says it. F94's form, the dynamic property the `App`
+    declares, stays in `modules.md` as what an app does when it has
+    to open on that tap.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

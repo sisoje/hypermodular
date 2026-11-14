@@ -820,13 +820,11 @@ test. Data is the abstraction.
   cannot own, for `@Bindable` decomposition, or for per-element
   observation, and even then it stays pure data. A delegate a framework
   requires is a class too, private to the root modifier that owns it.
-  It holds no state. Where its callback has a value for the app, it
-  holds a binding to state kept beside it and writes the whole value
-  through it, so the state and the behavior stay two things. One the
-  system calls at launch, a notification's, is a private `@State` of
-  a dynamic property the `App` declares, since a modifier's `@State`
-  inside the window is made too late, and no feature sees the class
-  (`references/modules.md`). `deinit` is the one
+  It holds no state. It is handed a closure and calls it with the
+  whole value the system gave, and the closure is a flow's. Where
+  there is state to write, it holds a binding to state kept beside
+  it, so the state and the behavior stay two things. No feature sees
+  the class (`references/modules.md`). `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
 - **A dependency is a package under `Dependencies/`.** Every
@@ -1045,16 +1043,15 @@ and why, where it is broken.
   the same collector and a control below it that calls the flow. A link
   that launches the app reaches the listener too. Where the system
   delivers through a delegate and not a modifier, a tap on a
-  notification, no flow carries it. It is a dependency like any
-  other, in its two parts. Its capabilities are a contract in the
-  layer, and a feature reads a fact from it. Its construction is a
-  dynamic property the package exposes and the `App` declares. In it
-  the system's whole response is a private `@State`, the delegate is
-  another and holds only a binding to the first, handed over in
-  `update()`, and the contract's value is projected from the state.
-  The root sets that value with the scene's own `.environment`
-  modifier, since a read inside the window's closure does not show a
-  tap that launched the app. The
+  notification, the same form holds. The delegate holds no state. The
+  dependency's `inject` modifier keeps it in a private `@State` and
+  hands it a closure in `body`, and the closure calls the flow. A
+  modifier whose `body` returns `content` untouched does not run, so
+  the modifier applies something, the dependency's contract. A tap
+  that launches the app comes before the first screen and is not
+  delivered in this form. An app that has to open on it keeps the
+  response as data in a dynamic property the `App` declares, read in
+  the `App`'s `body` (`references/modules.md`). The
   `App` is a
   node and is there from the first moment, so a tap that launches the
   app is a write of state like any other, and nothing waits for a
