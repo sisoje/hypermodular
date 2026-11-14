@@ -2075,6 +2075,21 @@
     `AGENTS.md` carries the sentence. The test was run again with a
     brief of that kind, the product, two requirements in the
     product's words, the stack, and what to hand back.
+  - **F83, the principle by its name.** The owner, 2026-11-14: "dude
+    ofcorse, we making rules so any agent need to follow 'functional
+    core, imperative shell' principles". `shell-core.md` had it under
+    "The lineage", Bernhardt, Wlaschin, and Seemann, "Pure logic
+    inside, I/O at the edges", and `SKILL.md` did not say the name.
+    The section "Cut: shell and core" now opens with it, as the one
+    principle every rule serves, and F81's do-not says it is that cut
+    again for the system's modifiers. One row of the older-names
+    table is put back. After Astra's review the agent had rewritten
+    it to say "the core here is not pure, since it calls the
+    closures", which is Astra's stricter use of the word and
+    contradicts the lineage paragraph, where the core decides as a
+    pure function of its inputs and the handed-in closure does the
+    write. The row names functional core, imperative shell again,
+    with the three sources the lineage gives.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

@@ -640,7 +640,7 @@ says so.
 | State drives the node, and a write or a call is the event | a "behavior", that literature's word for a value over time, against an "event", a discrete occurrence. Its behavior is this skill's state, not this skill's closures | Elliott and Hudak 1997 |
 | The network is reactive, so the nodes do not have to be | the distinction between a reactive system and a transformational one. The sentence about the nodes is this method's | Harel and Pnueli 1985 |
 | The action that puts a node in the graph starts the node's work, not `.task` on appearance | the two places an effect can hang, on the transition, as in a Mealy machine, or on entering the state, as in a Moore machine and a statechart's entry action. The sources name both and prefer neither. The choice of the transition is this method's | Mealy 1955; Moore 1956; Harel 1987 |
-| The core decides and calls what it was handed, and the I/O is implemented at the edge | dependency parameterization, behavior handed in as a function, and values as the boundary where data alone crosses. The core here is not pure, since it calls the closures | Wlaschin; Bernhardt 2012 |
+| The core decides as a function of what it was handed, and the I/O is at the edge, in the shell and in the closures handed in | functional core, imperative shell, the impure, pure, impure sandwich shaped as views (`shell-core.md`, "The lineage") | Bernhardt 2012; Wlaschin; Seemann |
 
 ## Where the model came from
 
@@ -664,7 +664,9 @@ says so.
 - Conal Elliott & Paul Hudak, [Functional Reactive Animation](http://conal.net/papers/icfp97/) (ICFP 1997)
 - Andrey Mokhov, Neil Mitchell & Simon Peyton Jones, [Build Systems à la Carte](https://www.microsoft.com/en-us/research/publication/build-systems-la-carte/)
   (ICFP 2018)
-- Gary Bernhardt, [Boundaries](https://www.destroyallsoftware.com/talks/boundaries) (2012)
+- Gary Bernhardt, [Boundaries](https://www.destroyallsoftware.com/talks/boundaries) (2012);
+  Scott Wlaschin, *Moving I/O to the edges of your app: Functional
+  Core, Imperative Shell*; Mark Seemann, [Impureim sandwich](https://blog.ploeh.dk/2020/03/02/impureim-sandwich/)
 - Ian Cooper, [Hustle and Flow](https://www.youtube.com/watch?v=p0bKMuBdpL8) (NDC Porto 2022);
   [Succeeding at Reactive Architecture](https://www.youtube.com/watch?v=YyWKczrfxW4) (NDC London 2023)
 - Ben Moseley & Peter Marks, [Out of the Tar Pit](https://curtclifton.net/papers/MoseleyMarks06a.pdf) (2006)

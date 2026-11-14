@@ -361,8 +361,11 @@ to reach for, so every dependency is named at an initializer or at an
 
 ## Cut: shell and core
 
-The line SwiftUI offers is I/O versus pure transformation, not UI
-versus logic. A view with live wrappers is the shell. `@State` installs
+Every rule in this skill is there so that the code follows one
+principle, functional core, imperative shell. The core decides, as a
+function of what it was handed. The shell is everything that touches
+the runtime's storage or the world outside the app. The line SwiftUI
+offers is I/O versus pure transformation, not UI versus logic. A view with live wrappers is the shell. `@State` installs
 real storage on render, `@Query` talks to a real `ModelContext`,
 `@AppStorage` reads `UserDefaults`. That I/O is fused into the type and
 runs only inside a live render pipeline. The core is the same `body`
@@ -963,7 +966,8 @@ and why, where it is broken.
   used only when its id is a value the app's code does not control.
   The method names no use for `.onAppear`. The worked forms are in
   `references/shell-core.md`, "Who owns the load".
-- **A modifier fed by the external system, inside a feature.**
+- **A modifier fed by the external system, inside a feature.** This
+  is the shell and core cut again, for the system's own modifiers.
   Recognize it by who can make the modifier's closure run. A tap in
   the app runs a `Button`'s closure, so a scenario can drive it. Only
   the system runs the closure of `.onOpenURL`, of
