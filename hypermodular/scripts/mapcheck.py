@@ -442,7 +442,7 @@ def main(root, sources=(), write=False):
             child = nodes.get(src)
             cb = msg.split()[0] if msg.split() else ""
             if src == "Parent":
-                warn(rel, f"{n.name}: in-arrow from 'Parent' — a parent-value change as a stimulus is an open question (TODO); a new value is a new given")
+                warn(rel, f"{n.name}: in-arrow from 'Parent' — a parent's new value is not a stimulus; it is a new given, and the write that changed it is the action")
             elif child is None:
                 err(rel, f"{n.name}: in-arrow from '{src}' — not a node; stimuli are User, System, or a child firing a callback")
             elif not any(kind(c)[0] == "callback" and kind(c)[1] == cb

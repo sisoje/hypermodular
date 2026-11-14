@@ -619,7 +619,7 @@ from the proposal above:
   against the skill's own `Landing` example would be a consistency
   check, not a validation. F74 has since settled the half where the
   node answers by writing its own state, which is a repair and no
-  when. The terminal reaction is what stays open.
+  when, and F79 the other half. `Parent->>Node` is not a stimulus.
 - **The name.** The log is the execution log, the published term. The
   `Evidence:` header stays, since a block declares the evidence and the
   log is what it declares. The appendix table is `SKILL.md`,

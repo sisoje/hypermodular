@@ -43,7 +43,7 @@
     *when*. `mapcheck.py` warns on it, never errors, until ruled.
     Half settled by F74. A reaction that writes the node's own state
     from the new value is the repair of a seeded copy and no when.
-    Open is the terminal reaction alone.
+    The other half closed by F79. `Parent->>Node` is not a stimulus.
   - **Flowchart reserved words.** `end` and the like as node ids,
     untested.
 
@@ -1922,9 +1922,8 @@
     again. The lifecycle bullet says creation first and the screen's
     lifecycle second. The do-not says the method names no use for
     `.onAppear`. "Another tab is left" is "the user comes back from
-    another tab". Not resolved, a subscription in a node that a tap
-    mounts, which the subscription sentence sends to that node's
-    `.task` and F77 to the action.
+    another tab". Left open there and closed by F79, a subscription
+    in a node that a tap mounts.
   - **F78, the rules under their older names.** The owner,
     2026-11-13: "dude why is this so hard to define all these rules?
     boundaries, effects,,, is there some book from data-flow
@@ -1976,6 +1975,39 @@
     is a lineage and not an equivalence. Astra also found that "none
     of the repairs removes the second source of truth" did not fit
     `.id()`, which does follow, and the sentence now says the copy.
+  - **F79, a lifecycle modifier only on a value the app's code does
+    not control.** Astra had been asked four questions the agent
+    called open, and the agent then put the first one to the owner as
+    a choice, the write starting the refetch or `.task(id:)` above
+    the stack, and recommended the second. The owner, 2026-11-14:
+    "dude are you moron?", then "you can use task with id only if id
+    value is not controllable by your code", and "if the id is
+    calcualted by your own data - then why the fuck you need
+    UI-runtime to drive your actions further???" F77 had answered
+    it, and the question was not one to ask. Written as he said it,
+    with the reason, in the task paragraph and the lifecycle do-not
+    of `SKILL.md`, in `AGENTS.md`, and beside the shelf example. The
+    same rule closes what F77 had not reached, without another
+    question. A subscription a mounted node needs is started by the
+    action that mounts it and cleared by the write that ends its
+    interval, through the binding that presents the node, and only
+    the root's, for the life of the app, starts in `.task`.
+    `.onChange` is what is left for a terminal reaction to a value
+    the app's code does not control, the scene phase, so step 3 of
+    the ladder and the `.onChange` do-not now send a haptic, a
+    scroll, and a dismissal to the write. `Parent->>Node` is not a
+    stimulus, since a parent's value changed by a write and the node
+    that handles the write makes the call. `notation.md` says so, the
+    checker's warning says so in place of "open question", and a
+    value the system supplies is a `System` stimulus. Astra's two
+    findings on the rewritten shelf are fixed inside the rule. Launch
+    and the setter go through one function and one slot, so a toggle
+    during the first fetch replaces it and a replaced fetch writes
+    nothing, type-checked with swiftc. And the text says who builds
+    the setter, the node every write of the value passes through, its
+    owner when it is written in more than one place. Not changed,
+    "the first way is the default" in F72, which Astra called
+    unsupported and the owner has not spoken to.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

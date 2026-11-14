@@ -245,10 +245,13 @@ is a finding, like a label mismatch.
   writing its own state, an `.onChange(of:)` that fills a seeded copy
   again, has no when in it either. That write is a repair, and the
   code skill's `data-flow.md`, "A value built from an input", says
-  what replaces it. (Still open is the terminal reaction, a boundary
-  call a node makes on `.onChange(of:)` of a value it does not own.
-  Whether that makes the new value a genuine when is not ruled, and
-  `Parent->>Node` warns rather than errors until it is.)
+  what replaces it. A node does not answer a parent's new value with
+  a call either. The value changed by a write, the write is an action,
+  and the node that handles it makes the call, in its handler or in
+  the setter of the binding it hands down. So `Parent->>Node` is not a
+  stimulus, and the checker warns on it. A value the app's code does
+  not control, one the system supplies, changes as a `System`
+  stimulus.
 - **Arrows out of the node are the *then***. `Node->>target: payload`
   is one entry, `(target, payload)`, in order. The names the test
   asserts are exactly the ordered list of out-arrows, nothing else, and

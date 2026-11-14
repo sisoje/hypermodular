@@ -476,12 +476,20 @@ the value. The owner of the value hands down a binding whose setter
 stores the value and assigns the fetch to a slot the owner holds.
 `.task` is what is left when no action mounted the node, the first
 screen at launch, and it hangs on the node above the stack and the
-tabs, which does not leave. `.task(id:)` is what is left when a value
-changes with no write of the app's behind it, a value the system
-supplies. A subscription sits in a node whose lifetime covers every
-moment its events must be handled, and it starts in that node's
-`.task`, not where the contract's value is built. The root is the
-usual such node, and launch is not an action.
+tabs, which does not leave. `.task(id:)` is used only when its id is
+a value the app's code does not control, one the system supplies. A
+value the app writes has an action behind it, the write. The app
+knows the value changed at the moment it writes it, so it has no use
+for the UI runtime to notice the change and drive what follows. A
+subscription sits in a node whose lifetime covers every moment its
+events must be handled, not where the contract's value is built. One
+that lasts for the life of the app is the root's and starts in its
+`.task`, since launch is not an action. One that a mounted node needs
+is started by the action that mounts the node, assigned to a slot the
+node that handles the action holds, and every write that ends the
+interval clears the slot. The binding that presents the node is where
+that write is caught, since a dismissal the runtime makes is a write
+through it.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a
@@ -871,10 +879,12 @@ and why, where it is broken.
 - **A chain of `.onChange` modifiers** where the second observes what
   the first wrote. One keystroke, three waves, and the transition lives
   in no node. Derive instead of store. Do the whole transition in one
-  boundary event. Use `.onChange` only for a single terminal reaction to
-  a value the node does not own, a scroll, a haptic, dismissing a
-  sheet. An effect on a write to state the node owns rides the setter
-  of the binding it hands down.
+  boundary event. `.onChange` is what is left for a single terminal
+  reaction to a value the app's code does not control, the scene
+  phase. A value the app writes has an action behind it, and the
+  reaction rides that write, in its handler or in the setter of the
+  binding its owner hands down, a haptic when the selection changes, a
+  sheet dismissed when a save returns.
 - **State seeded from an input.** Seeded means given a first value
   that is taken from an input, at creation, `_doubler =
   State(wrappedValue: Doubler(seed: seed))` in an `init`, or the same
@@ -941,8 +951,9 @@ and why, where it is broken.
   reach the runtime's event. `.task` is what is left in two cases, the
   first screen at launch, which no action mounts, and a subscription
   the root holds for the life of the app. It hangs on a node that does
-  not leave, the one above the stack and the tabs. The method names no
-  use for `.onAppear`. The worked forms are in
+  not leave, the one above the stack and the tabs. `.task(id:)` is
+  used only when its id is a value the app's code does not control.
+  The method names no use for `.onAppear`. The worked forms are in
   `references/shell-core.md`, "Who owns the load".
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.

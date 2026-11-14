@@ -492,10 +492,7 @@ struct BookShelfShell: View {
                     get: { sortByAuthor },
                     set: { byAuthor in
                         sortByAuthor = byAuthor   // the write is the action
-                        fetch = Task { [library, $books] in
-                            $books.wrappedValue =
-                                try? await library.fetch(byAuthor)
-                        }
+                        load(byAuthor)
                     }),
                 onDelete: { book in
                     let kept = (books ?? []).filter { $0.id != book.id }
@@ -503,26 +500,41 @@ struct BookShelfShell: View {
                     save = Task { [library] in try? await library.save(kept) }
                 })
         }
-        .task { books = try? await library.fetch(sortByAuthor) }
+        .task { load(sortByAuthor) }   // launch is not an action
+    }
+
+    func load(_ byAuthor: Bool) {
+        fetch = Task { [library, $books] in
+            let loaded = try? await library.fetch(byAuthor)
+            // a replaced fetch writes nothing
+            guard !Task.isCancelled else { return }
+            $books.wrappedValue = loaded
+        }
     }
 }
 ```
 
 No node starts a `Task` it does not hold, and the trigger decides the
 form. The shelf is the first screen at launch. No action mounted it,
-so its first fetch has only the runtime's event, `.task`, which the
-runtime holds and cancels. The `.task` hangs on the shell, above the
-`NavigationStack`. That node does not leave, so the fetch does not run
-again when a screen pushed inside the stack is popped. Hung on the
-shelf inside the stack, it would. The refetch has an action, the
-toggle's write. The shell hands the core a binding whose setter stores
-the sort and assigns the fetch to a slot, so a second toggle replaces
-the first fetch. `.task(id: sortByAuthor)` would refetch on the change
-too, and it would refetch again at every reappearance with the sort
-unchanged. It is what is left for a value that changes with no write
-of the app's behind it, a value the system supplies. Its id is then a
-value that is `Equatable` by nature, a flag, a count, a string, not a
-model made `Equatable` for it.
+so its first fetch has only the runtime's event, `.task`. The `.task`
+hangs on the shell, above the `NavigationStack`. That node does not
+leave, so the fetch does not run again when a screen pushed inside the
+stack is popped. Hung on the shelf inside the stack, it would. The
+refetch has an action, the toggle's write. The shell hands the core a
+binding whose setter stores the sort and starts the fetch. Launch and
+the setter go through one function and one slot, so a toggle during
+the first fetch replaces it, and a replaced fetch writes nothing. The
+setter is built by the node that every write of the value passes
+through. Here that is the shell, since the shelf's toggle is the
+sort's only writer. A value written in more than one place is
+intercepted by its owner. `.task(id:)` is used only when its id is a
+value the app's code does not control, one the system supplies. The
+sort is the app's own data. The app knows it changed when it writes
+it, and has no use for the UI runtime to drive the fetch.
+`.task(id: sortByAuthor)` would refetch on the change too, and again
+at every reappearance with the sort unchanged. Its id is a value that
+is `Equatable` by nature, a flag, a count, a string, not a model made
+`Equatable` for it.
 
 The save is started by an event, a delete, so the shell assigns it. A
 job the user starts with a tap, a save or a download, is

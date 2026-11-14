@@ -541,8 +541,11 @@ The fixes, in order of preference:
    write. `.onChange` on state the node owns is one render late and
    cannot tell what changed or why.
 3. **Only then `.onChange`**, for a single, terminal reaction to a value
-   you do not own: scroll-to, haptic, analytics, dismissing a sheet. One
-   hop, and no second `.onChange` listening to what the first wrote. A
+   the app's code does not control, one the system supplies, the scene
+   phase. A value the app writes has an action behind it, and a
+   scroll-to, a haptic, an analytics call, or the dismissal of a sheet
+   rides that write, as step 2 says. One hop, and no second
+   `.onChange` listening to what the first wrote. A
    reaction that writes the node's own state from an input it was
    handed is not terminal. It is the repair of a seeded copy ("A value
    built from an input", above).

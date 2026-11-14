@@ -2,7 +2,8 @@
 # Regression test for mapcheck.py: the clean fixture (CoreFlowExample's
 # validated maps) must pass with zero errors; the broken fixture must
 # report exactly the fourteen errors planted in it; of its two warnings,
-# the Parent in-arrow is asserted (unruled, so never an error).
+# the Parent in-arrow is asserted (ruled no stimulus by F79; a warning,
+# since a rule may be broken).
 set -e
 cd "$(dirname "$0")"
 echo "clean:"  && python3 mapcheck.py fixtures/clean | tail -1 | grep -q " 0 errors" || { echo "FAIL: clean fixture has errors"; exit 1; }
