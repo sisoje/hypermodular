@@ -436,7 +436,10 @@ load would run again each time. Here the load runs once for each tap,
 a second tap replaces it, and what is loaded is state the list holds
 and decides. The example keeps one fact, the reviews, `nil` while
 they load. A screen that shows a spinner or an error holds those as
-two more fields, written by the same task.
+two more fields, written by the same task. When the tap goes through
+the navigation contract, the node that answers the route is the one
+that mounts the screen. It handles the action, so it starts the load
+and holds it. The caller sent a route and data and holds nothing.
 
 A node that no action mounts has only the runtime's event, `.task`.
 The first screen at launch is the case. There the loading flow
@@ -454,8 +457,10 @@ struct LoadingShelf: View {
     let load: () async throws -> [Book]
 
     var body: some View {
-        List(books, id: \.id) { Text($0.title) }
-            .task { await reload() }
+        NavigationStack {
+            List(books, id: \.id) { Text($0.title) }
+        }
+        .task { await reload() }   // launch is not an action
     }
 
     func reload() async {
@@ -469,12 +474,12 @@ struct LoadingShelf: View {
 }
 ```
 
-The `.task` there hangs on the shelf itself, which fits a shelf with
-nothing pushed over it. Inside a stack or under a tab it would run
-again each time the shelf reappears, so the launch load hangs on the
-node above the stack. The shell below is that node. It starts the
-first fetch, starts the refetch on the toggle's write, and persists
-the delete as a source-of-truth write:
+The `.task` hangs above the stack, on a node that does not leave. Hung
+on a list inside the stack or under a tab, it would run again each
+time the list reappears. The second example is another form of the
+same screen, where a shell above the core holds the load. It starts
+the first fetch, starts the refetch on the toggle's write, and
+persists the delete as a source-of-truth write:
 
 ```swift
 struct BookShelfShell: View {

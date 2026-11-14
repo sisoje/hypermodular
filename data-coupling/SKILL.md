@@ -182,40 +182,43 @@ source of most broken SwiftUI mental models.
   nodes. Node values are created and discarded each wave. Identity is
   structural, type and position among siblings, unless `.id()` overrides
   it. Flipping an `if` is a teardown, not an update.
-- **Lifecycle is an effect of the graph, not of creation.** The
-  struct is a value that describes a node. It is not the view on
-  screen, and taking the one for the other is the object habit. The
-  system is reactive. State changes, the graph recomputes its values,
-  and appearance, disappearance, and `.task` are what the runtime does
-  as a result. So nothing that creates a value starts work, not an
-  `init` and not `body`, and a closure the root builds starts no `Task`
-  that nobody holds when it is called. A value is created every wave
-  and creating it causes nothing. Creating a value builds nothing that
-  has a lifetime either. A class instance has one. It is made once and
-  it stays, and the struct is made every wave, so a view's `init` that
-  builds a model object builds one every wave. A `Query` built there
-  is built again the same way. What has a lifetime is built in one of
-  four places. The handler of an event builds it. The root builds it.
-  The runtime builds it, once, as the initial value of a private
-  `@State`, when the slot is established. A Memo builds it, at its
-  first `body` and again when a dependency changes. The `@State` macro
-  defers the initial value of a private `@State`, which avoids an
-  allocation at every creation. It does not make creation the start of
-  a lifetime, and state that takes its first value from an argument of
-  the view's `init` belongs to the node that supplies the argument.
-  Work is started by the action that causes it, as a task the node
-  holds. The view on screen is the one thing here with a lifecycle. It
-  appears and it goes, and that lifecycle is the runtime's and not the
-  app's. `.task`, `.task(id:)`, and `.onAppear` hang work on its
-  appearance. The view on screen appears again when a screen pushed
-  over it is popped or the user comes back from another tab, and that
-  work runs again. So when the action that put a node in the graph can
-  be determined, a tap that presents or pushes it, what the node needs
-  is done in that action and nowhere else, by the node that handles
-  the action. What is loaded and what is loading is state a node holds
-  and decides. It is not left to the lifecycle of the view on screen.
-  When no action put the node there, as for the first screen at
-  launch, `.task` is what is left.
+- **Lifecycle is an effect of the graph, not of creation.** The struct
+  is a value that describes a node. It is not the view on screen, and
+  taking the one for the other is the object habit. The system is
+  reactive. State changes, the graph recomputes its values, and
+  appearance, disappearance, and `.task` are what the runtime does as a
+  result. So nothing that creates a value starts work, not an `init`
+  and not `body`, and a closure the root builds starts no `Task` that
+  nobody holds when it is called. A value is created every wave and
+  creating it causes nothing.
+- **Creation builds nothing that has a lifetime.** A class instance has
+  a lifetime. It is made once and it stays, and the struct is made
+  every wave, so a view's `init` that builds a model object builds one
+  every wave. A `Query` built there is built again the same way. What
+  has a lifetime is built in one of four places. The handler of an
+  event builds it. The root builds it. The runtime builds it, once, as
+  the initial value of a private `@State`, when the slot is
+  established. A Memo builds it, at its first `body` and again when a
+  dependency changes. The `@State` macro defers the initial value of a
+  private `@State`, which avoids an allocation at every creation. It
+  does not make creation the start of a lifetime, and state that takes
+  its first value from an argument of the view's `init` belongs to the
+  node that supplies the argument.
+- **The action starts the work, not the view on screen.** Work is
+  started by the action that causes it, as a task the node holds. The
+  view on screen is the one thing here with a lifecycle. It appears and
+  it goes, and that lifecycle is the runtime's and not the app's.
+  `.task`, `.task(id:)`, and `.onAppear` hang work on its appearance.
+  The view on screen appears again when a screen pushed over it is
+  popped or the user comes back from another tab, and that work runs
+  again. So when the action that put a node in the graph can be
+  determined, a tap that presents or pushes it, what the node needs is
+  done in that action and nowhere else, by the node that handles the
+  action. What is loaded and what is loading is state a node holds and
+  decides. It is not left to the lifecycle of the view on screen. When
+  no action put the node there, as for the first screen at launch,
+  `.task` is what is left. The forms are in the cut section below and
+  in the do-not "A lifecycle modifier starting work an action causes".
 - **Two kinds of node.** A view is a persisted node, and it is the
   runtime's. The runtime keeps its identity slot and its state across
   waves, re-creates the value each wave over that slot, and calls its

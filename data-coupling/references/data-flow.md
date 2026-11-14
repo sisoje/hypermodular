@@ -212,8 +212,7 @@ something built from the input with no boundary call. Where a load is
 started is another rule (`shell-core.md`, "Who owns the load").
 
 There are two ways to keep one source of truth. The choice between
-them is by who knows how to build the thing, and the first is the
-default.
+them is by who knows how to build the thing.
 
 - **Up. The event builds it.** This is the way when the parent knows
   how to build the thing. The child's `init` runs at every creation,

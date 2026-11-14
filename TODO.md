@@ -1978,6 +1978,26 @@
     sentence. The nearest is that a reasoner has to see that each
     rule is valid and not only follow it, in *Shadows of the Mind*
     (1994).
+  - **F84, the check after F83.** The owner, 2026-11-14: "check if we
+    did not forget something? maybe we overdid something? was all
+    clear and common sense?", and of the list that came back, "again
+    what to do about htis". Done without a ruling, since each follows
+    from one. The lifecycle bullet of `SKILL.md`, 34 lines and six
+    ideas after three passes, is three bullets with the same
+    sentences, that lifecycle is an effect of the graph, that
+    creation builds nothing with a lifetime, and that the action
+    starts the work. `LoadingShelf` in `shell-core.md`, the last
+    example to load from a `.task` on the screen itself, hangs it
+    above the stack. A tap that goes through the navigation contract
+    has its load started by the node that answers the route. "The
+    first is the default" is gone from `data-flow.md`. It was the
+    agent's inference under F72, Astra called it unsupported, and the
+    owner's README ranks neither way. Left as it is, "appearance
+    work" as a reason to cut a node, which is still true of legacy
+    code and of the node at launch. Still the agent's and not ruled,
+    that the forwarding modifier of F81 is a dependency package. Not
+    consolidated, the action rule's several statements, since each
+    carries a fact the others lack.
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A
