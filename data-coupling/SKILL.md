@@ -196,9 +196,11 @@ source of most broken SwiftUI mental models.
   every wave, so a view's `init` that builds a model object builds one
   every wave. A `Query` built there is built again the same way. What
   has a lifetime is built in one of four places. The handler of an
-  event builds it. The root builds it. The runtime builds it, once, as
-  the initial value of a private `@State`, when the slot is
-  established. A Memo builds it, at its first `body` and again when a
+  event builds it. The root builds it. The `App` is the one struct
+  made once per launch, so its `init` and its stored properties are
+  where the root builds what lives as long as the app. The runtime
+  builds it, once, as the initial value of a private `@State`, when
+  the slot is established. A Memo builds it, at its first `body` and again when a
   dependency changes. The `@State` macro defers the initial value of a
   private `@State`, which avoids an allocation at every creation. It
   does not make creation the start of a lifetime, and state that takes
@@ -216,9 +218,14 @@ source of most broken SwiftUI mental models.
   done in that action and nowhere else, by the node that handles the
   action. What is loaded and what is loading is state a node holds and
   decides. It is not left to the lifecycle of the view on screen. When
-  no action put the node there, as for the first screen at launch,
-  `.task` is what is left. The forms are in the cut section below and
-  in the do-not "A lifecycle modifier starting work an action causes".
+  no action put the node there, as for the first screen at launch, the
+  work is the app's own start, and it is started at the app level. The
+  `App` is the root and it is made once per launch, so the lifecycle
+  there is the app's own. The easiest means is used, a `.task` on the
+  node above the stack and the tabs. Nothing above that node removes
+  it and puts it back, so its `.task` runs once. The forms are in the
+  cut section below and in the do-not "A lifecycle modifier starting
+  work an action causes".
 - **Two kinds of node.** A view is a persisted node, and it is the
   runtime's. The runtime keeps its identity slot and its state across
   waves, re-creates the value each wave over that slot, and calls its
@@ -482,8 +489,11 @@ owner of the value hands down a binding whose setter stores the value
 and assigns the fetch to a slot the owner holds. `.task` is what is
 left when no action mounted the node, the first screen at launch, and
 it hangs on the node above the stack and the tabs, which does not
-leave. A first screen that reads its list with `@Query` has nothing to
-load and carries none. `.task(id:)` is used only when its id is a value
+leave. That is the app level. The `App` is made once per launch, so
+its lifecycle is the app's own, and the rule against the lifecycle of
+the view on screen is about views that appear again. A first screen
+that reads its list with `@Query` has nothing to load and carries
+none. `.task(id:)` is used only when its id is a value
 the app's code does not control, one the system supplies, and then in
 the one modifier at the root that forwards the change into a flow, not
 in a feature. A value the app writes has an action behind it, the
@@ -797,7 +807,10 @@ test. Data is the abstraction.
   requires is a class too, private to the root modifier that owns it.
   One the system calls at launch, a notification's, is kept in the
   `App` node's own `@State`, since a modifier's `@State` inside the
-  window is made too late (`references/modules.md`). `deinit` is the one
+  window is made too late. Where its callback has a value for the app,
+  the class is `@Observable` and holds that value and nothing else,
+  written by the callback and read by the screens as data
+  (`references/modules.md`). `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
 - **A dependency is a package under `Dependencies/`.** Every
@@ -981,7 +994,9 @@ and why, where it is broken.
   reach the runtime's event. `.task` is what is left in two cases, the
   first screen at launch, which no action mounts, and a subscription
   the root holds for the life of the app. It hangs on a node that does
-  not leave, the one above the stack and the tabs. `.task(id:)` is
+  not leave, the one above the stack and the tabs. Both are the app's
+  own lifecycle, and at the app level the easiest means is used.
+  `.task(id:)` is
   used only when its id is a value the app's code does not control.
   The method names no use for `.onAppear`. The map skill's
   `mapcheck.py --sources` warns on `.task(id:)`, `.onChange`,
@@ -1014,9 +1029,10 @@ and why, where it is broken.
   the same collector and a control below it that calls the flow. A link
   that launches the app reaches the listener too. Where the system
   delivers through a delegate and not a modifier, a tap on a
-  notification, no flow carries it. The delegate is kept in the `App`
-  node's own `@State` and handed a closure that writes the `App`'s
-  state, and the screens receive that state as data. The `App` is a
+  notification, no flow carries it. The delegate is an `@Observable`
+  class kept in the `App` node's own `@State`. The system's callback
+  writes one stored property of it, and the screens receive that value
+  as data. The `App` is a
   node and is there from the first moment, so a tap that launches the
   app is a write of state like any other, and nothing waits for a
   screen to exist (`references/modules.md`). The system's value as a

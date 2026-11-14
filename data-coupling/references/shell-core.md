@@ -442,7 +442,9 @@ that mounts the screen. It handles the action, so it starts the load
 and holds it. The caller sent a route and data and holds nothing.
 
 A node that no action mounts has only the runtime's event, `.task`.
-The first screen at launch is the case. There the loading flow
+The first screen at launch is the case. Launch is the app's own start
+and is handled at the app level, where a `.task` on the node that does
+not leave is the easiest means. There the loading flow
 (spinner on, fetch, spinner off, error or data) is a rule the core can
 own. Whether it does, or a shell above it does, is a choice per
 feature, not a default. Once the core owns the load, the `let`s it

@@ -2430,9 +2430,51 @@
     yet in place for `didFinishLaunching`, where a load counted 0.
     The `App`'s `init` ran once in each run, and its `body` once at
     launch and once more after its state was written.
-    Not decided, what starts a first screen's load at launch in place
-    of the `.task` the skill still gives it, since before the `App`'s
-    first `body` its `@State` cannot be written.
+    Left for F92, what starts a first screen's load at launch, since
+    before the `App`'s first `body` its `@State` cannot be written.
+  - **F92, the `App` is where the app's lifecycle is handled.** The
+    owner, 2026-11-14, on the form F91 gave, a delegate named
+    `reminders` handed a closure in the `App`'s `body`: "what is
+    reminders?" and "the code looks so weird". Then: "i think i see
+    your point since app is a root and its basically singleton
+    struct... we need to use it for the lifecycle", then "we can make
+    exception maybe for that - on the app level we maybe easierst use
+    the task or whatever?", then "keep in ming that app has init",
+    and of the delegate "i coul not understand fucking delegate thing
+    sounds like objectivec". Two things follow. The first screen's
+    load at launch keeps its `.task` on the node above the stack and
+    the tabs. That is the app level, the `App` is made once per
+    launch, and nothing above that node removes it and puts it back,
+    so the rule against the lifecycle of the view on screen does not
+    reach it (F77 measured that `.task` once through pushes, pops, and
+    tab changes). And the `App`'s `init` and stored properties may
+    build what lives as long as the app, which no view's `init` may.
+    Measured the same day with the scratch app, six forms of keeping
+    the notification delegate at the `App`, each with a tap that
+    launched the app and a tap with the app in the background.
+    Arrived both times: an `@Observable` delegate that holds the
+    tapped value, as a private `@State` of the `App`; the same as a
+    plain `let`; the same with its methods left on the main actor and
+    no `Task` inside; a closure assigned in the `App`'s `body` that
+    writes the `App`'s `@State`; a closure made in the `App`'s `init`
+    that writes a data-only `@Observable` object the `App` keeps as a
+    `let`. Lost both times: a closure made in the `App`'s `init` that
+    writes the `App`'s `@State`. The order at launch with the
+    delegate as `@State` was `App.init`, `didFinishLaunching`, the
+    delegate made, the `App`'s `body`, the delegate's callback on the
+    main thread, the first screen's `body`. So the runtime makes the
+    `App`'s `@State` before its first `body` whether or not `body`
+    reads it, and the tap is written before the first screen is
+    built. `modules.md` now gives the form with the fewest parts, the
+    `@Observable` delegate as the `App`'s `@State`, its class shown,
+    named for what it holds, its methods plain. That object holds a
+    value and the callback that writes it. The text says so, bounds
+    it (its stored properties are what the system's callbacks write,
+    nothing in the app calls a method on it, a feature gets the value
+    as a fact or a binding), and names the form that keeps the value
+    apart, the data-only object written by a closure from `init`.
+    The agent chose the first as the default on the owner's "easierst"
+    and it is his to turn around.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

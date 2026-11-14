@@ -125,7 +125,10 @@ subgraph), no emoji, no status marks.
   screen, and it runs again when that view reappears. Where the action
   that put a node in the graph can be determined, the work the node
   needs is started in that action and nowhere else, and `.task` is
-  what is left when there is none, the first screen at launch.
+  what is left when there is none, the first screen at launch. That
+  work is the app's own start. The `App` is the root and is made once
+  per launch, so at the app level the easiest means is used, a `.task`
+  on the node above the stack and the tabs, which does not leave.
   `.task(id:)` and `.onChange` are used only on a value the app's code
   does not control. The app does not observe its own changes through
   the UI runtime. It intercepts the write where it is made.
@@ -150,7 +153,9 @@ subgraph), no emoji, no status marks.
   input when the instance is to be kept. A seed made lazy is still a
   seed, built once from the first input. `.id()` and `.onChange` on
   the input are repairs. A struct's creation is not a lifetime, so a
-  view's `init` builds no class instance and no query.
+  view's `init` builds no class instance and no query. The `App` is
+  the one struct made once per launch, so its `init` and its stored
+  properties may build what lives as long as the app.
 - **Dependencies are environment values**: plain structs composed of
   closures, lets, or bindings. Every dependency has two parts. How it
   is constructed is the app's knowledge, the inputs the root supplies.

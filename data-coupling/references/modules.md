@@ -420,46 +420,88 @@ In a package the declaration is `@FlowUp public var`, in an extension
 that is not itself marked `public`.
 
 Where the system delivers through a delegate and not through a
-modifier, a tap on a notification, no flow carries it. The `App` is a
-node with its own `@State`, and it is there from the first moment, so
-the tap is a write to the `App`'s state and the screens below receive
-that state as data.
+modifier, a tap on a notification, no flow carries it. A delegate is
+the framework's older form, an object the app registers and the system
+calls. The `App` is a node with its own `@State`, and it is there from
+the first moment, so the tap is a write to state the `App` keeps and
+the screens below receive that state as data.
 
 ```swift
 @main
 struct GardenApp: App {
-    @State private var tappedReminder: String?
-    @State private var reminders = ReminderDelegate()   // kept by the App
+    @State private var reminderTaps = ReminderTaps()
 
     var body: some Scene {
-        reminders.onTap = { tappedReminder = $0 }   // it only writes
-        return WindowGroup {
-            PlantList(tappedReminder: $tappedReminder)
+        WindowGroup {
+            PlantList(tappedReminder: $reminderTaps.tapped)
         }
+    }
+}
+
+// The object the framework requires. The system calls it on a tap.
+@Observable
+final class ReminderTaps: NSObject, UNUserNotificationCenterDelegate {
+    var tapped: String?
+
+    override init() {
+        super.init()
+        UNUserNotificationCenter.current().delegate = self
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        tapped = response.notification.request.identifier
+        completionHandler()
     }
 }
 ```
 
-Three things hold, each measured.
+Four things hold, each measured.
 
-- **The delegate is kept in the `App` node's own `@State`.** There it
-  is assigned in time, and a tap that launches the app reaches it.
-  Made in the `@State` of a modifier inside the window, it is assigned
-  too late. The tap that launched the app does not reach it, and a
-  later tap may not either.
-- **The tap arrives as data, not as an event.** A tap that launched
-  the app was shown by the first screen from the `App`'s state, with
-  no flow, no listener, and no lifecycle modifier. Pushed into a flow
-  it found no listener, since no screen existed yet. What the tap
-  opens is then state the `App` owns, since something other than the
-  list drives it, and the list's own tap writes the same state.
-- **The delegate's methods are the completion-handler forms, finished
-  on the main thread.** The `async` forms, declared `nonisolated`,
-  finished off the main thread and the app crashed inside UIKit.
+- **The object is a private `@State` of the `App`.** The runtime made
+  it before the `App`'s first `body`, also where that `body` did not
+  read it, and a tap that launched the app reached it. As a plain
+  `let` of the `App` it is made with the `App`, and the tap reached it
+  too. Made in the `@State` of a modifier inside the window, it is
+  assigned too late. The tap that launched the app does not reach it,
+  and a later tap may not either.
+- **The tap arrives as data, not as an event.** The system's callback
+  writes one stored property. For a tap that launched the app the
+  write came before the first screen's `body`, and the first screen
+  showed the tap from the binding it was handed, with no flow, no
+  listener, no closure, and no lifecycle modifier. A tap with the app
+  in the background arrived the same way. Pushed into a flow it found
+  no listener, since no screen existed yet. What the tap opens is then
+  state the `App` keeps, since something other than the list drives
+  it, and the list's own tap writes the same binding.
+- **The methods are the completion-handler forms, left on the main
+  actor.** The system called them on the main thread in every run, so
+  each writes the property and calls the handler, with no hop and no
+  `Task`. The `async` forms, declared `nonisolated`, finished off the
+  main thread and the app crashed inside UIKit.
+- **The `App`'s `init` builds, and it does not write `@State`.** The
+  `App` is made once per launch, so its `init` may build what lives as
+  long as the app. A closure made there that wrote the `App`'s
+  `@State` wrote nothing, for the tap that launched the app and for a
+  later one. A closure made there that wrote an `@Observable` object
+  the `App` keeps as a `let` wrote it both times. A closure assigned
+  in the `App`'s `body` wrote the `@State` both times.
 
-The delegate's class is declared by the dependency that wraps the
-framework, and the `App` keeps the instance. The closure is assigned
-in the `App`'s `body`, a write to a plain class that is not observed.
+This object holds a value and the callback that writes it, which the
+method keeps apart everywhere else. It is the framework delegate case,
+and it is the practical form at the app level. Its stored properties
+are what the system's callbacks write. Its methods are the
+framework's, and nothing in the app calls one. A feature receives the
+value as a fact or a binding, so its scenario sets the value with a
+button. Where the value is to stay apart from the delegate, the `App`
+keeps a data-only `@Observable` object as a `let`, and its `init`
+hands the delegate a closure that writes that object.
+
+The class is declared by the dependency that wraps the framework, and
+the `App` keeps the instance.
 
 A link needs none of this. `.onOpenURL` is SwiftUI's own, and a link
 that launches the app reached a listener in the first screen.
