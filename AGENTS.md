@@ -132,13 +132,13 @@ subgraph), no emoji, no status marks.
   a closure the root sets starts no `Task` nobody holds either. A task
   a dependency shares between its callers, a token refresh, is held
   in a slot the root owns.
-- **The system is heard in one place.** Recognize the case by who can
-  make a modifier's closure run. If only the external system can,
-  `.onOpenURL`, `.onContinueUserActivity`, `.onChange(of: scenePhase)`,
-  no scenario can drive it. Declare a `@FlowUp` flow, forward the
-  event into it from one modifier at the root, and write the handling
-  as a core that listens with `.onFlow`, so its scenario emits the
-  flow.
+- **The system is heard in one place.** Recognize the case by where a
+  modifier's event or data comes from. If it comes from outside the
+  app, `.onOpenURL`, `.onContinueUserActivity`, an `.onChange` or a
+  `.task(id:)` over the scene phase, the node that carries it is a
+  shell. Declare a `@FlowUp` flow, forward the event into it from one
+  modifier at the root, and write the handling as a core that listens
+  with `.onFlow`, so its scenario emits the flow.
 - **No state seeded from an input.** What is built from an input
   follows the input and is kept while the input does not change. The
   handler of the event that mounts the node, or of the one that

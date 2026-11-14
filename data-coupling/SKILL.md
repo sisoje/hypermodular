@@ -452,47 +452,47 @@ is written for this screen, with this screen's names. No generic form,
 no field descriptor, no `Validator<T>`, no core shared by two screens
 because they look alike today.
 
-Either way, what reaches a core is a value. A model context, a
-session, a socket, a token refresher: a service that holds state is
-wrapped in closures at the root before it is set, and the core reads
-the closures. And there is one shell wherever the I/O is, not one per
-view. A view made only of `let`s, bindings, environment reads, and
-closures is already a core, and gets no shell. Shells and cores
-cascade, a core's child a shell with its own core, each node tested
-alone, the composition holding because every edge is data. The composition root is
+Either way, what reaches a core is a value. A model context, a session,
+a socket, a token refresher: a service that holds state is wrapped in
+closures at the root before it is set, and the core reads the closures.
+And there is one shell wherever the I/O is, not one per view. A view
+made only of `let`s, bindings, environment reads, and closures is
+already a core, and gets no shell. Shells and cores cascade, a core's
+child a shell with its own core, each node tested alone, the
+composition holding because every edge is data. The composition root is
 not cut either. It owns the app's state, hands it down as bindings,
 sets the live values, and has no scenario; its one child is the first
-core. No node starts a `Task` it does not hold. Work an event starts,
-a tap, is assigned to an `@UnstructuredTask` slot under the library, a
+core. No node starts a `Task` it does not hold. Work an event starts, a
+tap, is assigned to an `@UnstructuredTask` slot under the library, a
 slot that logs like state and whose entry the block declares. The
 assignment is a write the node makes at a moment the node chooses, so
 the node controls the work and a test reads it. `.task` and
-`.task(id:)` are the runtime's events, hung on the view on screen,
-and the runtime holds the task and cancels it. Appearance starts the
-work, disappearance cancels it, a reappearance starts it again, and
-the node decides none of the three. So they are not where a node's
-work is started. Work a node needs when it is mounted is started by
-the action that mounts it, in the node that handles the action, as a
-task that node holds, and the result is state that node owns and
-hands down. A refetch when a value changes is started by the write of
-the value. The owner of the value hands down a binding whose setter
-stores the value and assigns the fetch to a slot the owner holds.
-`.task` is what is left when no action mounted the node, the first
-screen at launch, and it hangs on the node above the stack and the
-tabs, which does not leave. `.task(id:)` is used only when its id is
-a value the app's code does not control, one the system supplies. A
-value the app writes has an action behind it, the write. The app
-knows the value changed at the moment it writes it, so it has no use
-for the UI runtime to notice the change and drive what follows. A
-subscription sits in a node whose lifetime covers every moment its
-events must be handled, not where the contract's value is built. One
-that lasts for the life of the app is the root's and starts in its
-`.task`, since launch is not an action. One that a mounted node needs
-is started by the action that mounts the node, assigned to a slot the
-node that handles the action holds, and every write that ends the
-interval clears the slot. The binding that presents the node is where
-that write is caught, since a dismissal the runtime makes is a write
-through it.
+`.task(id:)` are the runtime's events, hung on the view on screen, and
+the runtime holds the task and cancels it. Appearance starts the work,
+disappearance cancels it, a reappearance starts it again, and the node
+decides none of the three. So they are not where a node's work is
+started. Work a node needs when it is mounted is started by the action
+that mounts it, in the node that handles the action, as a task that
+node holds, and the result is state that node owns and hands down. A
+refetch when a value changes is started by the write of the value. The
+owner of the value hands down a binding whose setter stores the value
+and assigns the fetch to a slot the owner holds. `.task` is what is
+left when no action mounted the node, the first screen at launch, and
+it hangs on the node above the stack and the tabs, which does not
+leave. `.task(id:)` is used only when its id is a value the app's code
+does not control, one the system supplies, and then in the one modifier
+at the root that forwards the change into a flow, not in a feature. A
+value the app writes has an action behind it, the write. The app knows
+the value changed at the moment it writes it, so it has no use for the
+UI runtime to notice the change and drive what follows. A subscription
+sits in a node whose lifetime covers every moment its events must be
+handled, not where the contract's value is built. One that lasts for
+the life of the app is the root's and starts in its `.task`, since
+launch is not an action. One that a mounted node needs is started by
+the action that mounts the node, assigned to a slot the node that
+handles the action holds, and every write that ends the interval clears
+the slot. The binding that presents the node is where that write is
+caught, since a dismissal the runtime makes is a write through it.
 
 A closure of any signature is a behavior, sync or async, pure or not.
 The node calls it and does not care what it does. For mocking, what a
@@ -877,11 +877,12 @@ and why, where it is broken.
 - **A dependency whose live value can be made with no inputs**, a
   formatter, a calendar, a pure calculation. It is a constant. Use it
   directly, not through the environment. I/O with no inputs, a file
-  written to the temporary directory, is still a contract. The clock is not one. The
-  current date is a fact an ancestor owns and hands down, a `let` or an
-  environment value, not a closure the node calls, so a scenario can
-  fix it. A delay the node awaits is an async effect, a closure the
-  scenario stubs to return at once or not at all.
+  written to the temporary directory, is still a contract. The clock is
+  not a constant to use directly either. The current date is a fact an
+  ancestor owns and hands down, a `let` or an environment value, not a
+  closure the node calls, so a scenario can fix it. A delay the node
+  awaits is an async effect, a closure the scenario stubs to return at
+  once or not at all.
 - **`.onChange` on a value the app writes.** The app does not observe
   its own changes through the UI runtime. It knows who mutates what,
   so it intercepts the write where it is made, in the handler, or in
@@ -968,22 +969,26 @@ and why, where it is broken.
   `references/shell-core.md`, "Who owns the load".
 - **A modifier fed by the external system, inside a feature.** This
   is the shell and core cut again, for the system's own modifiers.
-  Recognize it by who can make the modifier's closure run. A tap in
-  the app runs a `Button`'s closure, so a scenario can drive it. Only
-  the system runs the closure of `.onOpenURL`, of
-  `.onContinueUserActivity`, or of `.onChange(of: scenePhase)`, so no
-  scenario can, and a node that carries one is a shell with handling
-  inside it that no test reaches. Whenever a modifier's event or data
-  comes from outside the app, make the core with a flow, in four
-  steps. Declare the flow, `@FlowUp var deeplink: (URL) -> Void`. Keep
-  the system's modifier in one modifier at the root, where its closure
-  does one thing, `.onOpenURL { deeplink($0) }`. Write the handling as
-  a node that listens, `.onFlow(\.deeplink) { url in … }`. Give its
-  scenario a control that calls the flow. The handling is then a core
-  with a scenario and a log, and the one forwarding line is all that
-  stays untested, since that Apple's modifier fires is the framework's
-  promise. The system's value as a fact, a cover shown while the scene
-  is inactive, is still data a node reads. The form with its code is
+  Recognize it by where the modifier's event or data comes from. A
+  `Button`'s closure runs on a tap in the app, and a write of the
+  app's own state comes from the app's code. The closure of
+  `.onOpenURL` or of `.onContinueUserActivity` runs on something
+  outside the app, and so does an `.onChange` or a `.task(id:)` over a
+  value the system sets, the scene phase. A node that carries one is a
+  shell with handling inside it, and the app would be watching the
+  system through the UI runtime in every node that cares. Whenever a
+  modifier's event or data comes from outside the app, make the core
+  with a flow, in four steps. Declare the flow,
+  `@FlowUp var deeplink: (URL) -> Void`. Keep the system's modifier in
+  one modifier at the root, where its closure does one thing,
+  `.onOpenURL { deeplink($0) }`. Write the handling as a node that
+  listens, `.onFlow(\.deeplink) { url in … }`, the node that owns the
+  state the handling writes. Give its scenario a control that calls
+  the flow. The handling is then a core with a scenario and a log, and
+  the one forwarding line is all that stays untested, since that
+  Apple's modifier fires is the framework's promise. The system's
+  value as a fact, a cover shown while the scene is inactive, is still
+  data a node reads. The form with its code, the scenario included, is
   in `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.

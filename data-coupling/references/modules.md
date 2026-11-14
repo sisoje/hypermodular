@@ -372,12 +372,12 @@ clause is a notification that a service's verb already happened
 (`logoutHappened`). Do not name it after the reaction.
 
 A system event reaches the features the same way. Recognize the case
-by who can make a modifier's closure run. `.onOpenURL`,
-`.onContinueUserActivity`, and a change of the scene phase are fired
-by the system alone, so the modifier that hears one is a shell no
-scenario can drive. A flow makes the testable core. The system's
-modifier is kept to one line in one place, a modifier at the root,
-below the accumulators, and it only forwards:
+by where a modifier's event or data comes from. `.onOpenURL`,
+`.onContinueUserActivity`, and a change of the scene phase come from
+outside the app, so the node that carries such a modifier is a shell,
+and its handling waits on the system. A flow makes the testable core.
+The system's modifier is kept to one line in one place, a modifier at
+the root, below the accumulators, and it only forwards:
 
 ```swift
 extension EnvironmentValues {
@@ -406,17 +406,47 @@ Landing()
     .collectFlow(\.scenePhaseChanged)
 ```
 
+That modifier hears the outside world, so it is a dependency like any
+other. It is its own package under `Packages/Dependencies/`, the root
+applies it through the package's one `inject` modifier, and the flows
+it forwards into are declared in the layer beside the `@Entry` values.
+
 What the app does about the event is a core, a node below that listens
-with `.onFlow(\.scenePhaseChanged) { phase in … }` and writes or calls
-in the closure. Its scenario stands in for the system with a control
-that calls the flow, so the handling is tested and the forwarding line
-is not. A listener hears the event for as long as its node is in the
-graph, covered by a pushed screen or sitting in an unselected tab
-included, and unmounting unregisters it. The scene phase as a fact, a
-cover shown while the app is inactive, is data a node reads. Only the
-answer to the change goes through the flow. The accumulators at the
-root are for these few events that are the system's and app-wide, not
-for everything.
+with `.onFlow(\.deeplink) { url in … }` and writes or calls in the
+closure. The listener sits in the node that owns the state the
+handling writes. Its scenario stands in for the system. It applies the
+accumulator itself, as the root does, and a control below it calls the
+flow:
+
+```swift
+struct LibraryScenario: View {
+    var body: some View {
+        VStack {
+            Library.Core(books: [dune])     // it listens to the flow
+            SystemControls()                // below the accumulator
+        }
+        .collectFlow(\.deeplink)
+    }
+}
+
+private struct SystemControls: View {       // stands in for the system
+    @Environment(\.deeplink) private var deeplink
+
+    var body: some View {
+        Button("link") { deeplink(URL(string: "books://book/42")!) }
+    }
+}
+```
+
+The UI test taps `link`, and the log is what `Library` wrote and
+called. So the handling is tested and the forwarding line is not. A
+listener hears the event for as long as its node is in the graph,
+covered by a pushed screen or sitting in an unselected tab included,
+and unmounting unregisters it. The scene phase as a fact, a cover shown
+while the app is inactive, is data a node reads. Only the answer to the
+change goes through the flow. The accumulators at the root are for
+these few events that are the system's and app-wide, not for
+everything.
 
 | OOP dependency injection | dependency flow |
 |---|---|

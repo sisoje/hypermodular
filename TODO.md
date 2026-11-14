@@ -2063,7 +2063,20 @@
     opens with the test an agent applies, who can make the modifier's
     closure run, names the modifiers, and gives the four steps. The
     scenario bullet keeps a pointer, and `modules.md` and `AGENTS.md`
-    open with the same test.
+    open with the same test. A fresh agent then designed a link and a
+    timer that pauses in the background by the rule, with a prompt
+    F82 disowns, so only its list of sentences was used. One was
+    false. "Only the system runs the closure, so no scenario can" does
+    not hold for the scene phase, which a scenario can set through
+    the environment, type-checked. The test is now the owner's own
+    criterion, where the modifier's event or data comes from. Closed
+    with it, a reading in which `.task(id: scenePhase)` in a feature
+    was licensed by F79's sentence. Added, the scenario's own code in
+    `modules.md`, where the accumulator is the scenario's to apply
+    and the control sits below it, that the forwarding modifier is a
+    dependency package like any other with the flows declared in the
+    layer, and that the listener sits in the node that owns the state
+    the handling writes.
   - **F82, a brief is in a manager's technical language.** The agent
     tested F81 on a fresh reader with a prompt that named forbidden
     patterns and whose follow-up questions gave the design away, one
