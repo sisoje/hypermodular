@@ -1978,178 +1978,6 @@
     sentence. The nearest is that a reasoner has to see that each
     rule is valid and not only follow it, in *Shadows of the Mind*
     (1994).
-  - **F84, the check after F83.** The owner, 2026-11-14: "check if we
-    did not forget something? maybe we overdid something? was all
-    clear and common sense?", and of the list that came back, "again
-    what to do about htis". Done without a ruling, since each follows
-    from one. The lifecycle bullet of `SKILL.md`, 34 lines and six
-    ideas after three passes, is three bullets with the same
-    sentences, that lifecycle is an effect of the graph, that
-    creation builds nothing with a lifetime, and that the action
-    starts the work. `LoadingShelf` in `shell-core.md`, the last
-    example to load from a `.task` on the screen itself, hangs it
-    above the stack. A tap that goes through the navigation contract
-    has its load started by the node that answers the route. "The
-    first is the default" is gone from `data-flow.md`. It was the
-    agent's inference under F72, Astra called it unsupported, and the
-    owner's README ranks neither way. Left as it is, "appearance
-    work" as a reason to cut a node, which is still true of legacy
-    code and of the node at launch. Still the agent's and not ruled,
-    that the forwarding modifier of F81 is a dependency package. Not
-    consolidated, the action rule's several statements, since each
-    carries a fact the others lack.
-  - **F85, the checker knows a flow and a lifecycle modifier.** From
-    the same list. The map skill had no word for `@FlowUp`. By F27,
-    which put Apple's sealed actions on the label as calls with no
-    cylinder, a flow a node calls is written the same way,
-    `· deeplink()`, and `mapcheck.py --sources` now derives it from
-    an environment closure called by name and reports one with no
-    line. A flow's event is a `System` stimulus in the listener's
-    block, whoever emitted it, and listening adds no line. Both are
-    the agent's defaults from F27 and from the three stimulus kinds,
-    not the owner's words. The habits check gained a second warning
-    beside the unheld `Task`, a lifecycle modifier in a view,
-    `.task(id:)`, `.onChange`, `.onAppear`, `.onOpenURL`, or
-    `.onContinueUserActivity` in a file that declares no
-    `ViewModifier`, so the root's forwarding modifier and a plain
-    `.task` pass. The unheld `Task` warning no longer ends "or use
-    .task". Three findings planted in the broken fixture and asserted
-    by `test.sh`, the clean fixture still at zero.
-  - **F86, a third comprehension prompt.** From the same list. None
-    of F72 to F83 had a question in either prompt of the code skill.
-    `data-coupling/scripts/comprehension-prompt-3.md` has ten, on the
-    seed, the lazy seed, a query or an object built in an `init`, the
-    load started by the action, `.task(id:)`, `.onChange`, the launch
-    load, an event from the external system, the struct against the
-    view on screen, and the principle by name. Its design task is a
-    brief as F82 asks, a recipes app, a link, and a timer that stops
-    in the background, with no word of architecture. The two older
-    prompts and their baselines are untouched. Run the same day on
-    Sonnet at medium effort, which read `SKILL.md` alone and no
-    reference. Ten of ten. Its design had the shape, a node above the
-    stack that holds the load and the timer, a screen made of `let`s,
-    listeners with `.onFlow`, a scenario that sends the events, and no
-    lifecycle modifier in a feature. It had one error. It declared
-    the two flows inside the root modifier and applied no collector,
-    since the do-not gave four steps and said neither where a flow is
-    declared nor that it is collected. The do-not gives five steps
-    now. Four more sentences came from its list. A task writes state
-    through a binding it captured. A repeating tick is a stream whose
-    default finishes, not a delay awaited in a loop, which spins on a
-    no-op default, and the F82 run had tripped on the same. A first
-    screen that reads its list with `@Query` carries no `.task`. And
-    state that a node's own action writes is reached in a scenario by
-    driving that action, with the driven prefix in the log, which
-    three readers had asked about. Measured for F79's sentence that a
-    dismissal is a write through the binding that presents the node,
-    which had gone in unmeasured, on the iPhone 18 Pro Max simulator.
-    A pop by the back button wrote an empty path through the setter
-    of the `NavigationStack`'s path binding, and a sheet swiped down
-    wrote `false` through the setter of its `isPresented` binding.
-  - **F87, Garden on the rules of F72 to F86.** The first whole app
-    built since F71, `scripts/engine-run-prompt-garden.md` verbatim on
-    2026-11-14, Opus at high effort, an empty directory, 37 minutes
-    and 375k tokens. Every gate green, rerun by hand.
-    `mapcheck.py --sources` 16 files, 18 blocks, 5 nodes, 6
-    cylinders, 55 Swift types, 0 errors, 0 warnings, 0 unverified,
-    with F85's warning active. `swift test` in the features and the
-    five dependencies, 6, 3, 2, 2, 1, and 2. `generate.sh` twice, the
-    same project. Eighteen hosted tests green in the iPhone 18 Pro
-    simulator. What the new rules produced. No `.task`, `.task(id:)`,
-    `.onChange`, `.onAppear`, or `.onOpenURL` in the app, no seeded
-    state, and three `Task` expressions, each assigned to a slot with
-    its bindings captured. A tap and a notification tap open a plant
-    through one function of the list, which starts the weather load
-    in a slot the list holds and hands the detail `let`s (F77). The
-    notification tap is a flow, declared in the layer, collected at
-    the root and in the scenario, forwarded by the Reminders
-    dependency, and heard by the list with `.onFlow`, and its block
-    opens `System->>PlantList: reminderTapped fern` (F81, F85). The
-    sort is a `QueryView` keyed on its flag. The list holds seven
-    `@State` and two slots, which is F77's cost and is readable at
-    this size.
-    Four findings became sentences. The system's event came through
-    a delegate and not a modifier, which F81's form did not show, so
-    `modules.md` and the do-not say the dependency hands the delegate
-    the flow's closure and the delegate only forwards. A flow
-    declared in a package is `@FlowUp public var` in an extension not
-    itself marked `public`, the form the run compiled. Five
-    dependencies each named their modifier `Injector` as the example
-    in `app-structure.md` did, and the checker reads a type by its
-    name and merged them, so the example names it for its package.
-    The CoreFlow skill carries the package form too.
-    Open from the run, not ruled. A `@Model` logs as its type name,
-    so no test can tell which plant a delete was handed, the third
-    run to say so after the two of F71. Diagram 2 has no form for a
-    flow, and the run drew it as a class marked `<<flow>>`. Today's
-    date as a `let` from the root is stale past midnight, as F58
-    noted. Under `@Shell` the resets an opening writes are in every
-    block of the list, which makes them long, and undo took three
-    scenarios that differ in one stub. A plant inserted just before
-    the test killed the app was lost, SwiftData's own saving, which
-    no sentence warns a test about. A stepper is one element in
-    XCUITest on iOS 27, so the run tapped its plus by coordinate.
-    That a notification tap which launches the app reaches the
-    listener was not measured. Rules the run broke and said so, a
-    `static let` for `@Model` fixtures, since a row needs the same
-    instance across waves, and a write to the delegate's forwarder
-    during `body`, to a plain class.
-  - **F88, the sequence is the test, and a model's entry is its
-    name.** Three runs had reported that a `@Model` logs as its type
-    name, so that no test can tell which record was handed on, F71's
-    two and F87, and the agent listed it each time as open for a
-    ruling. The owner, 2026-11-14: "i always said, actual values do
-    not matter so much for the test, more important is the sequence".
-    It was ruled on 2026-11-09, the names are the contract and a
-    value is asserted as the author sees fit, and the skill then
-    undid it with an example, "a model by its title", which no log
-    can give. That example is gone from `SKILL.md`, and it, the map
-    skill, and `notation.md` say the sequence is what the test
-    proves and a model's entry is asserted by its name alone. F71's
-    and F87's open notes on it are closed by this. Of the rest of
-    F87's list the owner said he did not understand what he was
-    being asked, and nothing was his to answer. The coupling
-    diagram's form for a flow is the one the run drew, a class marked
-    `<<flow>>` with its signature, written into Diagram 2 as the
-    agent's default. The forwarding code sitting in a dependency
-    package is what the run did on its own, so that default stands.
-    A notification tap that launches the app is a measurement the
-    agent owes and no sentence of a skill claims.
-  - **F89, a notification tap, measured, and the form F87 wrote is
-    wrong.** F87 took the Garden run's form into `modules.md`, a
-    delegate made in the `@State` of the dependency's root modifier
-    and handed the flow's closure in `body`, without measuring it.
-    Measured on 2026-11-14 with the scratch app, a local notification
-    scheduled, its banner tapped through SpringBoard, the screen
-    read. With the delegate made that way, the tap that launched the
-    app did not reach the delegate, twice of twice, and a tap with
-    the app in the background reached it once of twice. Apple's
-    documentation says the delegate is assigned before the app
-    finishes launching. With the delegate made in the `App`'s `init`
-    and the delegate's methods as Garden wrote them, `nonisolated`
-    and `async`, the delegate heard the tap and the app crashed,
-    SIGABRT on the cooperative pool inside
-    `-[UIApplication _performBlockAfterCATransactionCommitSynchronizes:]`
-    called from the method's bridged completion. With the
-    completion-handler forms finished on the main thread there was no
-    crash, the delegate heard the tap, and the listening view got
-    nothing, since the tap came before the forwarder had the flow's
-    closure. With the delegate keeping such a tap and the root's
-    `.task` handing it over, the listener got it, once of once. The
-    owner, 2026-11-14: "you can ask astra for asistance on some
-    questions like that". Astra at high effort, given the code and
-    the first two results, agreed on all three layers, named
-    `@UIApplicationDelegateAdaptor` and `didFinishLaunching` as the
-    place to assign, and said no ordering guarantees a listener is
-    registered by the first `body` or by a `.task`, so that the
-    handover needs the collector to say when a listener exists, an
-    addition to swift-core-flow. One correction of Astra's is not
-    taken. It said a `@State` initial value runs when the modifier is
-    constructed. F69 measured that a private one does not, on this
-    SDK. `modules.md`, the do-not, and the class bullet now state the
-    three measured facts and no longer the losing form. Not decided,
-    how the kept tap is handed over. Garden as built loses a tap that
-    launches it.
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A
@@ -2320,6 +2148,202 @@
     pure function of its inputs and the handed-in closure does the
     write. The row names functional core, imperative shell again,
     with the three sources the lineage gives.
+  - **F84, the check after F83.** The owner, 2026-11-14: "check if we
+    did not forget something? maybe we overdid something? was all
+    clear and common sense?", and of the list that came back, "again
+    what to do about htis". Done without a ruling, since each follows
+    from one. The lifecycle bullet of `SKILL.md`, 34 lines and six
+    ideas after three passes, is three bullets with the same
+    sentences, that lifecycle is an effect of the graph, that
+    creation builds nothing with a lifetime, and that the action
+    starts the work. `LoadingShelf` in `shell-core.md`, the last
+    example to load from a `.task` on the screen itself, hangs it
+    above the stack. A tap that goes through the navigation contract
+    has its load started by the node that answers the route. "The
+    first is the default" is gone from `data-flow.md`. It was the
+    agent's inference under F72, Astra called it unsupported, and the
+    owner's README ranks neither way. Left as it is, "appearance
+    work" as a reason to cut a node, which is still true of legacy
+    code and of the node at launch. Still the agent's and not ruled,
+    that the forwarding modifier of F81 is a dependency package. Not
+    consolidated, the action rule's several statements, since each
+    carries a fact the others lack.
+  - **F85, the checker knows a flow and a lifecycle modifier.** From
+    the same list. The map skill had no word for `@FlowUp`. By F27,
+    which put Apple's sealed actions on the label as calls with no
+    cylinder, a flow a node calls is written the same way,
+    `· deeplink()`, and `mapcheck.py --sources` now derives it from
+    an environment closure called by name and reports one with no
+    line. A flow's event is a `System` stimulus in the listener's
+    block, whoever emitted it, and listening adds no line. Both are
+    the agent's defaults from F27 and from the three stimulus kinds,
+    not the owner's words. The habits check gained a second warning
+    beside the unheld `Task`, a lifecycle modifier in a view,
+    `.task(id:)`, `.onChange`, `.onAppear`, `.onOpenURL`, or
+    `.onContinueUserActivity` in a file that declares no
+    `ViewModifier`, so the root's forwarding modifier and a plain
+    `.task` pass. The unheld `Task` warning no longer ends "or use
+    .task". Three findings planted in the broken fixture and asserted
+    by `test.sh`, the clean fixture still at zero.
+  - **F86, a third comprehension prompt.** From the same list. None
+    of F72 to F83 had a question in either prompt of the code skill.
+    `data-coupling/scripts/comprehension-prompt-3.md` has ten, on the
+    seed, the lazy seed, a query or an object built in an `init`, the
+    load started by the action, `.task(id:)`, `.onChange`, the launch
+    load, an event from the external system, the struct against the
+    view on screen, and the principle by name. Its design task is a
+    brief as F82 asks, a recipes app, a link, and a timer that stops
+    in the background, with no word of architecture. The two older
+    prompts and their baselines are untouched. Run the same day on
+    Sonnet at medium effort, which read `SKILL.md` alone and no
+    reference. Ten of ten. Its design had the shape, a node above the
+    stack that holds the load and the timer, a screen made of `let`s,
+    listeners with `.onFlow`, a scenario that sends the events, and no
+    lifecycle modifier in a feature. It had one error. It declared
+    the two flows inside the root modifier and applied no collector,
+    since the do-not gave four steps and said neither where a flow is
+    declared nor that it is collected. The do-not gives five steps
+    now. Four more sentences came from its list. A task writes state
+    through a binding it captured. A repeating tick is a stream whose
+    default finishes, not a delay awaited in a loop, which spins on a
+    no-op default, and the F82 run had tripped on the same. A first
+    screen that reads its list with `@Query` carries no `.task`. And
+    state that a node's own action writes is reached in a scenario by
+    driving that action, with the driven prefix in the log, which
+    three readers had asked about. Measured for F79's sentence that a
+    dismissal is a write through the binding that presents the node,
+    which had gone in unmeasured, on the iPhone 18 Pro Max simulator.
+    A pop by the back button wrote an empty path through the setter
+    of the `NavigationStack`'s path binding, and a sheet swiped down
+    wrote `false` through the setter of its `isPresented` binding.
+  - **F87, Garden on the rules of F72 to F86.** The first whole app
+    built since F71, `scripts/engine-run-prompt-garden.md` verbatim on
+    2026-11-14, Opus at high effort, an empty directory, 37 minutes
+    and 375k tokens. Every gate green, rerun by hand.
+    `mapcheck.py --sources` 16 files, 18 blocks, 5 nodes, 6
+    cylinders, 55 Swift types, 0 errors, 0 warnings, 0 unverified,
+    with F85's warning active. `swift test` in the features and the
+    five dependencies, 6, 3, 2, 2, 1, and 2. `generate.sh` twice, the
+    same project. Eighteen hosted tests green in the iPhone 18 Pro
+    simulator. What the new rules produced. No `.task`, `.task(id:)`,
+    `.onChange`, `.onAppear`, or `.onOpenURL` in the app, no seeded
+    state, and three `Task` expressions, each assigned to a slot with
+    its bindings captured. A tap and a notification tap open a plant
+    through one function of the list, which starts the weather load
+    in a slot the list holds and hands the detail `let`s (F77). The
+    notification tap is a flow, declared in the layer, collected at
+    the root and in the scenario, forwarded by the Reminders
+    dependency, and heard by the list with `.onFlow`, and its block
+    opens `System->>PlantList: reminderTapped fern` (F81, F85). The
+    sort is a `QueryView` keyed on its flag. The list holds seven
+    `@State` and two slots, which is F77's cost and is readable at
+    this size.
+    Four findings became sentences. The system's event came through
+    a delegate and not a modifier, which F81's form did not show, so
+    `modules.md` and the do-not say the dependency hands the delegate
+    the flow's closure and the delegate only forwards. A flow
+    declared in a package is `@FlowUp public var` in an extension not
+    itself marked `public`, the form the run compiled. Five
+    dependencies each named their modifier `Injector` as the example
+    in `app-structure.md` did, and the checker reads a type by its
+    name and merged them, so the example names it for its package.
+    The CoreFlow skill carries the package form too.
+    Open from the run, not ruled. A `@Model` logs as its type name,
+    so no test can tell which plant a delete was handed, the third
+    run to say so after the two of F71. Diagram 2 has no form for a
+    flow, and the run drew it as a class marked `<<flow>>`. Today's
+    date as a `let` from the root is stale past midnight, as F58
+    noted. Under `@Shell` the resets an opening writes are in every
+    block of the list, which makes them long, and undo took three
+    scenarios that differ in one stub. A plant inserted just before
+    the test killed the app was lost, SwiftData's own saving, which
+    no sentence warns a test about. A stepper is one element in
+    XCUITest on iOS 27, so the run tapped its plus by coordinate.
+    That a notification tap which launches the app reaches the
+    listener was not measured. Rules the run broke and said so, a
+    `static let` for `@Model` fixtures, since a row needs the same
+    instance across waves, and a write to the delegate's forwarder
+    during `body`, to a plain class.
+  - **F88, the sequence is the test, and a model's entry is its
+    name.** Three runs had reported that a `@Model` logs as its type
+    name, so that no test can tell which record was handed on, F71's
+    two and F87, and the agent listed it each time as open for a
+    ruling. The owner, 2026-11-14: "i always said, actual values do
+    not matter so much for the test, more important is the sequence".
+    It was ruled on 2026-11-09, the names are the contract and a
+    value is asserted as the author sees fit, and the skill then
+    undid it with an example, "a model by its title", which no log
+    can give. That example is gone from `SKILL.md`, and it, the map
+    skill, and `notation.md` say the sequence is what the test
+    proves and a model's entry is asserted by its name alone. F71's
+    and F87's open notes on it are closed by this. Of the rest of
+    F87's list the owner said he did not understand what he was
+    being asked, and nothing was his to answer. The coupling
+    diagram's form for a flow is the one the run drew, a class marked
+    `<<flow>>` with its signature, written into Diagram 2 as the
+    agent's default. The forwarding code sitting in a dependency
+    package is what the run did on its own, so that default stands.
+    A notification tap that launches the app is a measurement the
+    agent owes and no sentence of a skill claims.
+  - **F89, a notification tap, measured, and the form F87 wrote is
+    wrong.** F87 took the Garden run's form into `modules.md`, a
+    delegate made in the `@State` of the dependency's root modifier
+    and handed the flow's closure in `body`, without measuring it.
+    Measured on 2026-11-14 with the scratch app, a local notification
+    scheduled, its banner tapped through SpringBoard, the screen
+    read. With the delegate made that way, the tap that launched the
+    app did not reach the delegate, twice of twice, and a tap with
+    the app in the background reached it once of twice. Apple's
+    documentation says the delegate is assigned before the app
+    finishes launching. With the delegate made in the `App`'s `init`
+    and the delegate's methods as Garden wrote them, `nonisolated`
+    and `async`, the delegate heard the tap and the app crashed,
+    SIGABRT on the cooperative pool inside
+    `-[UIApplication _performBlockAfterCATransactionCommitSynchronizes:]`
+    called from the method's bridged completion. With the
+    completion-handler forms finished on the main thread there was no
+    crash, the delegate heard the tap, and the listening view got
+    nothing, since the tap came before the forwarder had the flow's
+    closure. With the delegate keeping such a tap and the root's
+    `.task` handing it over, the listener got it, once of once. The
+    owner, 2026-11-14: "you can ask astra for asistance on some
+    questions like that". Astra at high effort, given the code and
+    the first two results, agreed on all three layers, named
+    `@UIApplicationDelegateAdaptor` and `didFinishLaunching` as the
+    place to assign, and said no ordering guarantees a listener is
+    registered by the first `body` or by a `.task`, so that the
+    handover needs the collector to say when a listener exists, an
+    addition to swift-core-flow. One correction of Astra's is not
+    taken. It said a `@State` initial value runs when the modifier is
+    constructed. F69 measured that a private one does not, on this
+    SDK. `modules.md`, the do-not, and the class bullet now state the
+    three measured facts and no longer the losing form. Garden as
+    built loses a tap that launches it.
+    How the kept tap reaches the tree. The agent proposed, in turn,
+    the root's `.task`, a callback on `.collectFlow` for the moment a
+    listener registers, which was Astra's idea, and the root's
+    forwarding of the scene becoming active. The owner, 2026-11-14:
+    "but why we use task at all? we said it is physical-view
+    lifecycle but physical view is just a side effect of some
+    mutation that caused a struct to be inserted into graph ... so
+    intercept mutation and run unstructired task ?", then "i am not
+    sure you understood collectFlow who the fuck needs calllback?",
+    and "you need to eliminate that brainwashed aproach to use view
+    lifecycle events for driving own states". The agent had not read
+    `FlowUp.swift`. The collector's environment value is the array of
+    registered listeners, data that flows down, so there is nothing
+    for a callback to add. All three proposals waited for a view to
+    exist and then pushed an event at it. `modules.md` and the do-not
+    now say the tap is a mutation, written as state by the handler
+    that hears it, with the tree a projection of that state. The
+    third proposal was measured before it was withdrawn and is not
+    adopted: with no `.task` anywhere, a first screen that loads on
+    the forwarded "active" loaded once and stayed at one after Home
+    and back, and a notification tap and a link each reached the
+    listener from a cold launch. Not decided, and the owner's, where
+    the handler lives that an event with no view to receive it
+    writes through, at launch and on such a tap, and what replaces
+    the `.task` the skill still gives a first screen.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

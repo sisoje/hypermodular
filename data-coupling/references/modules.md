@@ -430,8 +430,10 @@ the flow as well, and three more things hold, each measured.
   not either.
 - **A tap that launches the app arrives before any view exists to
   listen.** The delegate hears it and the flow has no listener yet.
-  So the tap is kept, by the code that owns the delegate, and handed
-  to the flow once the listener is there.
+  Waiting for a view to exist and then pushing the event at it is the
+  lifecycle habit again. The tap is a mutation. The handler that
+  hears it writes the app's state, and the tree is a projection of
+  that state whenever it comes to exist.
 - **The delegate's methods are the completion-handler forms, finished
   on the main thread.** The `async` forms, declared `nonisolated`,
   finished off the main thread and the app crashed inside UIKit.

@@ -1015,8 +1015,10 @@ and why, where it is broken.
   delivers through a delegate and not a modifier, a tap on a
   notification, the delegate only forwards into the flow as well. Two
   things are added, and `references/modules.md` gives them. The
-  delegate is assigned at launch, before the first `body`, and a tap
-  that launches the app is kept until a listener exists. The handling
+  delegate is assigned at launch, before the first `body`. And a tap
+  that launches the app comes before any view exists, so it is not
+  pushed at the tree as an event. The handler that hears it writes the
+  app's state, and the tree is a projection of that state. The handling
   is then a core with a scenario and a log, and the one forwarding line
   is all that stays untested, since that Apple's modifier fires is the
   framework's promise. The system's value as a fact, a cover shown
