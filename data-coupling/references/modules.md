@@ -452,26 +452,15 @@ final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
     }
 }
 
-// A dynamic property. The delegate, and the flow's closure handed to it.
-@propertyWrapper
-struct ReminderTaps: DynamicProperty {
+// The injector. It keeps the delegate and hands it the flow's closure.
+// The clear background is there so that the modifier runs.
+struct RemindersInjector: ViewModifier {
     @State private var delegate = ReminderDelegate()
     @Environment(\.reminderTapped) private var reminderTapped
 
-    var wrappedValue: Void { () }
-
-    func update() {
-        delegate.onResponse = { reminderTapped($0.notification.request.identifier) }
-    }
-}
-
-// The injector declares the property. The one line in its body is
-// there so that the modifier runs, and it changes nothing.
-struct RemindersInjector: ViewModifier {
-    @ReminderTaps private var reminderTaps
-
     func body(content: Content) -> some View {
-        content.background { Color.clear }
+        delegate.onResponse = { reminderTapped($0.notification.request.identifier) }
+        return content.background { Color.clear }
     }
 }
 
@@ -492,18 +481,19 @@ WindowGroup {
 
 The event flows one way. The system calls the delegate. The delegate
 calls its closure with the whole response. The closure, made in the
-dynamic property, calls the flow with what the listeners use. A feature
+modifier, calls the flow with what the listeners use. A feature
 listens with `.onFlow` and writes or calls there. Its scenario applies
 the same collector and a button below it calls the flow. There is no
 state on the way, no binding, and no `.onChange`.
 
 Seven things hold, each measured.
 
-- **The closure is handed over in `update()`, each time it runs.**
-  The flow's closure changes when a listener registers, so the
-  hand-over is repeated on purpose. It ran ten times before a tap, and
-  the tap reached the listener through the closure handed over last.
-  The hand-over as a line in a `body` behaved the same.
+- **The closure is handed over in the modifier's `body`, each time it
+  runs.** The flow's closure changes when a listener registers, so the
+  hand-over is repeated on purpose. It ran nine times before a tap,
+  and the tap reached the listener through the closure handed over
+  last. No dynamic property is needed. One that holds the delegate and
+  hands the closure over in its `update()` behaved the same.
 - **A view modifier whose `body` returns `content` untouched does not
   run.** In that modifier `body` was not called, `update()` did not
   run, and the `@State` was not made, so the delegate did not exist
@@ -534,7 +524,7 @@ Seven things hold, each measured.
   modifier. Read inside the window's closure it was not shown.
 - **No information is lost.** The delegate hands its closure the whole
   response. Narrowing to what the listeners use is done in the
-  dynamic property's closure, where the whole response is at hand. The
+  modifier's closure, where the whole response is at hand. The
   framework's type stays in the package. A `UNNotificationResponse`
   has no initializer the app may call, so a flow that carried it could
   not be called by a scenario.

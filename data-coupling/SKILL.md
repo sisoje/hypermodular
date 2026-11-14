@@ -1043,10 +1043,9 @@ and why, where it is broken.
   the same collector and a control below it that calls the flow. A link
   that launches the app reaches the listener too. Where the system
   delivers through a delegate and not a modifier, a tap on a
-  notification, the same form holds. The delegate holds no state. A
-  dynamic property in the dependency keeps it in a private `@State`
-  and hands it a closure in `update()`, and the closure calls the
-  flow. The dependency's `inject` modifier declares that property. A
+  notification, the same form holds. The delegate holds no state. The
+  dependency's `inject` modifier keeps it in a private `@State` and
+  hands it a closure in `body`, and the closure calls the flow. A
   view modifier whose `body` returns `content` untouched does not
   run, so where the modifier sets nothing it applies one line that
   shows nothing, `content.background { Color.clear }`. The collector

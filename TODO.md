@@ -2623,6 +2623,10 @@
     with the empty view it did not run. The modifier's `body` is
     `content.background { Color.clear }`, and the collector stays at
     the root.
+    Then, "we dont need dynamic property dude? do we?". It is not
+    needed. The hand-over as a line in the modifier's `body`, with
+    the clear background, ran and delivered the tap from the
+    background the same way, and that is the form in the text.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
