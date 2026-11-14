@@ -656,6 +656,8 @@ method's own claim, and it is the first place to doubt.
 | The network is reactive, so the nodes do not have to be | the distinction between a reactive system and a transformational one. The sentence about the nodes is this method's | Harel and Pnueli 1985 |
 | The action that puts a node in the graph starts the node's work, not `.task` on appearance | the two places an effect can hang, on the transition, as in a Mealy machine, or on entering the state, as in a Moore machine and a statechart's entry action. The sources name both and prefer neither. The choice of the transition is this method's | Mealy 1955; Moore 1956; Harel 1987 |
 | The core decides as a function of what it was handed, and the I/O is at the edge, in the shell and in the closures handed in | functional core, imperative shell, the impure, pure, impure sandwich shaped as views (`shell-core.md`, "The lineage") | Bernhardt 2012; Wlaschin; Seemann |
+| No information is lost where a value enters the app. The boundary keeps the whole value, and narrowing is a projection made afterwards | rawness. The data kept is the rawest form available, since the questions asked of it later are not known when it arrives, and every narrower view is derived from it. The source says it of a store of records. Applying it to a value at an app's boundary is this method's | Marz and Warren 2015 |
+| A binding is handed where the receiver writes. What it only reads is a fact | least privilege. Each part is given the least access that its job needs, here the read without the write | Saltzer and Schroeder 1975 |
 
 ## Where the model came from
 

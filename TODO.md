@@ -2473,8 +2473,60 @@
     nothing in the app calls a method on it, a feature gets the value
     as a fact or a binding), and names the form that keeps the value
     apart, the data-only object written by a closure from `init`.
-    The agent chose the first as the default on the owner's "easierst"
-    and it is his to turn around.
+    The agent chose the first as the default on the owner's "easierst".
+    F93 replaced that form the same day.
+  - **F93, no information is lost, a fact is not a binding, and the
+    delegate is a dependency in its two parts.** F92's snippet stored
+    `response.notification.request.identifier` and handed the first
+    screen a binding to it. The owner, 2026-11-14: "why you loss of
+    information? system gave you full response and you only use id
+    out of it", "this is the first principle - never lose
+    information", "why you passing tapped as a binding", "binding is
+    for mutating, why you want to mutate a data from delegate? it is
+    other way arround you want to react on data change?", "remember
+    "how we consume it" and "how we construct it"", "you need a view
+    modifier that injects delegate behavior", "you maybe need
+    flowup", and "how will other agents understand what is
+    capability, how to consume ti how to construct it how to organize
+    data flow". The agent's account of the binding, asked for: F91's
+    form had made the tapped id double as the state of which plant is
+    open, written by the notification, by a row of the list, and by a
+    dismissal. When the value became the system's own, nothing in the
+    app wrote it, and the binding was carried over without asking who
+    mutates it. Three things are written. The first, in the skill and
+    in `AGENTS.md`, no information is lost where a value enters the
+    app, the boundary keeps or forwards the whole value and narrowing
+    is a projection made afterwards. The second, a binding is handed
+    where the receiver writes, and what it only reads is a fact. Both
+    have a row in `data-flow.md`'s table of older names. The third,
+    `modules.md` gives the notification as F60's two parts, the
+    capabilities as a contract in the layer, the construction as the
+    package's `inject` modifier over a delegate that keeps the whole
+    response and that the `App` keeps, the use as a fact read from
+    the environment, and one paragraph on how the data flows.
+    Measured the same day, each with a tap that launched the app and
+    a tap with the app in the background. The delegate keeping the
+    whole response and the window's closure handing down a fact,
+    arrived both times, the second response replacing the first on
+    the screen. The same delegate read by a modifier that sets a
+    contract's value into the environment, and a feature that reads
+    the entry, arrived both times. The response forwarded from the
+    root's modifier into a `@FlowUp` flow, by `.task(id:)` and by
+    `.onChange` with its initial run, reached the listener from the
+    background and did not reach it from a cold launch, both
+    variants, since the forward ran with the closure of the first
+    `body`, when no listener had registered. So the flow was not
+    taken. The agent's reading, where the owner's words leave room:
+    the contract carries what features use, the reminder's id, and
+    not the framework's type. UserNotifications appears in one
+    package by the existing rule, the nodes that consume a contract
+    dictate its members, and `UNNotificationResponse` has no
+    initializer the app may call (the compiler, "'init()' is
+    unavailable"), so a scenario could not set a contract that
+    carried it. The whole response stays in the delegate, inside the
+    package, for the modifier to project from. The delegate's class
+    is the package's second public declaration, since the instance
+    is made in time only as the `App`'s own stored property.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

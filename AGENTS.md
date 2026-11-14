@@ -136,6 +136,11 @@ subgraph), no emoji, no status marks.
   a closure the root sets starts no `Task` nobody holds either. A task
   a dependency shares between its callers, a token refresh, is held
   in a slot the root owns.
+- **No information is lost where a value enters the app.** The code
+  at a boundary keeps or forwards what it was handed, whole. Narrowing
+  to what a feature uses is a projection made afterwards, where the
+  whole value is still held. A binding is handed only where the
+  receiver writes the value. What it only reads is a fact.
 - **The system is heard in one place.** The rule is general. When the
   event or the data behind a modifier comes from outside the app, the
   node that carries the modifier is a shell. Recognize the case by the

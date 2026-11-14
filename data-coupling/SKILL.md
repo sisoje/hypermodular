@@ -281,6 +281,13 @@ source of most broken SwiftUI mental models.
   the one place a write can be intercepted, and it need not end in
   storage at all. A field's rule is its ordinary case: the setter
   stores the text and writes the error, and the field shows both.
+- **A binding is handed where the receiver writes.** A binding is for
+  mutating. What a node only reads it is handed as a fact, a `let` or
+  a value read from the environment, and it is computed again when the
+  fact changes. Before a binding is handed down, name the write the
+  receiver makes through it. Where there is none, a fact is handed. A
+  value the system reports, a tapped notification, is written by
+  nothing in the app, so no node is handed a binding to it.
 - **Classes sit outside the graph.** Put a screen's state in an
   `@Observable` or `ObservableObject` and the runtime no longer owns it.
   The object can be aliased, can outlive the node, and any holder can
@@ -757,6 +764,15 @@ test. Data is the abstraction.
   closures. No dependency is a special case. Each one follows this
   same principle, Robert Martin's dependency inversion.
   `references/modules.md` shows both parts in code.
+- **No information is lost where a value enters the app.** This is
+  the first principle of the data flow. The code at a boundary keeps
+  or forwards what the system or a service handed it, the whole
+  response, the whole URL, and not one field picked out of it.
+  Narrowing is a projection made afterwards, where the whole value is
+  still held, by the modifier that builds a contract's member from it
+  or by the node that hands a fact down. A feature still receives only
+  what it uses. When another node needs another part, the part is
+  there to project.
 - **A contract is a struct of closures, lets, or bindings** with a
   defaulted initializer, and its `@Entry` default is the minimal no-op,
   `.init()`. A single value the root supplies, the date, is a contract
@@ -808,8 +824,9 @@ test. Data is the abstraction.
   One the system calls at launch, a notification's, is kept in the
   `App` node's own `@State`, since a modifier's `@State` inside the
   window is made too late. Where its callback has a value for the app,
-  the class is `@Observable` and holds that value and nothing else,
-  written by the callback and read by the screens as data
+  the class is `@Observable` and keeps that value whole, and nothing
+  else. The dependency's modifier reads it and builds the contract
+  from it, and no feature sees the class
   (`references/modules.md`). `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
@@ -1029,10 +1046,13 @@ and why, where it is broken.
   the same collector and a control below it that calls the flow. A link
   that launches the app reaches the listener too. Where the system
   delivers through a delegate and not a modifier, a tap on a
-  notification, no flow carries it. The delegate is an `@Observable`
-  class kept in the `App` node's own `@State`. The system's callback
-  writes one stored property of it, and the screens receive that value
-  as data. The `App` is a
+  notification, no flow carries it. It is a dependency like any
+  other, in its two parts. Its capabilities are a contract in the
+  layer, and a feature reads a fact from it. Its construction is the
+  package's `inject` modifier, which builds the contract's value from
+  a delegate that keeps the system's whole response. The `App` keeps
+  that delegate in its own `@State` and hands it to the modifier. The
+  `App` is a
   node and is there from the first moment, so a tap that launches the
   app is a write of state like any other, and nothing waits for a
   screen to exist (`references/modules.md`). The system's value as a
