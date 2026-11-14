@@ -557,18 +557,10 @@ either way.
   real `@State`, hands the core logged bindings and closures, sets its
   contracts with `.environment(...)`, and is driven with real input in
   a UI test. A `System` stimulus is the scenario's to produce, a
-  control that feeds the stream or flips the value the system would. A
-  modifier that only the system fires, `.onOpenURL`,
-  `.onChange(of: scenePhase)`, is a shell that no test can drive. So
-  it is one line in one place, a modifier at the root, and all it does
-  is forward the event into a flow declared with `@FlowUp`. What the
-  app does about the event is a core below, a node that listens with
-  `.onFlow`, and its scenario emits the flow with a control. The
-  handling is tested and the one forwarding line is not, since that
-  Apple's modifier fires is the framework's promise. No feature
-  carries `.onOpenURL`, and none answers `@Environment(\.scenePhase)`
-  with `.onChange`. The form is in `references/modules.md`. The real
-  runtime runs: identity, environment, `@State`,
+  control that feeds the stream or flips the value the system would.
+  Where the system's event arrives through a modifier, the control
+  calls a flow (the do-not "A modifier fed by the external system").
+  The real runtime runs: identity, environment, `@State`,
   `.task`. Whether an action is a method or an inline call does not
   matter; the input fires it. Constructing a core in a unit bundle and
   calling a method sees only the `@Entry` defaults, because
@@ -971,6 +963,24 @@ and why, where it is broken.
   used only when its id is a value the app's code does not control.
   The method names no use for `.onAppear`. The worked forms are in
   `references/shell-core.md`, "Who owns the load".
+- **A modifier fed by the external system, inside a feature.**
+  Recognize it by who can make the modifier's closure run. A tap in
+  the app runs a `Button`'s closure, so a scenario can drive it. Only
+  the system runs the closure of `.onOpenURL`, of
+  `.onContinueUserActivity`, or of `.onChange(of: scenePhase)`, so no
+  scenario can, and a node that carries one is a shell with handling
+  inside it that no test reaches. Whenever a modifier's event or data
+  comes from outside the app, make the core with a flow, in four
+  steps. Declare the flow, `@FlowUp var deeplink: (URL) -> Void`. Keep
+  the system's modifier in one modifier at the root, where its closure
+  does one thing, `.onOpenURL { deeplink($0) }`. Write the handling as
+  a node that listens, `.onFlow(\.deeplink) { url in … }`. Give its
+  scenario a control that calls the flow. The handling is then a core
+  with a scenario and a log, and the one forwarding line is all that
+  stays untested, since that Apple's modifier fires is the framework's
+  promise. The system's value as a fact, a cover shown while the scene
+  is inactive, is still data a node reads. The form with its code is
+  in `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
 - **Designing for the what-if.** "What if someone forgets to set the

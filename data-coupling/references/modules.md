@@ -371,11 +371,13 @@ whose listeners are the implementation (`deeplink`). A past-tense
 clause is a notification that a service's verb already happened
 (`logoutHappened`). Do not name it after the reaction.
 
-A system event reaches the features the same way. `.onOpenURL` and a
-change of the scene phase are fired by the system alone, so the
-modifier that hears one is a shell no scenario can drive. It is kept to
-one line in one place, a modifier at the root, below the accumulators,
-and it only forwards:
+A system event reaches the features the same way. Recognize the case
+by who can make a modifier's closure run. `.onOpenURL`,
+`.onContinueUserActivity`, and a change of the scene phase are fired
+by the system alone, so the modifier that hears one is a shell no
+scenario can drive. A flow makes the testable core. The system's
+modifier is kept to one line in one place, a modifier at the root,
+below the accumulators, and it only forwards:
 
 ```swift
 extension EnvironmentValues {

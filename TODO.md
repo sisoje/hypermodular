@@ -2055,7 +2055,15 @@
     them from launch. That a control calling a flow reaches the
     listeners was already pinned by the library's own
     `FlowUpUITests`. The modifier's `.onOpenURL` line compiled and
-    was not fired.
+    was not fired. The owner, after the first wording: "the rule need
+    to be clear so that agent can recognize if dealing with external
+    system data in modifier-  he needs a flowup to make testable
+    core". The rule is now a do-not of its own in `SKILL.md`, "A
+    modifier fed by the external system, inside a feature", which
+    opens with the test an agent applies, who can make the modifier's
+    closure run, names the modifiers, and gives the four steps. The
+    scenario bullet keeps a pointer, and `modules.md` and `AGENTS.md`
+    open with the same test.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
