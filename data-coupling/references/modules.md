@@ -464,19 +464,15 @@ struct RemindersInjector: ViewModifier {
     }
 }
 
-// The package's one public declaration. It applies the modifier and
-// then the collector, so the modifier sits inside the collector.
 public extension View {
-    func injectReminders() -> some View {
-        modifier(RemindersInjector())
-            .collectFlow(\.reminderTapped)
-    }
+    func injectReminders() -> some View { modifier(RemindersInjector()) }
 }
 
-// The root.
+// The root. The modifier sits inside the collector.
 WindowGroup {
     PlantList()
         .injectReminders()
+        .collectFlow(\.reminderTapped)
 }
 
 // A feature. It listens, and writes its own state.
@@ -490,7 +486,7 @@ listens with `.onFlow` and writes or calls there. Its scenario applies
 the same collector and a button below it calls the flow. There is no
 state on the way, no binding, and no `.onChange`.
 
-Seven things hold, each measured.
+Eight things hold, each measured.
 
 - **The closure is handed over in the modifier's `body`, each time it
   runs.** The flow's closure changes when a listener registers, so the
@@ -510,14 +506,18 @@ Seven things hold, each measured.
   which shows nothing, and a modifier that already sets a contract
   needs no such line. A view that holds its content and returns it
   also ran as it stands.
-- **The collector is applied after the modifier, in the package's
-  `inject` function, and not inside the modifier's `body`.** With
-  `.collectFlow` applied inside the same modifier's `body`, the
-  modifier ran and the delegate got the tap, and no listener heard
-  it. A modifier reads the flow from above itself, and a collector
-  serves what is below it. The function applies the same two in the
-  order the root applied them when the tap was heard, so the root
-  writes one call.
+- **The collector is applied at the root, after the modifier, and not
+  inside the modifier's `body`.** With `.collectFlow` applied inside
+  the same modifier's `body`, the modifier ran and the delegate got
+  the tap, and no listener heard it. A modifier reads the flow from
+  above itself, and a collector serves what is below it.
+- **A task that reads the closure once does not replace the
+  hand-over.** With the delegate feeding an `AsyncStream` and a plain
+  `.task` in the modifier reading it and calling the flow, no tap was
+  heard, from the background or from a cold launch, since the task
+  kept the closure of its first pass. The hand-over in `body` gives
+  the delegate the current closure on every pass and needs no check
+  for listeners.
 - **A tap with the app running or in the background reaches the
   listener.** Delegate, closure, flow, listener, in that order.
 - **A tap that launches the app is not delivered in this form.** The

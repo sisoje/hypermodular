@@ -2632,6 +2632,22 @@
     package's `inject` function applies the modifier and then the
     collector, the same two in the same order as measured, and the
     root writes one call.
+    Asked "or not?", the agent argued against it, a collector belongs
+    to a subtree and not to one emitter, and the owner pasted the
+    root's chain with `.collectFlow` in it as the form that worked.
+    The collector is back at the root. Probed on the way, for a tap
+    that launches the app to reach a flow: the response kept at the
+    `App` and forwarded by a `.task(id:)` through the closure handed
+    over last, lost, two of two, the task ran three passes before the
+    listener registered; the delegate at the `App` feeding an
+    `AsyncStream`, read by a `.task(id:)` that starts only when the
+    flow has a listener, heard, two of two from a cold launch and two
+    of two from the background, the listener count read through a
+    property written in the file that declares the flow; the same
+    with a plain `.task` and no check, not heard at all, four of
+    four. The owner: "this is hell". None of it is in the skill. The
+    form is the simple injector, and the text says it does not
+    deliver a tap that launches the app.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
