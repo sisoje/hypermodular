@@ -531,26 +531,27 @@ examples, and who owns the loading flow are in
 
 ## Test: read the execution log
 
-How would Apple test `Button`? Its contract is "a physical tap calls the
-action closure", and there is nothing else to inspect. Hand it an action
-that logs, tap it for real, check the log: `["action"]`. Every core has
-`Button`'s shape. Mock each boundary with a logger, drive the core, and
-assert the execution log, the ordered `(name, value)` record of its
-boundary events, every write and every call with its payload. An entry
-is the boundary's own name, not the contract's, a space, then the
-arguments in order, each written as the criterion names it:
-`isLoading true`, `onDelete Dune` (a `Book`, by its title), `token nil`,
-`load`, `dismiss`, `setStarred Dune true`. The name is `setStarred`, not
+How would Apple test `Button`? Its contract is "a physical tap calls
+the action closure", and there is nothing else to inspect. Hand it an
+action that logs, tap it for real, check the log: `["action"]`. Every
+core has `Button`'s shape. Mock each boundary with a logger, drive the
+core, and assert the execution log, the ordered `(name, value)` record
+of its boundary events, every write and every call with its payload. An
+entry is the boundary's own name, not the contract's, a space, then the
+arguments in order, each written as the criterion names it: `isLoading
+true`, `onDelete Dune` (a `Book`, by its title), `token nil`, `load`,
+`dismiss`, `setStarred Dune true`. The name is `setStarred`, not
 `favorites.setStarred`. That is the hand-written logger's spelling.
 Under swift-core-flow no logger is written by hand. A boundary's
-closure is a `@TestAction`, a contract's closure included, and the
-log is two arrays, names and values. The
-names are the contract, asserted whole and in order. A value is
-asserted as the test's author sees fit, an optional unwrapped, a model
-by its title, a class by one field. The log is not a reason to change
-a signature, so a contract takes the model the node has, not its id
-because the id reads better. The evidence block is the same
-either way.
+closure is a `@TestAction`, a contract's closure included, and the log
+is two arrays, names and values. The names are the contract, asserted
+whole and in order. The sequence is what the test proves, and the
+values matter less. A value is asserted where the test's author can
+read it, an optional unwrapped, a string, a number. A `@Model` logs as
+its type name, so its entry is asserted by its name alone, and that is
+enough. The log is not a reason to change a signature, so a contract
+takes the model the node has, not its id because the id reads better.
+The evidence block is the same either way.
 
 - **Mocking is construction.** A boundary is a value, so the mock is a
   value, one wrapper deep. There is no mock object and no mock class to

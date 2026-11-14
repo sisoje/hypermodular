@@ -2094,6 +2094,27 @@
     `static let` for `@Model` fixtures, since a row needs the same
     instance across waves, and a write to the delegate's forwarder
     during `body`, to a plain class.
+  - **F88, the sequence is the test, and a model's entry is its
+    name.** Three runs had reported that a `@Model` logs as its type
+    name, so that no test can tell which record was handed on, F71's
+    two and F87, and the agent listed it each time as open for a
+    ruling. The owner, 2026-11-14: "i always said, actual values do
+    not matter so much for the test, more important is the sequence".
+    It was ruled on 2026-11-09, the names are the contract and a
+    value is asserted as the author sees fit, and the skill then
+    undid it with an example, "a model by its title", which no log
+    can give. That example is gone from `SKILL.md`, and it, the map
+    skill, and `notation.md` say the sequence is what the test
+    proves and a model's entry is asserted by its name alone. F71's
+    and F87's open notes on it are closed by this. Of the rest of
+    F87's list the owner said he did not understand what he was
+    being asked, and nothing was his to answer. The coupling
+    diagram's form for a flow is the one the run drew, a class marked
+    `<<flow>>` with its signature, written into Diagram 2 as the
+    agent's default. The forwarding code sitting in a dependency
+    package is what the run did on its own, so that default stands.
+    A notification tap that launches the app is a measurement the
+    agent owes and no sentence of a skill claims.
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A

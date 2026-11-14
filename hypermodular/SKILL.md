@@ -259,7 +259,9 @@ identity rules, and the multi-root and `Unmounted` forms are in
 
 A `classDiagram` of the shared vocabulary: models and service
 signatures. Field names without elaboration. Services as bare closure
-signatures, a result after the parens, `save(Address) path`. `..>`
+signatures, a result after the parens, `save(Address) path`. A flow
+is a class marked `<<flow>>` with its one signature,
+`reminderTapped(id)`. `..>`
 records consumption. Coupling is consumption, not
 visibility. Everything is visible to everyone, and only use creates a
 line. A signature here is dictated by the nodes that consume it, not
@@ -409,7 +411,9 @@ exactly the out-arrows, in their order where the criterion names one;
 where it does not, the test sorts them into one fixed order before
 comparing. A payload is written as the criterion
 names it, a `Book` by its title. The names are what a test asserts
-exactly; a value is asserted as the test's author sees fit. Dashed arrows back are supplied data,
+exactly, in their sequence, which is what the test proves. A value is
+asserted where the author can read it, and a model, which logs as its
+type name, by its name alone. Dashed arrows back are supplied data,
 not entries. A stimulus is `User`, `System`, or a child firing a
 callback the parent handed it (`AddItem->>ShoppingList: onAdd eggs`),
 which is the only way an event reaches a parent from inside its own
