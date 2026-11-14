@@ -2603,6 +2603,16 @@
     returns the content ran as it stands, `update()` ten times before
     a tap, the tap from the background heard. So the injector is that
     view, behind the same `injectReminders()`.
+    The owner, of that view: "this is not swiftui, looks weird and
+    need to be viewmodifier not view", and "it is dyn prop so use
+    "@ ReminderTaps var... "". So the injector is a view modifier
+    again and the dynamic property is a property wrapper. Probed with
+    console prints, which bodies make a modifier that carries a
+    dynamic property run: `content`, `Group { content }`, and
+    `content.modifier(EmptyModifier())` did not, no `update()` and no
+    `@State`; `content.transformEnvironment(\.self) { _ in }` did, and
+    with it a tap from the background went delegate, closure, flow,
+    listener. The modifier's `body` is that line.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

@@ -453,29 +453,30 @@ final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
 }
 
 // A dynamic property. The delegate, and the flow's closure handed to it.
+@propertyWrapper
 struct ReminderTaps: DynamicProperty {
     @State private var delegate = ReminderDelegate()
     @Environment(\.reminderTapped) private var reminderTapped
+
+    var wrappedValue: Void { () }
 
     func update() {
         delegate.onResponse = { reminderTapped($0.notification.request.identifier) }
     }
 }
 
-// The injector is a view that wraps its content and changes nothing.
-struct RemindersInjector<Content: View>: View {
-    private var taps = ReminderTaps()
-    let content: Content
+// The injector declares the property. The one line in its body is
+// there so that the modifier runs, and it changes nothing.
+struct RemindersInjector: ViewModifier {
+    @ReminderTaps private var reminderTaps
 
-    init(content: Content) { self.content = content }
-
-    var body: some View {
-        content
+    func body(content: Content) -> some View {
+        content.transformEnvironment(\.self) { _ in }
     }
 }
 
 public extension View {
-    func injectReminders() -> some View { RemindersInjector(content: self) }
+    func injectReminders() -> some View { modifier(RemindersInjector()) }
 }
 
 // The root. The modifier sits inside the collector.
@@ -503,13 +504,16 @@ Six things hold, each measured.
   hand-over is repeated on purpose. It ran ten times before a tap, and
   the tap reached the listener through the closure handed over last.
   The hand-over as a line in a `body` behaved the same.
-- **The injector is a view, since a view modifier whose `body` returns
-  `content` untouched does not run.** In that modifier `body` was not
-  called, `update()` did not run, and the `@State` was not made, so
-  the delegate did not exist and nothing was heard. With any modifier
-  applied to `content` it ran. A view that holds its content and
-  returns it ran as it stands, so the injector changes nothing and
-  needs nothing to set.
+- **A view modifier whose `body` returns `content` untouched does not
+  run.** In that modifier `body` was not called, `update()` did not
+  run, and the `@State` was not made, so the delegate did not exist
+  and nothing was heard. `Group { content }` and
+  `content.modifier(EmptyModifier())` did not run either. With
+  `content.transformEnvironment(\.self) { _ in }` or
+  `content.opacity(1)` it ran. So the injector applies the first,
+  which changes nothing, and a modifier that already sets a contract
+  needs no such line. A view that holds its content and returns it
+  also ran as it stands.
 - **A tap with the app running or in the background reaches the
   listener.** Delegate, closure, flow, listener, in that order.
 - **A tap that launches the app is not delivered in this form.** The

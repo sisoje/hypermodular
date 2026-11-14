@@ -1046,10 +1046,11 @@ and why, where it is broken.
   notification, the same form holds. The delegate holds no state. A
   dynamic property in the dependency keeps it in a private `@State`
   and hands it a closure in `update()`, and the closure calls the
-  flow. The dependency's `inject` wraps the content in a view that
-  declares that property and returns the content unchanged. It is a
-  view because a view modifier whose `body` returns `content`
-  untouched does not run. A tap
+  flow. The dependency's `inject` modifier declares that property. A
+  view modifier whose `body` returns `content` untouched does not
+  run, so where the modifier sets nothing it applies one line that
+  changes nothing, `content.transformEnvironment(\.self) { _ in }`.
+  A tap
   that launches the app comes before the first screen and is not
   delivered in this form. An app that has to open on it keeps the
   response as data in a dynamic property the `App` declares, read in
