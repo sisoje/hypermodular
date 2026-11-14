@@ -227,7 +227,10 @@ No figurative phrasing, no padding. A cleanup keeps every fact. Rewrite
 the sentence, do not drop what it said. The clarity test for the code
 skill is `data-coupling/scripts/comprehension-prompt.md`, and
 `comprehension-prompt-2.md` covers the binding, networking, and layer
-passages the first does not reach. The mapping skill's test is
+passages the first does not reach. `comprehension-prompt-3.md` covers
+what a value built from an input is, where work is started, the
+lifecycle modifiers, and an event from the external system, and its
+design task is a brief in a manager's words. The mapping skill's test is
 `hypermodular/scripts/comprehension-prompt.md`. Hand any of them,
 verbatim and with nothing else, to a model that has not read the skill
 (`codex exec -C . -s read-only -m <model> - < that file`, or a fresh

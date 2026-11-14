@@ -2015,6 +2015,17 @@
     `.task` pass. The unheld `Task` warning no longer ends "or use
     .task". Three findings planted in the broken fixture and asserted
     by `test.sh`, the clean fixture still at zero.
+  - **F86, a third comprehension prompt.** From the same list. None
+    of F72 to F83 had a question in either prompt of the code skill.
+    `data-coupling/scripts/comprehension-prompt-3.md` has ten, on the
+    seed, the lazy seed, a query or an object built in an `init`, the
+    load started by the action, `.task(id:)`, `.onChange`, the launch
+    load, an event from the external system, the struct against the
+    view on screen, and the principle by name. Its design task is a
+    brief as F82 asks, a recipes app, a link, and a timer that stops
+    in the background, with no word of architecture. The two older
+    prompts and their baselines are untouched. Not yet run on any
+    model.
     Codex Astra at high effort then judged the table row by row, the
     owner: "can you ask astra and lets discuss after answer?". Two
     rows correct, six loose, three wrong as equivalences. A
