@@ -365,7 +365,10 @@ flow. `.collectFlow(\.deeplink)` goes on the accumulator at the top of
 the subtree, `.onFlow(\.deeplink) { … }` on each listener, and
 `@Environment(\.deeplink)` hands any node below a real closure that
 calls every registered listener. It is scoped to the subtree under its
-accumulator. Unmounting unregisters, and nothing leaks. One accumulator
+accumulator. Unmounting unregisters, and nothing leaks. A flow is
+collected once on a branch. Collecting it a second time inside the
+first is the app's own responsibility, and the library does not check
+for it. One accumulator
 at the app root that every event of the app goes through is the global
 bus this avoids. Name a flow for what the caller means. A verb is a
 command whose listeners are the implementation (`deeplink`). A
