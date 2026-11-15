@@ -171,7 +171,9 @@ that node calls `navService`.
   The lines are the node's entire outbound relationship with the world.
   A name-only label receives everything and calls nothing.
 - **A node is a collapsed subtree.** Rows, buttons, and design-system
-  pieces are furniture. A subtree is a node only when it joins the app
+  pieces are furniture. A row or a button that calls a closure its
+  node was handed is still furniture, and the call is the node's, a
+  line on the node's label. A subtree is a node only when it joins the app
   lifecycle on its own: own outliving state, appearance work, a
   navigation destination, its own boundary call or callback. The map draws
   persisted nodes, the ones the runtime keeps a slot for. A

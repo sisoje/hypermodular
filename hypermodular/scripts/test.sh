@@ -46,6 +46,7 @@ code: AddBookField: AddBookField.swift calls bookStore.upsert() with no line on 
 code: BookList: @AppStorage below the root in BookList.swift (F32: the root owns the keys, a feature receives a binding)
 code: Furniture (Furniture.swift): on no map, reads dependency bookStore
 code: SaveButton.swift: a Task nobody holds, 'Task {' (F37: assign it to a slot the node holds)
+code: Furniture.swift: a Task nobody holds, 'func each(_ items: [Int], limit: Int = 3) { item' (F37: assign it to a slot the node holds)
 code: SaveButton: SaveButton.swift calls deeplink() with no line on the label
 code: Furniture.swift: a lifecycle modifier in a view, '.onAppear { }' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)
 code: Furniture.swift: a lifecycle modifier in a view, '.task(id: 1) { }' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)

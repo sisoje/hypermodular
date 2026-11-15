@@ -24,8 +24,10 @@ evidence target that is no stored property, and a view on no map that
 reads a cylinder, and a presence-condition arrow whose label names
 nothing the node holds, and a flow called with no label line; with
 the two planted stale labels that is nine code errors and one
-warning. Three more warnings are planted for habits no map can show,
-a `Task` nobody holds and two lifecycle modifiers in a view.
+warning. Four more warnings are planted for habits no map can show,
+two `Task`s nobody holds and two lifecycle modifiers in a view. One
+of the two tasks is made in a closure handed to `map`, on a line
+whose only `=` is a default argument (F106).
 `Furniture` also assigns a task through an optional's `map`, on one
 line and on two. That task is held and raises nothing (F99).
 

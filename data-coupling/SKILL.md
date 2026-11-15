@@ -1063,8 +1063,9 @@ and why, where it is broken.
   notification, the same form holds, with one piece more. The
   delegate is a `let` of the `App`, built in its `init`, the one
   place where it exists in time for a tap that launches the app. It
-  keeps nothing the system hands it. It yields the system's whole response into an
-  `AsyncStream`, where the tap waits until it is read. The stream
+  keeps nothing the system hands it. It yields the system's whole
+  response into an `AsyncStream`, where the tap waits until it is
+  read. The stream
   with its continuation is a second `let` of the `App`, the pair
   `AsyncStream.makeStream()` returns. The delegate is built in `init`
   from the continuation, and the stream is handed to the dependency's
@@ -1077,8 +1078,8 @@ and why, where it is broken.
   other. The stream holds it, the task reads it once the runtime
   runs, and the flow hands it to the listeners. No state is written
   on the way. The system's value as a fact, a cover shown while the
-  scene is inactive, is still data a node reads. The form with its code, the scenario included, is in
-  `references/modules.md`.
+  scene is inactive, is still data a node reads. The form with its
+  code, the scenario included, is in `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
 - **Designing for the what-if.** "What if someone forgets to set the

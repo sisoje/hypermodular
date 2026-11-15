@@ -102,7 +102,9 @@ for what has to exist before that. The app's own lifecycle starts
 before the runtime's. An event that comes in that earlier part, a tap
 on a notification that launches the app, is brought into the runtime's
 lifecycle. The class yields it into a stream, a task in the runtime
-reads the stream, and the task calls a flow (`modules.md`).
+reads the stream, and the task calls a flow (`modules.md`). A node
+that listens to the flow writes its own state, and the screens are a
+projection of that state.
 
 ```mermaid
 flowchart LR

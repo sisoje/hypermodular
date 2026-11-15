@@ -2900,6 +2900,35 @@
     closure for a button beside a write to an ancestor's state being
     a binding, the furniture line against "its own callback", and
     where a map file sits against the checker's `Maps/`.
+  - **F106, the seven commits F99 to F105 read again, and four things
+    put right.** 2026-11-16, the owner: "fix best". First, F99's
+    pattern took any `=` earlier on the line for the assignment, so
+    `func f(a: Int = 3) { xs.map { Task { … } } }` passed as held. The
+    checker now reads only the statement the `map` is in, the text
+    after the last brace still open or the last `;`, and asks that
+    it be an assignment, `let` or `var` and a `case` before it
+    allowed, `_` and a comparison refused. Twenty-one forms were
+    tried, eleven held and ten not, all as meant. The broken fixture
+    plants the default-argument line, the checker before this change
+    passes it, and the two apps on the Desktop that were built last
+    still check with 0 errors and 0 warnings. Second, F101 had
+    dropped "and the screens are a projection of it" from
+    `data-flow.md` with the sentence it closed. The fact holds in the
+    new form and is back. A node that listens to the flow writes its
+    own state, and the screens are a projection of that state. Third,
+    the mapping prompt's new wording was run, Sonnet at medium
+    effort. Eight of eight, the five files under `Maps/`, the
+    evidence in a flow file of its own in the node's directory, the
+    top node's parent link `(../../APP-MAP.md)`, 0 errors from the
+    checker, and the four warnings the prompt leaves, three nodes it
+    asks no evidence for and the whole-app diagram the checker draws.
+    Fourth, two lines of the notification passage rewrapped. One
+    sentence more, from that run's list. Three readers had now
+    stopped at furniture against "its own callback", Haiku, Codex,
+    and Sonnet. The mapping skill says a row or a button that calls a
+    closure its node was handed is still furniture and the call is
+    the node's, a line on the node's label, which is what the clean
+    fixture's `SaveRow` and the checker already hold.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

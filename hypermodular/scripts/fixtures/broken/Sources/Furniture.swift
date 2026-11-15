@@ -18,4 +18,7 @@ struct Furniture: View {
             Task { _ = item }
         }
     }
+
+    // planted: the only `=` on the line is a default argument, so nobody holds this task
+    func each(_ items: [Int], limit: Int = 3) { items.map { item in Task { _ = item } } }
 }

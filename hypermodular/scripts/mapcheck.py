@@ -184,7 +184,8 @@ MATERIALIZERS = [("@Query", "@Query"), ("QueryView(", "@Query"), ("@SceneStorage
 
 SKIPPED_DIRS = {".build", "DerivedData", "SourcePackages"}   # build output is never the app's source
 TASK = re.compile(r"\bTask\s*(?:\.detached\s*)?[({]")
-MAPPED = re.compile(r"(?<![=!<>])(?<!\b_)(?<!\b_\s)=(?!=).*\.(?:map|flatMap)\s*\{(?:[^{}]*\bin)?$")   # slot = optional.map { Task { } } is assigned
+MAP_OPEN = re.compile(r"\.(?:map|flatMap)\s*\{(?:[^{}]*\bin)?$")   # the closure whose result the Task is
+ASSIGNMENT = re.compile(r"^\s*(?:(?:case\b[^:]*|default)\s*:\s*)?(?:(?:let|var)\s+)?(?!_\b)[\w.$\[\]?]+(?:\s*:[^=]+)?\s*=(?!=)")
 LIFECYCLE = re.compile(r"\.(?:task\s*\(\s*id\s*:|onChange\s*\(|onAppear\b|onOpenURL\b|onContinueUserActivity\b)")
 
 class SwiftType:
@@ -259,6 +260,16 @@ def facts(t):
         if len(re.findall(rf"\b{c}\b", body)) > 1: f["callbacks_called"].add(c)
     return f
 
+def assigned_through_map(before):
+    """`slot = optional.map { Task { } }` assigns the task. Only the statement the `map` is in is read,
+    the text after the last brace still open or the last `;`, so a default argument or a comparison
+    earlier on the line is not taken for the assignment."""
+    m = MAP_OPEN.search(before)
+    if not m: return False
+    statement, closed = before[:m.start()], re.compile(r"\{[^{}]*\}")
+    while closed.search(statement): statement = closed.sub("", statement)
+    return bool(ASSIGNMENT.search(re.split(r"[{;]", statement)[-1]))
+
 def check_habits(dirs):
     """A rule of the code skill that no map can show. A warning, since a rule may be broken on purpose."""
     for d in dirs:
@@ -276,9 +287,9 @@ def check_habits(dirs):
                 before = ln[:m.start()].rstrip()
                 if not before:   # the assignment may end the line above
                     before = next((l.rstrip() for l in reversed(lines[:i]) if l.strip()), "")
-                    before = before if before.endswith("=") or MAPPED.search(before) else ""
+                    before = before if before.endswith("=") or assigned_through_map(before) else ""
                 discarded = re.search(r"(?:^|[\s({,;])_\s*=$", before)
-                held = (before.endswith("=") and not discarded) or MAPPED.search(before) or re.search(r"\b(?:return|await)$", before)
+                held = (before.endswith("=") and not discarded) or assigned_through_map(before) or re.search(r"\b(?:return|await)$", before)
                 if not held: warn("code", f"{p.name}: a Task nobody holds, '{ln.strip()[:48]}' (F37: assign it to a slot the node holds)")
 
 def check_code(dirs, cyls, treeroots):
