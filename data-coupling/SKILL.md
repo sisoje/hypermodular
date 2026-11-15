@@ -1053,14 +1053,12 @@ and why, where it is broken.
   delegate is a `let` of the `App`, built in its `init`, the one
   place where it exists in time for a tap that launches the app. It
   keeps no value. It yields the system's whole response into an
-  `AsyncStream`, where the tap waits until it is read. The stream's
-  holder is a second `let` of the `App`, a plain class with an inline
-  value, handed to the delegate in `init` and to the dependency's
-  `inject` modifier as a parameter. The modifier's `.task` reads the
-  stream for as long as the app runs and calls a closure that `body` hands over on
-  every pass, and that closure calls the flow. The hand-over is there
-  because a flow's closure holds the listeners of the pass it was
-  read in. So a tap that launches the
+  `AsyncStream`, where the tap waits until it is read. The stream
+  with its continuation is a second `let` of the `App`, the pair
+  `AsyncStream.makeStream()` returns. The delegate is built in `init`
+  from the continuation, and the stream is handed to the dependency's
+  `inject` modifier, whose `.task` reads it for as long as the app
+  runs and calls the flow. So a tap that launches the
   app reaches the listener too. The collector is applied at the root,
   after that modifier (`references/modules.md`). The
   `App` is a

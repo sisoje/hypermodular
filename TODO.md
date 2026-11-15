@@ -2727,6 +2727,34 @@
     "variable 'self.reminderDelegate' used before being initialized"
     at the read in `init`. A plain `-typecheck` did not show that
     error, a full compile did. The text has the `let` form.
+  - **F98, a flow's closure looks up its listeners when it is called,
+    and the emitter is gone.** The owner, 2026-11-15, of the emitter:
+    "maybe i have a design flow in flowup because calling a flow
+    should not need this workaround with emiter?", then "maybe we
+    need to expose a caller class in environment directly and never a
+    closur?", then "d local cjange in coreflow dont commit". The
+    change is in the `~/dev/CoreFlow` working copy, three files, not
+    committed: a caller object per collector that holds the current
+    listeners and is the collector's one value in the environment,
+    the generated closure reading it at call time, and the four
+    expected expansions updated. The declared type of a flow and
+    every call site are unchanged. The library's tests pass, 85 and
+    38. Probed against that working copy: a plain `.task` that calls
+    the flow, with no emitter, heard a tap that launched the app and
+    a tap from the background, and the stack flow test passes. One
+    behavior change: a listener now hears an event emitted very
+    early, the first `active` scene phase at launch, which the
+    earlier closure dropped. Then, "does delegate need continuation?
+    and does ReminderTaps need to be a class?". The delegate needs
+    the continuation and only that. The holder class is not needed,
+    the pair `AsyncStream.makeStream()` returns is kept by the `App`
+    as one inline `let`. Probed in that shape, a tap that launched
+    the app heard, two of two, a tap from the background, two of two.
+    `modules.md` and the skill give that form. It depends on the
+    library change, which is the owner's to commit. Until then the
+    released library needs the emitter, as F96 and F97 record. Not
+    checked in the library: nested collectors, a flow with `async` or
+    `throws` at run time, listeners going away and coming back.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
