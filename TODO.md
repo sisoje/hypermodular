@@ -2865,6 +2865,19 @@
     the binding both changed the object and both fired
     `withObservationTracking`. The notification form is not changed
     by this. It carries an event, and it has no state to keep.
+  - **F104, the addresses engine run on Haiku, high effort, and no
+    rule from it.** 2026-11-15. The checker 0 errors, 0 warnings, 0
+    unverified, nine UI tests green in the simulator, rerun, and the
+    declared logs equal to the test arrays. It wrote the code before
+    the maps and pinned the evidence to a measured run. Its one
+    finding outside the compiler and the tests was measured. SwiftData
+    did not write an insert within ten seconds and lost it when the
+    app was killed in the foreground, two of two at each wait. It
+    wrote on going to the background, and an explicit
+    `context.save()` kept it, two of two each. The owner: "we said
+    dont pollute skills with instructions for idiots, we care about
+    architecture mostly, not some stupid save". The skill is not
+    changed.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
