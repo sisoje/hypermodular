@@ -2755,6 +2755,17 @@
     released library needs the emitter, as F96 and F97 record. Not
     checked in the library: nested collectors, a flow with `async` or
     `throws` at run time, listeners going away and coming back.
+    The owner: "listeners going away and coming back - we need to
+    check". Checked with the scratch app, two listeners under one
+    collector, a task holding the flow's closure from its first pass
+    and fed by a stream. With the listeners in, both heard. With them
+    out, nothing was heard and nothing failed. Put back, the two new
+    ones heard, and again after a second round. Then "commit
+    coreflow?". The library's `test.sh` passed, its unit tests and 23
+    hosted UI tests, its `AGENTS.md` says what the closure captures
+    now, and the change is committed in `~/dev/CoreFlow` on `main`,
+    not pushed. The library has no hosted test of its own yet for a
+    closure held across passes.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
