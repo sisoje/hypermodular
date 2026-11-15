@@ -2846,6 +2846,25 @@
     Open with the owner: whether "where there is state to write, it
     holds a binding to state kept beside it" (F94) stays as the rule
     for a delegate, now that the notification form has no binding.
+  - **F103, state that has to exist before the runtime is an
+    `@Observable` class in a `let` of the `App`.** The owner's answer
+    to F102's open question, 2026-11-15: "if we need state to exist
+    before swiftui runtime "mounts" it then we use a simple let to
+    store observable class dude! because app is like a singleton and
+    let is sufficient to hold the reference and updates will work
+    because we can pass entire reference or binding to its property
+    whatever is needed". So the binding sentence stays, and the
+    state it writes at launch is named. This is F97's rule, a class
+    the `App` holds as a `let`, said for data. Measured before, F92:
+    a closure made in the `App`'s `init` that writes a data-only
+    `@Observable` object the `App` keeps as a `let`, heard from a
+    cold launch and from the background. Measured now, compiled and
+    run outside any view: a struct with two `let`s built in `init`,
+    the object and a holder handed the reference and
+    `Bindable(object).id`. A write by the reference and a write by
+    the binding both changed the object and both fired
+    `withObservationTracking`. The notification form is not changed
+    by this. It carries an event, and it has no state to keep.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

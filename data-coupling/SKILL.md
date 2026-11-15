@@ -832,8 +832,13 @@ test. Data is the abstraction.
   kept beside it, so the state and the behavior stay two things. A
   delegate the system calls at launch, a notification's, is not
   owned by a modifier. It is a `let` of the `App`, built in its
-  `init`. No feature sees the class (`references/modules.md`).
-  `deinit` is the one
+  `init`. State that has to exist that early, before the runtime has
+  established the root's state, is an `@Observable` class in a `let`
+  of the `App` too. There is one `App` value, so a `let` is enough to
+  hold the reference. The delegate and the tree are handed the
+  reference, or a binding to one of its properties, and every write
+  reaches whoever reads it. No feature sees the delegate's class
+  (`references/modules.md`). `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
 - **A dependency is a package under `Dependencies/`.** Every
