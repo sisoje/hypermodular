@@ -424,9 +424,9 @@ modifier, a tap on a notification, the same form holds, with one piece
 more. A delegate is the framework's older form, an object the app
 registers and the system calls. It is kept by the `App`, since that is
 the one place where it exists in time for a tap that launches the app.
-It yields what the system hands it into a stream, the `App` puts the
-stream's holder into the environment, and a task in the dependency's
-modifier reads the stream and emits on the flow.
+It yields what the system hands it into a stream, the `App` hands the
+stream's holder to the dependency's modifier, and a task there reads
+the stream and emits on the flow.
 
 ```swift
 // The layer. The flow.
@@ -436,8 +436,7 @@ extension EnvironmentValues {
 
 // The dependency's package, the one place that sees UserNotifications.
 
-// The stream, in a class the environment can carry.
-@Observable
+// The stream, in a plain class.
 public final class ReminderTaps {
     public let stream: AsyncStream<UNNotificationResponse>
     let continuation: AsyncStream<UNNotificationResponse>.Continuation
@@ -475,14 +474,14 @@ final class ReminderEmitter {
 
 // The injector. Its task runs for as long as the app does.
 struct RemindersInjector: ViewModifier {
-    @Environment(ReminderTaps.self) private var taps
+    let taps: AsyncStream<UNNotificationResponse>
     @Environment(\.reminderTapped) private var reminderTapped
     @State private var emitter = ReminderEmitter()
 
     func body(content: Content) -> some View {
         emitter.emit = { reminderTapped($0.notification.request.identifier) }
         return content.task {
-            for await response in taps.stream {
+            for await response in taps {
                 emitter.emit(response)
             }
         }
@@ -490,27 +489,26 @@ struct RemindersInjector: ViewModifier {
 }
 
 public extension View {
-    func injectReminders() -> some View { modifier(RemindersInjector()) }
+    func injectReminders(_ taps: ReminderTaps) -> some View {
+        modifier(RemindersInjector(taps: taps.stream))
+    }
 }
 
-// The root. Both classes are `let`s of the `App`, built in its `init`.
+// The root. Both classes are `let`s of the `App`.
 @main
 struct GardenApp: App {
-    private let reminderTaps: ReminderTaps
+    private let reminderTaps = ReminderTaps()
     private let reminderDelegate: ReminderDelegate
 
     init() {
-        let taps = ReminderTaps()
-        reminderTaps = taps
-        reminderDelegate = ReminderDelegate(taps)
+        reminderDelegate = ReminderDelegate(reminderTaps)
     }
 
     var body: some Scene {
         WindowGroup {
             PlantList()
-                .injectReminders()
+                .injectReminders(reminderTaps)
                 .collectFlow(\.reminderTapped)
-                .environment(reminderTaps)
         }
     }
 }
@@ -534,17 +532,21 @@ Nine things hold, each measured.
   order was the delegate's callback, the modifier's first `body`, the
   task starting, one more `body`, the task emitting, the listener
   called.
-- **The stream's holder and the delegate are `let`s of the `App`,
-  built in its `init`.** They were made before the app delegate's
-  launch callback and before the `App`'s first `body`, and the
+- **The stream's holder and the delegate are `let`s of the `App`.**
+  The holder has an inline value and the delegate is built from it in
+  `init`. They were made before the app delegate's launch callback and
+  before the `App`'s first `body`, and the
   system's callback for a tap that launched the app came after that
   `body` and before the first screen. The delegate as a private
   `@State` of the `App` was in time too. A delegate made in a view
   modifier inside the window is made with the first screen, and that
   tap was not delivered to it.
-- **The holder is `@Observable` only so that the environment carries
-  it.** It has two `let`s and nothing is observed. The injector reads
-  it with `@Environment(ReminderTaps.self)`.
+- **The holder is a plain class, and a `let`, not `@State`.** It is
+  handed down as a parameter, so it needs no `@Observable`. Put into
+  the environment as an `@Observable` class it worked the same. As
+  `@State` it does not build. The compiler refuses to read it in
+  `init` before the delegate, the property being assigned, is
+  initialized.
 - **The stream keeps the tap until someone reads it.** That is what
   carries a tap across the time between the system's callback and the
   first listener. The delegate stores no value of its own.

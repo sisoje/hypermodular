@@ -1054,10 +1054,10 @@ and why, where it is broken.
   place where it exists in time for a tap that launches the app. It
   keeps no value. It yields the system's whole response into an
   `AsyncStream`, where the tap waits until it is read. The stream's
-  holder is a second `let` of the `App`, handed to the delegate in
-  `init` and put into the environment. The dependency's `inject`
-  modifier reads it there, and its `.task` reads the stream for as
-  long as the app runs and calls a closure that `body` hands over on
+  holder is a second `let` of the `App`, a plain class with an inline
+  value, handed to the delegate in `init` and to the dependency's
+  `inject` modifier as a parameter. The modifier's `.task` reads the
+  stream for as long as the app runs and calls a closure that `body` hands over on
   every pass, and that closure calls the flow. The hand-over is there
   because a flow's closure holds the listeners of the pass it was
   read in. So a tap that launches the

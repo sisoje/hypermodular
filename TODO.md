@@ -2717,6 +2717,16 @@
     again when a listener registers. Not built. The owner: "dont
     change flowup now, go with emiter workaround in the app itself".
     It is the open item for swift-core-flow.
+    Then: "observable is not needed dude for ReminderTaps why you put
+    it? also taps you can init inline, so you can make it a state
+    also to look nicer?". It had been put there for `.environment`,
+    which takes an `@Observable` class. Probed: the holder as a plain
+    class, a `let` with an inline value, handed to the injector as a
+    parameter, a tap that launched the app heard, two of two, and
+    from the background, two of two. As `@State` it does not build,
+    "variable 'self.reminderDelegate' used before being initialized"
+    at the read in `init`. A plain `-typecheck` did not show that
+    error, a full compile did. The text has the `let` form.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
