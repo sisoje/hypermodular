@@ -2772,6 +2772,12 @@
     run once against the code before the change, where the log shows
     no listener reached. The library's `test.sh` passed with it, 24
     hosted UI tests, and it is committed there, not pushed.
+    Nested collectors of one flow, which the agent had listed as
+    unchecked, are out of scope by the owner's ruling the same day: a
+    flow is collected once, and collecting it twice on one branch is
+    a mistake in the app, not a case the library guards for. Left
+    unchecked on purpose. Still unchecked and in scope: a flow with
+    `async` or `throws` called through a held closure.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
