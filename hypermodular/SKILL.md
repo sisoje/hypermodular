@@ -317,7 +317,9 @@ merges the labels.
   `../data-coupling/references/modules.md`.
 - Name the boundary, not the tech: `dbService`, not `swiftData`. Native
   materialization (`@Query`) gets no cylinder. The root does not set
-  it. It is facts arriving, tagged on the node label. The root's own
+  it. It is facts arriving, tagged on the node label. A feature has no
+  `@AppStorage` of its own, and the checker with `--sources` reports
+  one below the root as an error (F32). The root's own
   `@AppStorage` reaches features through a `settings` cylinder, a
   struct of bindings; handed through the inits of nodes that do not use
   it, the write would land on each of their labels. Nor does a sealed

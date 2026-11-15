@@ -388,7 +388,10 @@ Every rule in this skill is there so that the code follows one
 principle, functional core, imperative shell. The core decides, as a
 function of what it was handed. The shell is everything that touches
 the runtime's storage or the world outside the app. The line SwiftUI
-offers is I/O versus pure transformation, not UI versus logic. A view with live wrappers is the shell. `@State` installs
+offers is I/O versus pure transformation, not UI versus logic. A view
+with live wrappers, the ones that install storage or talk to the
+runtime, is the shell. A binding and an environment value are data in,
+and a core reads them. `@State` installs
 real storage on render, `@Query` talks to a real `ModelContext`,
 `@AppStorage` reads `UserDefaults`. That I/O is fused into the type and
 runs only inside a live render pipeline. The core is the same `body`
@@ -1060,7 +1063,7 @@ and why, where it is broken.
   notification, the same form holds, with one piece more. The
   delegate is a `let` of the `App`, built in its `init`, the one
   place where it exists in time for a tap that launches the app. It
-  keeps no value. It yields the system's whole response into an
+  keeps nothing the system hands it. It yields the system's whole response into an
   `AsyncStream`, where the tap waits until it is read. The stream
   with its continuation is a second `let` of the `App`, the pair
   `AsyncStream.makeStream()` returns. The delegate is built in `init`

@@ -2878,6 +2878,28 @@
     dont pollute skills with instructions for idiots, we care about
     architecture mostly, not some stupid save". The skill is not
     changed.
+  - **F105, the four comprehension prompts on Codex gpt-6.1-sol, high
+    effort.** 2026-11-15. Every question right on all four, six, six,
+    ten, and eight, and each design the expected one. The third
+    prompt's design is the first to build the notification form as
+    the skill gives it, the stream and the delegate as `let`s of the
+    `App`. The mapping prompt's maps raised 0 errors. Four fixes,
+    the owner's word "fix 1-4". The mapping prompt asked for the
+    evidence inside `Library/MAP.md` and for paths without `Maps/`,
+    the layout before F61 and F63, and the reader followed it. It
+    now names the `Maps/` paths and asks for the evidence block in
+    the file the skill gives it. In the code skill, "A view with
+    live wrappers is the shell" names the wrappers, the ones that
+    install storage or talk to the runtime, and says a binding and an
+    environment value are data in that a core reads. The delegate
+    "keeps nothing the system hands it", where "keeps no value" was
+    read against the continuation it holds. The mapping skill says a
+    feature has no `@AppStorage` of its own and that the checker with
+    `--sources` reports one below the root (F32), which the reader
+    had found only in `notation.md`. Left: the screen-first table's
+    closure for a button beside a write to an ancestor's state being
+    a binding, the furniture line against "its own callback", and
+    where a map file sits against the checker's `Maps/`.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
