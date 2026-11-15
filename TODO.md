@@ -2829,6 +2829,23 @@
     over that state (F91 to F95), were the wrong reading of the
     problem. They treated it as where state lives, and it was a
     crossing between two lifecycles.
+  - **F102, the second comprehension prompt on Haiku, high effort.**
+    2026-11-15, six of six, and the expected design, `Account` with
+    `let email` and a binding to the token, the log `["token nil"]`,
+    the keychain in the setter the root builds, the login screen a
+    projection at the root. It opened no reference file. Three
+    sentences of `SKILL.md` fixed from its list. "All three are data
+    in" stood before "All three groups" and now reads "The three
+    references". The delegate yields into "a stream whose write end
+    it was handed", where "a stream it offers" was the form before
+    F98, and the delegate the system calls at launch is said to be
+    owned by no modifier, where the general owner and the `App`'s
+    `let` read as a contradiction. "Furniture" has a row in the
+    vocabulary. Seen in both Haiku runs and left: an effect in a
+    setter the root builds has no test, the root having no scenario.
+    Open with the owner: whether "where there is state to write, it
+    holds a binding to state kept beside it" (F94) stays as the rule
+    for a delegate, now that the notification form has no binding.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

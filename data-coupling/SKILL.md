@@ -269,8 +269,9 @@ source of most broken SwiftUI mental models.
   binding is a `get`/`set` pair an ancestor built and handed in at the
   initializer. An environment value is one an ancestor set above with
   `.environment(...)`. A query is a filtered read of the store the root
-  opened. All three are data in. UI-runtime machinery (`@GestureState`, `@FocusState`,
-  `@Namespace`, `@ScaledMetric`) holds nothing a caller could supply.
+  opened. The three references are data in. UI-runtime machinery
+  (`@GestureState`, `@FocusState`, `@Namespace`, `@ScaledMetric`)
+  holds nothing a caller could supply.
   All three groups resolve only inside a `View`, `App`, `Scene`,
   `ViewModifier`, or another `DynamicProperty`. The one exception is
   `@Binding`, a plain `get`/`set` pair that works in any struct, a
@@ -826,12 +827,13 @@ test. Data is the abstraction.
   observation, and even then it stays pure data. A delegate a framework
   requires is a class too, private to the root modifier that owns it.
   It holds no state. It yields the whole value the system gave into
-  a stream it offers, or calls a closure it was handed. Where there
-  is state to write, it holds a binding to state kept beside it, so
-  the state and the behavior stay two things. One the system calls at
-  launch, a notification's, is a `let` of the `App`, built in its
-  `init`. No
-  feature sees the class (`references/modules.md`). `deinit` is the one
+  a stream whose write end it was handed, or calls a closure it was
+  handed. Where there is state to write, it holds a binding to state
+  kept beside it, so the state and the behavior stay two things. A
+  delegate the system calls at launch, a notification's, is not
+  owned by a modifier. It is a `let` of the `App`, built in its
+  `init`. No feature sees the class (`references/modules.md`).
+  `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
 - **A dependency is a package under `Dependencies/`.** Every
@@ -1148,6 +1150,7 @@ The articles' terms. Use them. They make discussion precise in a way
 | reshaping | a wave that changes structure, not only values; the rare case |
 | reference | `@Binding`, `@Environment`, or `@Query`: holds no state. A binding is a `get`/`set` pair an ancestor built and handed in at the initializer; an environment value is one an ancestor set above with `.environment(...)`; a query is a filtered read of the store the root opened |
 | machinery | Apple's UI-runtime wrappers that hold no suppliable data (gestures, focus, namespaces, metrics) |
+| furniture | a view inside a node that is not a node itself, a row, a button, a design-system piece. It gets no node on the map, and what it calls is in the node's contract |
 | shell / core | the view owning the live property wrappers and services, one wherever the I/O is / the feature as pure transformation, values and closures in, children and boundary events out |
 | scenario | a test-host view owning real `@State`, handing down only logged boundaries |
 | preview chain | the scenario that stages a view, a file of its own beside the view, and the `#Preview` in the view's file that shows it |
