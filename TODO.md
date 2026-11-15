@@ -2929,6 +2929,36 @@
     closure its node was handed is still furniture and the call is
     the node's, a line on the node's label, which is what the clean
     fixture's `SaveRow` and the checker already hold.
+  - **F107, F101's sentence set against the measurement.** 2026-11-16,
+    the owner: "fix all but think once more". F101 had the skill say
+    that the system may call the delegate in the earlier part of the
+    app's lifecycle, in `SKILL.md`, `modules.md`, and `data-flow.md`.
+    The order measured for the form, written in `modules.md`, is the
+    other way. The delegate and the stream were made before the app
+    delegate's launch callback and before the `App`'s first `body`,
+    and the tap's callback came after that `body`, before the
+    `inject` modifier's first `body` and before the first screen.
+    What belongs to the earlier part is the making of the delegate,
+    in the `App`'s `init`. The three places now say that, and that
+    the system's call comes before any screen or listener exists,
+    which keeps the owner's words of F101, a bridge from the app's
+    early lifecycle into the runtime's. The task reads the stream
+    once the runtime has built the modifier, where it said once the
+    runtime runs. Not written: that the delegate has to be made that
+    early. F92 measured a delegate as the `App`'s `@State`, made after
+    `didFinishLaunching`, in time too. The `let` in `init` is F97's
+    rule, not the only form that works. Two more from the same
+    reading. F106 had `data-flow.md` say that a node listening to the
+    flow writes its own state, and a listener writes or calls a
+    contract there, as `modules.md` gives it. And F106's furniture
+    sentence covered a closure the node was handed and left out one
+    the node makes and hands to its row, the case readers stopped
+    at. It now says a row or a button that calls a closure handed to
+    it is still furniture and the call is its node's, and that a
+    closure the node itself was handed is a line on the node's label.
+    The same two sentences are in `notation.md`, whose copy of the cut
+    rule had not had them. `reverse-engineering.md` lists the cut
+    rule without "or callback", as it did before, and is left.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

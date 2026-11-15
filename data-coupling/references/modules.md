@@ -505,8 +505,9 @@ struct GardenApp: App {
 ```
 
 The form answers one problem. The app's own lifecycle starts before
-the SwiftUI runtime's, the system may call the delegate in that
-earlier part, and the event has to be brought into the runtime's
+the SwiftUI runtime's, and the delegate is made in that earlier part,
+in the `App`'s `init`. The system calls it before any screen or
+listener exists, and the event has to be brought into the runtime's
 lifecycle. A stream, a task, and a flow do it.
 
 The event flows one way. The system calls the delegate. The delegate

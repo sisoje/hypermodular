@@ -99,12 +99,14 @@ node, like any view struct, and its creation is not a lifetime. What
 lives as long as the app is the root node's state, which the runtime
 establishes once, and a class instance the `App` holds as a `let`,
 for what has to exist before that. The app's own lifecycle starts
-before the runtime's. An event that comes in that earlier part, a tap
-on a notification that launches the app, is brought into the runtime's
-lifecycle. The class yields it into a stream, a task in the runtime
-reads the stream, and the task calls a flow (`modules.md`). A node
-that listens to the flow writes its own state, and the screens are a
-projection of that state.
+before the runtime's, and the class is made in that earlier part, in
+the `App`'s `init`. A tap on a notification that launches the app
+reaches it before any screen or listener exists, and is brought into
+the runtime's lifecycle. The class yields it into a stream, a task in
+the runtime reads the stream, and the task calls a flow
+(`modules.md`). A node that listens to the flow writes its state or
+calls a contract there, and the screens are a projection of the
+state.
 
 ```mermaid
 flowchart LR

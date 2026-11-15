@@ -75,7 +75,10 @@ everything and calls nothing. Nothing else goes in a label.
 - **A node is a collapsed subtree.** The screen plus all its view
   furniture (rows, buttons, design-system pieces) is one node. Internal
   attribution is meaningless. The node's contract is what crosses its
-  edge. A subtree becomes its own node only when it joins the app
+  edge. A row or a button that calls a closure handed to it is still
+  furniture, and the call is its node's. A closure the node itself was
+  handed is a line on the node's label. A subtree becomes its own node
+  only when it joins the app
   lifecycle on its own: own outliving state, appearance work, a
   navigation destination, or its own boundary call or callback. View modifiers
   follow the same rule. A modifier is a node only if it carries
