@@ -184,6 +184,7 @@ MATERIALIZERS = [("@Query", "@Query"), ("QueryView(", "@Query"), ("@SceneStorage
 
 SKIPPED_DIRS = {".build", "DerivedData", "SourcePackages"}   # build output is never the app's source
 TASK = re.compile(r"\bTask\s*(?:\.detached\s*)?[({]")
+MAPPED = re.compile(r"(?<![=!<>])(?<!\b_)(?<!\b_\s)=(?!=).*\.(?:map|flatMap)\s*\{(?:[^{}]*\bin)?$")   # slot = optional.map { Task { } } is assigned
 LIFECYCLE = re.compile(r"\.(?:task\s*\(\s*id\s*:|onChange\s*\(|onAppear\b|onOpenURL\b|onContinueUserActivity\b)")
 
 class SwiftType:
@@ -275,9 +276,9 @@ def check_habits(dirs):
                 before = ln[:m.start()].rstrip()
                 if not before:   # the assignment may end the line above
                     before = next((l.rstrip() for l in reversed(lines[:i]) if l.strip()), "")
-                    before = before if before.endswith("=") else ""
+                    before = before if before.endswith("=") or MAPPED.search(before) else ""
                 discarded = re.search(r"(?:^|[\s({,;])_\s*=$", before)
-                held = (before.endswith("=") and not discarded) or re.search(r"\b(?:return|await)$", before)
+                held = (before.endswith("=") and not discarded) or MAPPED.search(before) or re.search(r"\b(?:return|await)$", before)
                 if not held: warn("code", f"{p.name}: a Task nobody holds, '{ln.strip()[:48]}' (F37: assign it to a slot the node holds)")
 
 def check_code(dirs, cyls, treeroots):

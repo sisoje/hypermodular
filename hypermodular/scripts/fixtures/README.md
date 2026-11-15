@@ -26,6 +26,8 @@ nothing the node holds, and a flow called with no label line; with
 the two planted stale labels that is nine code errors and one
 warning. Three more warnings are planted for habits no map can show,
 a `Task` nobody holds and two lifecycle modifiers in a view.
+`Furniture` also assigns a task through an optional's `map`, on one
+line and on two. That task is held and raises nothing (F99).
 
 `sh scripts/test.sh` asserts the clean fixture has zero errors and the
 broken one reports exactly the planted list, nothing more, with and

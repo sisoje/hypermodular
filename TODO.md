@@ -2778,6 +2778,21 @@
     a mistake in the app, not a case the library guards for. Left
     unchecked on purpose. Still unchecked and in scope: a flow with
     `async` or `throws` called through a held closure.
+  - **F99, a task assigned through an optional's `map` is held.** A
+    Garden engine run, 2026-11-15, wrote `loadPhoto = item.map { item
+    in Task { … } }` and the checker warned "a Task nobody holds",
+    though the task is assigned to the slot. The agent rewrote correct
+    code to quiet the warning. The checker now reads an assignment
+    whose right side is `.map {` or `.flatMap {` as held, on one line
+    or with the `Task` on the line below. `onTap = { Task { … } }`,
+    `_ = item.map { Task { … } }`, and a comparison with `==` still
+    warn. The broken fixture's `Furniture` carries both held forms,
+    and the checker before this change warns on them. The same run's
+    other two findings got no rule, by the owner's word the same day,
+    "dont bloat the rules if agent can self-correct using compiler or
+    test": `@FlowUp public var` inside a `public extension` is
+    refused by the compiler, and the two writes of the empty text
+    when a field takes focus show in the test's log.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
