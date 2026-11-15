@@ -2683,6 +2683,40 @@
     yielded, which compiles under Swift 6 with the main actor as the
     default isolation. That spelling was compiled and not run again,
     the run was with the box.
+  - **F97, what has to exist before the runtime is a class, held by
+    the `App` as a `let`.** The owner, 2026-11-15: "even the app is a
+    struct, there is only one value of it, riht its the root... so if
+    we put state to it it can be let, which means we can do stuff in
+    app init and we can put public let taps: AsyncStream<...> direct
+    into app wrapped into an observable class because observable work
+    even without state, the shove that observable into environment
+    from body... also construct celegate as that state as a param",
+    then "so this may be a rule whenever something need to exist
+    before the swift runtime - we need to use classes", and "so is
+    the app like a singleton ?". This turns F94's sentence around,
+    that the `App`'s `init` builds no class instance, which had been
+    written on his "you are conflating the ap struct with the real
+    objet". The rule as written, with three limits: the root alone,
+    since there is one `App` value and its `init` ran once in every
+    measured launch; only what the system reaches before the first
+    screen; each class data or behavior, not both. The `App` struct
+    stays a value, a copy shares the instances and not its `@State`.
+    Probed, the form of F96 with the stream's holder as an
+    `@Observable` class and the delegate constructed with it, both
+    `let`s of the `App` built in `init`, the holder put into the
+    environment and read by the injector: a tap that launched the app
+    heard, two of two, a tap from the background, two of two.
+    `modules.md` gives that form. Of the emitter, the owner: "what is
+    this garbage", then "maybe i have a design flow in flowup because
+    calling a flow should not need this workaround with emiter?". The
+    agent read the macro: a flow's closure captures the array of
+    listeners at the pass it is read in, so anything that holds it
+    longer than a pass calls the old list. A stable box per collector
+    that the closure reads at call time would remove the emitter and
+    the hand-over, and would stop every reader of a flow from running
+    again when a listener registers. Not built. The owner: "dont
+    change flowup now, go with emiter workaround in the app itself".
+    It is the open item for swift-core-flow.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
