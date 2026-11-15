@@ -424,8 +424,9 @@ modifier, a tap on a notification, the same form holds, with one piece
 more. A delegate is the framework's older form, an object the app
 registers and the system calls. It is kept by the `App`, since that is
 the one place where it exists in time for a tap that launches the app.
-It yields what the system hands it into a stream, and a task in the
-dependency's modifier reads the stream and emits on the flow.
+It yields what the system hands it into a stream, the `App` puts the
+stream's holder into the environment, and a task in the dependency's
+modifier reads the stream and emits on the flow.
 
 ```swift
 // The layer. The flow.
@@ -435,13 +436,23 @@ extension EnvironmentValues {
 
 // The dependency's package, the one place that sees UserNotifications.
 
-// The delegate. It yields into the stream and keeps no value.
-public final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
-    public let taps: AsyncStream<UNNotificationResponse>
-    private let continuation: AsyncStream<UNNotificationResponse>.Continuation
+// The stream, in a class the environment can carry.
+@Observable
+public final class ReminderTaps {
+    public let stream: AsyncStream<UNNotificationResponse>
+    let continuation: AsyncStream<UNNotificationResponse>.Continuation
 
-    public override init() {
-        (taps, continuation) = AsyncStream.makeStream()
+    public init() {
+        (stream, continuation) = AsyncStream.makeStream()
+    }
+}
+
+// The delegate, constructed with the stream's holder. It only yields.
+public final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate {
+    private let taps: ReminderTaps
+
+    public init(_ taps: ReminderTaps) {
+        self.taps = taps
         super.init()
         UNUserNotificationCenter.current().delegate = self
     }
@@ -452,7 +463,7 @@ public final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate 
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         nonisolated(unsafe) let response = response
-        continuation.yield(response)
+        taps.continuation.yield(response)
         completionHandler()
     }
 }
@@ -464,14 +475,14 @@ final class ReminderEmitter {
 
 // The injector. Its task runs for as long as the app does.
 struct RemindersInjector: ViewModifier {
-    let taps: AsyncStream<UNNotificationResponse>
+    @Environment(ReminderTaps.self) private var taps
     @Environment(\.reminderTapped) private var reminderTapped
     @State private var emitter = ReminderEmitter()
 
     func body(content: Content) -> some View {
         emitter.emit = { reminderTapped($0.notification.request.identifier) }
         return content.task {
-            for await response in taps {
+            for await response in taps.stream {
                 emitter.emit(response)
             }
         }
@@ -479,21 +490,27 @@ struct RemindersInjector: ViewModifier {
 }
 
 public extension View {
-    func injectReminders(_ taps: AsyncStream<UNNotificationResponse>) -> some View {
-        modifier(RemindersInjector(taps: taps))
-    }
+    func injectReminders() -> some View { modifier(RemindersInjector()) }
 }
 
-// The root. The `App` keeps the delegate and passes its stream down.
+// The root. Both classes are `let`s of the `App`, built in its `init`.
 @main
 struct GardenApp: App {
-    @State private var reminderDelegate = ReminderDelegate()
+    private let reminderTaps: ReminderTaps
+    private let reminderDelegate: ReminderDelegate
+
+    init() {
+        let taps = ReminderTaps()
+        reminderTaps = taps
+        reminderDelegate = ReminderDelegate(taps)
+    }
 
     var body: some Scene {
         WindowGroup {
             PlantList()
-                .injectReminders(reminderDelegate.taps)
+                .injectReminders()
                 .collectFlow(\.reminderTapped)
+                .environment(reminderTaps)
         }
     }
 }
@@ -510,19 +527,24 @@ with `.onFlow` and writes or calls there. Its scenario applies the same
 collector and a button below it calls the flow. There is no state on
 the way, no binding, and no `.onChange`.
 
-Eight things hold, each measured.
+Nine things hold, each measured.
 
 - **A tap that launches the app reaches the listener, and so does a
   tap with the app in the background.** Two of two each. At launch the
   order was the delegate's callback, the modifier's first `body`, the
   task starting, one more `body`, the task emitting, the listener
   called.
-- **The delegate is a private `@State` of the `App`.** The runtime
-  made it before the `App`'s first `body`, and the system's callback
-  for a tap that launched the app came after that `body` and before
-  the first screen. A delegate made in a view modifier inside the
-  window is made with the first screen, and that tap was not delivered
-  to it.
+- **The stream's holder and the delegate are `let`s of the `App`,
+  built in its `init`.** They were made before the app delegate's
+  launch callback and before the `App`'s first `body`, and the
+  system's callback for a tap that launched the app came after that
+  `body` and before the first screen. The delegate as a private
+  `@State` of the `App` was in time too. A delegate made in a view
+  modifier inside the window is made with the first screen, and that
+  tap was not delivered to it.
+- **The holder is `@Observable` only so that the environment carries
+  it.** It has two `let`s and nothing is observed. The injector reads
+  it with `@Environment(ReminderTaps.self)`.
 - **The stream keeps the tap until someone reads it.** That is what
   carries a tap across the time between the system's callback and the
   first listener. The delegate stores no value of its own.
@@ -562,7 +584,7 @@ stands, so the callback marks it `nonisolated(unsafe)` first. Both
 ends of the stream are on the main actor. Narrowing to what the
 listeners use is done in the emitter's closure.
 The framework's type stays in the package, and the `App` holds the
-delegate and its stream without naming it. A `UNNotificationResponse`
+two classes without naming it. A `UNNotificationResponse`
 has no initializer the app may call, so a flow that carried it could
 not be called by a scenario.
 
@@ -573,12 +595,20 @@ binding handed over in `update()`. The value is read in the `App`'s
 `body` by the scene's own `.environment` modifier. Read inside the
 window's closure, a tap that launched the app was not shown.
 
-The `App` struct is a value like any view struct, and its `init` is
-creation, not a lifetime. It builds no class instance and hands over
-nothing. A closure made in the `App`'s `init` that wrote the `App`'s
-`@State` wrote nothing. What has a lifetime is the initial value of a
-private `@State`, and the runtime builds it once, when the node's slot
-is established.
+What has to exist before the runtime has established the root's state
+is a class instance, held by the `App` as a `let` and built in its
+`init`. `@State` is not there yet. A closure made in the `App`'s
+`init` that wrote the `App`'s `@State` wrote nothing, and one that
+wrote an object the `App` keeps wrote it. A class is a reference, so
+the system's object and the tree share the one instance, before the
+first `body` and after it. Three limits hold. This is for the root
+alone. There is one `App` value, and its `init` ran once in every
+measured launch, while a view's `init` runs on every pass and still
+builds nothing. It is for what the system reaches before the first
+screen, and everything else stays `@State` and plain data. And each
+class is data or behavior, not both, here the stream's holder and the
+delegate. The `App` struct is still a value. A copy of it shares
+those instances and does not share its `@State`.
 
 A link needs none of this. `.onOpenURL` is SwiftUI's own, and a link
 that launches the app reached a listener in the first screen.

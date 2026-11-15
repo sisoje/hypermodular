@@ -198,10 +198,14 @@ source of most broken SwiftUI mental models.
   has a lifetime is built in one of four places. The handler of an
   event builds it. The root builds it. The runtime builds it, once, as
   the initial value of a private `@State`, when the slot is
-  established. The `App` struct is a value like any view struct. Its
-  `init` is creation too, and what lives as long as the app is the
-  initial value of a private `@State` of the `App` or of a dynamic
-  property it declares. A Memo builds it, at its first `body` and again when a
+  established. One exception holds at the root. What has to exist
+  before the runtime has established the root's state, an object the
+  system calls before the first screen, is a class instance the `App`
+  holds as a `let` and builds in its `init`. `@State` is not there
+  yet, and a class is a reference the system's object and the tree
+  can share. There is one `App` value and its `init` runs once per
+  launch, so this is no license for a view's `init`, and each such
+  class is data or behavior, not both (`references/modules.md`). A Memo builds it, at its first `body` and again when a
   dependency changes. The `@State` macro defers the initial value of a
   private `@State`, which avoids an allocation at every creation. It
   does not make creation the start of a lifetime, and state that takes
@@ -824,7 +828,8 @@ test. Data is the abstraction.
   a stream it offers, or calls a closure it was handed. Where there
   is state to write, it holds a binding to state kept beside it, so
   the state and the behavior stay two things. One the system calls at
-  launch, a notification's, is a private `@State` of the `App`. No
+  launch, a notification's, is a `let` of the `App`, built in its
+  `init`. No
   feature sees the class (`references/modules.md`). `deinit` is the one
   behavior allowed, and only to release what the object holds: cancel a
   task, stop a manager, tear down a subscription.
@@ -1045,13 +1050,17 @@ and why, where it is broken.
   that launches the app reaches the listener too. Where the system
   delivers through a delegate and not a modifier, a tap on a
   notification, the same form holds, with one piece more. The
-  delegate is a private `@State` of the `App`, the one place where it
-  exists in time for a tap that launches the app. It keeps no value.
-  It yields the system's whole response into an `AsyncStream`, where
-  the tap waits until it is read. The `App` passes the stream to the
-  dependency's `inject` modifier, whose `.task` reads it for as long
-  as the app runs and calls a closure that `body` hands over on every
-  pass, and that closure calls the flow. So a tap that launches the
+  delegate is a `let` of the `App`, built in its `init`, the one
+  place where it exists in time for a tap that launches the app. It
+  keeps no value. It yields the system's whole response into an
+  `AsyncStream`, where the tap waits until it is read. The stream's
+  holder is a second `let` of the `App`, handed to the delegate in
+  `init` and put into the environment. The dependency's `inject`
+  modifier reads it there, and its `.task` reads the stream for as
+  long as the app runs and calls a closure that `body` hands over on
+  every pass, and that closure calls the flow. The hand-over is there
+  because a flow's closure holds the listeners of the pass it was
+  read in. So a tap that launches the
   app reaches the listener too. The collector is applied at the root,
   after that modifier (`references/modules.md`). The
   `App` is a

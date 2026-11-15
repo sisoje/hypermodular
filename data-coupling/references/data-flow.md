@@ -97,7 +97,8 @@ everything is under the `App`, which is a node in the runtime from the
 first moment. The `App` struct is still a value that describes that
 node, like any view struct, and its creation is not a lifetime. What
 lives as long as the app is the root node's state, which the runtime
-establishes once. An event that comes before any screen
+establishes once, and a class instance the `App` holds as a `let`,
+for what has to exist before that. An event that comes before any screen
 exists, a tap on a notification that launches the app, is a write to
 state the `App` keeps, and the screens are a projection of it.
 

@@ -158,9 +158,11 @@ subgraph), no emoji, no status marks.
   input when the instance is to be kept. A seed made lazy is still a
   seed, built once from the first input. `.id()` and `.onChange` on
   the input are repairs. A struct's creation is not a lifetime, so a
-  view's `init` builds no class instance and no query. The `App`
-  struct is a value like any view struct, and its `init` is creation
-  too. A framework delegate holds no state. It yields what the system
+  view's `init` builds no class instance and no query. The root is
+  the one exception. What has to exist before the runtime has
+  established the root's state is a class instance the `App` holds as
+  a `let` and builds in its `init`, data or behavior and not both. A
+  framework delegate holds no state. It yields what the system
   hands it into a stream, and a task in the dependency's modifier
   emits it on a flow.
 - **Dependencies are environment values**: plain structs composed of
