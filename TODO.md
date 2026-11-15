@@ -2793,6 +2793,24 @@
     test": `@FlowUp public var` inside a `public extension` is
     refused by the compiler, and the two writes of the empty text
     when a field takes focus show in the test's log.
+  - **F100, the third comprehension prompt on Haiku, high effort.**
+    2026-11-15, ten of ten on the questions. The design had the flows,
+    the one forwarding modifier at the root, the load started by the
+    write that opens a recipe, and the timer as a held task. Two
+    slips of the run. Every piece of state and both listeners sat in
+    the root, which has no scenario, and no hosted test was written,
+    the reader having opened no reference file. The server's failure
+    was dropped with `try?`. Two sentences of `SKILL.md` fixed from
+    its list. The root exception of F97 had been put inside the list
+    of four places, so "A Memo builds it" followed the `App`'s class.
+    The Memo, named `MemoView`, is back in the list and the exception
+    closes the bullet. In the notification passage the collector is
+    applied "after the `inject` modifier", where "that modifier" was
+    read as the forwarding modifier, and the pointer to `modules.md`
+    is given once. No fact was dropped. Left as it was: the skill
+    opens with state kept apart from behavior and says later that
+    every rule serves functional core, imperative shell, and the
+    reader found the two unconnected.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

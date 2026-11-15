@@ -198,19 +198,20 @@ source of most broken SwiftUI mental models.
   has a lifetime is built in one of four places. The handler of an
   event builds it. The root builds it. The runtime builds it, once, as
   the initial value of a private `@State`, when the slot is
-  established. One exception holds at the root. What has to exist
-  before the runtime has established the root's state, an object the
-  system calls before the first screen, is a class instance the `App`
-  holds as a `let` and builds in its `init`. `@State` is not there
-  yet, and a class is a reference the system's object and the tree
-  can share. There is one `App` value and its `init` runs once per
-  launch, so this is no license for a view's `init`, and each such
-  class is data or behavior, not both (`references/modules.md`). A Memo builds it, at its first `body` and again when a
-  dependency changes. The `@State` macro defers the initial value of a
-  private `@State`, which avoids an allocation at every creation. It
-  does not make creation the start of a lifetime, and state that takes
-  its first value from an argument of the view's `init` belongs to the
-  node that supplies the argument.
+  established. A `MemoView` builds it, at its first `body` and again
+  when a dependency changes. The `@State` macro defers the initial
+  value of a private `@State`, which avoids an allocation at every
+  creation. It does not make creation the start of a lifetime, and
+  state that takes its first value from an argument of the view's
+  `init` belongs to the node that supplies the argument. One exception
+  holds at the root. What has to exist before the runtime has
+  established the root's state, an object the system calls before the
+  first screen, is a class instance the `App` holds as a `let` and
+  builds in its `init`. `@State` is not there yet, and a class is a
+  reference the system's object and the tree can share. There is one
+  `App` value and its `init` runs once per launch, so this is no
+  license for a view's `init`, and each such class is data or
+  behavior, not both (`references/modules.md`).
 - **The action starts the work, not the view on screen.** Work is
   started by the action that causes it, as a task the node holds. The
   view on screen is the one thing here with a lifecycle. It appears and
@@ -1058,15 +1059,13 @@ and why, where it is broken.
   `AsyncStream.makeStream()` returns. The delegate is built in `init`
   from the continuation, and the stream is handed to the dependency's
   `inject` modifier, whose `.task` reads it for as long as the app
-  runs and calls the flow. So a tap that launches the
-  app reaches the listener too. The collector is applied at the root,
-  after that modifier (`references/modules.md`). The
-  `App` is a
-  node and is there from the first moment, so a tap that launches the
-  app is a write of state like any other, and nothing waits for a
-  screen to exist (`references/modules.md`). The system's value as a
-  fact, a cover shown while the scene is inactive, is still data a node
-  reads. The form with its code, the scenario included, is in
+  runs and calls the flow. So a tap that launches the app reaches the
+  listener too. The collector is applied at the root, after the
+  `inject` modifier. The `App` is a node and is there from the first
+  moment, so a tap that launches the app is a write of state like any
+  other, and nothing waits for a screen to exist. The system's value
+  as a fact, a cover shown while the scene is inactive, is still data
+  a node reads. The form with its code, the scenario included, is in
   `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.
