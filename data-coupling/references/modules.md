@@ -504,11 +504,16 @@ struct GardenApp: App {
 .onFlow(\.reminderTapped) { id in opened = id }
 ```
 
+The form answers one problem. The app's own lifecycle starts before
+the SwiftUI runtime's, the system may call the delegate in that
+earlier part, and the event has to be brought into the runtime's
+lifecycle. A stream, a task, and a flow do it.
+
 The event flows one way. The system calls the delegate. The delegate
 yields the whole response into the stream, where it waits until it is
 read. The modifier's task reads it and calls the flow with what the
-listeners use. A feature listens
-with `.onFlow` and writes or calls there. Its scenario applies the same
+listeners use. A feature listens with `.onFlow` and writes or calls
+there. Its scenario applies the same
 collector and a button below it calls the flow. There is no state on
 the way, no binding, and no `.onChange`.
 

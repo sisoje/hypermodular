@@ -1061,11 +1061,13 @@ and why, where it is broken.
   `inject` modifier, whose `.task` reads it for as long as the app
   runs and calls the flow. So a tap that launches the app reaches the
   listener too. The collector is applied at the root, after the
-  `inject` modifier. The `App` is a node and is there from the first
-  moment, so a tap that launches the app is a write of state like any
-  other, and nothing waits for a screen to exist. The system's value
-  as a fact, a cover shown while the scene is inactive, is still data
-  a node reads. The form with its code, the scenario included, is in
+  `inject` modifier. The app's own lifecycle starts before the SwiftUI
+  runtime's, and the system may call the delegate in that earlier
+  part. These pieces bring the event from the one lifecycle into the
+  other. The stream holds it, the task reads it once the runtime
+  runs, and the flow hands it to the listeners. No state is written
+  on the way. The system's value as a fact, a cover shown while the
+  scene is inactive, is still data a node reads. The form with its code, the scenario included, is in
   `references/modules.md`.
 - **Asserting the aftermath, or logging from a getter.** Both make a
   test assert the runtime's timing instead of the node's decisions.

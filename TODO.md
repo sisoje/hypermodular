@@ -2811,6 +2811,24 @@
     opens with state kept apart from behavior and says later that
     every rule serves functional core, imperative shell, and the
     reader found the two unconnected.
+  - **F101, the notification form bridges two lifecycles.** The
+    owner, 2026-11-15: "the issue with notifications was that we
+    needed to bridge from early app lifecycle that starts before
+    swiftui runtime lifecycle, and to bring that into the swiftui
+    runtime lifecycle, we did elegantly with task flowup and async".
+    F91's sentence, "a tap that launches the app is a write of state
+    like any other", had outlived the form. It stood in `SKILL.md`
+    and in `data-flow.md` beside a delegate that keeps no value and
+    a form with no state on the way. Both now say what the owner
+    said. The app's own lifecycle starts before the runtime's, the
+    system may call the delegate in that earlier part, and a stream,
+    a task, and a flow bring the event into the runtime's. The same
+    sentence opens the form's explanation in `modules.md`. The forms
+    the agent proposed before the owner's, state at the `App`, a
+    binding handed to the delegate, `.onChange` and `.task(id:)`
+    over that state (F91 to F95), were the wrong reading of the
+    problem. They treated it as where state lives, and it was a
+    crossing between two lifecycles.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
