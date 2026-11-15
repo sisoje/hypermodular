@@ -2764,8 +2764,14 @@
     coreflow?". The library's `test.sh` passed, its unit tests and 23
     hosted UI tests, its `AGENTS.md` says what the closure captures
     now, and the change is committed in `~/dev/CoreFlow` on `main`,
-    not pushed. The library has no hosted test of its own yet for a
-    closure held across passes.
+    not pushed. The owner: "can that be a tests in coreflow?". It is
+    one now, `FlowUpHeldScenario` and `FlowUpHeldUITests` in
+    `CoreFlowHosted`: a sender whose task holds the flow's closure
+    from its first pass, two listeners a toggle removes and puts
+    back, the log pinned. It passes on the library as it is and was
+    run once against the code before the change, where the log shows
+    no listener reached. The library's `test.sh` passed with it, 24
+    hosted UI tests, and it is committed there, not pushed.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);
