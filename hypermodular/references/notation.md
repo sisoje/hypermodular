@@ -20,9 +20,11 @@ materializes, parens call, a bare dot reads, `$` writes a handed
 binding, a bare name calls back:
 
 - `· @Source` lines **materialize**. The `@` is the materialize marker.
-  The word is the source's own name: a property wrapper (`· @Query`,
-  `· @SceneStorage`, `· @FocusState`), or `· @ProcessInfo` for ambient
-  launch input. `@AppStorage` is the root's and reaches a node as a
+  The word is the source's own name: a property wrapper
+  (`· @SceneStorage`, `· @FocusState`, and `· @Query` where a node not
+  yet converted still holds one), or `· @ProcessInfo` for ambient
+  launch input. A read of the store is not written into the node. It
+  is a query asked from the query service, a read line. `@AppStorage` is the root's and reaches a node as a
   binding, a `$` line. Source name only, written once however many keys the
   node holds. What the node derives from it (an isLoggedIn computed off
   a token) is code's business, not the map's. A wrapper earns a line
@@ -42,7 +44,11 @@ binding, a bare name calls back:
 - `· <dep>.<value>` lines **read** a let or binding off a dependency
   (`· loginState.isLoggedIn`). Coupling without evidence. Reads do not
   log, and a node whose dotted lines are all reads owes no evidence
-  block. A decision node is usually this.
+  block. A decision node is usually this. A read of the store is one
+  too, `· queryService.books`. In the Swift the node asks the query
+  service for a query, `QueryView(queryService.books(sortByAuthor))`.
+  The parens there pass the values the query depends on. They are not
+  an event, so the line has none and nothing logs.
 - `· $<path>` lines **write** a binding the node was handed, by its
   parent (`· $sortByAuthor`) or inside a dependency (`· $settings.city`,
   and `settings` is then a cylinder). In the Swift such a binding is a
@@ -115,8 +121,10 @@ arrows too.
   commands (`dbService` is writes only; a write may return a result), non-native fetches
   (`imageLoader`, `searchAPI`), capabilities (`navService`, closures
   over root-owned navigation state), root-owned facts (`loginState`),
-  root-owned storage as bindings (`settings`). Native materialization
-  (`@Query`) gets no cylinder.
+  root-owned storage as bindings (`settings`), and the store's reads
+  (`queryService`, a struct of queries, each asked with the values it
+  depends on). Native materialization, scene storage, focus, and a
+  `@Query` written into a view not yet converted, gets no cylinder.
   The root does not set it. It is facts arriving, tagged in the node
   label. The masterclass calls that storage a dependency, a declared
   claim on the storage that supplies the value at creation, and a
@@ -360,13 +368,18 @@ that no map can show is a warning too. A `Task` nobody holds is a
 `Task` expression that is not assigned, returned, or awaited (F37). It
 is a warning and not an error, since a rule may be broken on purpose,
 and a run reports each one it leaves standing with the reason. A
-`QueryView` in a node's Swift is the same materialization as `@Query`
-and takes the same `· @Query` line. The reading is textual, the
+query asked from the query service, `QueryView(queryService.books(…))`
+in a node's Swift, is a read and takes the read line,
+`· queryService.books`, with `queryService` a cylinder. A query
+written in the view, a `@Query` property or
+`QueryView(query:dependencies:)`, is materialization and takes the
+`· @Query` line, and it is a warning too, since a read of the store is
+asked from the query service (F110). The reading is textual, the
 code is written by the method, so its forms are few. `scripts/test.sh`
 runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
 with Swift stubs, zero errors, nothing unverified) and
 `fixtures/broken` (the same with fourteen map violations, ten code
-findings, and three habit warnings planted, all caught; wrong on
+findings, and six habit warnings planted, all caught; wrong on
 purpose, not an example). The clean fixture carries its whole-app
 diagram, and the test changes one of its maps to see the diagram
 reported stale and then redrawn.

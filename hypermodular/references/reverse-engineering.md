@@ -34,6 +34,8 @@ decides it. That node gets the contract line. The service becomes a
 cylinder, named for the boundary rather than the tech (`dbService`,
 not `swiftData`). Native materialization (`@Query`)
 becomes an `· @Source` line on the node that holds it, not a cylinder.
+That is the code as it stands. The conversion moves the read to the
+query service, and the line becomes a read off that cylinder.
 
 A ViewModel, a store, or a presenter found on the walk is the node's
 contract in object form, and it is read as one. It holds state and the

@@ -33,7 +33,11 @@ Look at what drives the view.
   the view has a core a scenario can construct and a log a test can
   read. This is the case the macro was made for, and a project gains
   tests this way one view at a time. An `@AppStorage` found in it is
-  the root's. It moves there and comes back as a binding.
+  the root's. It moves there and comes back as a binding. A `@Query`
+  found in it stays for now, and `@Shell` makes it an input,
+  `@QueryResult` on the core. When the node is next worked on, the
+  read moves to the query service (`shell-core.md`, "The SwiftData
+  shell").
 - **An object.** `@StateObject`, `@ObservedObject`,
   `@EnvironmentObject`, or an `@Observable` class with methods.
   `@Shell` does not help here. It copies an object wrapper onto the

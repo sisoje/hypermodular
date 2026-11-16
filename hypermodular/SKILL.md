@@ -157,8 +157,11 @@ that node calls `navService`.
   merges maps back into one tree.
 - **Label = name, then one `· ` contract line per line.** Five kinds,
   distinguishable by parser. `· @Source` materializes a value from a
-  source that outlives the node (`· @Query`, `· @SceneStorage`). `· dep.func()`
-  calls a capability and logs. `· dep.value` reads one and does not log.
+  source that outlives the node (`· @SceneStorage`, `· @FocusState`).
+  `· dep.func()` calls a capability and logs. `· dep.value` reads one
+  and does not log. A read of the store is such a read, a query asked
+  from the query service, `· queryService.books`. A node not yet
+  converted that still holds a `@Query` carries `· @Query`.
   `· $path` writes a binding the node was handed, from its parent
   (`· $sortByAuthor`) or inside a dependency (`· $settings.city`); the
   write logs, the checker requires a block that writes it, and the
@@ -222,19 +225,21 @@ Tabs' map, with unlabeled arrows, plain composition:
 ```mermaid
 %% Root: Tabs · Parent: Landing (../MAP.md)
 flowchart TD
-    Tabs --> Library["Library<br/>· @Query<br/>· $settings.sortByAuthor<br/>· dbService.deleteBook()"]
+    Tabs --> Library["Library<br/>· queryService.books<br/>· $settings.sortByAuthor<br/>· dbService.deleteBook()"]
     Tabs --> Search["Search<br/>· searchAPI.search()<br/>· navService.showDetail()"]
 ```
 
-Library's map. The fetch and the store live here, lifted out of the
-shelf that shows them. The sort preference is the root's `@AppStorage`,
+Library's map. The read of the store and the write to it live here,
+lifted out of the shelf that shows them. The read is a query asked
+from `queryService` with the sort it depends on, and the write is a
+call to `dbService`. The sort preference is the root's `@AppStorage`,
 arriving as a binding inside the `settings` value; the shelf writes it,
 so the write crosses Library's edge too:
 
 ```mermaid
 %% Root: Library · Parent: Tabs (../MAP.md)
 flowchart TD
-    Library["Library<br/>· @Query<br/>· $settings.sortByAuthor<br/>· dbService.deleteBook()"] --> BookShelf["BookShelf<br/>· $sortByAuthor<br/>· onDelete"]
+    Library["Library<br/>· queryService.books<br/>· $settings.sortByAuthor<br/>· dbService.deleteBook()"] --> BookShelf["BookShelf<br/>· $sortByAuthor<br/>· onDelete"]
 ```
 
 BookShelf's map, under `Maps/`. It takes `books` as a value (a sorted
@@ -284,6 +289,9 @@ classDiagram
     class DbService {
         deleteBook(Book)
     }
+    class QueryService {
+        books(sortByAuthor) books
+    }
     class NavService {
         showDetail(bookId)
     }
@@ -293,6 +301,7 @@ classDiagram
 
     BookShelf ..> Book
     Library ..> DbService
+    Library ..> QueryService
     Library ..> BookSettings
     Search ..> NavService
 ```
@@ -318,9 +327,14 @@ merges the labels.
   live value inline where it sets it. How a contract is written,
   defaulted, and set at the root is in
   `../data-coupling/references/modules.md`.
-- Name the boundary, not the tech: `dbService`, not `swiftData`. Native
-  materialization (`@Query`) gets no cylinder. The root does not set
-  it. It is facts arriving, tagged on the node label. A feature has no
+- Name the boundary, not the tech: `dbService`, not `swiftData`. The
+  store is two cylinders. `dbService` is its writes. `queryService` is
+  its reads, a struct of queries the root sets, each asked with the
+  values it depends on. A read off it is `· queryService.books` on the
+  node label, and it does not log. A `@Query` written into a view is
+  what a node not yet converted has. The root does not set that one,
+  so it has no cylinder and is tagged `· @Query` on the label until
+  the node is converted. A feature has no
   `@AppStorage` of its own, and the checker with `--sources` reports
   one below the root as an error (F32). The root's own
   `@AppStorage` reaches features through a `settings` cylinder, a
@@ -354,10 +368,11 @@ flowchart LR
         imageLoader[(imageLoader)]
         searchAPI[(searchAPI)]
         dbService[(dbService)]
+        queryService[(queryService)]
         navService[(navService)]
         loginState[(loginState)]
         syncService[("syncService<br/>· dbService<br/>· searchAPI")]
-        settings ~~~ imageLoader ~~~ searchAPI ~~~ dbService ~~~ navService ~~~ loginState ~~~ syncService
+        settings ~~~ imageLoader ~~~ searchAPI ~~~ dbService ~~~ queryService ~~~ navService ~~~ loginState ~~~ syncService
     end
 
     App --> Dependencies
@@ -387,7 +402,8 @@ though the system held the pen. The system moving focus logs nothing,
 because focus is the system's.
 
 A declaration is an acceptance criterion transcribed. *Given* names
-constructor arguments, stubs, and what a materialized source holds,
+constructor arguments, stubs, what a query delivers
+(`queryService.books [Dune]`), and what a materialized source holds,
 *when* an interaction, *then* the log. "Given no
 connection, when the user searches, then it reports offline and writes
 no books":
@@ -492,7 +508,8 @@ The articles' terms, and what the map calls them.
 | evidence block (Diagram 4) | an acceptance criterion drawn. "The test wants the evidence, not the effect": *given* in the header, *when* as in-arrows, the log as out-arrows |
 | contract line | the outbound half of the wireframe you can type-check: what the node materializes, calls, or calls back |
 | cylinder | dependency parameterization: a capability as a closure, set at the root as an environment value |
-| `@` line (materialization) | on the node, a value it materializes from a source that outlives it, which the root does not set, so no cylinder. To the node's core it is data at the boundary, which is dependency rejection: a scenario supplies it as a value or a binding. The masterclass calls that storage a dependency, a declared claim on it |
+| `@` line (materialization) | on the node, a value it materializes from a source that outlives it, which the root does not set, so no cylinder: scene storage, focus, and a `@Query` in a node not yet converted. To the node's core it is data at the boundary, which is dependency rejection: a scenario supplies it as a value or a binding. The masterclass calls that storage a dependency, a declared claim on it |
+| query service | the cylinder of the store's reads. A node asks it for a query with the values the query depends on, a read line on the label, `· queryService.books`, which does not log. To the node's core the records are data at the boundary, and a scenario supplies them as a value |
 | data coupling layer (Diagram 2) | the same: the one shared module, free of behavior, the models, closure signatures, and the environment entries that carry them |
 | depth 1 | mock depth, constant at one, extended to the root (values set there only) and to maps (one level) |
 | scenario | the same: a test-host view owning real state and handing down logged boundaries |

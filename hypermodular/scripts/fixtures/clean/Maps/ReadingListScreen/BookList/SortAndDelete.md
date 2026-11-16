@@ -1,6 +1,6 @@
 ```mermaid
 %% Evidence: BookList · Parent: ReadingListScreen (../MAP.md)
-%% Given: @Query [Dune, Anathem] · settings.sortDescending false
+%% Given: bookQueries.sorted [Dune, Anathem] · settings.sortDescending false
 sequenceDiagram
     User->>BookList: tap sortToggle
     BookList->>settings.sortDescending: true

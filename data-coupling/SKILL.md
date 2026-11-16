@@ -10,8 +10,8 @@ description: >
   swift-core-flow's @Shell, and a test reads the execution log. Use
   whenever writing, reviewing, refactoring, or designing SwiftUI code;
   converting or migrating a legacy codebase one view at a time;
-  deciding where state lives; adding a service, capability, environment
-  value, or @Entry; making a view testable or previewable; laying out
+  deciding where state lives; reading a store, a query, or @Query;
+  adding a service, capability, environment value, or @Entry; making a view testable or previewable; laying out
   packages and modules; starting an app or adding a package, a target,
   or a dependency to one; or whenever ViewModels, MVVM, @StateObject, TCA,
   reducers, DI containers, protocols for mocking, or .live/.preview
@@ -147,13 +147,16 @@ below is one of them applied.
    root owns the app's finite set of keys and no feature names one. The
    container is opened at the root. A scene names `@SceneStorage`, so
    the scene's root. A node's own `@State` the root could only invent,
-   so it stays where it is used, and the cut tests it there. A `@Query`
-   is a read, like a binding or an environment value, a filtered
-   projection of the store the root opened; it lives where it is read,
-   at the common ancestor when several features read it. Usage decides what a feature
+   so it stays where it is used, and the cut tests it there. A read of
+   the store is a query, a filtered projection of the store the root
+   opened, and a query is asked from the query service, a contract the
+   root sets. The node passes the values the query depends on and gets
+   back a lazy query, the query not built yet together with those
+   values. It asks where it reads, at the common ancestor when several
+   features read the same records. Usage decides what a feature
    receives. It receives what it uses, a fact as a `let`, a setting as
-   a `@Binding`, a service as a closure, and it makes its queries over
-   the models it sees. Actions are behavior. They are closures the root
+   a `@Binding`, a service as a closure, and the records it shows as
+   the array a query delivers. It writes no query of its own. Actions are behavior. They are closures the root
    sets, and a write or a call is the event. Mockability is the test.
    Every boundary is a value a scenario stands in for, so the test is
    the log. State is not centralized on principle.
@@ -269,7 +272,9 @@ source of most broken SwiftUI mental models.
   binding is a `get`/`set` pair an ancestor built and handed in at the
   initializer. An environment value is one an ancestor set above with
   `.environment(...)`. A query is a filtered read of the store the root
-  opened. The three references are data in. UI-runtime machinery
+  opened. The method asks for one from the query service and the
+  shell's `QueryView` runs it, so a `@Query` property is what a view
+  not yet converted has. The three references are data in. UI-runtime machinery
   (`@GestureState`, `@FocusState`, `@Namespace`, `@ScaledMetric`)
   holds nothing a caller could supply.
   All three groups resolve only inside a `View`, `App`, `Scene`,
@@ -400,7 +405,9 @@ against data at the boundary. Three rules cut it:
 1. **Plain fields go to the core.** They are already data.
 2. **Data-holding wrappers become boundaries.** `@SceneStorage` becomes
    `@Binding`; `@AppStorage` is the root's and not in a feature, so
-   the cut does not meet it. `@Query` becomes a plain `let` array. `@State` stays. By hand, state a test must reach moves up and
+   the cut does not meet it. A read of the store stays in the shell,
+   a `QueryView` over a query asked from the query service, and the
+   core takes a plain `let` array. `@State` stays. By hand, state a test must reach moves up and
    enters as `@Binding`; under `@Shell` it stays private and logs.
 3. **Machinery stays in the shell, in the by-hand cut.** The shell owns
    the gestures, the focus, and the namespaces, and hands the core plain
@@ -420,7 +427,7 @@ Two ways to make the cut, one contract:
 |---|---|---|
 | The core | a second view, `BookListCore`, constructed by the shell's one-line `body` | a nested `Core` twin the macro generates. Same `body` text, copied by the compiler, so it cannot drift |
 | Own `@State` | stays if only the core needs it; lifted to `@Binding` if a criterion names it | stays private as `@TestState` and logs every write. The write site emits the evidence |
-| External storage, fetched data | `@Binding`, `let` | `@Binding`, `@QueryResult` (tests pass the bare array) |
+| External storage, fetched data | `@Binding`, and a `let` array the shell's `QueryView` hands in | `@Binding`, and the array from the `QueryView` copied with the `body`, which a scenario supplies with `.mockQuery`. A `@Query` property left in a view not yet converted becomes `@QueryResult` (tests pass the bare array) |
 | Machinery | shell. When the core must write focus, the shell hands it a binding built over its `@FocusState` | copied verbatim: live when hosted, defaulted otherwise. `@FocusState` becomes `@TestFocusState` and logs |
 | Environment values, your own `@Entry` and Apple's plain ones, `\.locale`, `\.colorScheme` | the core reads them. The scenario sets them with `.environment(...)` | copied verbatim. The scenario sets them with `.environment(...)` |
 | Apple's sealed actions, `\.dismiss`, `\.openURL` | the shell reads them and hands the core a closure, because nothing can build one from above | `@TestEnvironment`: the real action runs, every call logs |
@@ -460,7 +467,7 @@ the core follows the design it was given. Whether there is an error is
 decided above, and the core does not know how.
 
 Then each property gets one source in the view above. A `let` comes
-from a parent's value, a `@Query`, or state. A `@Binding` comes from
+from a parent's value, a query asked from the query service, or state. A `@Binding` comes from
 `$state`, a parent's binding, or a transformer's intercepted binding
 where the write is judged. A closure comes from a parent's callback, a
 contract, or a closure that assembles and forwards. The view above
@@ -507,8 +514,8 @@ left when no action mounted the node, the first screen at launch, and
 it hangs on the node above the stack and the tabs, which does not
 leave. That is the app level, and the rule against the lifecycle of
 the view on screen is about views that appear again. A first screen
-that reads its list with `@Query` has nothing to load and carries
-none. `.task(id:)` is used only when its id is a value
+that reads its list from the store, by a query, has nothing to load
+and carries none. `.task(id:)` is used only when its id is a value
 the app's code does not control, one the system supplies, and then in
 the one modifier at the root that forwards the change into a flow, not
 in a feature. A value the app writes has an action behind it, the
@@ -586,8 +593,10 @@ The evidence block is the same either way.
   shapes, and a scenario overrides every closure the node's label names. A scenario
   sets loggers for the node's own label lines and drives the node, no
   deeper; a child calling a logged contract would land in the same log.
-  A child with a live wrapper is handed its runtime, `.modelContainer`
-  or `.mockQuery`.
+  A node that reads the store is handed its records, by `.mockQuery`
+  or by a seeded `.modelContainer`. The scenario sets nothing for the
+  query service. A read does not log, so there is nothing to stand in
+  for, and the entry's default already answers every query.
 - **The test is the hosted scenario.** A scenario is a view that owns
   real `@State`, hands the core logged bindings and closures, sets its
   contracts with `.environment(...)`, and is driven with real input in
@@ -604,24 +613,27 @@ The evidence block is the same either way.
   pure calculation, a balance or a split, is data in and data out and
   gets a plain test with literals; so does a transformer of bindings,
   driven by bindings over local variables. A sort or a filter the store can
-  perform is the query's job, in the shell's `QueryView`, proven at the
-  shell with a seeded in-memory container, an integration test of the
-  query the node wrote; the hosted scenario still proves the core
-  reacts to the sort state.
+  perform is the query's job. The query is written once, in the
+  dependency that wraps the store, as a function from its arguments to
+  a fetch descriptor, and that dependency's integration test proves
+  it, fetching with the descriptor from a seeded in-memory container;
+  the hosted scenario still proves the core reacts to the sort state.
 - **A test proves what the app wrote, not what Apple's framework
   promises.** That a saved model is on disk after the app is closed and
-  opened again, that the context saves on its own, and that `@Query`
+  opened again, that the context saves on its own, and that a query
   fetches again after a write are SwiftData's behavior, behind the
   boundary, and no test is written for them. A criterion the framework
   meets on its own, an address still in the list after a relaunch, is
   met by choosing the store and has no test. The app's use of the
-  framework is the app's and is tested. The sort a query asks for is
-  the node's choice, so the seeded in-memory container proves it. A
-  dependency over SwiftData is tested in memory too. Its test proves
+  framework is the app's and is tested. The sort a query performs is
+  the app's choice, written in the dependency that wraps the store, so
+  the seeded in-memory container proves it there. A
+  dependency over SwiftData is tested in memory. Its test proves
   that its insert and its delete did their job, the row fetched back
-  after the one and gone after the other, however short that code is.
+  after the one and gone after the other, however short that code is,
+  and that each query delivers what its arguments ask for.
   The test reads the context directly, with a fetch, not through
-  `@Query`, so it needs no view and no host. It does not open a store
+  a view, so it needs no host. It does not open a store
   on disk.
 - **A UI test here is a unit test, the unit being one core.** A second,
   test-only `@main` renders one scenario named at launch and nothing
@@ -727,7 +739,7 @@ What it holds, by folder:
   stored `var` properties with defaults and a public initializer, so
   `.init()` is the empty one. What a brief says is kept on the device
   is SwiftData unless the brief says otherwise, `@Model` records read
-  where they are shown by `@Query` and written through the store
+  through the query service and written through the store
   contract.
 - `Values/`. What a feature computes and shows: a balance, a debt, a
   scan result. Plain structs of stored properties. They live here even
@@ -737,8 +749,9 @@ What it holds, by folder:
 - `Enums/`. The app's closed sets: a category, a payment method, an
   appearance.
 - `Services/`. The contracts: one struct of closures per boundary, the
-  store, the backend, the scanner, notifications, each with its
-  `@Entry` no-op default. The backend's operations are closures here
+  store's writes, the store's queries, the backend, the scanner,
+  notifications, each with its `@Entry` no-op default. The store's
+  queries are the query service. The backend's operations are closures here
   too, and the models they take and return are in `Models/`, the
   generated ones included. The backend package holds the wiring, the
   transport, the decoder, and what the root hands it, a base URL, a
@@ -748,7 +761,8 @@ What it holds, by folder:
 
 What it does not hold: a method written by hand, a computed property, an `import` of an
 I/O framework taken for its behavior, a conformance that needs behavior, or a screen's helper that
-is not data of the app, a sort option, a sheet enum. What a generator
+is not data of the app, a sort option only the screen reads, a sheet enum. A value a contract's
+signature names is data of the app, so the order a query is asked in is in `Enums/`. What a generator
 or a macro writes is not written by hand and is taken as it is. A contract may
 take a system type the screen hands it, a `PhotosPickerItem`, and the
 layer then imports that framework for the type alone. It does import SwiftUI, for
@@ -794,6 +808,31 @@ test. Data is the abstraction.
   reference-type service objects. A protocol wins only for Objective-C
   interop, a plugin API external callers must implement, or a
   ten-method API with shared default behavior.
+- **A read of the store is a query asked from the query service.**
+  The query service is a contract in `Services/`, a struct under
+  swift-core-flow's `@LazyQueries`. Each member takes the values one
+  query depends on and answers a `LazyQuery`, the query not built yet
+  together with those values, `var books: (_ byAuthor: Bool) ->
+  LazyQuery<Book, [Book]>`, the model and what the query delivers. The
+  macro writes the initializer, which takes for each member a closure
+  with the member's arguments that returns the `Query`, and
+  `defaultQueries`, the service whose every member answers every
+  record, unsorted. That
+  static is the `@Entry` default. It is the one contract whose no-op
+  is not `.init()`, since a `LazyQuery` is built only by the library.
+  A node asks with what it holds, `QueryView(queryService.books(
+  sortByAuthor)) { $books in … }`, and the query is built again only
+  when an argument changes. Whoever provides the arguments gets the
+  dependencies for free, since they are the arguments. A feature
+  writes no predicate, no sort, and no list of dependencies, and holds
+  no `Query`, so a query cannot go stale over a value somebody forgot
+  to list. A value a member is asked with is data of the app. Where
+  a flag is not enough, the order a list is asked in is an enum in
+  `Enums/`. The store's contract for writes stays writes only. The
+  query expressions are the store's knowledge, written once in the
+  dependency that wraps the store. The contract, the node, the
+  dependency, and its test are in `references/shell-core.md`, "The
+  SwiftData shell".
 - **A type in the layer takes a name SwiftUI, Foundation, and the
   standard library do not have.** A feature file sees the layer and
   all three, and a name shared with one of them is ambiguous where the
@@ -873,15 +912,19 @@ test. Data is the abstraction.
   dependency per I/O framework the root wires, the framework imported
   in that package alone, each `inject` applied inline at `@main`. A modifier that reads a value
   another sets is written first, inside it, so the code reads the
-  dependency column bottom-up. SwiftData's `@Model` and `@Query` are
-  materialization and import it where they stand. No `.live`,
+  dependency column bottom-up. SwiftData's `@Model` is data, and the
+  query service's contract names `Query` and `LazyQuery` as types.
+  Both import it where they stand, in the layer. No `.live`,
   `.preview`, or `.unimplemented` statics and no `+Live` files; they
   attach an implementation to the contract type and move the wiring
   away from the modifier that sets it. The default serves previews and
   tests, and a scenario builds the logger. A live closure that writes the root's own state closes over
   its binding, `$habits`, not over `self`. A live value over the model
   context comes from a modifier that reads `\.modelContext` inside the
-  `.modelContainer(...)` scope and sets the contract there.
+  `.modelContainer(...)` scope and sets the contract there. The same
+  dependency sets the query service. Each member is a closure from the
+  arguments to a `Query`, built over the fetch descriptor an internal
+  function of the dependency returns.
 - **Every dependency points at data.** `AppCore` and I/O modules both
   depend on the layer and not on each other. The app depends on all of
   them. A stateless module is algorithms and cores, importable anywhere.
@@ -901,8 +944,10 @@ shapes, and when a protocol wins are in `references/modules.md`.
 
 The cut and the log as macros, one dependency, adopted one view at a
 time with nothing rewritten. `@Shell` generates the core, `@TestState`
-and `@TestAction` log at the write site, `QueryView` and `@QueryResult`
-make `@Query` an input, `MemoView` keeps a value derived from inputs
+and `@TestAction` log at the write site, `@LazyQueries`, `LazyQuery`,
+and `QueryView` make a read of the store a query asked from a service,
+`@QueryResult` makes a `@Query` left in a legacy view an input,
+`MemoView` keeps a value derived from inputs
 across renders, not `@State(wrappedValue:)` in an `init`, and
 `HostApp` with `CoreFlowUITesting` hosts and asserts the scenario. The
 rule-to-macro table, the install, and the order of work are the
@@ -983,10 +1028,24 @@ and why, where it is broken.
   third way. A binding shares a value and does not rebuild what was
   built from it. A `Query` built in a child's `init` is the same
   mistake with the other requirement failed. It follows the input and
-  is built again at every creation, and `QueryView` replaces it. The
+  is built again at every creation. A query asked from the query
+  service with the input as its argument replaces it, and `QueryView`
+  builds it again only when the argument changes. The
   two ways, the Memo's limits, the measurement, and a table of the
   common forms with what replaces each are in
   `references/data-flow.md`, "A value built from an input".
+- **A query written in a feature.** A `@Query` property, or a
+  `QueryView(query:dependencies:)` with its expression and its list.
+  The list is written by hand beside an expression that reads the same
+  values. A value the expression reads and the list leaves out is a
+  change the query does not follow, and the list goes stale with no
+  error. A read of the store is asked from the query service with its
+  arguments, which are its dependencies. A view not yet converted
+  keeps its `@Query` until it is worked on, and `@Shell` makes it an
+  input meanwhile. That is the order of a conversion and not a break
+  of this rule. The checker with `--sources` warns on a `@Query`
+  property and on a `QueryView(query:dependencies:)`, which is also
+  the list of the reads still to convert.
 - **A `Task` nobody holds.** `Button("Save") { Task { try await save()
   } }` starts work that nothing cancels. It outlives the node, a second
   tap runs a second copy beside the first, and its writes land in a
@@ -1118,7 +1177,9 @@ The code, as it is written here:
   somewhere the others are not. An enum that names one choice from a
   finite set is not a model. A sort option, which sheet is open, which
   of a fixed selection of components to show, each is one fact, and it
-  stays in the feature. Such an enum can conform to `View` itself.
+  stays in the feature. The one a contract is asked with, the order a
+  query is asked in, is in the layer, since the contract's signature
+  names it. Such an enum can conform to `View` itself.
 - **Several types in one file.** Most types get a file of their own,
   named for the type: a hand-written core, a shell, a transformer, a
   contract, a model, a root modifier. A hand-written core does not sit
@@ -1159,6 +1220,8 @@ The articles' terms. Use them. They make discussion precise in a way
 | boundary event | a binding write or action call; re-enters the flow only if it changes a source of truth |
 | reshaping | a wave that changes structure, not only values; the rare case |
 | reference | `@Binding`, `@Environment`, or `@Query`: holds no state. A binding is a `get`/`set` pair an ancestor built and handed in at the initializer; an environment value is one an ancestor set above with `.environment(...)`; a query is a filtered read of the store the root opened |
+| query service | the contract of the store's reads, a struct under `@LazyQueries`. A member takes the values a query depends on and answers a lazy query. The root sets it, and its default is `defaultQueries` |
+| lazy query | a `LazyQuery`, the query not built yet together with the values it was asked with. The values are its dependencies, so `QueryView` builds it again only when one of them changes |
 | machinery | Apple's UI-runtime wrappers that hold no suppliable data (gestures, focus, namespaces, metrics) |
 | furniture | a view inside a node that is not a node itself, a row, a button, a design-system piece. It gets no node on the map, and what it calls is in the node's contract |
 | shell / core | the view owning the live property wrappers and services, one wherever the I/O is / the feature as pure transformation, values and closures in, children and boundary events out |
@@ -1187,7 +1250,8 @@ source its row names.
 - Lazar Otasevic, [TDD: Death by a Thousand Mocks](https://medium.com/@redhotbits/tdd-death-by-a-thousand-mocks-26adb60cbe43),
   why the axis is authority, and why mock depth is what TDD died of
 - Lazar Otasevic, [swift-core-flow](https://github.com/sisoje/swift-core-flow),
-  `@Shell`, `@TestState`, `@TestAction`, `QueryView`, `HostApp`
+  `@Shell`, `@TestState`, `@TestAction`, `@LazyQueries`, `QueryView`,
+  `HostApp`
 - Lazar Otasevic, *Don't Separate Networking From Your UI, Eliminate It
   From the App*, and [swift-declarative-openapi-generator](https://github.com/sisoje/swift-declarative-openapi-generator),
   the backend as a struct of async closures, and its models, written

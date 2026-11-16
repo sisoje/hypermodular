@@ -2995,6 +2995,68 @@
     `swift test` 4 of 4, the build, and the three UI tests passed
     against 1.3.0 from the URL. The rulings above keep the old name
     as they were written.
+  - **F110, a read of the store is a query asked from the query
+    service.** 2026-11-16. The owner, told that a bare `@Query` under
+    `@Shell` is the normal form and that a query is a read with no
+    cylinder: "i made shell that can convert query to the core but
+    that does not mean it should be used in such way", and "imagine we
+    have queryservice so it will return us an equatable dependency
+    array and a closure that returns a query so we can make lazy
+    query". The requirement in his words: "whoever provides arguments
+    will get equatable dependency array back for free", and "we want
+    error free solution". Then: "rework hypermodular so it knows to
+    use lazy queries "Query is a read with no cylinder." fix that".
+    F32's sentence that a `@Query` is a read placed where it is read
+    is withdrawn for new code, and so is native materialization as
+    the way a store is read. The query service is a contract in the
+    layer, a struct under swift-core-flow's `@LazyQueries` whose
+    members take the values a query depends on and answer a
+    `LazyQuery`. The root sets it, so it is a dependency with a
+    cylinder, `queryService` beside `dbService`, which stays writes
+    only. Its `@Entry` default is `defaultQueries`, which the macro
+    writes, the one contract whose no-op is not `.init()`. A node
+    asks, `QueryView(queryService.books(sortByAuthor))`, and the label
+    line is `· queryService.books`, a read off a cylinder, which does
+    not log. A feature writes no query and no list of dependencies.
+    The query expression is written once, in the dependency that wraps
+    the store, as a function from the arguments to a fetch descriptor,
+    and that dependency's plain test fetches with it from a seeded
+    in-memory container. So the sentence that a sort is proven at the
+    shell, in a hosted scenario over the node's own query, is
+    withdrawn too. A `@Query` property and
+    `QueryView(query:dependencies:)` are what a view not yet converted
+    has, `· @Query` on its label, and `@Shell` still turns the first
+    into `@QueryResult`. The checker reads `QueryView(` over a call on
+    an environment value as the read, asks for no `· @Query` there,
+    and warns on a query written in a view, as it does on a `Task`
+    nobody holds. Its clean fixture asks a `bookQueries` cylinder, and
+    its broken one keeps the query written by hand. Measured the same
+    day against the swift-core-flow checkout, Swift 6 mode, the
+    main-actor default: the layer's contract with its entry default,
+    the store dependency, the shell and its core, and a scenario with
+    `.mockQuery` compile with no diagnostic, and the plain test of the
+    descriptor passes. The older-name row is command and query
+    separation with a memo function, Meyer and Michie. The lazy query
+    is in the library's commits after 1.3.0 and in no release yet. The
+    install lines say 1.4.0, which the owner has not tagged, and until
+    he does the path of a checkout is the form that resolves. Two
+    cold reads the same day, Sonnet at medium effort.
+    `data-coupling/scripts/comprehension-prompt-4.md`, new, on the
+    code skill: eight of eight, and its design task, a list with an
+    order and a search in a manager's words, came back with a query
+    service, a `QueryView` over its member, the descriptor function in
+    the store's dependency with a plain test, and no query in the
+    view. The mapping prompt with a ninth question: the read line, the
+    cylinder the root sets, no log, `· @Query` only for a view not yet
+    converted, and its five files pass the checker at zero errors.
+    What they had to guess became sentences. A value a query is asked
+    with is data of the app, so an order that is more than a flag is
+    an enum in the layer, measured with a search text beside it. The
+    initializer takes a closure from the member's arguments to the
+    `Query`. A scenario sets nothing for the query service. A `@Query`
+    left in a view being converted is the order of the conversion and
+    not a break of the rule. *Given* names what a query delivers. The
+    rulings above keep `@Query` as they were written.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

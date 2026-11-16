@@ -41,14 +41,19 @@ the type's body, then compared both ways:
                 (the fence breach); a label line with nothing behind it
                 in the Swift (stale); a bare evidence target that is no
                 stored property of the type; @AppStorage below the root
-                (F32); a View on no map that reads a cylinder (warning)
+                (F32); a View on no map that reads a cylinder (warning).
+                A query asked from the query service,
+                QueryView(queryService.books(...)), is a read,
+                '· queryService.books', and no materialization (F110)
   habits        a rule of the code skill no map can show, as a
                 warning: a Task nobody holds (F37), which is a Task
                 expression not assigned, returned, or awaited; and a
                 lifecycle modifier in a view (F77 to F81), which is
                 .task(id:), .onChange, .onAppear, .onOpenURL, or
                 .onContinueUserActivity in a file that declares no
-                ViewModifier. A plain .task is not reported
+                ViewModifier. A plain .task is not reported; and a
+                query written in a view (F110), which is a @Query
+                property or QueryView(query:dependencies:)
 
 Usage: mapcheck.py [repo-root] [--write] [--sources DIR ...]   (exit 1 on any error)
 """
@@ -179,8 +184,11 @@ ENV = re.compile(r"@Environment\(\\\.(\w+)\)\s*(?:(?:private|fileprivate|interna
 PROP = re.compile(r"^\s*(?:@\w+(?:\([^)]*\))?\s+)*(?:(?:private|fileprivate|internal|public|static|nonisolated)\s+)*(?:let|var)\s+(\w+)")
 CLOSURE_PROP = re.compile(r"^\s*(?:@\w+(?:\([^)]*\))?\s+)*(?:(?:private|fileprivate|internal|public)\s+)*(?:let|var)\s+(\w+)\s*:\s*(?:@escaping\s+)?\(")
 BINDING = re.compile(r"^\s*@Binding\s+(?:(?:private|fileprivate|internal|public)\s+)?var\s+(\w+)")
-MATERIALIZERS = [("@Query", "@Query"), ("QueryView(", "@Query"), ("@SceneStorage", "@SceneStorage"),
+MATERIALIZERS = [("@Query", "@Query"), ("@SceneStorage", "@SceneStorage"),
                  ("@FocusState", "@FocusState"), ("@AppStorage", "@AppStorage"), ("ProcessInfo", "@ProcessInfo")]
+QUERY_BY_HAND = re.compile(r"\bQueryView\s*\(\s*query\s*:")   # QueryView(query:dependencies:), a query written in the view
+QUERY_ASKED = re.compile(r"\bQueryView\s*\(\s*$")             # QueryView(service.member(...)), a query asked from the service
+QUERY_IN_VIEW = re.compile(r"@Query\b|\bQueryView\s*\(\s*query\s*:")
 
 SKIPPED_DIRS = {".build", "DerivedData", "SourcePackages"}   # build output is never the app's source
 TASK = re.compile(r"\bTask\s*(?:\.detached\s*)?[({]")
@@ -239,7 +247,8 @@ def facts(t):
         if re.search(rf"(?<![.\w]){prop}\s*\(", body):   # an environment closure called by name, a flow
             f["calls"].add(f"{key}()")
         for m in re.finditer(rf"\b{prop}\.(\w+)", body):
-            if re.match(r"\s*\(", body[m.end():]): f["calls"].add(f"{key}.{m.group(1)}()")
+            asked = QUERY_ASKED.search(body[:m.start()])   # the argument of QueryView is a read of the store, and a read does not log
+            if re.match(r"\s*\(", body[m.end():]) and not asked: f["calls"].add(f"{key}.{m.group(1)}()")
             else: f["reads"].add(f"{key}.{m.group(1)}")
     for ln in top:
         pm = PROP.match(ln)
@@ -250,7 +259,7 @@ def facts(t):
         if cm: f["callbacks"].add(cm.group(1))
         for mark, line in MATERIALIZERS:
             if mark.startswith("@") and mark in ln: f["materializes"].add(line)
-    if "QueryView(" in body: f["materializes"].add("@Query")
+    if QUERY_BY_HAND.search(body): f["materializes"].add("@Query")
     if "ProcessInfo" in body: f["materializes"].add("@ProcessInfo")
     for b in f["bindings"]:
         if re.search(rf"\${b}\b", body) or re.search(rf"\b{b}(?:\.wrappedValue)?\s*(?:=[^=]|\+=|-=|\.toggle\(|\.append\()", body):
@@ -281,6 +290,8 @@ def check_habits(dirs):
                 for ln in lines:
                     lm = LIFECYCLE.search(ln)
                     if lm: warn("code", f"{p.name}: a lifecycle modifier in a view, '{ln.strip()[:48]}' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)")
+            for qm in QUERY_IN_VIEW.finditer(text):
+                warn("code", f"{p.name}: a query written in a view, '{lines[text.count(chr(10), 0, qm.start())].strip()[:48]}' (F110: a read of the store is a query asked from the query service)")
             for i, ln in enumerate(lines):
                 m = TASK.search(ln)
                 if not m: continue

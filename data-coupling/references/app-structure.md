@@ -115,7 +115,7 @@ for the library are these, its URL and the version, or the path of a
 checkout in its place.
 
 ```swift
-dependencies: [.package(url: "https://github.com/sisoje/swift-core-flow", from: "1.3.0")],
+dependencies: [.package(url: "https://github.com/sisoje/swift-core-flow", from: "1.4.0")],
 // in the target:
 dependencies: [.product(name: "CoreFlow", package: "swift-core-flow")],
 ```
@@ -183,9 +183,12 @@ struct AddressFileInjector: ViewModifier {
   in-memory container, and its test does not close a store on disk and
   open it again. Whether its insert did its job, the row fetched back
   from that container, is the dependency's own code and is tested,
-  even where that code is one line. The test reads the context
-  directly, `context.fetch(FetchDescriptor<Address>())`, not through
-  `@Query`, so it is a plain test with no view.
+  even where that code is one line. So is each query it sets on the
+  query service. A query is built over a fetch descriptor that an
+  internal function returns from the query's arguments, and the test
+  fetches with that function and asserts what comes back. The test
+  reads the context directly, `context.fetch(FetchDescriptor<Address>())`,
+  not through a view, so it is a plain test.
 
 ## The app target
 
@@ -235,7 +238,7 @@ xcrun xcodeproj init AddressForm.xcodeproj
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
 xcrun xcodeproj pkg add-local ../Packages/AppCore
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
-xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.3.0
+xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.4.0
 
 application() {   # a target, its phases, its folder, the main-actor default, AppCore
     xcrun xcodeproj target add "$1" --product-type application

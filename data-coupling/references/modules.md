@@ -90,11 +90,17 @@ one thing, a package of pure data. Data is the abstraction.
   when its implementation lives in some other package. Folders slice by
   what the closure struct is, not by which package implements it. A
   backend's contract and its models are here too, generated from the
-  server's OpenAPI document where it publishes one.
+  server's OpenAPI document where it publishes one. The store has two
+  contracts here, one of its writes and one of its reads. The reads
+  are the query service, a struct under `@LazyQueries` whose entry
+  defaults to `defaultQueries` (`shell-core.md`, "The SwiftData
+  shell").
 - **Data, not helpers.** Models, enums, contracts, and the values a
   feature computes and shows live in the layer whoever consumes them;
   that is the package everything reads. A helper type one feature keeps
-  private, a sort option, a sheet enum, stays in that feature. When in
+  private, a sort option, a sheet enum, stays in that feature. A type
+  a contract's signature names is data of the app, so the order a
+  query is asked in is in the layer. When in
   doubt, ask whether it is data of the app or furniture of a screen.
 - **A conformance is fine where it adds no behavior.** `Identifiable`
   over a stored `id`, a synthesized `Codable`, `Sendable`,

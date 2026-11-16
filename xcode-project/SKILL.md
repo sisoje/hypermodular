@@ -71,7 +71,7 @@ xcrun xcodeproj setting set PRODUCT_BUNDLE_IDENTIFIER 'dev.addressform.$(TARGET_
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
 xcrun xcodeproj pkg add-local ../Packages/AppCore
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
-xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.3.0
+xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.4.0
 
 # An application: the target, its two phases, the folder of its own name
 # synchronized with disk, the main-actor default, and AppCore.

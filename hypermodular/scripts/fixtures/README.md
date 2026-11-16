@@ -8,7 +8,10 @@
   block (2026-11-10, F37), and the whole-app diagram the checker
   draws with `--write` first in `APP-MAP.md` (2026-11-12), the node
   maps under `Maps/` and each evidence block a flow file of its own
-  (2026-11-12, F61 and F63). Correct; usable as examples.
+  (2026-11-12, F61 and F63), and the list's read asked from a query
+  service, `bookQueries`, a cylinder the root sets, with
+  `· bookQueries.sorted` on the label in place of `· @Query`
+  (2026-11-16, F110). Correct; usable as examples.
 - `broken/`: the same maps with fourteen errors and two warnings planted
   (depth-2 arrows, an orphan, a label mismatch, a missing cylinder, a
   reserved-word target, an unlabelled evidence call, a dotted `$` line
@@ -24,8 +27,11 @@ evidence target that is no stored property, and a view on no map that
 reads a cylinder, and a presence-condition arrow whose label names
 nothing the node holds, and a flow called with no label line; with
 the two planted stale labels that is nine code errors and one
-warning. Four more warnings are planted for habits no map can show,
-two `Task`s nobody holds and two lifecycle modifiers in a view. One
+warning. Six more warnings are planted for habits no map can show,
+two `Task`s nobody holds, two lifecycle modifiers in a view, and two
+queries written in a view. The broken list and its scenario keep
+`QueryView(query:dependencies:)`, the query written by hand, which
+takes the `· @Query` line as before and is warned about (F110). One
 of the two tasks is made in a closure handed to `map`, on a line
 whose only `=` is a default argument (F106).
 `Furniture` also assigns a task through an optional's `map`, on one

@@ -11,6 +11,13 @@ struct BookStore {
     var delete: (Book) -> Void = { _ in }
 }
 
+// The store's reads, the query service. A member takes what its query
+// depends on and answers the query not built yet.
+@LazyQueries
+struct BookQueries {
+    var sorted: (_ descending: Bool) -> LazyQuery<Book, [Book]>
+}
+
 // The root's @AppStorage keys, as bindings.
 struct Settings {
     var sortDescending: Binding<Bool> = .constant(false)
@@ -19,5 +26,6 @@ struct Settings {
 
 extension EnvironmentValues {
     @Entry var bookStore = BookStore()
+    @Entry var bookQueries = BookQueries.defaultQueries
     @Entry var settings = Settings()
 }

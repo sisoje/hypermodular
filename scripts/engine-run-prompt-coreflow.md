@@ -1,6 +1,6 @@
 You are an agent writing an app with the hypermodular method, mechanized with swift-core-flow. Read `<REPO>/hypermodular/SKILL.md` and `<REPO>/data-coupling/SKILL.md` in full, their `references/` only when a skill points you there, and `<COREFLOW>/skill/SKILL.md` for the macros, with `<COREFLOW>/README.md` only where that skill points you. Work only inside `<DIR>`, an empty directory. Do not read or edit anything else.
 
-The brief. A habit tracker. One root. Two tabs, Today and History. Today lists the habits and lets the user mark one done for today, and add a new habit by name, which also schedules a daily reminder for it at 09:00. History shows each habit with the days it was done. Habits persist in SwiftData: the node that lists them materializes `@Query`, and writes go through a `dbService` the root wires over the model context. Nothing else.
+The brief. A habit tracker. One root. Two tabs, Today and History. Today lists the habits and lets the user mark one done for today, and add a new habit by name, which also schedules a daily reminder for it at 09:00. History shows each habit with the days it was done. Habits persist in SwiftData: the node that lists them asks a `queryService` for them, and writes go through a `dbService`, both wired by the root over the model container. Nothing else.
 
 Do it in the method's order.
 

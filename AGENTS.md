@@ -32,8 +32,8 @@ authority on how the code looks. There is no build step. The
 deliverable is the doctrine. The one piece of code is
 `hypermodular/scripts/mapcheck.py`, the registry check, the maps alone
 and with `--sources` the maps against the Swift, where it also warns
-on a `Task` nobody holds and on a lifecycle modifier in a view
-(`scripts/test.sh` runs its fixtures).
+on a `Task` nobody holds, on a lifecycle modifier in a view, and on a
+query written in a view (`scripts/test.sh` runs its fixtures).
 
 ## The three rules (follow them in any mapped repo)
 
@@ -64,7 +64,7 @@ its own.
 |------|---------|
 | `A --> B` | Data flow: parent hands facts, bindings, and callbacks down. Also root to Dependencies box (setting a value is normal data flow). |
 | `A -->\|cond\| B` | A presence condition: the child exists while the labeled value holds. Arrows on the same deciding value are alternatives, on different values independent. Unlabeled arrows are composition (children coexist). |
-| `Node["Name<br/>· @Query<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: store, scene storage, or focus, which the system owns and the node writes; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder, and so is a flow the node calls, `· deeplink()`. `· dep.value` reads a let or binding off a dependency and does not log. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and the checker reports a block that does not name it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
+| `Node["Name<br/>· @SceneStorage<br/>· dep.func()<br/>· dep.value<br/>· $sortByAuthor<br/>· onSave"]` | Label = name, then one contract line per line, each starting `· ` (the name is the text before the first `·`). Five kinds. `· @Source` materializes (`@` is the marker; a source of truth that outlives the node: scene storage, focus, which the system owns and the node writes, or a `@Query` in a view not yet converted; reads log nothing, writes log like any write). `· dep.func()` calls a capability and logs; the parens are the mark. `· dismiss()`, a sealed action Apple sets, is a call with no cylinder, and so is a flow the node calls, `· deeplink()`. `· dep.value` reads a let or binding off a dependency and does not log. A read of the store is one, `· queryService.books`, a query asked from the query service. `· $path` writes a binding the node was handed, `$sortByAuthor` from the parent or `$settings.city` off a cylinder; the write logs and the checker reports a block that does not name it. Bare `· name` calls back a parent-supplied closure. A name-only label receives everything and calls nothing. |
 | `svc[(svc)]` | Dependency cylinder. Named for the boundary, not the tech (`dbService`, not `swiftData`). |
 | `subgraph Dependencies` | One solid unfilled box holding all cylinders, ordered top to bottom in the order the root sets them. Derived services list their ingredients, which sit above them. |
 | `A ~~~ B` | Invisible link. Orders the dependency column. |
@@ -103,9 +103,9 @@ subgraph), no emoji, no status marks.
   mockability.** Whatever the root can name it builds and hands down
   as a projection, `@AppStorage` by its key, the container, the
   session; a node's own `@State` it could only invent, so that stays;
-  a `@Query` is a read, a filtered projection of the store, placed
-  where it is read. A feature receives what it uses, a fact, a binding, a
-  closure.
+  a read of the store is a query, a filtered projection of the store,
+  asked from the query service where it is read. A feature receives
+  what it uses, a fact, a binding, a closure, and writes no query.
   Behavior is closures the root sets, and a write or a call is the
   event. Every boundary is a value a scenario stands in for, so the
   test is the log.
@@ -183,8 +183,20 @@ subgraph), no emoji, no status marks.
   files. The root builds the live value inline where it sets it. The
   default is the minimal no-op and serves previews and tests. Detail:
   `data-coupling/references/modules.md`.
-- **Native materialization (`@Query`) gets no cylinder.** The root does
-  not set it. It is facts arriving, tagged as `@` lines. The root's
+- **A read of the store is a query asked from the query service.**
+  The query service is a contract in the layer, a struct under
+  swift-core-flow's `@LazyQueries`. Each member takes the values one
+  query depends on and answers a `LazyQuery`, the query not built yet
+  together with those values. The root sets it, so it is a cylinder,
+  `queryService`, and its `@Entry` default is `defaultQueries`, which
+  the macro writes. A node asks, `QueryView(queryService.books(
+  sortByAuthor))`, and the arguments are the query's dependencies, so
+  no list of them is written. The label line is
+  `· queryService.books`, a read. The query expression is written
+  once, in the dependency that wraps the store, and tested there.
+  A `@Query` written into a view is what a view not yet converted
+  has. That one is native materialization. The root does not set it,
+  so it has no cylinder and is tagged `· @Query`. The root's
   `@AppStorage` reaches features as bindings, through the init or a
   `settings` cylinder. Only consumption couples: a call logs, a read
   does not. `dbService` is writes only; a write may return a result, an
@@ -244,7 +256,10 @@ skill is `data-coupling/scripts/comprehension-prompt.md`, and
 passages the first does not reach. `comprehension-prompt-3.md` covers
 what a value built from an input is, where work is started, the
 lifecycle modifiers, and an event from the external system, and its
-design task is a brief in a manager's words. The mapping skill's test is
+design task is a brief in a manager's words. `comprehension-prompt-4.md`
+covers how the store is read, the query service, where a query is
+written and tested, and a view not yet converted, with a brief that
+tempts a query written in the view. The mapping skill's test is
 `hypermodular/scripts/comprehension-prompt.md`. Hand any of them,
 verbatim and with nothing else, to a model that has not read the skill
 (`codex exec -C . -s read-only -m <model> - < that file`, or a fresh

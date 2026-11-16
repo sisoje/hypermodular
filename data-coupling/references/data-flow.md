@@ -271,7 +271,9 @@ them is by who knows how to build the thing.
   not belong in it. That state is `@State` of the view that hosts the
   `MemoView`, which the Memo leaves alone. And when the build reads an
   input that `dependencies:` leaves out, a change of that input is not
-  followed. `QueryView` is the same over a `Query` (`shell-core.md`).
+  followed. `QueryView` is the same over a `Query`. A query asked
+  from the query service has no such list, since the arguments it was
+  asked with are its dependencies (`shell-core.md`).
 
 A binding to the parent's own input, handed to the child beside a copy
 the child builds, is not a third way. A binding shares a value. It
@@ -316,7 +318,7 @@ tab, the others with the script above.
 | `.onAppear { model = Model(id: id) }` over an optional `@State` | `body` runs first with nothing to show, and then the first is kept | the same, and the optional is no longer needed |
 | `.onChange(of: id) { model = Model(id: $1) }` added to one of the above | follows one wave late | removed together with the seed |
 | `.id(id)` on the child | follows by teardown, and the child's own `@State` is lost | removed together with the seed. `.id()` is for a teardown that is wanted |
-| `_books = Query(filter: …)` in a child's `init` | follows the input, and a query is built at every creation | `QueryView` with `dependencies:` (`shell-core.md`) |
+| `_books = Query(filter: …)` in a child's `init` | follows the input, and a query is built at every creation | a query asked from the query service with the input as its argument, `QueryView(queryService.books(author))`, built again only when the argument changes (`shell-core.md`) |
 | `.task { await load() }` or `.onAppear { Task { await load() } }` on a node an action mounts | the load runs again each time the view on screen reappears, when a screen pushed over it is popped and when the user comes back from another tab. The second form is also a `Task` nobody holds | the action that mounts the node starts the load, as a task the node that handles the action holds (`shell-core.md`, "Who owns the load") |
 
 The second row is what Apple's migration note for SDK 27 gives for the
@@ -477,7 +479,9 @@ Data can move. It can be handed in, captured, asserted on.
 
 References are `@Binding`, `@Environment`, and `@Query`. None holds
 state of its own. A query is a filtered read of the store the root
-opened, and arrives as the array it delivers. A binding is a `get`/`set` pair an ancestor built and arrives at
+opened, and arrives as the array it delivers. The method asks for one
+from the query service, and a `@Query` property is what a view not yet
+converted has. A binding is a `get`/`set` pair an ancestor built and arrives at
 the initializer. An environment value is a value an ancestor
 set with `.environment(...)` and arrives without a constructor
 argument. That is the only difference between them, and it is a
@@ -665,6 +669,7 @@ method's own claim, and it is the first place to doubt.
 | The core decides as a function of what it was handed, and the I/O is at the edge, in the shell and in the closures handed in | functional core, imperative shell, the impure, pure, impure sandwich shaped as views (`shell-core.md`, "The lineage") | Bernhardt 2012; Wlaschin; Seemann |
 | No information is lost where a value enters the app. The boundary keeps the whole value, and narrowing is a projection made afterwards | rawness. The data kept is the rawest form available, since the questions asked of it later are not known when it arrives, and every narrower view is derived from it. The source says it of a store of records. Applying it to a value at an app's boundary is this method's | Marz and Warren 2015 |
 | A binding is handed where the receiver writes. What it only reads is a fact | least privilege. Each part is given the least access that its job needs, here the read without the write | Saltzer and Schroeder 1975 |
+| A read of the store is a query asked from a service, apart from the contract that writes. The values it is asked with are its dependencies, and it is built again only when one of them changes | command and query separation, a query answers and changes nothing, a command changes and answers nothing, and a memo function, a function that keeps its last result under the arguments it was called with. Keeping the query unbuilt until a view asks, and making its arguments the key, is this method's | Meyer 1988; Michie 1968 |
 
 ## Where the model came from
 
@@ -693,6 +698,10 @@ method's own claim, and it is the first place to doubt.
   Core, Imperative Shell*; Mark Seemann, [Impureim sandwich](https://blog.ploeh.dk/2020/03/02/impureim-sandwich/)
 - Ian Cooper, [Hustle and Flow](https://www.youtube.com/watch?v=p0bKMuBdpL8) (NDC Porto 2022);
   [Succeeding at Reactive Architecture](https://www.youtube.com/watch?v=YyWKczrfxW4) (NDC London 2023)
+- Bertrand Meyer, *Object-Oriented Software Construction* (Prentice
+  Hall, 1988), command and query separation
+- Donald Michie, "'Memo' Functions and Machine Learning" (Nature 218,
+  1968), a function that remembers what it answered for its arguments
 - Ben Moseley & Peter Marks, [Out of the Tar Pit](https://curtclifton.net/papers/MoseleyMarks06a.pdf) (2006)
 - Umut Acar, [Self-Adjusting Computation](https://www.cs.cmu.edu/~rwh/students/acar.pdf) (CMU 2005);
   Jane Street, [Introducing Incremental](https://blog.janestreet.com/introducing-incremental/)

@@ -56,8 +56,8 @@ flow beside it, and the app's coupling and dependencies in
 The parent hands the child facts, bindings, and callbacks. A node's
 label carries its whole outbound contract, one `·`-bulleted line per
 capability.
-`· @Query` materializes a native source of truth, `· dbService.deleteBook()`
-calls. The name stays the first line, whatever the renderer does.
+`· queryService.books` reads the store through the query service,
+`· dbService.deleteBook()` calls. The name stays the first line, whatever the renderer does.
 
 ```mermaid
 %% Root: Landing · Parent: App (../../APP-MAP.md)
@@ -92,8 +92,9 @@ flowchart LR
         direction TB
         searchAPI[(searchAPI)]
         dbService[(dbService)]
+        queryService[(queryService)]
         navService[(navService)]
-        searchAPI ~~~ dbService ~~~ navService
+        searchAPI ~~~ dbService ~~~ queryService ~~~ navService
     end
     App --> Dependencies
     classDef deps fill:none

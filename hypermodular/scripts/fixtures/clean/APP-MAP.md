@@ -7,7 +7,7 @@ flowchart TD
     App
     ReadingListScreen
     AddBookField["AddBookField<br/>· bookStore.insert()"]
-    BookList["BookList<br/>· @Query<br/>· $settings.sortDescending<br/>· bookStore.delete()"]
+    BookList["BookList<br/>· bookQueries.sorted<br/>· $settings.sortDescending<br/>· bookStore.delete()"]
     App --> ReadingListScreen
     ReadingListScreen -->|isAdding| AddBookField
     ReadingListScreen --> BookList
@@ -18,10 +18,12 @@ flowchart TD
     subgraph Dependencies
         direction TB
         bookStore[(bookStore)]
+        bookQueries[(bookQueries)]
         settings[(settings)]
     end
     AddBookField -.-> bookStore
     BookList -.-> bookStore
+    BookList -.-> bookQueries
     BookList -.-> settings
     FocusField -.-> settings
     classDef plain fill:none
@@ -44,8 +46,9 @@ flowchart LR
     subgraph Dependencies
         direction TB
         bookStore[(bookStore)]
+        bookQueries[(bookQueries)]
         settings[(settings)]
-        bookStore ~~~ settings
+        bookStore ~~~ bookQueries ~~~ settings
     end
     App --> Dependencies
     classDef deps fill:none

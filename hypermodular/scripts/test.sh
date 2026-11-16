@@ -32,7 +32,8 @@ sed -i '' 's/|isAdding|/|isAddingBook|/' /tmp/mapcheck-whole/Maps/ReadingListScr
 python3 mapcheck.py /tmp/mapcheck-whole | grep -q "^ERROR .*the whole-app diagram is stale" && echo "a changed map makes the whole-app diagram stale" || { echo "FAIL: stale whole-app diagram not reported"; exit 1; }
 python3 mapcheck.py /tmp/mapcheck-whole --write | tail -1 | grep -q " 0 errors" && python3 mapcheck.py /tmp/mapcheck-whole | tail -1 | grep -q " 0 errors" && echo "--write redraws it" || { echo "FAIL: --write did not redraw the whole-app diagram"; exit 1; }
 python3 mapcheck.py fixtures/broken | grep -q "^WARNING .*no whole-app diagram" && echo "a missing whole-app diagram warns" || { echo "FAIL: a missing whole-app diagram should warn"; exit 1; }
-# the code-side half: the clean Swift stubs verify every bare target; the broken ones plant one of each code finding
+# the code-side half: the clean Swift stubs verify every bare target, and their list asks the query service (F110);
+# the broken ones plant one of each code finding and keep the query written by hand, which is accepted and warned about
 echo "clean + sources:" && python3 mapcheck.py fixtures/clean --sources fixtures/clean/Sources | tail -1 | grep -q " 0 errors, 0 warnings, 0 unverified" || { echo "FAIL: clean sources should verify everything"; exit 1; }
 echo "broken + sources:" && python3 mapcheck.py fixtures/broken --sources fixtures/broken/Sources | grep -E '^(ERROR|WARNING) +(code:|Maps/SaveButton/SaveDraft.md: SaveButton: evidence target|Maps/ReadingListScreen/MAP.md: ReadingListScreen: arrow label)' | sed -E 's/^(ERROR|WARNING) +//' | sort > /tmp/mapcheck-code-got.txt || true
 sort > /tmp/mapcheck-code-want.txt <<'WANT'
@@ -50,5 +51,7 @@ code: Furniture.swift: a Task nobody holds, 'func each(_ items: [Int], limit: In
 code: SaveButton: SaveButton.swift calls deeplink() with no line on the label
 code: Furniture.swift: a lifecycle modifier in a view, '.onAppear { }' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)
 code: Furniture.swift: a lifecycle modifier in a view, '.task(id: 1) { }' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)
+code: BookList.swift: a query written in a view, 'QueryView(' (F110: a read of the store is a query asked from the query service)
+code: BookListScenario.swift: a query written in a view, 'QueryView(query: Query(sort: \Book.title), depen' (F110: a read of the store is a query asked from the query service)
 WANT
 diff /tmp/mapcheck-code-want.txt /tmp/mapcheck-code-got.txt && echo "all planted code findings caught, nothing extra" || { echo "FAIL: code findings differ"; exit 1; }

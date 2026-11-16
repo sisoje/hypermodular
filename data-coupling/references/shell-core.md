@@ -41,7 +41,9 @@ arrives at the initializer; an environment value is set above with
 `.environment(...)` and read without a constructor argument; a query is
 a filtered read of the store the root opened. Same kind, different
 spelling. All are data in, and all belong in the core, the query as
-the array it delivers.
+the array it delivers. The read itself is asked from the query service
+and run in the shell ("The SwiftData shell", below), so a `@Query`
+property is what a view not yet converted has.
 
 UI-runtime machinery is `@GestureState`, `@FocusState`, `@Namespace`,
 and `@ScaledMetric`. None hold data a caller could supply. There is no
@@ -72,7 +74,8 @@ So the rule for a core and the environment:
 | `@Binding` | reference | already in the core; passes straight through | copied verbatim; the caller supplies the binding |
 | `@State` | data, owned | stays in the core if only the core needs it; `@Binding` if a criterion names it | `@TestState`: stays private, keeps its default, logs every write |
 | `@SceneStorage` (`@AppStorage` is the root's and not in a feature) | data, external storage | shell keeps it; core takes `@Binding` | `@Binding`. The key disappears, because a twin does not persist |
-| `@Query` | reference, a filtered read | shell keeps it; core takes a plain `let` array | `@QueryResult`. The memberwise init takes the bare array |
+| a read of the store, `QueryView` over a query asked from the query service | reference, a filtered read | in the shell's `body`; core takes a plain `let` array | copied with the `body`; the scenario supplies the result with `.mockQuery` or a seeded container |
+| `@Query`, in a view not yet converted | reference, a filtered read | shell keeps it; core takes a plain `let` array | `@QueryResult`. The memberwise init takes the bare array |
 | `@FocusState` | machinery | shell | `@TestFocusState`: a real `FocusState` underneath, programmatic writes log |
 | `@Environment` value, your own `@Entry` | reference | in the core; the scenario sets it with `.environment(...)` | copied verbatim; the scenario sets it with `.environment(...)` |
 | `@Environment(\.dismiss)`, `(\.openURL)` | reference, sealed action | shell reads it and hands the core a closure, because nothing can build one from above | `@TestEnvironment`: the real action runs, every call logs |
@@ -89,8 +92,9 @@ Extracting the core is a mechanical split into two views.
    - `@SceneStorage` becomes `@Binding`. External storage is a
      dependency, and whoever constructs the core supplies it.
      `@AppStorage` is the root's and not in a feature.
-   - `@Query` becomes a plain `let` array. The fetched result is handed
-     in as a value.
+   - A read of the store becomes a plain `let` array. The shell asks
+     the query service and hands the fetched result in as a value. A
+     `@Query` property found in the view becomes the same `let`.
    - `@State` that only the core itself needs may stay in the core.
      `@State` a test must reach moves up to the shell and enters the
      core as `@Binding` too.
@@ -109,12 +113,14 @@ core.
 
 ```swift
 struct BookList: View {                    // shell: owns the I/O
-    @Query private var books: [Book]                               // rule 2: fetch
+    @Environment(\.queryService) private var queryService          // rule 2: the store's reads
     @Binding var sortByAuthor: Bool                                // rule 1: the root's storage, a binding
     let onDelete: (Book) -> Void                                   // rule 1: already data
 
     var body: some View {
-        BookListCore(books: books, sortByAuthor: $sortByAuthor, onDelete: onDelete)
+        QueryView(queryService.books(sortByAuthor)) { $books in    // rule 2: the fetch, run here
+            BookListCore(books: books, sortByAuthor: $sortByAuthor, onDelete: onDelete)
+        }
     }
 }
 
@@ -189,6 +195,11 @@ struct CardScenario: View {
 
 #Preview { CardScenario() }
 ```
+
+`Card` is a view as it stood before the cut, its read written into it
+as `@Query`. That is the case `@Shell` was made for. A view written by
+the method asks the query service ("The SwiftData shell", below), and
+its `QueryView` is copied onto `Core` with the `body`.
 
 Three terms keep fixed meanings. The host (`Card`) is the production
 shell. `Core` is its generated twin. A scenario (`CardScenario`) is the
@@ -361,40 +372,126 @@ is pure. `grep async` finds every awaited boundary.
 
 ## The SwiftData shell
 
-`@Query` is a read of the store whose configuration (filter, sort,
-section) comes from state, yet it is locked in at
+A read of the store is a query, and its configuration (filter, sort,
+section) comes from state, yet a `@Query` is locked in at
 construction. Building it in a child's `init` off parent state
 constructs a new query on every parent re-render. Apple DTS confirmed a
 filtered `@Query` re-fetching once per keystroke in the parent. And
 `.id(value)` on that child destroys the subtree's state whenever the
 value changes. swift-core-flow's `QueryView` builds the live query in
-`body` from the view's own state, rebuilds it only when `dependencies:`
-change (the values that take part in the `Query` init, those and only
-those), and hands content the result as plain data:
+`body`, rebuilds it only when its dependencies change, and hands
+content the result as plain data. Written by hand, the dependencies
+are a list, `QueryView(query:dependencies:)`, the values that take
+part in the `Query` init, those and only those, beside the expression
+that reads them. A value the query reads and the list leaves out is a
+change the query does not follow. The list goes stale with no error
+and no warning.
+
+So the query is not written in the view. It is asked from the query
+service, a contract in the layer, with the values it depends on as
+arguments. What comes back is a `LazyQuery`, the query not built yet
+together with those values. The arguments are the dependencies, so
+there is no list to write and none to forget.
+
+The contract, in the layer. `@LazyQueries` writes its initializer and
+`defaultQueries`, which the entry defaults to:
+
+```swift
+// Packages/DataCoupling/Sources/DataCoupling/Services/QueryService.swift
+import SwiftData
+import SwiftUI
+
+@LazyQueries
+public struct QueryService {
+    public var books: (_ byAuthor: Bool) -> LazyQuery<Book, [Book]>
+}
+
+public extension EnvironmentValues {
+    @Entry var queryService = QueryService.defaultQueries
+}
+```
+
+The node. The shell asks, and the core takes the array:
 
 ```swift
 struct BookList: View {
-    @Binding var sortDescending: Bool
+    @Environment(\.queryService) private var queryService
+    @Binding var sortByAuthor: Bool
+    let onDelete: (Book) -> Void
 
     var body: some View {
-        QueryView(
-            query: Query(sort: \Book.title, order: sortDescending ? .reverse : .forward),
-            dependencies: [sortDescending]
-        ) { $books in
-            List(books, id: \.id) { Text($0.title) }
+        QueryView(queryService.books(sortByAuthor)) { $books in
+            BookListCore(books: books, sortByAuthor: $sortByAuthor, onDelete: onDelete)
         }
     }
 }
 ```
 
-A value the query reads and `dependencies:` leaves out is a change the
-query does not follow. The list goes stale with no error and no
-warning.
+`QueryView` hands its content the query's result, written `$books`,
+and `books` inside the closure is the array.
 
-Two mock paths. `.mockQuery(QueryResult(wrappedValue: [dune]))` cans
-the result per type. Or seed an in-memory container and let the real
-query run against test data, so sorting, filtering, and sectioning are
-the query's own.
+The dependency that wraps the store. A query expression is the store's
+knowledge. It is written once, as a function from the arguments to a
+fetch descriptor. The initializer the macro writes takes, for each
+member, a closure with the member's arguments that returns the
+`Query`, and here that closure builds the `Query` over the descriptor:
+
+```swift
+// Packages/Dependencies/BookStore/Sources/BookStore/BookStore.swift
+struct BookStoreInjector: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .modifier(BookStoreWrites())       // sets dbService over \.modelContext
+            .environment(\.queryService, QueryService(books: { byAuthor in Query(books(byAuthor: byAuthor)) }))
+            .modelContainer(for: Book.self)
+    }
+}
+
+func books(byAuthor: Bool) -> FetchDescriptor<Book> {
+    FetchDescriptor(sortBy: [SortDescriptor(byAuthor ? \Book.author : \Book.title)])
+}
+```
+
+Its test fetches with that function from a seeded in-memory container.
+It is a plain test, with no view and no host:
+
+```swift
+@Test func booksAreFetchedInTheOrderAsked() throws {
+    let container = try ModelContainer(for: Book.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    let context = ModelContext(container)
+    context.insert(Book(title: "Dune", author: "Herbert"))
+    context.insert(Book(title: "Anathem", author: "Stephenson"))
+
+    #expect(try context.fetch(books(byAuthor: false)).map(\.title) == ["Anathem", "Dune"])
+    #expect(try context.fetch(books(byAuthor: true)).map(\.title) == ["Dune", "Anathem"])
+}
+```
+
+- **Whoever provides the arguments gets the dependencies for free**,
+  since they are the arguments. Calling the member builds nothing. It
+  is called on every render, and the query is built again only when
+  an argument changes.
+- **A `LazyQuery` is made only by calling a member of the service and
+  read only by `QueryView`.** Nothing else can open one or build one,
+  so a query does not travel without the values it was asked with.
+- **The service holds queries and nothing else.** Every stored
+  property is a function that answers a `LazyQuery`. The store's
+  writes are another contract, which stays writes only.
+- **`defaultQueries` is the service before the root sets one.** Every
+  member answers every record of its type, unsorted, whatever it is
+  asked with. It serves previews and scenarios as any contract's no-op
+  does.
+- **A scenario sets no query service.** A read does not log, so there
+  is nothing to stand in for. The scenario supplies the records.
+  `.mockQuery(QueryResult(wrappedValue: [dune]))` cans the result per
+  type. Or `.modelContainer(for:inMemory:)` seeds a real container,
+  and the default service fetches from it. Under `@Shell` the
+  `QueryView` is copied onto `Core` with the `body`, and the scenario
+  supplies the records the same two ways.
+- **The sort is proven where it is written.** The node's scenario
+  proves the node, that it writes the sort flag and shows what it is
+  handed. That the store returns the records in the order asked is the
+  dependency's test above.
 
 ## Who owns the load
 
@@ -647,7 +744,7 @@ own.
 - A core's preview is a construction of the core with literals,
   written directly in `#Preview`. A view with state or a live wrapper,
   a shell, is previewed through a scenario and not bare. A bare
-  preview of a shell is `@Query` hitting a container, which is an
+  preview of a shell is a query hitting a container, which is an
   integration test.
   Previews do not touch real storage. The environment default serves
   them, and a specific value comes from `@Previewable @State` bound into
@@ -671,8 +768,11 @@ logged as `(name, value)`.
 ## Checklist
 
 - [ ] Every data-holding wrapper crossed the boundary. `@SceneStorage`
-      became `@Binding`; no `@AppStorage` below the root; `@Query` became a plain array
-      or `@QueryResult`; criterion-named `@State` became `@Binding` or
+      became `@Binding`; no `@AppStorage` below the root; a read of the
+      store is a `QueryView` in the shell over a query asked from the
+      query service, and the core takes a plain array; a `@Query` left
+      in a view not yet converted became a plain array or
+      `@QueryResult`; criterion-named `@State` became `@Binding` or
       `@TestState`.
 - [ ] Machinery stayed in the shell or is copied verbatim on the twin.
       Everything the core reads from the environment is a value an
