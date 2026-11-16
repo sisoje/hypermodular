@@ -107,13 +107,13 @@ let package = Package(
 
 `DataCoupling` lists swift-core-flow and nothing else. `Features` lists
 `DataCoupling` and has a `FeaturesTests` target. The layer's two lines
-for the library are these, with the path of the checkout, or the
-package's URL and a version in its place.
+for the library are these, its URL and the version, or the path of a
+checkout in its place.
 
 ```swift
-dependencies: [.package(path: "../../../CoreFlow")],
+dependencies: [.package(url: "https://github.com/sisoje/swift-core-flow", from: "1.3.0")],
 // in the target:
-dependencies: [.product(name: "CoreFlow", package: "CoreFlow")],
+dependencies: [.product(name: "CoreFlow", package: "swift-core-flow")],
 ```
 
 With the library re-exported, the layer's models and contracts take
@@ -231,7 +231,7 @@ xcrun xcodeproj init AddressForm.xcodeproj
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
 xcrun xcodeproj pkg add-local ../Packages/Features
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
-xcrun xcodeproj pkg add-local ../../CoreFlow   # the path of the swift-core-flow checkout, wherever it is
+xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.3.0
 
 application() {   # a target, its phases, its folder, the main-actor default, the features
     xcrun xcodeproj target add "$1" --product-type application

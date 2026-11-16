@@ -2959,6 +2959,24 @@
     The same two sentences are in `notation.md`, whose copy of the cut
     rule had not had them. `reverse-engineering.md` lists the cut
     rule without "or callback", as it did before, and is left.
+  - **F108, swift-core-flow 1.3.0, linked by its URL.** 2026-11-16.
+    The owner: "dude we probably need core-flow as a fundamental
+    library for all projects". He tagged 1.3.0, and the release was
+    published on his "wanna do gh release?". It is the first release
+    whose flow closure looks up its listeners when it is called, F98's
+    change, so the notification form no longer rests on an unreleased
+    commit, and the emitter of F96 and F97 belongs to the library
+    before 1.3.0, as `modules.md` now says. The layer's manifest and
+    `generate.sh`, in `app-structure.md` and in the xcode-project
+    skill's script, name the library by its URL from 1.3.0, where they
+    named the path of a checkout. A URL builds from the app's own
+    repository and names a release whose behavior is known. The path
+    of a checkout takes its place while the library itself is being
+    changed. The script as the skill gives it was generated, built,
+    and its three UI tests passed against 1.3.0 from the URL. The
+    address, addresses, and garden briefs no longer say the package is
+    at `<COREFLOW>`, which pointed a run at the path. `<COREFLOW>`
+    stays as where the library's skill is read.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

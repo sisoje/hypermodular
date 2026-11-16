@@ -1,4 +1,4 @@
-You are building a small iPhone app with the hypermodular method. The method is four skills. Read them and follow them: `<REPO>/hypermodular/SKILL.md`, `<REPO>/data-coupling/SKILL.md`, `<REPO>/xcode-project/SKILL.md`, and `<COREFLOW>/skill/SKILL.md`, each with the references it points you to. swift-core-flow itself is the package at `<COREFLOW>`. Work only inside `<DIR>`, an empty directory.
+You are building a small iPhone app with the hypermodular method. The method is four skills. Read them and follow them: `<REPO>/hypermodular/SKILL.md`, `<REPO>/data-coupling/SKILL.md`, `<REPO>/xcode-project/SKILL.md`, and `<COREFLOW>/skill/SKILL.md`, each with the references it points you to. Work only inside `<DIR>`, an empty directory.
 
 The app. An address list. The user keeps addresses, and each address is a street and a city. The app has one screen, the list, and one form for adding.
 

@@ -547,7 +547,7 @@ Nine things hold, each measured.
 - **The task calls the flow directly.** A flow's closure looks up its
   listeners when it is called, so the closure the task took on its
   first pass reaches a listener that registered later. With the
-  library as it was before, whose closure kept the listeners of the
+  library before 1.3.0, whose closure kept the listeners of the
   pass it was read in, the same task emitted to nobody, from a cold
   launch and from the background alike, four of four, and an object
   that `body` handed the current closure on every pass was needed in

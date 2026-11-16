@@ -45,8 +45,8 @@ moves to its own folder first.
 ## The script
 
 This is the whole project of an iPhone app with a test host and a
-UI-test bundle, over four local packages. It was built and its UI
-tests were run from exactly this text.
+UI-test bundle, over three local packages and one remote one. It was
+built and its UI tests were run from exactly this text.
 
 ```sh
 #!/bin/sh
@@ -66,12 +66,12 @@ xcrun xcodeproj setting set CODE_SIGNING_ALLOWED NO
 xcrun xcodeproj setting set ALWAYS_SEARCH_USER_PATHS NO
 xcrun xcodeproj setting set PRODUCT_BUNDLE_IDENTIFIER 'dev.addressform.$(TARGET_NAME)'
 
-# The packages, each a path relative to this folder. The last is the
-# swift-core-flow checkout, wherever it is on this machine. An absolute path works.
+# The packages. The first three are local, each a path relative to this
+# folder. swift-core-flow is remote, its URL and the version the app needs.
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
 xcrun xcodeproj pkg add-local ../Packages/Features
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
-xcrun xcodeproj pkg add-local ../../CoreFlow
+xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.3.0
 
 # An application: the target, its two phases, the folder of its own name
 # synchronized with disk, the main-actor default, and the features.
@@ -92,7 +92,7 @@ xcrun xcodeproj pkg link AddressFile --package AddressFile --target AddressApp
 
 # The test host: the features and the host product.
 application TestHost
-xcrun xcodeproj pkg link CoreFlowUITestHost --package CoreFlow --target TestHost
+xcrun xcodeproj pkg link CoreFlowUITestHost --package swift-core-flow --target TestHost
 
 # The UI tests: run against the test host, never with the main-actor default.
 xcrun xcodeproj target add UITests --product-type ui-test-bundle
@@ -103,7 +103,7 @@ xcrun xcodeproj setting set TEST_TARGET_NAME TestHost --target UITests
 xcrun xcodeproj group add UITests --filesystem-path UITests
 xcrun xcodeproj group include --group UITests --target UITests
 xcrun xcodeproj pkg link Features --package Features --target UITests
-xcrun xcodeproj pkg link CoreFlowUITesting --package CoreFlow --target UITests
+xcrun xcodeproj pkg link CoreFlowUITesting --package swift-core-flow --target UITests
 
 # Predictable ids, so a regeneration is byte-identical: a target's id is its name.
 perl -0pi -e 's/"name": "(\w+)",(\s*)"id": "[0-9A-F]{24}"/"name": "$1",$2"id": "$1"/g; s/ "id": "[0-9A-F]{24}",//g' AddressForm.xcodeproj/project.xcproj
