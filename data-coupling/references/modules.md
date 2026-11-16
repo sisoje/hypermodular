@@ -15,7 +15,7 @@ A module that holds state couples every importer to what it holds. A
 stateless module is algorithms and cores, importable anywhere, tested
 alone, owned by anyone. The state sits at the top, in the app that
 composes the modules. Each module is its own package: `DataCoupling`,
-`Features`, one per I/O boundary that earns a package, a backend or a
+`AppCore`, one per I/O boundary that earns a package, a backend or a
 sync engine, and the app target that links them all. The layer is the
 only package the others share, so a backend implements the layer's
 contracts without importing a feature.
@@ -245,26 +245,26 @@ neither can name anything of the other.
 ```mermaid
 flowchart BT
     Data["DataCoupling<br/>models · enums · values<br/>contracts: structs of closures + @Entry<br/>zero dependencies of your own · zero behavior"]
-    Features["Features<br/>all screens and business logic<br/>knows no implementation exists"]
+    AppCore["AppCore<br/>all screens and business logic<br/>knows no implementation exists"]
     CommonUI["CommonUI<br/>model-free presentation<br/>depends on nothing"]
     Deps["Dependencies, one package each<br/>REST client · sync engine · StoreKit · Vision · Keychain · SwiftData · …<br/>each exposes one inject modifier"]
     App["App: composition root<br/>applies the inject chain"]
-    Features --> Data
-    Features --> CommonUI
+    AppCore --> Data
+    AppCore --> CommonUI
     Deps --> Data
-    App --> Features
+    App --> AppCore
     App --> Deps
 ```
 
-Read the arrows. Every dependency points at data. Features and the
+Read the arrows. Every dependency points at data. `AppCore` and the
 dependency packages do not meet at compile time. A sync engine consumes
 the REST contract as a value read from the environment, not the
 package that implements it. What you will not find: a feature
 importing a dependency, a dependency importing another or importing
-the features, a protocol, a container, a mock target. Dependencies
+`AppCore`, a protocol, a container, a mock target. Dependencies
 meet only through data, wired by the environment at runtime.
 
-- **Features** hold all screens and feature logic plus a pure shared
+- **`AppCore`** holds all screens and feature logic plus a pure shared
   layer: side-effect-free calculators, extensions on the layer's types,
   pure components. SwiftData reads in shells and system bridges
   (`UIViewControllerRepresentable`) are allowed. Ambient I/O (system
@@ -296,7 +296,7 @@ is a package is I/O, not size. A haptics dependency of thirty
 lines is one.
 
 The layer is the one package that lists swift-core-flow, and it
-re-exports it. The features package re-exports the layer. A feature
+re-exports it. `AppCore` re-exports the layer. A feature
 file then sees the layer and the macros with no import of either, and
 the library's version is set in one manifest.
 
@@ -710,7 +710,7 @@ smaller record sliced off for a feature is taste, not rescue.
       defaulted initializer and an `@Entry` whose default is `.init()`.
 - [ ] Every `async` and `throws` lives in a contract closure. Pure logic
       has none.
-- [ ] Features and dependencies depend on the data layer and not on
+- [ ] `AppCore` and the dependencies depend on the data layer and not on
       each other. Presentation depends on nothing.
 - [ ] Every dependency that does I/O is its own package under
       `Packages/Dependencies/`, imports no feature and no other

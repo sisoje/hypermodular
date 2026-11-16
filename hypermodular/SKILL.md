@@ -28,7 +28,7 @@ evidence is a file per flow in that directory, beside its `MAP.md`.
 The top node's parent link is `(../../APP-MAP.md)` and a child's is
 `(../MAP.md)`. The maps do not sit beside the code. Nothing depends on
 where a map file sits, since the checker matches a node to its Swift
-type by name, and one map tree spans the app target, the features, and
+type by name, and one map tree spans the app target, `AppCore`, and
 the dependency packages, so it has no single place in the code to sit
 beside. A `MAP.md` left inside a Swift package's `Sources/` is listed
 in the target's `exclude`.

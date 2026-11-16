@@ -46,8 +46,8 @@ holds.
    so `APP-MAP.md` opens with the whole app drawn from the maps. The
    map is now the work fence.
 4. **Build root-down.** The code is laid out as the data-coupling
-   skill's `references/app-structure.md` gives it, the layer, the
-   features, one package per dependency, the app under `App/`.
+   skill's `references/app-structure.md` gives it, the layer,
+   `AppCore`, one package per dependency, the app under `App/`.
    Implement a node only after its parent exists.
    For each node, its evidence holds (the test compares two values and
    passes) before the next node is started. Hand it literals for data

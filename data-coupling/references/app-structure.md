@@ -17,8 +17,8 @@ AddressForm/
     AddressScreen/AddressForm/Save.md   each child's inside its parent's; a leaf has flows and no MAP.md
   Packages/
     DataCoupling/                    the layer: Models/ Values/ Enums/ Services/
-    Features/                        the nodes, their cores, transformers, and rules
-      Tests/FeaturesTests/           plain tests of calculations and transformers
+    AppCore/                         the nodes, their cores, transformers, and rules
+      Tests/AppCoreTests/            plain tests of calculations and transformers
     Dependencies/
       AddressFile/                   one package per dependency that does I/O
         Tests/AddressFileTests/      the one integration test of its boundary
@@ -33,7 +33,11 @@ AddressForm/
 
 The root of the repository shows what the app is made of, the root
 map, the maps, and the packages. The app itself is one thin folder
-among them, `App/`, since it is only the composition root. The Xcode
+among them, `App/`, since it is only the composition root. The rest
+of the app is `AppCore`, every node from the top one down and the
+scenarios, shells and cores alike. It knows no implementation exists,
+which makes it the app's core, and the app target, the one place that
+builds the live values, is its shell. The Xcode
 project is written into `App/` by the script beside it, and both are
 committed. The node maps are one folder, `Maps/`, apart from the code,
 and `APP-MAP.md` is the one map file at the root. Every package is a
@@ -45,26 +49,26 @@ folder under `Packages/`, and every dependency is a folder under
 | Module | Depends on | Its public surface |
 |---|---|---|
 | `DataCoupling` | swift-core-flow, which it re-exports, and nothing of yours | models, values, enums, contracts with their `@Entry` |
-| `Features` | `DataCoupling`, and a model-free presentation package if there is one | the top node of its tree, `public` with a `public init()` written out, and `TestScenario` |
+| `AppCore` | `DataCoupling`, and a model-free presentation package if there is one | the top node of its tree, `public` with a `public init()` written out, and `TestScenario` |
 | a dependency | `DataCoupling`, platform frameworks, the transport or SDK library it wraps | one `inject` view modifier |
-| the app target | `Features` and every dependency | nothing |
-| the test host | `Features`, `CoreFlowUITestHost` | nothing |
-| the UI-test bundle | `CoreFlowUITesting`, and `Features` to name the cases | nothing |
+| the app target | `AppCore` and every dependency | nothing |
+| the test host | `AppCore`, `CoreFlowUITestHost` | nothing |
+| the UI-test bundle | `CoreFlowUITesting`, and `AppCore` to name the cases | nothing |
 
-No dependency imports `Features`. No dependency imports another
-dependency. `Features` imports no dependency. The compiler holds all
+No dependency imports `AppCore`. No dependency imports another
+dependency. `AppCore` imports no dependency. The compiler holds all
 three, because each is a package and its manifest lists what it sees.
 
 ## One import reaches everything a feature needs
 
-The layer depends on swift-core-flow and re-exports it. The features
-package re-exports the layer. Each is one file of one line.
+The layer depends on swift-core-flow and re-exports it. `AppCore`
+re-exports the layer. Each is one file of one line.
 
 ```swift
 // Packages/DataCoupling/Sources/DataCoupling/Exports.swift
 @_exported import CoreFlow
 
-// Packages/Features/Sources/Features/Exports.swift
+// Packages/AppCore/Sources/AppCore/Exports.swift
 @_exported import DataCoupling
 ```
 
@@ -105,8 +109,8 @@ let package = Package(
 )
 ```
 
-`DataCoupling` lists swift-core-flow and nothing else. `Features` lists
-`DataCoupling` and has a `FeaturesTests` target. The layer's two lines
+`DataCoupling` lists swift-core-flow and nothing else. `AppCore` lists
+`DataCoupling` and has an `AppCoreTests` target. The layer's two lines
 for the library are these, its URL and the version, or the path of a
 checkout in its place.
 
@@ -186,13 +190,13 @@ struct AddressFileInjector: ViewModifier {
 ## The app target
 
 The app is one file. It owns the root's state, constructs the
-features' top node, and applies the `inject` chain inline. It imports
-the features and each dependency by name.
+top node of `AppCore`, and applies the `inject` chain inline. It
+imports `AppCore` and each dependency by name.
 
 ```swift
 // App/AddressApp/AddressApp.swift
 import AddressFile
-import Features
+import AppCore
 import SwiftUI
 
 @main
@@ -229,32 +233,32 @@ xcrun xcodeproj init AddressForm.xcodeproj
 # the bundle identifier
 
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
-xcrun xcodeproj pkg add-local ../Packages/Features
+xcrun xcodeproj pkg add-local ../Packages/AppCore
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
 xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.3.0
 
-application() {   # a target, its phases, its folder, the main-actor default, the features
+application() {   # a target, its phases, its folder, the main-actor default, AppCore
     xcrun xcodeproj target add "$1" --product-type application
     xcrun xcodeproj target phase add sources --target "$1"
     xcrun xcodeproj target phase add frameworks --target "$1"
     xcrun xcodeproj group add "$1" --filesystem-path "$1"
     xcrun xcodeproj group include --group "$1" --target "$1"
     xcrun xcodeproj setting set SWIFT_DEFAULT_ACTOR_ISOLATION MainActor --target "$1"
-    xcrun xcodeproj pkg link Features --package Features --target "$1"
+    xcrun xcodeproj pkg link AppCore --package AppCore --target "$1"
 }
 
 application AddressApp      # links every dependency: pkg link AddressFile ...
 application TestHost        # links the host product: pkg link CoreFlowUITestHost ...
 # UITests: a ui-test-bundle that depends on TestHost and links
-# Features and CoreFlowUITesting, without the main-actor default
+# AppCore and CoreFlowUITesting, without the main-actor default
 # last line: predictable ids, so a second run changes nothing
 ```
 
 Three targets and no other. `AddressApp` is the folder `App/AddressApp`
-and links the features and every dependency package. `TestHost` is the
-folder `App/TestHost` and links the features and the host product.
+and links `AppCore` and every dependency package. `TestHost` is the
+folder `App/TestHost` and links `AppCore` and the host product.
 `UITests` is the folder `App/UITests`, runs against the test host, and
-links the features and the testing product. The folders are
+links `AppCore` and the testing product. The folders are
 synchronized with disk, so a new file needs no change to the script. A
 new dependency is one `pkg add-local` and one `pkg link`.
 
@@ -278,7 +282,7 @@ brief or the machine gives.
   after a map changes, to redraw the whole-app diagram. It skips build
   folders, `.build`, `DerivedData`, `SourcePackages`.
 - **Plain tests** of pure calculations and transformers are in
-  `Features/Tests/`, run with `swift test`. No view runtime. The
+  `AppCore/Tests/`, run with `swift test`. No view runtime. The
   package builds for the Mac to run them, so a modifier that exists
   only on iOS sits behind `#if os(iOS)`.
 - **The boundary's integration test** is in the dependency's own
@@ -290,8 +294,8 @@ brief or the machine gives.
   host, whose whole `main.swift` is `HostApp<TestScenario>.main()`.
   They run in the iPhone simulator, not against a Mac app, and
   nothing scripts the Mac's own interface.
-- **`TestScenario`** is public in `Features`, in its own file, and the
-  bundle links `Features` to name its cases.
+- **`TestScenario`** is public in `AppCore`, in its own file, and the
+  bundle links `AppCore` to name its cases.
 - **A test that drives the system photo picker** needs a photo in the
   simulator's library first, `xcrun simctl addmedia booted <file>`.
   Its photo cells are `app.images` with the identifier
@@ -311,11 +315,11 @@ brief or the machine gives.
 
 ## Checklist
 
-- [ ] `Packages/DataCoupling`, `Packages/Features`, and one package per
+- [ ] `Packages/DataCoupling`, `Packages/AppCore`, and one package per
       I/O dependency under `Packages/Dependencies/`.
-- [ ] The layer re-exports swift-core-flow, and the features re-export
+- [ ] The layer re-exports swift-core-flow, and `AppCore` re-exports
       the layer. No feature file imports either by name.
-- [ ] No dependency's manifest lists `Features` or another dependency.
+- [ ] No dependency's manifest lists `AppCore` or another dependency.
 - [ ] Each dependency has exactly one public declaration, its `inject`
       function, and a test target with its integration test.
 - [ ] The app target is one `@main` file in `App/`, with no exports

@@ -2977,6 +2977,24 @@
     address, addresses, and garden briefs no longer say the package is
     at `<COREFLOW>`, which pointed a run at the path. `<COREFLOW>`
     stays as where the library's skill is read.
+  - **F109, the features package is `AppCore`.** 2026-11-16. The
+    owner: "first maybe we need to change features package name to
+    "AppCore" ?". The package holds more than features, the top node
+    of the tree and `TestScenario` too, and `modules.md` already said
+    it knows no implementation exists. That is the app's core, the
+    cut of a node one level up, and the app target, the one place
+    that builds the live values, is its shell. The package holds
+    shells and cores alike, and `app-structure.md` says so where it
+    names it. Only the package is renamed. A feature is still the
+    word for a node, so "no cross-feature arrows" and "features
+    handle the flow" stand. `Packages/AppCore`, the module
+    `AppCore`, its test target `AppCoreTests`, in the data-coupling,
+    mapping, and xcode-project skills, `AGENTS.md`, and the CoreFlow
+    skill. The xcode-project script was run as the skill now gives
+    it on the address form app renamed: a second run byte-identical,
+    `swift test` 4 of 4, the build, and the three UI tests passed
+    against 1.3.0 from the URL. The rulings above keep the old name
+    as they were written.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

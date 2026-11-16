@@ -702,15 +702,15 @@ I/O. The app imports everything. What they all share is one package of
 pure data, the data coupling layer, `DataCoupling`, its own package
 that depends on nothing of yours. Where swift-core-flow is used the
 layer depends on it and re-exports it, `@_exported import CoreFlow`,
-and the features package re-exports the layer the same way, so every
+and `AppCore` re-exports the layer the same way, so every
 feature file sees the layer and the macros and imports neither by
-name. The features package depends on it.
+name. `AppCore` depends on it.
 A dependency, the live side of a contract, a backend, a store,
 depends on it too, to implement what the contract asks, and does not see
 a feature. The app depends on all of them, owns the state, and sets
 the live values by applying each dependency's one modifier in a chain
 at the root. On disk that is `Packages/DataCoupling`,
-`Packages/Features`, `Packages/Dependencies/<Name>` for each
+`Packages/AppCore`, `Packages/Dependencies/<Name>` for each
 dependency, and the app target beside them. This is dependency
 inversion carried out. A protocol that sits in the module of its
 implementation inverts nothing, since importing it imports the
@@ -853,7 +853,7 @@ test. Data is the abstraction.
   ingredients from the environment by their types in the layer, so it
   imports no other dependency. A dependency imports the layer, platform
   frameworks, and the transport or SDK library it wraps, and nothing
-  else of yours. It imports neither the features nor another
+  else of yours. It imports neither `AppCore` nor another
   dependency. The package boundary is what holds that. A modifier file
   in the app target sees whatever the app sees, a feature's enum, a
   feature's parser, and nothing stops it from using them. What a
@@ -882,7 +882,7 @@ test. Data is the abstraction.
   its binding, `$habits`, not over `self`. A live value over the model
   context comes from a modifier that reads `\.modelContext` inside the
   `.modelContainer(...)` scope and sets the contract there.
-- **Every dependency points at data.** Features and I/O modules both
+- **Every dependency points at data.** `AppCore` and I/O modules both
   depend on the layer and not on each other. The app depends on all of
   them. A stateless module is algorithms and cores, importable anywhere.
   The state sits at the top, in the app that composes the modules.

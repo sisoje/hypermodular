@@ -69,12 +69,12 @@ xcrun xcodeproj setting set PRODUCT_BUNDLE_IDENTIFIER 'dev.addressform.$(TARGET_
 # The packages. The first three are local, each a path relative to this
 # folder. swift-core-flow is remote, its URL and the version the app needs.
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
-xcrun xcodeproj pkg add-local ../Packages/Features
+xcrun xcodeproj pkg add-local ../Packages/AppCore
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
 xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.3.0
 
 # An application: the target, its two phases, the folder of its own name
-# synchronized with disk, the main-actor default, and the features.
+# synchronized with disk, the main-actor default, and AppCore.
 application() {
     xcrun xcodeproj target add "$1" --product-type application
     xcrun xcodeproj target phase add sources --target "$1"
@@ -83,14 +83,14 @@ application() {
     xcrun xcodeproj group include --group "$1" --target "$1"
     xcrun xcodeproj setting set SWIFT_DEFAULT_ACTOR_ISOLATION MainActor --target "$1"
     xcrun xcodeproj setting set INFOPLIST_KEY_UILaunchScreen_Generation YES --target "$1"
-    xcrun xcodeproj pkg link Features --package Features --target "$1"
+    xcrun xcodeproj pkg link AppCore --package AppCore --target "$1"
 }
 
-# The app: the features and every dependency.
+# The app: AppCore and every dependency.
 application AddressApp
 xcrun xcodeproj pkg link AddressFile --package AddressFile --target AddressApp
 
-# The test host: the features and the host product.
+# The test host: AppCore and the host product.
 application TestHost
 xcrun xcodeproj pkg link CoreFlowUITestHost --package swift-core-flow --target TestHost
 
@@ -102,7 +102,7 @@ xcrun xcodeproj target add-dependency UITests TestHost
 xcrun xcodeproj setting set TEST_TARGET_NAME TestHost --target UITests
 xcrun xcodeproj group add UITests --filesystem-path UITests
 xcrun xcodeproj group include --group UITests --target UITests
-xcrun xcodeproj pkg link Features --package Features --target UITests
+xcrun xcodeproj pkg link AppCore --package AppCore --target UITests
 xcrun xcodeproj pkg link CoreFlowUITesting --package swift-core-flow --target UITests
 
 # Predictable ids, so a regeneration is byte-identical: a target's id is its name.
@@ -171,7 +171,7 @@ Product types are short names: `application`, `framework`,
   directory is in the target at once. The script changes only when a
   target, a folder, a package, or a setting changes.
 - **A package is addressed by its identity.** For a local package that
-  is its directory's name, `--package Features`. For a remote one it is
+  is its directory's name, `--package AppCore`. For a remote one it is
   the repository's name, `--package swift-core-flow`. `pkg list` prints
   them.
 - **A product is linked per target.** `pkg add-local` alone links
