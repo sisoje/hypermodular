@@ -594,12 +594,13 @@ The evidence block is the same either way.
   sets loggers for the node's own label lines and drives the node, no
   deeper; a child calling a logged contract would land in the same log.
   A node that reads the store is handed its records. The scenario
-  sets the query the node asks to a fixed result, by name, through the
-  entry's key path, `.environment(\.queryService.books) { _ in
-  LazyQuery(result: QueryResult(wrappedValue: [dune])) }`. No `Query`
-  is built, no store is read, and no container is needed. Or it seeds
-  a `.modelContainer` under the entry's default, and the real query
-  runs. A read does not log, so neither way adds an entry to the log.
+  sets the query the node asks to a fixed result, by name,
+  `.environment(\.queryService.books) { _ in LazyQuery(result:
+  QueryResult(wrappedValue: [dune])) }`. No `Query` is built, no store
+  is read, and no container is needed. Or it seeds a
+  `.modelContainer`, and the entry's default fetches every record
+  from it, unsorted. A read does not log, so neither way adds an
+  entry to the log.
 - **The test is the hosted scenario.** A scenario is a view that owns
   real `@State`, hands the core logged bindings and closures, sets its
   contracts with `.environment(...)`, and is driven with real input in
@@ -1038,20 +1039,20 @@ and why, where it is broken.
   two ways, the Memo's limits, the measurement, and a table of the
   common forms with what replaces each are in
   `references/data-flow.md`, "A value built from an input".
-- **A query written in a feature.** A `@Query` property, or a
-  `QueryUtilities.lazyQuery` made in a view, `let sorted =
-  QueryUtilities.lazyQuery { (descending: Bool) in Query(…) }` and
-  `QueryView(sorted(descending))`. The store's predicate and sort sit
-  in the view. The arguments of such a query are its dependencies. A
-  value the expression captures and does not take as an argument is
-  not one, and the query does not follow it, with no error. A read of
-  the store is asked from the query service with its
-  arguments, which are its dependencies. A view not yet converted
-  keeps its `@Query` until it is worked on, and `@Shell` makes it an
-  input meanwhile. That is the order of a conversion and not a break
-  of this rule. The checker with `--sources` warns on a `@Query`
-  property and on a `QueryUtilities.lazyQuery` in a file that declares
-  a view, which is also the list of the reads still to convert.
+- **A query written in a feature.** A `@Query` property, or a query
+  made lazy in the view, `let sorted = QueryUtilities.lazyQuery {
+  (descending: Bool) in Query(…) }` asked with
+  `QueryView(sorted(descending))`. The store's predicate and sort are
+  in the view. The arguments are the dependencies, and a value the
+  expression captures and does not take as an argument is a change
+  the query does not follow, with no error. A read of the store is
+  asked from the query service with its arguments, which are its
+  dependencies. A view not yet converted keeps its `@Query` until it
+  is worked on, and `@Shell` makes it an input meanwhile. That is the
+  order of a conversion and not a break of this rule. The checker
+  with `--sources` warns on a `@Query` property and on a
+  `QueryUtilities.lazyQuery`, which is also the list of the reads
+  still to convert.
 - **A `Task` nobody holds.** `Button("Save") { Task { try await save()
   } }` starts work that nothing cancels. It outlives the node, a second
   tap runs a second copy beside the first, and its writes land in a

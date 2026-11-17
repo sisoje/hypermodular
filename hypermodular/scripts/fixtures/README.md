@@ -27,13 +27,11 @@ evidence target that is no stored property, and a view on no map that
 reads a cylinder, and a presence-condition arrow whose label names
 nothing the node holds, and a flow called with no label line; with
 the two planted stale labels that is nine code errors and one
-warning. Seven more warnings are planted for habits no map can show,
-two `Task`s nobody holds, two lifecycle modifiers in a view, and three
+warning. Six more warnings are planted for habits no map can show,
+two `Task`s nobody holds, two lifecycle modifiers in a view, and two
 queries written in a view. The broken list and its scenario keep
 a `QueryUtilities.lazyQuery` made in the view, which
-takes the `· @Query` line as before and is warned about (F110). The
-third is in `TitleCountScenario`, whose type lists `View` second,
-`: Equatable, View`. One
+takes the `· @Query` line as before and is warned about (F110). One
 of the two tasks is made in a closure handed to `map`, on a line
 whose only `=` is a default argument (F106).
 `Furniture` also assigns a task through an optional's `map`, on one

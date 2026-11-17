@@ -3058,68 +3058,32 @@
     not a break of the rule. *Given* names what a query delivers. The
     rulings above keep `@Query` as they were written.
   - **F111, a scenario sets the query its node asks to a fixed
-    result.** 2026-11-17. swift-core-flow 1.4.2 changed the query API,
-    and the owner's rulings came with it. `QueryView` has one
-    initializer, over a `LazyQuery`. The initializer that took the
-    query beside a list of dependencies no longer exists, and neither
-    does the modifier that set a query's result by its type, both as
-    F110 names them. A `LazyQuery` is a query or a fixed result, and
-    `LazyQuery(result:)` takes a `QueryResult`. The function that
-    makes a query lazy is renamed `QueryUtilities.lazyQuery`, from
-    `lazy`. Three rulings. First, a scenario sets the query its node
-    asks to a fixed result, by name, through the entry's key path,
+    result.** 2026-11-17. swift-core-flow 1.4.2. `QueryView` has one
+    initializer, over a `LazyQuery`, and a `LazyQuery` is a query or a
+    fixed result, `LazyQuery(result:)` over a `QueryResult`. It is
+    called a fixed result and not a mock, the owner's ruling as the
+    library's `AGENTS.md` records it, since the type holds a result
+    and not test code. `.mockQuery` is gone. It was keyed by the
+    result type, so two queries of one result type got the same
+    records. A scenario now sets the member its node asks, by name,
     `.environment(\.queryService.books) { _ in LazyQuery(result:
-    QueryResult(wrappedValue: [dune])) }`. No `Query` is built, no
-    store is read, and no container is needed. Members not set keep
-    their queries, and a member of a `@LazyQueries` service is a
-    `var`. This replaces that modifier and F110's sentence that a
-    scenario sets nothing for the query service. The second path
-    stays, a seeded in-memory container under the default service,
-    where the real query runs. Second, the value is called a fixed
-    result and not a mock. The word mock stays everywhere else in the
-    skills. Third, a query written in a feature is now a `@Query`
-    property or a `QueryUtilities.lazyQuery` made in a view, `let
-    sorted = QueryUtilities.lazyQuery { (descending: Bool) in Query(…)
-    }` and `QueryView(sorted(descending))`. The list of dependencies
-    written by hand is gone, since the arguments are the
-    dependencies. Two things are still wrong with it. The store's
-    predicate and sort sit in the view. And a value the expression
-    captures and does not take as an argument is not a dependency, so
-    the query does not follow it, with no error. That wording is the
-    brief's reading of the library's README, which the owner handed
-    over as written. So is the checker's change. F110 warns on a
-    `@Query` property and on a `QueryUtilities.lazyQuery` in a file
-    that declares a view, and a type that holds one takes the
-    `· @Query` line as before. A file that declares no view raises
-    nothing, so a service's initializer written by hand does not
-    warn. A file declares a view when a type in it lists `View` or
-    `ViewModifier` anywhere among its conformances, `: Decodable,
-    View` included, and the broken fixture plants one that lists
-    `View` second. The root does not spell the function, since the
-    initializer the macro writes takes plain closures. The broken
-    fixture's list and its scenario are written in the new form and
-    still trip the warning. Changed with it: the table row, the scenario passage,
-    and the do-not in the code skill, "The SwiftData shell" and the
-    wrapper table's row in `shell-core.md`, the Memo passage in
-    `data-flow.md`, question 3 of `comprehension-prompt-4.md`, which
-    now asks about a captured value, the checker's paragraph in
-    `notation.md`, and the three install lines, which say 1.4.2. Two
-    sentences the brief did not list were false as well. A
-    `LazyQuery` is no longer built only by the library, since
-    `LazyQuery(result:)` is public, so the code skill and
-    `shell-core.md` now say a `LazyQuery` that holds a query. The
-    glossary's lazy query row names the fixed result, and
-    `data-flow.md` calls the scenario's array a fixed result.
-    Measured the same day against the 1.4.2 checkout, Swift 6 mode,
-    the main-actor default, the layer, the store, and the feature as
-    three modules: the contract with its entry default, the store
-    dependency, the shell and its core, a scenario that sets one
-    member to a fixed result, one that sets two, the second with a
-    `fetchError:`, and a query made in a view with one argument and
-    with none compile with no diagnostic, the plain test of the
-    descriptor passes, and the two removed forms no longer compile.
-    The comprehension prompt was not run again. The rulings above
-    keep the older forms as they were written.
+    QueryResult(wrappedValue: [dune])) }`. No `Query` is built and no
+    container is needed. That replaces F110's sentence that a scenario
+    sets nothing for the query service. The seeded in-memory container
+    stays as the second way, and under it the default service fetches
+    every record, unsorted. `QueryView(query:dependencies:)` is gone
+    too, and `QueryUtilities.lazy` is `QueryUtilities.lazyQuery`. A
+    query that a view not yet converted makes in place is that
+    function bound to a name. Its arguments are its dependencies, and
+    a value the expression captures is not one. The checker's F110
+    warning matches it in place of the removed initializer. The
+    install lines say 1.4.2. Measured against the 1.4.2 checkout,
+    Swift 6 mode, the layer, the store, and the feature as three
+    modules: the scenario with a fixed result, one that sets two
+    members, the second with a `fetchError:`, and the query made in
+    place compile with no diagnostic, and the plain test of the
+    descriptor passes. The rulings above keep the older forms as they
+    were written.
   - **The test array**, ruled: the whole log, one equality, so an
     unnamed call fails; where the requirement names no order the test
     sorts those entries into one fixed order before comparing (F31);

@@ -382,11 +382,11 @@ value changes. swift-core-flow's `QueryView` builds the live query in
 `body`, rebuilds it only when its dependencies change, and hands
 content the result as plain data. A query made in the view is
 `QueryUtilities.lazyQuery` bound to a name, `let sorted =
-QueryUtilities.lazyQuery { (descending: Bool) in Query(…) }` and
-`QueryView(sorted(descending))`. Its arguments are its dependencies. A
-value the expression captures and does not take as an argument is not
-one, and the query does not follow it, with no error and no warning.
-The store's predicate and sort also sit in the view.
+QueryUtilities.lazyQuery { (descending: Bool) in Query(…) }` asked
+with `QueryView(sorted(descending))`. Its arguments are its
+dependencies. A value the expression captures and does not take as an
+argument is a change the query does not follow, with no error and no
+warning. And the store's predicate and sort are in the view.
 
 So the query is not written in the view. It is asked from the query
 service, a contract in the layer, with the values it depends on as
@@ -485,17 +485,18 @@ It is a plain test, with no view and no host:
   asked with. It serves previews and scenarios as any contract's no-op
   does.
 - **A scenario sets the query its node asks to a fixed result, by
-  name.** A read does not log, so there is no logger to set. The
-  scenario supplies the records.
-  `.environment(\.queryService.books) { _ in LazyQuery(result:
-  QueryResult(wrappedValue: [dune])) }` sets the one member, through
-  the entry's key path, which is why a member is a `var`. No `Query`
-  is built, no store is read, and no container is needed. Members not
-  set keep their queries. Or `.modelContainer(for:inMemory:)` seeds a
-  real container, and the default service fetches from it with the
-  real query. Under `@Shell` the
-  `QueryView` is copied onto `Core` with the `body`, and the scenario
-  supplies the records the same two ways.
+  name.** `.environment(\.queryService.books) { _ in LazyQuery(result:
+  QueryResult(wrappedValue: [dune])) }`. `QueryView` hands that result
+  to the content. No `Query` is built, no store is read, and no
+  container is needed. A member is a `var`, so one is set alone and
+  the others keep their queries, and two queries of one result type
+  get their own records. A `QueryResult` with a `fetchError:` is the
+  error branch. A child that reads the store has the member it asks
+  set the same way. A read does not log, so no logger is set for it.
+  Or `.modelContainer(for:inMemory:)` seeds a real container, and the
+  default service fetches every record from it, unsorted. Under
+  `@Shell` the `QueryView` is copied onto `Core` with the `body`, and
+  the scenario supplies the records the same two ways.
 - **The sort is proven where it is written.** The node's scenario
   proves the node, that it writes the sort flag and shows what it is
   handed. That the store returns the records in the order asked is the

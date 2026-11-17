@@ -379,7 +379,7 @@ code is written by the method, so its forms are few. `scripts/test.sh`
 runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
 with Swift stubs, zero errors, nothing unverified) and
 `fixtures/broken` (the same with fourteen map violations, ten code
-findings, and seven habit warnings planted, all caught; wrong on
+findings, and six habit warnings planted, all caught; wrong on
 purpose, not an example). The clean fixture carries its whole-app
 diagram, and the test changes one of its maps to see the diagram
 reported stale and then redrawn.

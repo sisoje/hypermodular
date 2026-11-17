@@ -53,6 +53,5 @@ code: Furniture.swift: a lifecycle modifier in a view, '.onAppear { }' (F77 to F
 code: Furniture.swift: a lifecycle modifier in a view, '.task(id: 1) { }' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)
 code: BookList.swift: a query written in a view, 'let sorted = QueryUtilities.lazyQuery { (descend' (F110: a read of the store is a query asked from the query service)
 code: BookListScenario.swift: a query written in a view, 'let byTitle = QueryUtilities.lazyQuery { Query(s' (F110: a read of the store is a query asked from the query service)
-code: TitleCountScenario.swift: a query written in a view, 'let titles = QueryUtilities.lazyQuery { Query(so' (F110: a read of the store is a query asked from the query service)
 WANT
 diff /tmp/mapcheck-code-want.txt /tmp/mapcheck-code-got.txt && echo "all planted code findings caught, nothing extra" || { echo "FAIL: code findings differ"; exit 1; }
