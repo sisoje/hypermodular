@@ -53,7 +53,9 @@ the type's body, then compared both ways:
                 .onContinueUserActivity in a file that declares no
                 ViewModifier. A plain .task is not reported; and a
                 query written in a view (F110), which is a @Query
-                property or QueryView(query:dependencies:)
+                property, or a QueryUtilities.lazyQuery in a file that
+                declares a view, a type that lists View or ViewModifier
+                anywhere among its conformances
 
 Usage: mapcheck.py [repo-root] [--write] [--sources DIR ...]   (exit 1 on any error)
 """
@@ -186,9 +188,9 @@ CLOSURE_PROP = re.compile(r"^\s*(?:@\w+(?:\([^)]*\))?\s+)*(?:(?:private|filepriv
 BINDING = re.compile(r"^\s*@Binding\s+(?:(?:private|fileprivate|internal|public)\s+)?var\s+(\w+)")
 MATERIALIZERS = [("@Query", "@Query"), ("@SceneStorage", "@SceneStorage"),
                  ("@FocusState", "@FocusState"), ("@AppStorage", "@AppStorage"), ("ProcessInfo", "@ProcessInfo")]
-QUERY_BY_HAND = re.compile(r"\bQueryView\s*\(\s*query\s*:")   # QueryView(query:dependencies:), a query written in the view
+QUERY_BY_HAND = re.compile(r"\bQueryUtilities\s*\.\s*lazyQuery\b")   # QueryUtilities.lazyQuery { ... }, a query written in the view
 QUERY_ASKED = re.compile(r"\bQueryView\s*\(\s*$")             # QueryView(service.member(...)), a query asked from the service
-QUERY_IN_VIEW = re.compile(r"@Query\b|\bQueryView\s*\(\s*query\s*:")
+QUERY_IN_VIEW = re.compile(r"@Query\b|\bQueryUtilities\s*\.\s*lazyQuery\b")
 
 SKIPPED_DIRS = {".build", "DerivedData", "SourcePackages"}   # build output is never the app's source
 TASK = re.compile(r"\bTask\s*(?:\.detached\s*)?[({]")
@@ -279,6 +281,10 @@ def assigned_through_map(before):
     while closed.search(statement): statement = closed.sub("", statement)
     return bool(ASSIGNMENT.search(re.split(r"[{;]", statement)[-1]))
 
+def declares_view(text):
+    """A type in the file lists View or ViewModifier anywhere among its conformances, `: Decodable, View` included."""
+    return any({"View", "ViewModifier"} & {c.strip() for c in (m.group(4) or "").split(",")} for m in TYPE.finditer(text))
+
 def check_habits(dirs):
     """A rule of the code skill that no map can show. A warning, since a rule may be broken on purpose."""
     for d in dirs:
@@ -291,6 +297,7 @@ def check_habits(dirs):
                     lm = LIFECYCLE.search(ln)
                     if lm: warn("code", f"{p.name}: a lifecycle modifier in a view, '{ln.strip()[:48]}' (F77 to F81: the action that causes the work does it; a value the app does not control is heard in one modifier at the root)")
             for qm in QUERY_IN_VIEW.finditer(text):
+                if qm.group() != "@Query" and not declares_view(text): continue   # a service's initializer written by hand spells it too
                 warn("code", f"{p.name}: a query written in a view, '{lines[text.count(chr(10), 0, qm.start())].strip()[:48]}' (F110: a read of the store is a query asked from the query service)")
             for i, ln in enumerate(lines):
                 m = TASK.search(ln)

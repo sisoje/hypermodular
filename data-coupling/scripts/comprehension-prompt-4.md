@@ -4,7 +4,7 @@ Then answer these questions, from the skill only, in your own words, two to four
 
 1. A screen lists the user's books, kept on the device, in an order decided by a flag the screen is handed. Where does the screen get the books, what does it pass, and what does it get back?
 2. A teammate writes `@Query(sort: \Book.title) private var books: [Book]` in a new screen. What does the skill say, and what does the screen write in its place?
-3. A teammate writes `QueryView(query: Query(filter: …), dependencies: [author])` in a node and later makes the filter read a second value. What can go wrong, does anything report it, and what removes the problem?
+3. A teammate writes `let byAuthor = QueryUtilities.lazyQuery { (author: String) in Query(filter: …) }` in a node, asks it with `QueryView(byAuthor(author))`, and later makes the filter read a second value, which the closure captures. What can go wrong, does anything report it, and what removes the problem?
 4. Where is the expression that sorts the books written, how many times, and which module holds it? Which test proves the order, and does that test need a view?
 5. What does the environment entry of the store's reads default to, who writes that value, and how does it differ from every other contract's default?
 6. A node's scenario needs three books on screen. What does the scenario set for the store's reads, and how does it supply the books?

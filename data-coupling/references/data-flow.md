@@ -271,9 +271,9 @@ them is by who knows how to build the thing.
   not belong in it. That state is `@State` of the view that hosts the
   `MemoView`, which the Memo leaves alone. And when the build reads an
   input that `dependencies:` leaves out, a change of that input is not
-  followed. `QueryView` is the same over a `Query`. A query asked
-  from the query service has no such list, since the arguments it was
-  asked with are its dependencies (`shell-core.md`).
+  followed. `QueryView` is the same over a `Query`. It has no such
+  list to write, since the arguments the query was asked with are its
+  dependencies (`shell-core.md`).
 
 A binding to the parent's own input, handed to the child beside a copy
 the child builds, is not a third way. A binding shares a value. It
@@ -487,7 +487,7 @@ set with `.environment(...)` and arrives without a constructor
 argument. That is the only difference between them, and it is a
 difference of spelling, not of kind. All are data in. A scenario
 replaces the binding with a literal binding, the environment value
-with `.environment(...)`, and the query with a canned array or a
+with `.environment(...)`, and the query with a fixed result or a
 seeded container.
 
 UI-runtime machinery is `@GestureState` (a live gesture's lifecycle),

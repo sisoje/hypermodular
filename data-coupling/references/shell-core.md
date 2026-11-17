@@ -74,7 +74,7 @@ So the rule for a core and the environment:
 | `@Binding` | reference | already in the core; passes straight through | copied verbatim; the caller supplies the binding |
 | `@State` | data, owned | stays in the core if only the core needs it; `@Binding` if a criterion names it | `@TestState`: stays private, keeps its default, logs every write |
 | `@SceneStorage` (`@AppStorage` is the root's and not in a feature) | data, external storage | shell keeps it; core takes `@Binding` | `@Binding`. The key disappears, because a twin does not persist |
-| a read of the store, `QueryView` over a query asked from the query service | reference, a filtered read | in the shell's `body`; core takes a plain `let` array | copied with the `body`; the scenario supplies the result with `.mockQuery` or a seeded container |
+| a read of the store, `QueryView` over a query asked from the query service | reference, a filtered read | in the shell's `body`; core takes a plain `let` array | copied with the `body`; the scenario supplies the result by setting the member to a fixed result or with a seeded container |
 | `@Query`, in a view not yet converted | reference, a filtered read | shell keeps it; core takes a plain `let` array | `@QueryResult`. The memberwise init takes the bare array |
 | `@FocusState` | machinery | shell | `@TestFocusState`: a real `FocusState` underneath, programmatic writes log |
 | `@Environment` value, your own `@Entry` | reference | in the core; the scenario sets it with `.environment(...)` | copied verbatim; the scenario sets it with `.environment(...)` |
@@ -380,12 +380,13 @@ filtered `@Query` re-fetching once per keystroke in the parent. And
 `.id(value)` on that child destroys the subtree's state whenever the
 value changes. swift-core-flow's `QueryView` builds the live query in
 `body`, rebuilds it only when its dependencies change, and hands
-content the result as plain data. Written by hand, the dependencies
-are a list, `QueryView(query:dependencies:)`, the values that take
-part in the `Query` init, those and only those, beside the expression
-that reads them. A value the query reads and the list leaves out is a
-change the query does not follow. The list goes stale with no error
-and no warning.
+content the result as plain data. A query made in the view is
+`QueryUtilities.lazyQuery` bound to a name, `let sorted =
+QueryUtilities.lazyQuery { (descending: Bool) in Query(…) }` and
+`QueryView(sorted(descending))`. Its arguments are its dependencies. A
+value the expression captures and does not take as an argument is not
+one, and the query does not follow it, with no error and no warning.
+The store's predicate and sort also sit in the view.
 
 So the query is not written in the view. It is asked from the query
 service, a contract in the layer, with the values it depends on as
@@ -471,9 +472,11 @@ It is a plain test, with no view and no host:
   since they are the arguments. Calling the member builds nothing. It
   is called on every render, and the query is built again only when
   an argument changes.
-- **A `LazyQuery` is made only by calling a member of the service and
-  read only by `QueryView`.** Nothing else can open one or build one,
-  so a query does not travel without the values it was asked with.
+- **A `LazyQuery` that holds a query is made only by calling a member
+  of the service and read only by `QueryView`.** Nothing else can open
+  one or build one, so a query does not travel without the values it
+  was asked with. The one public initializer, `LazyQuery(result:)`,
+  makes a fixed result, which holds no query.
 - **The service holds queries and nothing else.** Every stored
   property is a function that answers a `LazyQuery`. The store's
   writes are another contract, which stays writes only.
@@ -481,11 +484,16 @@ It is a plain test, with no view and no host:
   member answers every record of its type, unsorted, whatever it is
   asked with. It serves previews and scenarios as any contract's no-op
   does.
-- **A scenario sets no query service.** A read does not log, so there
-  is nothing to stand in for. The scenario supplies the records.
-  `.mockQuery(QueryResult(wrappedValue: [dune]))` cans the result per
-  type. Or `.modelContainer(for:inMemory:)` seeds a real container,
-  and the default service fetches from it. Under `@Shell` the
+- **A scenario sets the query its node asks to a fixed result, by
+  name.** A read does not log, so there is no logger to set. The
+  scenario supplies the records.
+  `.environment(\.queryService.books) { _ in LazyQuery(result:
+  QueryResult(wrappedValue: [dune])) }` sets the one member, through
+  the entry's key path, which is why a member is a `var`. No `Query`
+  is built, no store is read, and no container is needed. Members not
+  set keep their queries. Or `.modelContainer(for:inMemory:)` seeds a
+  real container, and the default service fetches from it with the
+  real query. Under `@Shell` the
   `QueryView` is copied onto `Core` with the `body`, and the scenario
   supplies the records the same two ways.
 - **The sort is proven where it is written.** The node's scenario

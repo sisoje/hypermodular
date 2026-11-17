@@ -371,15 +371,15 @@ and a run reports each one it leaves standing with the reason. A
 query asked from the query service, `QueryView(queryService.books(…))`
 in a node's Swift, is a read and takes the read line,
 `· queryService.books`, with `queryService` a cylinder. A query
-written in the view, a `@Query` property or
-`QueryView(query:dependencies:)`, is materialization and takes the
+written in the view, a `@Query` property or a
+`QueryUtilities.lazyQuery` made in it, is materialization and takes the
 `· @Query` line, and it is a warning too, since a read of the store is
 asked from the query service (F110). The reading is textual, the
 code is written by the method, so its forms are few. `scripts/test.sh`
 runs the fixtures: `fixtures/clean` (CoreFlowExample's validated maps
 with Swift stubs, zero errors, nothing unverified) and
 `fixtures/broken` (the same with fourteen map violations, ten code
-findings, and six habit warnings planted, all caught; wrong on
+findings, and seven habit warnings planted, all caught; wrong on
 purpose, not an example). The clean fixture carries its whole-app
 diagram, and the test changes one of its maps to see the diagram
 reported stale and then redrawn.

@@ -427,7 +427,7 @@ Two ways to make the cut, one contract:
 |---|---|---|
 | The core | a second view, `BookListCore`, constructed by the shell's one-line `body` | a nested `Core` twin the macro generates. Same `body` text, copied by the compiler, so it cannot drift |
 | Own `@State` | stays if only the core needs it; lifted to `@Binding` if a criterion names it | stays private as `@TestState` and logs every write. The write site emits the evidence |
-| External storage, fetched data | `@Binding`, and a `let` array the shell's `QueryView` hands in | `@Binding`, and the array from the `QueryView` copied with the `body`, which a scenario supplies with `.mockQuery`. A `@Query` property left in a view not yet converted becomes `@QueryResult` (tests pass the bare array) |
+| External storage, fetched data | `@Binding`, and a `let` array the shell's `QueryView` hands in | `@Binding`, and the array from the `QueryView` copied with the `body`, which a scenario supplies by setting the member the node asks to a fixed result. A `@Query` property left in a view not yet converted becomes `@QueryResult` (tests pass the bare array) |
 | Machinery | shell. When the core must write focus, the shell hands it a binding built over its `@FocusState` | copied verbatim: live when hosted, defaulted otherwise. `@FocusState` becomes `@TestFocusState` and logs |
 | Environment values, your own `@Entry` and Apple's plain ones, `\.locale`, `\.colorScheme` | the core reads them. The scenario sets them with `.environment(...)` | copied verbatim. The scenario sets them with `.environment(...)` |
 | Apple's sealed actions, `\.dismiss`, `\.openURL` | the shell reads them and hands the core a closure, because nothing can build one from above | `@TestEnvironment`: the real action runs, every call logs |
@@ -593,10 +593,13 @@ The evidence block is the same either way.
   shapes, and a scenario overrides every closure the node's label names. A scenario
   sets loggers for the node's own label lines and drives the node, no
   deeper; a child calling a logged contract would land in the same log.
-  A node that reads the store is handed its records, by `.mockQuery`
-  or by a seeded `.modelContainer`. The scenario sets nothing for the
-  query service. A read does not log, so there is nothing to stand in
-  for, and the entry's default already answers every query.
+  A node that reads the store is handed its records. The scenario
+  sets the query the node asks to a fixed result, by name, through the
+  entry's key path, `.environment(\.queryService.books) { _ in
+  LazyQuery(result: QueryResult(wrappedValue: [dune])) }`. No `Query`
+  is built, no store is read, and no container is needed. Or it seeds
+  a `.modelContainer` under the entry's default, and the real query
+  runs. A read does not log, so neither way adds an entry to the log.
 - **The test is the hosted scenario.** A scenario is a view that owns
   real `@State`, hands the core logged bindings and closures, sets its
   contracts with `.environment(...)`, and is driven with real input in
@@ -819,7 +822,8 @@ test. Data is the abstraction.
   `defaultQueries`, the service whose every member answers every
   record, unsorted. That
   static is the `@Entry` default. It is the one contract whose no-op
-  is not `.init()`, since a `LazyQuery` is built only by the library.
+  is not `.init()`, since a `LazyQuery` that holds a query is built
+  only by the library.
   A node asks with what it holds, `QueryView(queryService.books(
   sortByAuthor)) { $books in … }`, and the query is built again only
   when an argument changes. Whoever provides the arguments gets the
@@ -1035,17 +1039,19 @@ and why, where it is broken.
   common forms with what replaces each are in
   `references/data-flow.md`, "A value built from an input".
 - **A query written in a feature.** A `@Query` property, or a
-  `QueryView(query:dependencies:)` with its expression and its list.
-  The list is written by hand beside an expression that reads the same
-  values. A value the expression reads and the list leaves out is a
-  change the query does not follow, and the list goes stale with no
-  error. A read of the store is asked from the query service with its
+  `QueryUtilities.lazyQuery` made in a view, `let sorted =
+  QueryUtilities.lazyQuery { (descending: Bool) in Query(…) }` and
+  `QueryView(sorted(descending))`. The store's predicate and sort sit
+  in the view. The arguments of such a query are its dependencies. A
+  value the expression captures and does not take as an argument is
+  not one, and the query does not follow it, with no error. A read of
+  the store is asked from the query service with its
   arguments, which are its dependencies. A view not yet converted
   keeps its `@Query` until it is worked on, and `@Shell` makes it an
   input meanwhile. That is the order of a conversion and not a break
   of this rule. The checker with `--sources` warns on a `@Query`
-  property and on a `QueryView(query:dependencies:)`, which is also
-  the list of the reads still to convert.
+  property and on a `QueryUtilities.lazyQuery` in a file that declares
+  a view, which is also the list of the reads still to convert.
 - **A `Task` nobody holds.** `Button("Save") { Task { try await save()
   } }` starts work that nothing cancels. It outlives the node, a second
   tap runs a second copy beside the first, and its writes land in a
@@ -1221,7 +1227,7 @@ The articles' terms. Use them. They make discussion precise in a way
 | reshaping | a wave that changes structure, not only values; the rare case |
 | reference | `@Binding`, `@Environment`, or `@Query`: holds no state. A binding is a `get`/`set` pair an ancestor built and handed in at the initializer; an environment value is one an ancestor set above with `.environment(...)`; a query is a filtered read of the store the root opened |
 | query service | the contract of the store's reads, a struct under `@LazyQueries`. A member takes the values a query depends on and answers a lazy query. The root sets it, and its default is `defaultQueries` |
-| lazy query | a `LazyQuery`, the query not built yet together with the values it was asked with. The values are its dependencies, so `QueryView` builds it again only when one of them changes |
+| lazy query | a `LazyQuery`, the query not built yet together with the values it was asked with. The values are its dependencies, so `QueryView` builds it again only when one of them changes. Or a fixed result, `LazyQuery(result:)`, which a scenario sets and which holds no query |
 | machinery | Apple's UI-runtime wrappers that hold no suppliable data (gestures, focus, namespaces, metrics) |
 | furniture | a view inside a node that is not a node itself, a row, a button, a design-system piece. It gets no node on the map, and what it calls is in the node's contract |
 | shell / core | the view owning the live property wrappers and services, one wherever the I/O is / the feature as pure transformation, values and closures in, children and boundary events out |

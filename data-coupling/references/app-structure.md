@@ -115,7 +115,7 @@ for the library are these, its URL and the version, or the path of a
 checkout in its place.
 
 ```swift
-dependencies: [.package(url: "https://github.com/sisoje/swift-core-flow", from: "1.4.0")],
+dependencies: [.package(url: "https://github.com/sisoje/swift-core-flow", from: "1.4.2")],
 // in the target:
 dependencies: [.product(name: "CoreFlow", package: "swift-core-flow")],
 ```
@@ -238,7 +238,7 @@ xcrun xcodeproj init AddressForm.xcodeproj
 xcrun xcodeproj pkg add-local ../Packages/DataCoupling
 xcrun xcodeproj pkg add-local ../Packages/AppCore
 xcrun xcodeproj pkg add-local ../Packages/Dependencies/AddressFile
-xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.4.0
+xcrun xcodeproj pkg add https://github.com/sisoje/swift-core-flow --from 1.4.2
 
 application() {   # a target, its phases, its folder, the main-actor default, AppCore
     xcrun xcodeproj target add "$1" --product-type application
